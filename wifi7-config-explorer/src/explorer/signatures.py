@@ -1,0 +1,1 @@
+# accepted state and observable facts

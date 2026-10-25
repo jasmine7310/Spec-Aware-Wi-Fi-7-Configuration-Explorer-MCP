@@ -1,0 +1,1 @@
+# full independent build and MCP-agent setup
