@@ -16,6 +16,8 @@ dependencies = [
     "picire==21.8",
     "mcp==2.3.0",
     "PyYAML==6.0.3",
+    # picire 21.8 imports pkg_resources, which setuptools removed in v81.
+    "setuptools==80.9.0",
 ]
 
 [project.optional-dependencies]
