@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wifi7-config-explorer"
+version = "0.1.0"
+description = "Spec-aware Wi-Fi 7 MLO configuration explorer exposed as an MCP server (CS 211 Project F)"
+readme = "README.md"
+requires-python = ">=3.11"
+# Exact pins so every teammate and the reviewer get the same versions.
+dependencies = [
+    "pydantic==2.14.1",
+    "ConfigSpace==1.2.2",
+    "allpairspy==2.5.1",
+    "picire==21.8",
+    "mcp==2.3.0",
+    "PyYAML==6.0.3",
+    # picire 21.8 imports pkg_resources, which setuptools removed in v81.
+    "setuptools==80.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
