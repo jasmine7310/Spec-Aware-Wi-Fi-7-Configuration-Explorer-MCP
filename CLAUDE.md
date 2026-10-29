@@ -34,8 +34,14 @@ docker build --progress=plain -t wifi7-env docker/           # simulation image 
 docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in a fresh UML guest
 ```
 
+The project needs Python 3.11+. On Ubuntu 22.04 `python3` is 3.10, so create the venv
+with `python3.11` instead (`sudo apt install python3.11 python3.11-venv`).
+
 On Windows, run everything inside WSL Ubuntu. See `docker/README.md` for the simulation
-environment and the `docker run` settings it needs.
+environment, the `docker run` settings it needs and Windows troubleshooting. If you drive
+WSL from Windows PowerShell 5.1, put the commands in a script and run
+`wsl -d Ubuntu -- bash <script>`: PowerShell strips embedded double quotes from inline
+`wsl -- bash -lc '…'` commands.
 
 ## Rules for agents
 
