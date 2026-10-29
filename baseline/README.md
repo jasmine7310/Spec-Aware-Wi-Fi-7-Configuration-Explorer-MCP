@@ -48,9 +48,9 @@ association), each in a fresh container and UML guest, on 2026-10-29.
 
 | Run ID | Result | Started (UTC) | Wall time | Evidence |
 |---|---|---|---|---|
-| [`1793298094`](../runs/baseline/1793298094/) | PASS | 2026-10-29 18:21:34 | 25 s | `manifest.json`, `results.db`, `eht_mld_sae_two_links.log`, `.hwsim0.pcapng` (58,624 bytes), `console` |
-| [`1793298125`](../runs/baseline/1793298125/) | PASS | 2026-10-29 18:22:04 | 19 s | same files (pcap 58,624 bytes) |
-| [`1793298146`](../runs/baseline/1793298146/) | PASS | 2026-10-29 18:22:26 | 18 s | same files (pcap 59,952 bytes) |
+| [`1793298094`](../runs/baseline/1793298094/) | PASS | 2026-10-29 18:21:34 | 25 s | `manifest.json`, `results.db`, `eht_mld_sae_two_links.log`, `console`, capture `.hwsim0.pcapng` 32,144 bytes (decrypted `.hwsim0.dec.pcapng` 58,624) |
+| [`1793298125`](../runs/baseline/1793298125/) | PASS | 2026-10-29 18:22:04 | 19 s | same files; capture 32,144 bytes (decrypted 58,624) |
+| [`1793298146`](../runs/baseline/1793298146/) | PASS | 2026-10-29 18:22:26 | 18 s | same files; capture 32,916 bytes (decrypted 59,952) |
 
 The PASS in each `manifest.json` matches the result hostap's own runner wrote to that
 run's `results.db`.
