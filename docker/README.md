@@ -17,11 +17,12 @@ docker/run-test.sh eht_mld_sae_two_links
 | Platform | Build | `eht_mld_sae_two_links` |
 |---|---|---|
 | Intel Mac, macOS 15.8, Docker Desktop 27.4 (6 CPUs, ~5 GB) | ✅ ~44 min first time (kernel compile ~33 min) | ✅ 4/4 consecutive passes, ~40 s per run |
-| Windows + WSL2 | not tried yet | – |
+| Windows 11 Home 10.0.26200, WSL 3.0.3 + Ubuntu 22.04, Docker Desktop 4.51.0 (12 CPUs, ~3.5 GB for WSL) | ✅ ~10 min first time | ✅ 1/1 pass, 22 s per run (2026-10-28) |
 
 ## Windows (WSL2)
 
-Do everything **inside WSL Ubuntu**, not PowerShell or Git Bash.
+Do everything **inside WSL Ubuntu**, not PowerShell or Git Bash. (Windows PowerShell 5.1
+also strips embedded double quotes from commands passed through `wsl -- bash -lc '…'`.)
 
 1. Complete the dev setup from issue #3: WSL2 + Ubuntu, Docker Desktop with
    *Settings → Resources → WSL Integration* enabled for **Ubuntu**.
@@ -34,7 +35,14 @@ Notes:
 - With the WSL2 backend, CPU and memory limits come from `C:\Users\<you>\.wslconfig`,
   not Docker Desktop's settings. The defaults are usually enough; if the build runs out
   of memory, set e.g. `[wsl2]` / `memory=6GB` / `processors=6`, then run `wsl --shutdown`.
-- Expect a 45–60 min first build and ~1.4 GB of disk for the image.
+  On a laptop with little RAM (7 GB here), don't give WSL most of it: the build left
+  Windows with ~0.3 GB free, Ubuntu stopped responding and Docker's WSL integration
+  crashed. Adding swap (e.g. `swap=8GB`) is safer than raising `memory`.
+- If `docker` in Ubuntu says it can't connect to the daemon after such a hiccup, turn
+  Ubuntu off and on again under *Settings → Resources → WSL Integration*.
+- Don't run `wsl --shutdown` while Docker Desktop is starting: it got stuck waiting on its
+  VM ("still waiting for init control API") until it was fully quit and restarted.
+- Expect a 10–60 min first build depending on CPU count, and ~1.4 GB of disk for the image.
 - Record your result in the status table: Windows version, pass/fail, and any errors.
 
 ## Required `docker run` settings (and why)
@@ -58,5 +66,6 @@ Running without time-travel at all (real time) is not an option on this Mac: boo
 
 ## Next steps
 
-- Try the same image and script on **Windows + WSL2** to finish #4.
+- ~~Try the same image and script on **Windows + WSL2** to finish #4.~~ Done 2026-10-28
+  (see the status table).
 - Turn the build + test into a one-command rebuild script (#6).
