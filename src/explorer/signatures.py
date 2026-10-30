@@ -3,8 +3,10 @@
 A run folder is what ``docker/run-test.sh`` copies out of the container
 (``runs/baseline/<run_id>/`` or ``runs/hwsim-logs/<run_id>/``). Every fact comes
 from a specific line or file in that folder; when the evidence isn't there the
-fact is ``UNKNOWN``, never guessed. Absence of an event in the log is also
-reported as ``UNKNOWN`` rather than ``False``, because a test may simply not log it.
+fact is ``UNKNOWN``, never guessed. Facts that depend on a test helper logging
+something (links, station status, traffic) are ``UNKNOWN`` when that line is absent,
+because a test may simply not call the helper. Control-interface events are always
+logged when they happen, so their counts are real zeros when the log exists.
 
 Evidence sources, all written by hostap's own test framework:
 
@@ -41,6 +43,13 @@ _CONNECTED = re.compile(_EVENT + r"CTRL-EVENT-CONNECTED .*?ap_mld_addr=(?P<mld>\
 _DISCONNECTED = re.compile(_EVENT + r"CTRL-EVENT-DISCONNECTED .*?reason=(?P<reason>\d+)"
                            r"(?P<local> locally_generated=1)?")
 _FOUR_WAY = re.compile(_EVENT + r"EAPOL-4WAY-HS-COMPLETED ")
+# Rekey events, as test_eht_mld_ptk_rekey / test_eht_mld_gtk_rekey wait for them at the
+# pinned hostap commit. "Key negotiation completed" also fires for the initial
+# handshake (just before CTRL-EVENT-CONNECTED), so only those while already
+# associated count as PTK rekeys. Only the MLO group-rekey message has been seen
+# in real runs; the non-MLO "WPA: Group rekeying completed" is not matched.
+_PTK_NEGOTIATED = re.compile(_EVENT + r"WPA: Key negotiation completed ")
+_GTK_REKEYED = re.compile(_EVENT + r"MLO RSN: Group rekeying completed ")
 _DATA_RX = re.compile(r"DEBUG [A-Za-z0-9]+_link(?P<link>\d+): <3>DATA-TEST-RX ")
 _LINKS = re.compile(r"INFO (?P<kind>valid|active)_links=(?P<value>0x[0-9a-fA-F]+)")
 _STATUS = re.compile(r"INFO station status: (?P<dict>\{.*\})$")
@@ -85,10 +94,17 @@ class BehaviorRecord(BaseModel):
 
     packet_capture_bytes: int | Unknown
 
-    # Not calibrated yet: no baseline run performs these actions, so we don't know
+    ptk_rekeys_completed: int | Unknown
+    """``WPA: Key negotiation completed`` events while already associated."""
+
+    gtk_rekeys_completed: int | Unknown
+    """``MLO RSN: Group rekeying completed`` events."""
+
+    data_test_rx_after_last_rekey_ap_links: tuple[int, ...] | Unknown
+    """AP links with ``DATA-TEST-RX`` after the last PTK/GTK rekey; ``UNKNOWN`` if none."""
+
+    # Not calibrated yet: no run so far performs these actions, so we don't know
     # which log lines prove them. Fill in once real runs of the matching tests exist.
-    ptk_rekey_completed: Unknown = UNKNOWN
-    gtk_rekey_completed: Unknown = UNKNOWN
     ml_probe_handled: Unknown = UNKNOWN
     btm_request_handled: Unknown = UNKNOWN
 
@@ -114,8 +130,9 @@ class BehaviorRecord(BaseModel):
             "station_status": status,
             "packet_capture_present": (UNKNOWN if self.packet_capture_bytes == UNKNOWN
                                        else self.packet_capture_bytes > 0),
-            "ptk_rekey_completed": self.ptk_rekey_completed,
-            "gtk_rekey_completed": self.gtk_rekey_completed,
+            "ptk_rekeys_completed": self.ptk_rekeys_completed,
+            "gtk_rekeys_completed": self.gtk_rekeys_completed,
+            "data_test_rx_after_last_rekey_ap_links": self.data_test_rx_after_last_rekey_ap_links,
             "ml_probe_handled": self.ml_probe_handled,
             "btm_request_handled": self.btm_request_handled,
         }
@@ -162,22 +179,35 @@ def extract_record(run_dir: Path | str, test: str | None = None) -> BehaviorReco
     lines = log.read_text(errors="replace").splitlines() if log.exists() else []
 
     connected = False
+    associated = False  # between CTRL-EVENT-CONNECTED and CTRL-EVENT-DISCONNECTED
     links: dict[str, str] = {}
     rx_links: set[int] = set()
+    rx_links_since_rekey: set[int] = set()
     four_way = 0
+    ptk_rekeys = 0
+    gtk_rekeys = 0
     disconnects: list[Disconnect] = []
     status: dict[str, str] | None = None
 
     for line in lines:
         if _CONNECTED.search(line):
-            connected = True
+            connected = associated = True
         elif m := _DISCONNECTED.search(line):
+            associated = False
             disconnects.append(Disconnect(reason=int(m["reason"]),
                                           locally_generated=m["local"] is not None))
         elif _FOUR_WAY.search(line):
             four_way += 1
+        elif _PTK_NEGOTIATED.search(line):
+            if associated:
+                ptk_rekeys += 1
+                rx_links_since_rekey = set()
+        elif _GTK_REKEYED.search(line):
+            gtk_rekeys += 1
+            rx_links_since_rekey = set()
         elif m := _DATA_RX.search(line):
             rx_links.add(int(m["link"]))
+            rx_links_since_rekey.add(int(m["link"]))
         elif m := _LINKS.search(line):
             links[m["kind"]] = m["value"].lower()
         elif m := _STATUS.search(line):
@@ -199,4 +229,8 @@ def extract_record(run_dir: Path | str, test: str | None = None) -> BehaviorReco
         disconnects=tuple(disconnects) if have_log else UNKNOWN,
         station_status=status if status is not None else UNKNOWN,
         packet_capture_bytes=pcap.stat().st_size if pcap.exists() else UNKNOWN,
+        ptk_rekeys_completed=ptk_rekeys if have_log else UNKNOWN,
+        gtk_rekeys_completed=gtk_rekeys if have_log else UNKNOWN,
+        data_test_rx_after_last_rekey_ap_links=(
+            tuple(sorted(rx_links_since_rekey)) if ptk_rekeys or gtk_rekeys else UNKNOWN),
     )
