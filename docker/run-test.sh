@@ -8,6 +8,9 @@
 # git-ignored for trial runs), one timestamped folder per run, together with a
 # manifest.json recording results, versions and environment. Exits nonzero if
 # any test did not pass.
+#
+# Set CONTAINER_NAME to give the container a known name, so a caller that gives
+# up on a stuck run can remove it (`docker rm -f "$CONTAINER_NAME"`).
 set -euo pipefail
 
 IMAGE="${IMAGE:-wifi7-env}"
@@ -33,6 +36,7 @@ mkdir -p "$LOG_DIR"
 # Logs stay inside the container during the run and are copied out afterwards:
 # the tests' SQLite results database hangs when written to a host bind mount.
 container=$(docker create \
+    ${CONTAINER_NAME:+--name "$CONTAINER_NAME"} \
     --cpuset-cpus=0 \
     --tmpfs /umltmp:rw,exec,size=1g \
     -e TMPDIR=/umltmp \
