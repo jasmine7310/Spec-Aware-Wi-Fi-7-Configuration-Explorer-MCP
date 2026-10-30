@@ -4,6 +4,19 @@ Builds hostap and a UML kernel with mac80211_hwsim at the commits pinned in
 [`baseline/README.md`](../baseline/README.md), then runs hostap's hwsim tests in a
 fresh UML guest per run.
 
+**One command** (build + smoke test, from anywhere in the repo):
+
+```bash
+scripts/build-env.sh            # reuses Docker's cache
+scripts/build-env.sh --fresh    # rebuilds every step from scratch
+```
+
+It checks that Docker is running on x86-64 with enough memory, builds the image, runs
+`eht_mld_sae_two_links` and prints the image ID, pinned commits and the test result.
+Exits 0 only if the smoke test passed.
+
+Or step by step:
+
 ```bash
 docker build --progress=plain -t wifi7-env docker/
 docker/run-test.sh eht_mld_sae_two_links
@@ -29,7 +42,7 @@ also strips embedded double quotes from commands passed through `wsl -- bash -lc
 2. Clone the repo in your Linux home folder (`~/`), **not** under `/mnt/c/...`:
    builds are much slower across that boundary.
 3. Check Docker works from Ubuntu: `docker run --rm hello-world`.
-4. Build and test with the same two commands as above.
+4. Build and test with `scripts/build-env.sh` (or the two commands above).
 
 Notes:
 - With the WSL2 backend, CPU and memory limits come from `C:\Users\<you>\.wslconfig`,
@@ -68,4 +81,6 @@ Running without time-travel at all (real time) is not an option on this Mac: boo
 
 - ~~Try the same image and script on **Windows + WSL2** to finish #4.~~ Done 2026-10-28
   (see the status table).
-- Turn the build + test into a one-command rebuild script (#6).
+- ~~Turn the build + test into a one-command rebuild script.~~ Added `scripts/build-env.sh`
+  (2026-10-29); passes on Intel Mac with the cache. Still needs a teammate on Windows to
+  run `scripts/build-env.sh --fresh` from a clean clone.
