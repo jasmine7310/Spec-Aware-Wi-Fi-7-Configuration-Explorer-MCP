@@ -30,6 +30,7 @@ The tests live in `../hostap/tests/hwsim/` (`test_eht.py`, `hostapd.py`,
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"   # setup
 .venv/bin/pytest                                             # unit tests
+WIFI7_DOCKER_TESTS=1 .venv/bin/pytest                        # also run a real simulation test
 scripts/build-env.sh                                         # build simulation image + smoke test
 docker build --progress=plain -t wifi7-env docker/           # simulation image only (slow first time)
 docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in a fresh UML guest
@@ -48,10 +49,24 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 `wsl -d Ubuntu -- bash <script>`: PowerShell strips embedded double quotes from inline
 `wsl -- bash -lc '…'` commands.
 
+## What already exists (build on it, don't re-create it)
+
+- `explorer.runner.run_test(test)`: runs one hostap hwsim test in a fresh UML guest and
+  returns a `RunResult` (`COMPLETED` / `SETUP_FAIL` / `TIMEOUT`) with its behavior record.
+- `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
+  `.signature()` gives the comparable facts.
+- `explorer.mcp_server`: `MCPServer` with `get_model`. Add new tools here with `@server.tool()`.
+
 ## Rules for agents
 
 - Never invent results, run IDs, hostap options, rule citations or spec section numbers.
   If something is unverified, say so.
 - Spec-rule research needs the user to check the source; draft, don't declare.
 - P0 models are strict (`strict=True`, `extra="forbid"`); cross-field Wi-Fi rules belong in P1.
-- Don't commit trial runs from `runs/` as baseline evidence.
+- The MCP SDK is v2 (`mcp==2.3.0`): `FastMCP` no longer exists, use
+  `from mcp.server.mcpserver import MCPServer`. v1 examples from the web won't import.
+- Behavior facts come from real log lines. Before detecting a new behavior (e.g. ML probe,
+  BTM), run the matching test and calibrate against its real logs; until then it stays `UNKNOWN`.
+- Run evidence: `runs/baseline/` (official baseline), `runs/calibration/` (runs a detector
+  was calibrated on), `runs/hwsim-logs/` (git-ignored trials). Never commit trials as evidence.
+- Keep `docs/plan.md`'s status tables current when an issue is finished.
