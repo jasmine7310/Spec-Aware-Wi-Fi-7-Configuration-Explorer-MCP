@@ -4,20 +4,23 @@ Shared context for the team and for coding agents. The GitHub issue board tracks
 individual tasks and their status; this file holds the big picture and the decisions
 behind it. Issues are referred to by name, not number.
 
+_Status last updated 2026-10-30 from what is merged on `main`. Work that exists only on
+someone's laptop or on the board isn't reflected here._
+
 ## What we're building
 
 An MCP server that a coding agent (Claude Code / Codex) can call to explore Wi-Fi 7
 multi-link (MLO) settings. Each candidate configuration passes through filters, and
 every rejection says which stage and which sourced rule rejected it:
 
-| Stage | Component | Question it answers |
-|---|---|---|
-| P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) |
-| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) |
-| P2 | Support checker | Does our pinned hostap/kernel version actually support it? |
-| P3 | Test runner | What happens when we run it in a fresh simulated network? |
-| P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) |
-| – | MCP server | Lets the agent use all of the above in plain English |
+| Stage | Component | Question it answers | Status |
+|---|---|---|---|
+| P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | ⬜ |
+| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | ⬜ |
+| P2 | Support checker | Does our pinned hostap/kernel version actually support it? | ⬜ |
+| P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()` |
+| P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
+| – | MCP server | Lets the agent use all of the above in plain English | 🟡 Skeleton with `get_model` |
 
 Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come later.
 
@@ -25,15 +28,19 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component (`model.py`, `rules.py`, `validate.py`, `runner.py`, `signatures.py`, `mcp_server.py`, …) |
-| `tests/` | pytest tests for `src/` |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `runner.py` (P3), `signatures.py` (behavior records), `mcp_server.py` (MCP skeleton). The rest are placeholders |
+| `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
-| `baseline/README.md` | Pinned versions and the record that the environment is reproducible |
-| `runs/` | Raw run evidence (logs, pcapng, manifests). Trial runs are not committed |
+| `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
+| `.mcp.json` | Registers the MCP server (`wifi7-explorer`) for Claude Code |
+| `baseline/README.md` | Pinned versions and the baseline runs that show the environment is reproducible |
+| `runs/baseline/` | The three official baseline runs (committed evidence) |
+| `runs/calibration/` | Runs used to calibrate how `signatures.py` detects a behavior (committed evidence, not baseline) |
+| `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
 | `docs/` | This plan and other notes |
 
 Data files (`rules.yaml`, `model.json`, `anchor_coverage.csv`, `surface_candidates.csv`,
-`pruning_counts.json`) currently sit in `src/` as placeholders and should move to the repo
+`pruning_counts.json`) still sit in `src/` as placeholders and should move to the repo
 root (as in the spec's layout) when they are first filled in.
 
 ## Decisions
@@ -41,19 +48,28 @@ root (as in the spec's layout) when they are first filled in.
 - **Simulation environment:** Docker + UML (User-Mode Linux) with mac80211_hwsim, running
   hostap's own `tests/hwsim` tests (`test_eht.py`, `run-tests.py`, `hostapd.py`,
   `wpasupplicant.py`, `hwsim_utils.py`). Required by the spec.
-- **Versions** (in `baseline/README.md`): the spec's reference pair, hostap
-  `43ee60e13c257d33d25bfb6892b9ee38fb6e88a4` and wireless-next
-  `21b4248bfa0f410fa22202fc2c82f4808d672cda`, on `ubuntu:24.04`.
+- **Versions** (in `baseline/README.md`, read by `get_model` from `docker/Dockerfile`): the
+  spec's reference pair, hostap `43ee60e13c257d33d25bfb6892b9ee38fb6e88a4` and
+  wireless-next `21b4248bfa0f410fa22202fc2c82f4808d672cda`, on
+  `ubuntu:24.04@sha256:24737cef…` (pinned by digest because the tag moves).
 - **Platforms:** Intel Mac uses Docker Desktop. Windows uses WSL2 Ubuntu + Docker Desktop
   (WSL2 backend), with the repo cloned inside Ubuntu, not under `C:\`. Apple Silicon
   can't run UML natively.
 - **Two layers:** everyday Python development (model, rules, MCP) runs directly on laptops
   (inside WSL on Windows). The Docker/UML environment is only where experiments execute;
-  `runner.py` will launch it.
+  `runner.run_test()` launches it through `docker/run-test.sh`.
 - **Required `docker run` settings** (all built into `docker/run-test.sh`, details in
   `docker/README.md`): an exec-enabled tmpfs for UML's memory, pinning to one CPU
   (`--cpuset-cpus=0`) so UML's time-travel mode doesn't hang or panic, and keeping logs
   inside the container until the run ends (SQLite hangs on a host bind mount).
+- **Run outcomes:** `run_test()` returns `COMPLETED` (hostap's PASS/FAIL is in the
+  record), `SETUP_FAIL` or `TIMEOUT`; environment problems raise `RunnerError`. Mapping
+  these onto the spec's ACCEPTED/REJECTED is left to the candidate-to-test layer.
+- **Behavior facts:** every fact comes from a specific log line or file; missing evidence
+  is `UNKNOWN`, never guessed. A fact is only detected after it has been calibrated
+  against real runs (kept in `runs/calibration/`). ML probe and BTM are not calibrated yet.
+- **MCP SDK:** `mcp==2.3.0`. `FastMCP` was removed in v2; use
+  `from mcp.server.mcpserver import MCPServer`. Most online examples are v1 and won't import.
 - **Dependencies:** pinned exactly in `pyproject.toml`. `setuptools==80.9.0` is pinned
   because picire 21.8 imports `pkg_resources`, which newer setuptools removed.
 
@@ -61,35 +77,48 @@ root (as in the spec's layout) when they are first filled in.
 
 | Issue | Status |
 |---|---|
-| Repo skeleton | ✅ Done, merged |
-| Pick software versions + platform plan | ✅ Done, merged |
-| Dev setup guide | 🟡 Everyone has the skeleton running; confirm `docker run --rm hello-world` for all |
-| Build simulation environment | ✅ Done, merged. `eht_mld_sae_two_links` passes on Intel Mac (4/4) and Windows 11 + WSL2 (1/1) |
-| Run one existing Wi-Fi 7 test | ✅ Done on Mac and Windows (trial runs, not committed) |
-| Rebuild script | 🟡 `scripts/build-env.sh` builds + smoke-tests in one command and passes on Intel Mac; still needs a teammate on Windows to run `--fresh` from a clean clone |
-| Three clean baseline runs | ⬜ Official runs with logs, pcap and a version manifest in `runs/` (earlier runs were trials) |
-| Extract a behavior record | ⬜ Needs the baseline runs |
-| List candidate settings from test code | ⬜ `surface_candidates.csv`, ≥12 rows with source file and line |
-| Get the standards documents | ⬜ IEEE 802.11be-2024, IEEE 802.11-2024, WFA WPA3 guidance |
-| Rule research (link security match; SAE PWE / beacon protection; action order) | ⬜ |
-| Pick the 4 scenario families | ⬜ Suggested: F01 SAE association, F05 beacon protection, F09 GTK (or F08 PTK) rekey, F06 link removal |
-| Data model for settings / actions | ⬜ Pydantic, strict, `extra="forbid"` |
+| Repo skeleton | ✅ Done |
+| Pick software versions + platform plan | ✅ Done |
+| Dev setup guide | ✅ Done. Setup works for all three teammates |
+| Build simulation environment | ✅ Done. `eht_mld_sae_two_links` passes on Intel Mac and Windows 11 + WSL2 |
+| Run one existing Wi-Fi 7 test | ✅ Done on Mac and Windows |
+| Rebuild script | 🟡 `scripts/build-env.sh` merged and passes on Intel Mac; still needs a teammate on Windows to run `--fresh` from a clean clone |
+| Three clean baseline runs | ✅ Done. 3/3 PASS in `runs/baseline/`, with manifests |
+| Extract a behavior record | ✅ Done. `signatures.py`; the three baseline signatures are identical |
+| List candidate settings from test code | ⬜ Nothing on `main` yet (`surface_candidates.csv` is a placeholder) |
+| Get the standards documents | ⬜ Nothing on `main` yet (no `docs/references.md`) |
+| Rule research (link security match; SAE PWE / beacon protection; action order) | ⬜ Nothing on `main` yet |
+| Pick the 4 scenario families | ⬜ Nothing on `main` yet. Suggested: F01 SAE association, F05 beacon protection, F09 GTK (or F08 PTK) rekey, F06 link removal |
+| Data model for settings / actions | ⬜ Nothing on `main` yet. Pydantic, strict, `extra="forbid"` |
 | Readable format errors, rules file + loader | ⬜ Can slide to Week 2 |
 
-## Week 2
+## Week 2 status
 
-Code the ≥4 rules with passing/failing fixtures and unit tests; action-order checker;
-`SPEC_UNDETERMINED` for unmodeled cases; runner adapter (Python starts a hostap test in a
-fresh guest via `docker/run-test.sh`); smoke-test ≥4 settings with ≥2 values each; P2
-support check; `validate_candidate` pipeline; MCP server with `get_model`,
-`validate_candidate`, `explain_rule` and one real run; record the demo; 1-page report.
+| Issue | Area | Status |
+|---|---|---|
+| Runner adapter | Simulation | ✅ Done. `runner.run_test()` |
+| Calibrate rekey facts | Simulation | ✅ Done. PTK/GTK rekey counts + traffic after the last rekey, from runs in `runs/calibration/` |
+| MCP server skeleton | MCP | ✅ Done. `get_model`, `.mcp.json`; verified in a Claude Code session |
+| Smoke-test 4 settings | Simulation | ⬜ Waits on the candidate settings list |
+| Support check (P2) | Simulation | ⬜ Waits on the settings smoke test |
+| Code rule: security type matches on every link | Research | ⬜ Waits on its rule research, data model, rules file + loader |
+| Code rules: setting dependencies | Research | ⬜ Waits on their rule research, data model, rules file + loader |
+| Action-order checker | Research | ⬜ Waits on action-order research and the action data model |
+| Undetermined result (`SPEC_UNDETERMINED`) | Research | ⬜ Waits on rules file + loader |
+| `validate_candidate` pipeline | Data models | ⬜ Waits on all checks above |
+| Expose checks and runs over MCP | MCP | ⬜ Waits on the pipeline (runner and MCP skeleton are ready) |
+| Record the demo | MCP | ⬜ Last |
+| Write the 1-page report | MCP | ⬜ Last |
+
+**Main blocker:** the candidate settings list. The data models, the settings smoke test
+and the P2 support check all wait on it.
 
 ## Checkpoint 1
 
-**Must show:** real baseline run with logs and versions; rule registry with ≥4 sourced rules
-and unit tests; a P0 rejection, a P1 rejection with cited rule, an action-order rejection
-and a `SPEC_UNDETERMINED` case; one real accepted run triggered through MCP; the MCP
-transcript; a 1-page report.
+**Must show:** real baseline run with logs and versions (✅); rule registry with ≥4 sourced
+rules and unit tests; a P0 rejection, a P1 rejection with cited rule, an action-order
+rejection and a `SPEC_UNDETERMINED` case; one real accepted run triggered through MCP; the
+MCP transcript; a 1-page report.
 
 **Should show:** 4 smoke-tested settings; a basic P2 support check; a rebuild script
 working on both platforms.
