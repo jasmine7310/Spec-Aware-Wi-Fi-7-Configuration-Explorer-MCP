@@ -4,13 +4,15 @@
 # filesystem as its root (hostfs), so every tool the tests need is installed here.
 # Versions are pinned in baseline/README.md; keep the ARGs below in sync with it.
 
-ARG UBUNTU_VERSION=24.04
+# ubuntu:24.04 pinned by digest: the tag moves as Ubuntu republishes it. This is
+# the image the baseline runs in runs/baseline/ were built from (2026-10-27).
+ARG UBUNTU_IMAGE=ubuntu:24.04@sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c
 
 # ---------------------------------------------------------------------------
 # Base: build tools + everything the hwsim tests use at runtime
 # (package list follows hostap's tests/hwsim/vm/example-vm-setup.txt)
 # ---------------------------------------------------------------------------
-FROM ubuntu:${UBUNTU_VERSION} AS base
+FROM ${UBUNTU_IMAGE} AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \

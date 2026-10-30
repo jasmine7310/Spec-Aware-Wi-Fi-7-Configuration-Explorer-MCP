@@ -66,7 +66,7 @@ root (as in the spec's layout) when they are first filled in.
 | Dev setup guide | 🟡 Everyone has the skeleton running; confirm `docker run --rm hello-world` for all |
 | Build simulation environment | ✅ Done, merged. `eht_mld_sae_two_links` passes on Intel Mac (4/4) and Windows 11 + WSL2 (1/1) |
 | Run one existing Wi-Fi 7 test | ✅ Done on Mac and Windows (trial runs, not committed) |
-| Rebuild script | 🟡 `docker/run-test.sh` runs tests; still needs one-command build + test, run by a teammate on the other platform |
+| Rebuild script | 🟡 `scripts/build-env.sh` builds + smoke-tests in one command and passes on Intel Mac; still needs a teammate on Windows to run `--fresh` from a clean clone |
 | Three clean baseline runs | ⬜ Official runs with logs, pcap and a version manifest in `runs/` (earlier runs were trials) |
 | Extract a behavior record | ⬜ Needs the baseline runs |
 | List candidate settings from test code | ⬜ `surface_candidates.csv`, ≥12 rows with source file and line |

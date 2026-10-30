@@ -9,12 +9,12 @@ project (teammates or graders) should get the same versions listed here.
 |---|---|---|---|
 | hostap (hostapd, wpa_supplicant, `tests/hwsim`) | `git://w1.fi/hostap.git` | [`43ee60e13c257d33d25bfb6892b9ee38fb6e88a4`](https://w1.fi/cgit/hostap/commit/?id=43ee60e13c257d33d25bfb6892b9ee38fb6e88a4) | 2026-09-29 |
 | Linux kernel (wireless-next, built as UML with mac80211_hwsim) | `https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git` | [`21b4248bfa0f410fa22202fc2c82f4808d672cda`](https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git/commit/?id=21b4248bfa0f410fa22202fc2c82f4808d672cda) | 2026-09-28 |
-| Docker base image | Docker Hub | `ubuntu:24.04`; the baseline image's layers were built from `sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c` (2026-10-27) | – |
+| Docker base image | Docker Hub | `ubuntu:24.04@sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c` (pinned in `docker/Dockerfile`) | 2026-10-27 |
 
-The `ubuntu:24.04` tag moves: on 2026-10-29 it resolved to
-`sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852`, though the
-rebuild reused every cached layer. A clean build on another machine may get a newer base,
-so the Dockerfile should pin `ubuntu:24.04@sha256:…` (to do with the rebuild script).
+The base is pinned by digest because the `ubuntu:24.04` tag moves (on 2026-10-29 it
+resolved to `sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852`).
+The pinned digest is the one the baseline image's layers were built from, so a clean
+build on another machine starts from the same base.
 
 **Why these versions:** they are the reference feasibility pair named in the CS 211
 Project F spec, which reports them as a working combination for Wi-Fi 7 MLO tests.
@@ -35,11 +35,12 @@ See [`docker/README.md`](../docker/README.md) for the full instructions, platfor
 and the `docker run` settings UML needs. In short:
 
 ```bash
-docker build --progress=plain -t wifi7-env docker/
-LOG_DIR=runs/baseline docker/run-test.sh eht_mld_sae_two_links
+scripts/build-env.sh                                              # build + smoke test
+LOG_DIR=runs/baseline docker/run-test.sh eht_mld_sae_two_links    # an official run
 ```
 
-A one-command rebuild script is still to come (rebuild script issue).
+`scripts/build-env.sh --fresh` rebuilds every step without Docker's cache, to check the
+build is reproducible from scratch.
 
 ## Baseline runs
 

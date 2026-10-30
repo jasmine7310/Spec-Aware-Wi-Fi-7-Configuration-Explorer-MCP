@@ -30,7 +30,8 @@ The tests live in `../hostap/tests/hwsim/` (`test_eht.py`, `hostapd.py`,
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"   # setup
 .venv/bin/pytest                                             # unit tests
-docker build --progress=plain -t wifi7-env docker/           # simulation image (slow first time)
+scripts/build-env.sh                                         # build simulation image + smoke test
+docker build --progress=plain -t wifi7-env docker/           # simulation image only (slow first time)
 docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in a fresh UML guest
 ```
 
