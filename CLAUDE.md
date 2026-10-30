@@ -33,7 +33,11 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"   # setup
 scripts/build-env.sh                                         # build simulation image + smoke test
 docker build --progress=plain -t wifi7-env docker/           # simulation image only (slow first time)
 docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in a fresh UML guest
+.venv/bin/python -m explorer.mcp_server                      # MCP server over stdio
 ```
+
+Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
+when a session opens in this repo; it needs the `.venv` above to exist.
 
 The project needs Python 3.11+. On Ubuntu 22.04 `python3` is 3.10, so create the venv
 with `python3.11` instead (`sudo apt install python3.11 python3.11-venv`).
