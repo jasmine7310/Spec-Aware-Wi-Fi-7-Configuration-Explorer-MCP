@@ -1,0 +1,25 @@
+BSS 02:00:00:ed:52:8e - RSN IE stored
+BSS 02:00:00:ed:52:8e proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=PSK PSK-SHA256 rsn_capab=MFPC 
+BSS 02:00:00:20:5f:57 - RSN IE stored
+BSS 02:00:00:20:5f:57 proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=PSK PSK-SHA256 rsn_capab=MFPC 
+STA 32:bc:a9:15:b7:b3 proto=WPA2 pairwise=CCMP key_mgmt=SAE-EXT-KEY rsn_capab=MFPR MFPC 
+MLO association - AP MLD: 02:00:00:00:07:00  STA MLD: 02:00:00:00:08:00
+  Link 0 - AP: 02:00:00:ed:52:8e  STA: 32:bc:a9:15:b7:b3
+  Link 1 - AP: 02:00:00:20:5f:57  STA: 8a:c5:b0:ba:9f:33
+Derived PTK for STA 32:bc:a9:15:b7:b3 (MLD 02:00:00:00:08:00) BSSID 02:00:00:ed:52:8e (MLD 02:00:00:00:07:00)
+STA 8a:c5:b0:ba:9f:33 proto=WPA2 pairwise=CCMP key_mgmt=SAE-EXT-KEY rsn_capab=MFPR MFPC 
+EAPOL-Key ANonce mismatch between 1/4 and 3/4
+Mismatch in EAPOL-Key 3/4 MIC
+Mismatch in EAPOL-Key 4/4 MIC
+Invalid CCMP MIC in frame: A1=02:00:00:20:5f:57 A2=8a:c5:b0:ba:9f:33 A3=02:00:00:00:07:00 seq=10 frag=0
+replay detected: A1=02:00:00:ed:52:8e A2=32:bc:a9:15:b7:b3 A3=ff:ff:ff:ff:ff:ff seq=11 frag=0 keyid=0 tid=0 #196 000000000002<=00000000000a
+Invalid CCMP MIC in frame: A1=02:00:00:ed:52:8e A2=32:bc:a9:15:b7:b3 A3=ff:ff:ff:ff:ff:ff seq=11 frag=0
+Invalid CCMP MIC in frame: A1=8a:c5:b0:ba:9f:33 A2=02:00:00:20:5f:57 A3=02:00:00:00:07:00 seq=2 frag=0
+Invalid CCMP MIC in frame: A1=02:00:00:20:5f:57 A2=8a:c5:b0:ba:9f:33 A3=02:00:00:00:07:00 seq=12 frag=0
+replay detected: A1=02:00:00:ed:52:8e A2=32:bc:a9:15:b7:b3 A3=ff:ff:ff:ff:ff:ff seq=13 frag=0 keyid=0 tid=0 #206 000000000004<=00000000000a
+Invalid CCMP MIC in frame: A1=02:00:00:ed:52:8e A2=32:bc:a9:15:b7:b3 A3=ff:ff:ff:ff:ff:ff seq=13 frag=0
+replay detected: A1=32:bc:a9:15:b7:b3 A2=02:00:00:ed:52:8e A3=02:00:00:00:07:00 seq=3 frag=0 keyid=0 tid=0 #210 000000000002<=000000000002
+Invalid CCMP MIC in frame: A1=32:bc:a9:15:b7:b3 A2=02:00:00:ed:52:8e A3=02:00:00:00:07:00 seq=3 frag=0
+Invalid CCMP MIC in frame: A1=02:00:00:20:5f:57 A2=8a:c5:b0:ba:9f:33 A3=02:00:00:20:5f:57 seq=5 frag=0
+Do not change STA 8a:c5:b0:ba:9f:33 State since Disassociation frame was not protected correctly
+Processed: rx_mgmt=115 rx_ctrl=35 rx_data=65 fcs_error=0
