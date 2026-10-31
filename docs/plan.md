@@ -38,8 +38,9 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 | `runs/calibration/` | Runs used to calibrate how `signatures.py` detects a behavior (committed evidence, not baseline) |
 | `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
 | `docs/` | This plan and other notes |
+| `surface_candidates.csv` | Candidate settings, actions and observations found in hostap's tests, each with source lines (`tests/test_surface_candidates.py` checks it; set `WIFI7_HOSTAP_SRC` to also check the lines exist) |
 
-Data files (`rules.yaml`, `model.json`, `anchor_coverage.csv`, `surface_candidates.csv`,
+The other data files (`rules.yaml`, `model.json`, `anchor_coverage.csv`,
 `pruning_counts.json`) still sit in `src/` as placeholders and should move to the repo
 root (as in the spec's layout) when they are first filled in.
 
@@ -85,7 +86,7 @@ root (as in the spec's layout) when they are first filled in.
 | Rebuild script | 🟡 `scripts/build-env.sh` merged and passes on Intel Mac; still needs a teammate on Windows to run `--fresh` from a clean clone |
 | Three clean baseline runs | ✅ Done. 3/3 PASS in `runs/baseline/`, with manifests |
 | Extract a behavior record | ✅ Done. `signatures.py`; the three baseline signatures are identical |
-| List candidate settings from test code | ⬜ Nothing on `main` yet (`surface_candidates.csv` is a placeholder) |
+| List candidate settings from test code | ✅ `surface_candidates.csv`: 34 candidates (17 settings, 10 actions, 7 observations) from `test_eht.py` / `hostapd.py` at the pinned commit. Candidates only; admitting a dimension needs the settings smoke test |
 | Get the standards documents | ⬜ Nothing on `main` yet (no `docs/references.md`) |
 | Rule research (link security match; SAE PWE / beacon protection; action order) | ⬜ Nothing on `main` yet |
 | Pick the 4 scenario families | ⬜ Nothing on `main` yet. Suggested: F01 SAE association, F05 beacon protection, F09 GTK (or F08 PTK) rekey, F06 link removal |
