@@ -88,7 +88,8 @@ root (as in the spec's layout) when they are first filled in.
 | Extract a behavior record | ✅ Done. `signatures.py`; the three baseline signatures are identical |
 | List candidate settings from test code | ✅ `surface_candidates.csv`: 34 candidates (17 settings, 10 actions, 7 observations) from `test_eht.py` / `hostapd.py` at the pinned commit. Candidates only; admitting a dimension needs the settings smoke test |
 | Get the standards documents | ⬜ Nothing on `main` yet (no `docs/references.md`) |
-| Rule research (link security match; SAE PWE / beacon protection; action order) | ⬜ Nothing on `main` yet |
+| Rule research: action order | ✅ `docs/research/action-order.md`: 8 rules (harness/code prerequisites, not spec rules), each with sources, who enforces it, and allowed/disallowed examples |
+| Rule research: link security match; SAE PWE / beacon protection | ⬜ Nothing on `main` yet; needs the standards documents. Implementation evidence for the link rule is in `surface_candidates.csv` (`link_akm_mismatch`) |
 | Pick the 4 scenario families | ⬜ Nothing on `main` yet. Suggested: F01 SAE association, F05 beacon protection, F09 GTK (or F08 PTK) rekey, F06 link removal |
 | Data model for settings / actions | ⬜ Nothing on `main` yet. Pydantic, strict, `extra="forbid"` |
 | Readable format errors, rules file + loader | ⬜ Can slide to Week 2 |
@@ -104,7 +105,7 @@ root (as in the spec's layout) when they are first filled in.
 | Support check (P2) | Simulation | ⬜ Waits on the settings smoke test |
 | Code rule: security type matches on every link | Research | ⬜ Waits on its rule research, data model, rules file + loader |
 | Code rules: setting dependencies | Research | ⬜ Waits on their rule research, data model, rules file + loader |
-| Action-order checker | Research | ⬜ Waits on action-order research and the action data model |
+| Action-order checker | Research | ⬜ Waits on the action data model (research done: `docs/research/action-order.md`) |
 | Undetermined result (`SPEC_UNDETERMINED`) | Research | ⬜ Waits on rules file + loader |
 | `validate_candidate` pipeline | Data models | ⬜ Waits on all checks above |
 | Expose checks and runs over MCP | MCP | ⬜ Waits on the pipeline (runner and MCP skeleton are ready) |
