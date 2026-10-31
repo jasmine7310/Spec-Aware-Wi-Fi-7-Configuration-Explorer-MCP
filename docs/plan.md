@@ -127,6 +127,22 @@ working on both platforms.
 
 **Only if genuinely encountered:** a valid-but-unsupported (P2) case. Don't invent one.
 
+## Reviewing research
+
+Research files (`surface_candidates.csv`, `docs/research/*.md`) should be checked by a
+second teammate before their pull request is merged, ideally with their own coding agent
+reading the source fresh rather than re-reading the doc. Paste this into Claude Code (or
+Codex) in the repo, filling in the file:
+
+> Review `<research file>` against its sources. If you don't have hostap at the pinned
+> commit, clone it per `CLAUDE.md`. For every claim that cites a hostap line, open that
+> line and check (1) it says what the file claims, (2) any "enforced by" / "who enforces
+> it" label is right, and (3) any allowed/disallowed examples actually follow from the
+> rule. For standards citations, check the document, version and section. Report each
+> claim whose evidence doesn't match, with the line you looked at; don't fix anything yet.
+
+Leave the result as a comment on the pull request, then fix any mismatches before merging.
+
 ## Ground rules from the spec
 
 - Never invent results, run IDs, hostap options or citations. Every claim needs real evidence.

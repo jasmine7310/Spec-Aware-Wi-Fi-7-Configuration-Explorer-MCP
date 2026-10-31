@@ -9,6 +9,22 @@ harness and control-interface code at the pinned commit
 (`43ee60e13c257d33d25bfb6892b9ee38fb6e88a4`). A violation means "this action sequence
 doesn't make sense for our experiments", never "this violates the Wi-Fi specification".
 
+## How to review
+
+Not reviewed yet. A teammate should check it before the pull request is merged (see
+"Reviewing research" in [`docs/plan.md`](../plan.md)). Paste into Claude Code or Codex:
+
+> Read `docs/research/action-order.md`. For each rule, open the cited hostap lines at
+> commit `43ee60e13c257d33d25bfb6892b9ee38fb6e88a4` (clone it per `CLAUDE.md`) and check
+> that (1) the lines say what the rule claims, (2) the "Enforced by" label is right
+> (hostap code really fails the command / the harness only relies on the order / it's our
+> policy), and (3) the allowed and disallowed examples follow from the rule. Report any
+> rule where the evidence doesn't match, with the line you looked at.
+
+Once it's been checked, replace "Not reviewed yet" with who reviewed it and when.
+
+## Sources
+
 Every source below is a path in the hostap tree at the pinned commit. Each rule says who
 enforces it:
 
