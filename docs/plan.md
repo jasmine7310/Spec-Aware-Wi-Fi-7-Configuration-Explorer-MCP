@@ -15,7 +15,7 @@ every rejection says which stage and which sourced rule rejected it:
 
 | Stage | Component | Question it answers | Status |
 |---|---|---|---|
-| P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | ⬜ |
+| P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | 🟡 Settings model (`model.Config`); actions model not yet |
 | P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | ⬜ |
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | ⬜ |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()` |
@@ -28,7 +28,7 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component. Implemented so far: `runner.py` (P3), `signatures.py` (behavior records), `mcp_server.py` (MCP skeleton). The rest are placeholders |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `runner.py` (P3), `signatures.py` (behavior records), `mcp_server.py` (MCP skeleton). The rest are placeholders |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
 | `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
@@ -91,7 +91,8 @@ root (as in the spec's layout) when they are first filled in.
 | Rule research: action order | ✅ `docs/research/action-order.md`: 8 rules (harness/code prerequisites, not spec rules), each with sources, who enforces it, and allowed/disallowed examples |
 | Rule research: link security match; SAE PWE / beacon protection | ⬜ Nothing on `main` yet; needs the standards documents. Implementation evidence for the link rule is in `surface_candidates.csv` (`link_akm_mismatch`) |
 | Pick the 4 scenario families | ⬜ Nothing on `main` yet. Suggested: F01 SAE association, F05 beacon protection, F09 GTK (or F08 PTK) rekey, F06 link removal |
-| Data model for settings / actions | ⬜ Nothing on `main` yet. Pydantic, strict, `extra="forbid"` |
+| Data model for settings | ✅ `model.Config` (AP MLD with per-link AKMs + client), strict, `extra="forbid"`; values limited to those hostap's tests use. Wi-Fi rules are left to P1 |
+| Data model for actions | ⬜ Needs the settings model and a decision on the open questions in `docs/research/action-order.md` |
 | Readable format errors, rules file + loader | ⬜ Can slide to Week 2 |
 
 ## Week 2 status
