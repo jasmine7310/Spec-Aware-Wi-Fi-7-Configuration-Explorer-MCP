@@ -112,6 +112,19 @@ The guide marks each value per device type, and Wi-Fi 7 means the EHT rows:
 | **Effect** | `sae_pwe = 0` breaks the IEEE rule, and so does "unset" with plain `SAE` on 2.4 / 5 GHz, because that means hunting-and-pecking. "Unset" with `SAE-EXT-KEY` (e.g. `eht_mld_sae_ext_one_link`) still uses H2E, so it looks admissible. `1` and `2` both advertise and use H2E between EHT devices, so both look admissible under IEEE (WFA marks Enabled, i.e. `2`, as mandatory for an EHT AP outside 6 GHz and sub-1 GHz). The model should judge the effective H2E use, not the raw `sae_pwe` value. |
 | **Status** | IEEE §12.12.9 verified by Michelle in the PDF (2026-10-31); WFA row and hostap lines unverified |
 
+### SEC.SAE_PWE_NEEDS_SAE: `sae_pwe` only means something with an SAE AKM
+
+| | |
+|---|---|
+| **Kind** | **Setting dependency**, not a normative prohibition: nothing forbids setting it with another AKM, it just has no effect |
+| **IEEE** | IEEE-802.11-2024 §12.4.4.2.3 "Hash-to-element generation of the password element with ECC groups", PDF p. 2967 (printed p. 2966), and the FFC counterpart §12.4.4.3.3: hash-to-element is defined as one of SAE's two ways to derive the password element, under the SAE clause §12.4.4. §9.4.2.240 "RSNXE", Table 9-373 "Extended RSN Capabilities field", bit 5 "SAE Hash-to-element", PDF p. 1433 (printed p. 1432): a NOTE says the receiver ignores this field when SAE isn't negotiated (informative). |
+| **WFA** | None found |
+| **hostap evidence** | `hostapd/config_file.c:4675-4676` reads `sae_pwe` as a number with no check against the AKM, so OWE + `sae_pwe=1` is accepted. Without an SAE AKM it then has no effect: no H2E setup (`src/ap/ap_config.c:512-518`, "PT not needed" at line 517) and no H2E bit in the RSNXE (`src/ap/wpa_auth_ie.c:553`, `src/ap/ieee802_11_shared.c:1130`). hostap's tests only set `sae_pwe` with SAE-family AKMs (`ap_sae_pwe` row of `surface_candidates.csv`). |
+| **Rule candidate** | `ap_sae_pwe` / `sta_sae_pwe` apply only when the AKM includes `SAE` or `SAE-EXT-KEY`. A P1 dependency rule (`docs/plan.md`: "Code rules: setting dependencies"), not a spec violation. |
+| **Candidates** | `ap_sae_pwe`, `sta_sae_pwe`, `ap_akm` |
+| **Effect** | A candidate like OWE + `sae_pwe=1` would run in P2/P3, because hostap ignores the setting, but varying `sae_pwe` under OWE is a meaningless difference. `sae_pwe` only counts as a dimension under an SAE-family AKM. |
+| **Status** | IEEE Table 9-373 NOTE and §12.4.4.2.3 verified by Michelle in the PDF (2026-10-31); hostap lines unverified |
+
 ## What this changes for the smoke test
 
 If the findings above hold:
@@ -124,6 +137,7 @@ If the findings above hold:
   admissible choices are narrower than hostap's test values, and this affects our baseline
   (see SEC.EHT_SAE_AKM).
 - **SAE H2E**: `1` and `2` look admissible, `0` doesn't, and "unset" depends on the AKM
-  (H2E is still used with `SAE-EXT-KEY`, not with plain `SAE` on 2.4 / 5 GHz).
+  (H2E is still used with `SAE-EXT-KEY`, not with plain `SAE` on 2.4 / 5 GHz). It's only
+  a dimension under an SAE-family AKM (SEC.SAE_PWE_NEEDS_SAE).
 - **Link AKM / cipher match**: the main P1 rule candidate (SEC.MLD_COMMON_SUITES), with
   hostap's `invalid_link*` tests as rejection examples.
