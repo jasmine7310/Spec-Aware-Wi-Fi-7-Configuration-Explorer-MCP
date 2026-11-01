@@ -34,7 +34,9 @@ IEEE pages are "PDF p. N (printed p. M)"; the printed page is one less.
 | `IEEE-802.11be-2024` | §12.6.2 | AP MLD links advertise the same RSNE except the AKM list and MFPR; at least one common AKM | PDF 411 (printed 410) |
 | `IEEE-802.11be-2024` | §12.6.3.1–12.6.3.2 | The client picks one AKM / pairwise / group cipher common to all affiliated APs; the AP MLD checks MFPC / MFPR per link | PDF 411–412 (printed 410–411) |
 | `IEEE-802.11be-2024` | §12.12.9 | Security constraints for EHT: beacon protection, SAE hash-to-element, AKM 24 / 25 | PDF 446 (printed 445) |
+| `IEEE-802.11-2024` | §9.4.2.240, Table 9-373 (bit 5) | SAE Hash-to-element bit in the RSNXE; ignored when SAE isn't negotiated (NOTE) | PDF 1433 (printed 1432) |
 | `IEEE-802.11-2024` | §11.52 | Beacon protection requires PMF | PDF 2931 (printed 2930) |
+| `IEEE-802.11-2024` | §12.4.4.2.3, §12.4.4.3.3 | SAE hash-to-element derivation of the password element (ECC / FFC groups) | §12.4.4.2.3: PDF 2967 (printed 2966) |
 | `WFA-WPA3` | §2.1, Table 3 | Security parameters; what applies at the AP MLD level | pp. 7–11 |
 | `WFA-WPA3` | Table 4 | Settings common to all WPA3 / Enhanced Open modes (incl. beacon protection) | pp. 12–13 |
 | `WFA-WPA3` | Tables 5, 8, 15 | WPA3-Personal Transition, WPA3-Personal Only, Enhanced Open Only | pp. 13–14, 18–19, 24–25 |
