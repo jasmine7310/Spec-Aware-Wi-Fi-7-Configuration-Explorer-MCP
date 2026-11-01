@@ -38,7 +38,12 @@ docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
-when a session opens in this repo; it needs the `.venv` above to exist.
+when a session opens in this repo; it needs the `.venv` above to exist. On Windows, if
+Claude Code runs on the Windows side (e.g. the desktop app opening the repo's
+`\\wsl.localhost\...` folder), it can't run the Linux `.venv/bin/python` directly: run
+`setx WIFI7_MCP_LAUNCHER wsl.exe` once in PowerShell and restart Claude Code, so
+`.mcp.json` launches the server through WSL. Leave it unset on Mac/Linux and when Claude
+Code itself runs inside WSL.
 
 The project needs Python 3.11+. On Ubuntu 22.04 `python3` is 3.10, so create the venv
 with `python3.11` instead (`sudo apt install python3.11 python3.11-venv`).

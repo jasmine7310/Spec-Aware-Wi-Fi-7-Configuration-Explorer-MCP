@@ -1,6 +1,7 @@
 """MCP server: the agent-facing interface to the explorer.
 
-Run it over stdio (this is what ``.mcp.json`` tells Claude Code to do):
+Run it over stdio (this is what ``.mcp.json`` tells Claude Code to do, through
+``$WIFI7_MCP_LAUNCHER``, default ``env``; ``wsl.exe`` on the Windows side):
 
     .venv/bin/python -m explorer.mcp_server
 

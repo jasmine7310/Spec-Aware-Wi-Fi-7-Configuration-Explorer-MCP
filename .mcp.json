@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "wifi7-explorer": {
-      "command": ".venv/bin/python",
-      "args": ["-m", "explorer.mcp_server"]
+      "command": "${WIFI7_MCP_LAUNCHER:-env}",
+      "args": [".venv/bin/python", "-m", "explorer.mcp_server"]
     }
   }
 }
