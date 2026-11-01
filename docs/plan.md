@@ -87,9 +87,9 @@ root (as in the spec's layout) when they are first filled in.
 | Three clean baseline runs | ✅ Done. 3/3 PASS in `runs/baseline/`, with manifests |
 | Extract a behavior record | ✅ Done. `signatures.py`; the three baseline signatures are identical |
 | List candidate settings from test code | ✅ `surface_candidates.csv`: 34 candidates (17 settings, 10 actions, 7 observations) from `test_eht.py` / `hostapd.py` at the pinned commit. Candidates only; admitting a dimension needs the settings smoke test |
-| Get the standards documents | ⬜ Nothing on `main` yet (no `docs/references.md`) |
+| Get the standards documents | 🟡 `docs/references.md` lists IEEE Std 802.11be-2024, IEEE Std 802.11-2024 and the WFA "WPA3 and Wi-Fi Enhanced Open Deployment and Implementation Guide" v1.1 (Feb 2025), with versions, links, normative vs guidance, relevant sections and how to get a copy. Still to do: every teammate doing rule research confirming they can open all three. Don't commit the PDFs |
 | Rule research: action order | ✅ `docs/research/action-order.md`: 8 rules (harness/code prerequisites, not spec rules), each with sources, who enforces it, and allowed/disallowed examples |
-| Rule research: link security match; SAE PWE / beacon protection | ⬜ Nothing on `main` yet; needs the standards documents. Implementation evidence for the link rule is in `surface_candidates.csv` (`link_akm_mismatch`) |
+| Rule research: link security match; SAE PWE / beacon protection | 🟡 Draft in `docs/research/security-guidance.md`: 5 findings (link suites, beacon protection, PMF, SAE AKM, SAE H2E), each citing 802.11be-2024 / 802.11-2024 and the WFA guide. IEEE citations checked against the PDFs; **the WFA rows (and a few hostap lines) still need a teammate's review** before merging. **Team decision needed:** 802.11be §12.12.9 requires AKM 24/25 for SAE between EHT devices, so the plain-SAE baseline test (`eht_mld_sae_two_links`) wouldn't pass the modeled rules |
 | Pick the 4 scenario families | ⬜ Nothing on `main` yet. Suggested: F01 SAE association, F05 beacon protection, F09 GTK (or F08 PTK) rekey, F06 link removal |
 | Data model for settings | ✅ `model.Config` (AP MLD with per-link AKMs + client), strict, `extra="forbid"`; values limited to those hostap's tests use. Wi-Fi rules are left to P1 |
 | Data model for actions | ⬜ Needs the settings model and a decision on the open questions in `docs/research/action-order.md` |
@@ -102,7 +102,7 @@ root (as in the spec's layout) when they are first filled in.
 | Runner adapter | Simulation | ✅ Done. `runner.run_test()` |
 | Calibrate rekey facts | Simulation | ✅ Done. PTK/GTK rekey counts + traffic after the last rekey, from runs in `runs/calibration/` |
 | MCP server skeleton | MCP | ✅ Done. `get_model`, `.mcp.json`; verified in a Claude Code session |
-| Smoke-test 4 settings | Simulation | ⬜ Waits on the candidate settings list |
+| Smoke-test 4 settings | Simulation | ⬜ Unblocked (candidate list done). Per the roadmap: ≥4 executable config/action dimensions, each with ≥2 verified choices. The security research narrows the choices: beacon protection and PMF look like fixed settings, not dimensions |
 | Support check (P2) | Simulation | ⬜ Waits on the settings smoke test |
 | Code rule: security type matches on every link | Research | ⬜ Waits on its rule research, data model, rules file + loader |
 | Code rules: setting dependencies | Research | ⬜ Waits on their rule research, data model, rules file + loader |
@@ -113,8 +113,9 @@ root (as in the spec's layout) when they are first filled in.
 | Record the demo | MCP | ⬜ Last |
 | Write the 1-page report | MCP | ⬜ Last |
 
-**Main blocker:** the candidate settings list. The data models, the settings smoke test
-and the P2 support check all wait on it.
+**Main blockers:** the rules file + loader (the coded rules and `SPEC_UNDETERMINED` wait on
+it) and a teammate review of `docs/research/security-guidance.md`. The candidate settings
+list is done, so the settings smoke test can start.
 
 ## Checkpoint 1
 
