@@ -83,7 +83,7 @@ root (as in the spec's layout) when they are first filled in.
 | Dev setup guide | ✅ Done. Setup works for all three teammates |
 | Build simulation environment | ✅ Done. `eht_mld_sae_two_links` passes on Intel Mac and Windows 11 + WSL2 |
 | Run one existing Wi-Fi 7 test | ✅ Done on Mac and Windows |
-| Rebuild script | 🟡 `scripts/build-env.sh` merged and passes on Intel Mac; still needs a teammate on Windows to run `--fresh` from a clean clone |
+| Rebuild script | ✅ Done. `scripts/build-env.sh` passes on Intel Mac and, with `--fresh` from a clean clone, on Windows 11 + WSL2 |
 | Three clean baseline runs | ✅ Done. 3/3 PASS in `runs/baseline/`, with manifests |
 | Extract a behavior record | ✅ Done. `signatures.py`; the three baseline signatures are identical |
 | List candidate settings from test code | ✅ `surface_candidates.csv`: 34 candidates (17 settings, 10 actions, 7 observations) from `test_eht.py` / `hostapd.py` at the pinned commit. Candidates only; admitting a dimension needs the settings smoke test |

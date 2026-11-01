@@ -82,5 +82,6 @@ Running without time-travel at all (real time) is not an option on this Mac: boo
 - ~~Try the same image and script on **Windows + WSL2** to finish #4.~~ Done 2026-10-28
   (see the status table).
 - ~~Turn the build + test into a one-command rebuild script.~~ Added `scripts/build-env.sh`
-  (2026-10-29); passes on Intel Mac with the cache. Still needs a teammate on Windows to
-  run `scripts/build-env.sh --fresh` from a clean clone.
+  (2026-10-29); passes on Intel Mac with the cache. `scripts/build-env.sh --fresh` from a
+  clean clone passed on Windows 11 + WSL2 on 2026-10-31 (no cached steps, 744 s build,
+  smoke test PASS).
