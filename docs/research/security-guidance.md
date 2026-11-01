@@ -31,6 +31,8 @@ Once checked, mark each finding **verified** with who checked it and when, and r
 
 ## Sources
 
+Full entries, links and how to get a copy are in [`docs/references.md`](../references.md).
+
 - **IEEE-802.11be-2024**: IEEE Std 802.11be-2024, "Amendment 2: Enhancements for Extremely
   High Throughput (EHT)" (per its page header). Normative.
 - **IEEE-802.11-2024**: IEEE Std 802.11-2024, the base standard. Normative.
