@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import re
 
 from mcp import Client, StdioServerParameters
@@ -70,10 +71,17 @@ def test_pinned_versions_parser(tmp_path):
         "1111", "2222", "ubuntu:24.04@sha256:abc")
 
 
+def _expand(value):
+    # Claude Code's ${VAR:-default} expansion in .mcp.json (a set but empty VAR counts as set).
+    return re.sub(r"\$\{(\w+):-([^}]*)\}",
+                  lambda m: os.environ.get(m.group(1), m.group(2)), value)
+
+
 def test_server_starts_the_way_mcp_json_launches_it():
     # Same command and arguments Claude Code reads from .mcp.json, run from the repo root.
     config = json.loads((REPO_ROOT / ".mcp.json").read_text())["mcpServers"]["wifi7-explorer"]
-    params = StdioServerParameters(command=config["command"], args=config["args"],
+    params = StdioServerParameters(command=_expand(config["command"]),
+                                   args=[_expand(a) for a in config["args"]],
                                    cwd=str(REPO_ROOT))
     tools, result = _call(params, "get_model")
 
