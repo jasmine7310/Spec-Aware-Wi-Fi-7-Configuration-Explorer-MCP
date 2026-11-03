@@ -60,7 +60,8 @@ def test_recorded_runs_are_committed_evidence_only():
     by_test = {}
     for run in runs:
         by_test.setdefault(run["test"], []).append(run)
-        assert run["evidence"].startswith(("runs/baseline/", "runs/calibration/", "runs/smoke/"))
+        assert run["evidence"].startswith(
+            ("runs/baseline/", "runs/calibration/", "runs/smoke/", "runs/anchors/"))
 
     baseline = [r for r in by_test["eht_mld_sae_two_links"]
                 if r["evidence"].startswith("runs/baseline/")]

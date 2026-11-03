@@ -1,0 +1,54 @@
+{
+  "run_id": "1793694467",
+  "tests_requested": [
+    "eht_mld_gtk_rekey"
+  ],
+  "overall": "PASS",
+  "results": [
+    {
+      "test": "eht_mld_gtk_rekey",
+      "result": "PASS",
+      "duration_s": 10.106729
+    }
+  ],
+  "started_at": "2026-11-03T08:27:47Z",
+  "finished_at": "2026-11-03T08:27:52Z",
+  "wall_seconds": 5,
+  "versions": {
+    "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",
+    "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda",
+    "image": "wifi7-env",
+    "image_id": "sha256:2c6d91571100e7a02a2206245863fdcb5ee3282567f0c6e566c97c8b5b24a5e4",
+    "repo_commit": "5f46c7fe0954229a461efa32b5df3b7f2643d358",
+    "repo_docker_dir_modified": false
+  },
+  "environment": {
+    "host_os": "Ubuntu 24.04.1 LTS (WSL2)",
+    "host_kernel": "Linux 6.18.54.1-microsoft-standard-WSL2 x86_64",
+    "docker_server_version": "29.9.2",
+    "docker_vm_os": "Docker Desktop",
+    "docker_vm_kernel": "6.18.54.1-microsoft-standard-WSL2",
+    "docker_vm_cpus": 8,
+    "docker_vm_memory_bytes": 8235188224
+  },
+  "docker_run_settings": [
+    "--cpuset-cpus=0",
+    "--tmpfs /umltmp:rw,exec,size=1g",
+    "-e TMPDIR=/umltmp",
+    "-e HWSIM_TEST_LOG_DIR=/tmp/hwsim-test-logs"
+  ],
+  "packet_captures": [
+    {
+      "file": "eht_mld_gtk_rekey.hwsim0.dec.pcapng",
+      "bytes": 219464
+    },
+    {
+      "file": "eht_mld_gtk_rekey.hwsim0.pcapng",
+      "bytes": 177004
+    },
+    {
+      "file": "hwsim0.pcapng",
+      "bytes": 48
+    }
+  ]
+}

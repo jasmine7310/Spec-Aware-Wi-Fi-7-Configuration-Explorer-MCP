@@ -1,0 +1,292 @@
+1793694462.607643: Writing PCAPNG dump to '/tmp/logs/hwsim0.pcapng'
+1793694462.611903: Discovered new BSS - 02:00:00:a6:0a:b6
+1793694462.611903: DEAUTH 02:00:00:a6:0a:b6 -> ff:ff:ff:ff:ff:ff (reason=2) (valid=1)
+1793694462.612050: Discovered new BSS - 02:00:00:52:fd:c9
+1793694462.612050: DEAUTH 02:00:00:52:fd:c9 -> ff:ff:ff:ff:ff:ff (reason=2) (valid=1)
+1793694462.612221: Store SSID 'mld_ap_sae_two_link' for BSSID 02:00:00:a6:0a:b6
+1793694462.612221: BSS 02:00:00:a6:0a:b6 - RSN IE stored
+1793694462.612221: RSN IE - hexdump(len=34): 30 20 01 00 00 0f ac 04 01 00 00 0f ac 04 04 00 00 0f ac 02 00 0f ac 06 00 0f ac 08 00 0f ac 18 8c 00
+1793694462.612221: Learned AP MLD MAC Address from Beacon/Probe Response frame: 02:00:00:00:07:00 (BSSID 02:00:00:a6:0a:b6)
+1793694462.612222: Learned AP MLD Link ID 0 for this affiliated link
+1793694462.612222: BSS 02:00:00:a6:0a:b6 proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=PSK PSK-SHA256 rsn_capab=MFPC 
+1793694462.629318: Store SSID 'mld_ap_sae_two_link' for BSSID 02:00:00:52:fd:c9
+1793694462.629318: BSS 02:00:00:52:fd:c9 - RSN IE stored
+1793694462.629318: RSN IE - hexdump(len=34): 30 20 01 00 00 0f ac 04 01 00 00 0f ac 04 04 00 00 0f ac 02 00 0f ac 06 00 0f ac 08 00 0f ac 18 8c 00
+1793694462.629319: Learned AP MLD MAC Address from Beacon/Probe Response frame: 02:00:00:00:07:00 (BSSID 02:00:00:52:fd:c9)
+1793694462.629319: Learned AP MLD Link ID 1 for this affiliated link
+1793694462.629319: BSS 02:00:00:52:fd:c9 proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=PSK PSK-SHA256 rsn_capab=MFPC 
+1793694462.629320: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 6 BIPN 0x1
+1793694462.629320: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694462.629320: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 6 BIPN 0x1
+1793694462.629321: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694462.685432: Discovered new STA f2:77:dc:2a:06:e6 in BSS 02:00:00:a6:0a:b6 (MLD 02:00:00:00:07:00)
+1793694462.685432: AUTH f2:77:dc:2a:06:e6 -> 02:00:00:a6:0a:b6 (alg=3 trans=1 status=126)
+1793694462.685432: SAE Commit using group 19
+1793694462.685433: AUTH 02:00:00:a6:0a:b6 -> f2:77:dc:2a:06:e6 (alg=3 trans=1 status=126)
+1793694462.685433: SAE Commit using group 19
+1793694462.685483: AUTH f2:77:dc:2a:06:e6 -> 02:00:00:a6:0a:b6 (alg=3 trans=2 status=0)
+1793694462.685483: AUTH 02:00:00:a6:0a:b6 -> f2:77:dc:2a:06:e6 (alg=3 trans=2 status=0)
+1793694462.685484: STA f2:77:dc:2a:06:e6 moved to State 2 with 02:00:00:a6:0a:b6
+1793694462.695318: ASSOCREQ f2:77:dc:2a:06:e6 -> 02:00:00:a6:0a:b6 (capab=0x430 listen_int=5)
+1793694462.695318: RSN IE - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1793694462.695318: STA f2:77:dc:2a:06:e6 proto=WPA2 pairwise=CCMP key_mgmt=SAE-EXT-KEY rsn_capab=MFPR MFPC 
+1793694462.695319: STA MLD Address: 02:00:00:00:08:00
+1793694462.695319: Learned Link ID 0 MAC address f2:77:dc:2a:06:e6 from Association Request (assoc link)
+1793694462.695319: Multi-Link Control: Type=0 Reserved=0 Presence Bitmap=0x10
+1793694462.695319: MLD MAC Address: 02:00:00:00:08:00
+1793694462.695320: MLD Capabilities and Operations: 0x0 (Max_Simultaneous_Links=0 SRS=0 T2L=0x0 Freq_Sep_STR=0x0 AAR=0 Reserved=0x0)
+1793694462.695320: Per-STA Profile: len=98 Link_ID=1 Complete=1 Reserved=0x0
+1793694462.695320: STA MAC Address: 0a:27:44:84:e4:26
+1793694462.695320: Learned Link ID 1 MAC address 0a:27:44:84:e4:26 from Association Request
+1793694462.695321: STA Profile - hexdump(len=89): 30 04 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 11 6c 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00
+1793694462.695321: MLO association - AP MLD: 02:00:00:00:07:00  STA MLD: 02:00:00:00:08:00
+1793694462.695321:   Link 0 - AP: 02:00:00:a6:0a:b6  STA: f2:77:dc:2a:06:e6
+1793694462.695321:   Link 1 - AP: 02:00:00:52:fd:c9  STA: 0a:27:44:84:e4:26
+1793694462.695349: ASSOCRESP 02:00:00:a6:0a:b6 -> f2:77:dc:2a:06:e6 (capab=0x411 status=0 aid=1)
+1793694462.695349: Multi-Link Control: Type=0 Reserved=0 Presence Bitmap=0x1b
+1793694462.695349: MLD MAC Address: 02:00:00:00:07:00
+1793694462.695350: Link ID Info: 0x0
+1793694462.695350: BSS Parameters Change Count: 1
+1793694462.695350: EML Capabilities: 0x81 (EMLSR=1 EMLSR_Padding_Delay=0 EMLSR_Transition_Delay=0 EMLMR=1 Transition_Timeout=0 Reserved=0)
+1793694462.695350: MLD Capabilities and Operations: 0x2001 (Max_Simultaneous_Links=1 SRS=0 T2L=0x0 Freq_Sep_STR=0x0 AAR=0 Reserved=0x1)
+1793694462.695351: Per-STA Profile: len=193 Link_ID=1 Complete=1 Reserved=0x0
+1793694462.695351: STA MAC Address: 02:00:00:52:fd:c9
+1793694462.695351: Beacon Interval: 100
+1793694462.695351: TSF Offset: 0x0
+1793694462.695352: DTIM Info: 0x200
+1793694462.695352: BSS Parameters Change Count: 1
+1793694462.695352: STA Profile - hexdump(len=171): 11 04 00 00 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 ad fc ff ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1793694462.695352: STA f2:77:dc:2a:06:e6 moved to State 3 with 02:00:00:a6:0a:b6
+1793694462.695353: FT: RSNXE - hexdump(len=1): 20
+1793694462.695443: RX EAPOL: 02:00:00:00:07:00 -> f2:77:dc:2a:06:e6 ver=2 type=3 len=129 #0
+1793694462.695443: EAPOL-Key ver=0 P idx=0 ACK datalen=34
+1793694462.695444: EAPOL-Key 1/4 02:00:00:00:07:00 -> f2:77:dc:2a:06:e6 (BSSID 02:00:00:a6:0a:b6)
+1793694462.695444: WPA: PMKID in EAPOL-Key - hexdump(len=22): dd 14 00 0f ac 04 fb 5f 05 12 e2 32 6e 0a 25 30 1d af 79 18 fd c2
+1793694462.695444: WPA: MAC Address in EAPOL-Key: 02:00:00:00:07:00
+1793694462.695510: RX EAPOL: f2:77:dc:2a:06:e6 -> 02:00:00:00:07:00 ver=1 type=3 len=151 #0
+1793694462.695510: EAPOL-Key ver=0 P idx=0 MIC datalen=56
+1793694462.695511: EAPOL-Key 2/4 f2:77:dc:2a:06:e6 -> 02:00:00:00:07:00 (BSSID 02:00:00:a6:0a:b6)
+1793694462.695511: WPA: RSN IE in EAPOL-Key - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1793694462.695511: WPA: RSNXE in EAPOL-Key - hexdump(len=3): f4 01 20
+1793694462.695511: WPA: MAC Address in EAPOL-Key: 02:00:00:00:08:00
+1793694462.695512: RSN: Link ID 1 - MLO Link KDE in EAPOL-Key - hexdump(len=13): dd 0b 00 0f ac 13 01 0a 27 44 84 e4 26
+1793694462.695512: Updated non-AP STA MLD MAC Address from EAPOL-Key 2/4: 02:00:00:00:08:00 --> 02:00:00:00:08:00
+1793694462.695512: Trying to derive PTK for f2:77:dc:2a:06:e6 (MLD 02:00:00:00:08:00) (ver 0)
+1793694462.695512: No matching PMK found to derive PTK
+1793694462.695513: No PTK known to process EAPOL-Key 2/4
+1793694462.695513: RX EAPOL: 02:00:00:00:07:00 -> f2:77:dc:2a:06:e6 ver=2 type=3 len=399 #0
+1793694462.695514: EAPOL-Key ver=0 P idx=0 Install ACK MIC Secure Encr datalen=304
+1793694462.695514: EAPOL-Key 3/4 02:00:00:00:07:00 -> f2:77:dc:2a:06:e6 (BSSID 02:00:00:a6:0a:b6)
+1793694462.695514: No PTK known to process EAPOL-Key 3/4
+1793694462.695589: RX EAPOL: f2:77:dc:2a:06:e6 -> 02:00:00:00:07:00 ver=1 type=3 len=107 #0
+1793694462.695590: EAPOL-Key ver=0 P idx=0 MIC Secure datalen=12
+1793694462.695590: EAPOL-Key 4/4 f2:77:dc:2a:06:e6 -> 02:00:00:00:07:00 (BSSID 02:00:00:a6:0a:b6)
+1793694462.695590: No PTK known to process EAPOL-Key 4/4
+1793694462.731718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x1
+1793694462.731718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694462.731718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x1
+1793694462.731719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694462.834118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x2
+1793694462.834118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694462.834118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x2
+1793694462.834119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694462.936518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x3
+1793694462.936518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694462.936518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x3
+1793694462.936519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.038918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x4
+1793694463.038918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.038918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x4
+1793694463.038919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.141318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x5
+1793694463.141318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.141318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x5
+1793694463.141319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.243718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x6
+1793694463.243718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.243718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x6
+1793694463.243719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.346118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x7
+1793694463.346118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.346118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x7
+1793694463.346119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.448518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x8
+1793694463.448518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.448518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x8
+1793694463.448519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.550918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x9
+1793694463.550918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.550918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x9
+1793694463.550919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.653318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0xa
+1793694463.653318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.653318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0xa
+1793694463.653319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.755718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0xb
+1793694463.755718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.755718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0xb
+1793694463.755719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.858118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0xc
+1793694463.858118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.858118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0xc
+1793694463.858119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694463.960518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0xd
+1793694463.960518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694463.960518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0xd
+1793694463.960519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.062918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0xe
+1793694464.062918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.062918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0xe
+1793694464.062919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.165318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0xf
+1793694464.165318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.165318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0xf
+1793694464.165319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.267718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x10
+1793694464.267718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.267718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x10
+1793694464.267719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.370118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x11
+1793694464.370118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.370118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x11
+1793694464.370119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.472518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x12
+1793694464.472518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.472518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x12
+1793694464.472519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.574918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x13
+1793694464.574918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.574918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x13
+1793694464.574919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.677318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x14
+1793694464.677318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.677318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x14
+1793694464.677319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.779718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x15
+1793694464.779718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.779718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x15
+1793694464.779719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.882118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x16
+1793694464.882118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.882118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x16
+1793694464.882119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694464.984518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x17
+1793694464.984518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694464.984518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x17
+1793694464.984519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.086918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x18
+1793694465.086918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.086918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x18
+1793694465.086919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.189318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x19
+1793694465.189318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.189318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x19
+1793694465.189319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.291718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x1a
+1793694465.291718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.291718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x1a
+1793694465.291719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.394118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x1b
+1793694465.394118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.394118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x1b
+1793694465.394119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.496518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x1c
+1793694465.496518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.496518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x1c
+1793694465.496519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.598918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x1d
+1793694465.598918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.598918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x1d
+1793694465.598919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.701318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x1e
+1793694465.701318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.701318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x1e
+1793694465.701319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.803718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x1f
+1793694465.803718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.803718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x1f
+1793694465.803719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694465.906118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x20
+1793694465.906118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694465.906118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x20
+1793694465.906119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.008518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x21
+1793694466.008518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.008518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x21
+1793694466.008519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.110918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x22
+1793694466.110918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.110918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x22
+1793694466.110919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.213318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x23
+1793694466.213318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.213318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x23
+1793694466.213319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.315718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x24
+1793694466.315718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.315718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x24
+1793694466.315719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.418118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x25
+1793694466.418118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.418118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x25
+1793694466.418119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.520518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x26
+1793694466.520518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.520518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x26
+1793694466.520519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.622918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x27
+1793694466.622918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.622918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x27
+1793694466.622919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.725318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x28
+1793694466.725318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.725318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x28
+1793694466.725319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.827718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x29
+1793694466.827718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.827718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x29
+1793694466.827719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694466.930118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x2a
+1793694466.930118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694466.930118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x2a
+1793694466.930119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.032518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x2b
+1793694467.032518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694467.032518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x2b
+1793694467.032519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.134918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x2c
+1793694467.134918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694467.134918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x2c
+1793694467.134919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.237318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x2d
+1793694467.237318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694467.237318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x2d
+1793694467.237319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.339718: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x2e
+1793694467.339718: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694467.339718: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x2e
+1793694467.339719: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.442118: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x2f
+1793694467.442118: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694467.442118: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x2f
+1793694467.442119: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.544518: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x30
+1793694467.544518: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694467.544518: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x30
+1793694467.544519: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.646918: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x31
+1793694467.646918: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694467.646918: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x31
+1793694467.646919: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.749318: Beacon frame BSSID 02:00:00:52:fd:c9 MME KeyID 7 BIPN 0x32
+1793694467.749318: No BIGTK known to validate BIP frame from 02:00:00:52:fd:c9
+1793694467.749318: Beacon frame BSSID 02:00:00:a6:0a:b6 MME KeyID 7 BIPN 0x32
+1793694467.749319: No BIGTK known to validate BIP frame from 02:00:00:a6:0a:b6
+1793694467.799926: Discovered new STA 0a:27:44:84:e4:26 in BSS 02:00:00:52:fd:c9 (MLD 02:00:00:00:07:00)
+1793694467.799927: DEAUTH 0a:27:44:84:e4:26 -> 02:00:00:52:fd:c9 (reason=5) (valid=0)
+1793694467.799927: Do not change STA 0a:27:44:84:e4:26 State since Disassociation frame was not protected correctly
+1793694467.799927: DEAUTH from 0a:27:44:84:e4:26 acknowledged by 02:00:00:52:fd:c9
+1793694467.801130: Re-open log/capture files
+1793694467.801130: Writing PCAPNG dump to '/tmp/logs/hwsim0.pcapng'
+1793694467.801130: Disconnect control interface connection 7
+1793694467.801170: Re-open log/capture files

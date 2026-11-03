@@ -37,7 +37,7 @@ from explorer.validate import run_p1_checks
 DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
 # Committed run evidence; runs/hwsim-logs/ holds git-ignored trial runs and is skipped.
 EVIDENCE_DIRS = (REPO_ROOT / "runs" / "baseline", REPO_ROOT / "runs" / "calibration",
-                 REPO_ROOT / "runs" / "smoke")
+                 REPO_ROOT / "runs" / "smoke", REPO_ROOT / "runs" / "anchors")
 
 server = MCPServer(
     name="wifi7-config-explorer",

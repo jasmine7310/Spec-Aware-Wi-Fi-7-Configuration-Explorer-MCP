@@ -87,5 +87,6 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   BTM), run the matching test and calibrate against its real logs; until then it stays `UNKNOWN`.
 - Run evidence: `runs/baseline/` (official baseline), `runs/calibration/` (runs a detector
   was calibrated on), `runs/smoke/` (runs showing a setting value executes),
-  `runs/hwsim-logs/` (git-ignored trials). Never commit trials as evidence.
+  `runs/anchors/` (extra runs so each anchor family has 3), `runs/hwsim-logs/` (git-ignored
+  trials). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.
