@@ -60,18 +60,32 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   returns a `RunResult` (`COMPLETED` / `SETUP_FAIL` / `TIMEOUT`) with its behavior record.
 - `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
   `.signature()` gives the comparable facts.
-- `explorer.mcp_server`: `MCPServer` with `get_model`. Add new tools here with `@server.tool()`.
+- `explorer.mcp_server`: `MCPServer` with `get_model` and `run_hwsim_test`. Add new tools
+  here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
+  reaches the agent only as "Error executing tool").
+- `explorer.model.Config`: P0 settings model. `explorer.rules.load_rules()`: the P1 rule
+  registry from `rules.yaml`. `explorer.validate.P1_CHECKS` / `run_p1_checks(config)`: coded
+  rule checks by rule ID. `explorer.scenarios.TEST_CONFIGS`: the `Config` each runnable
+  hostap test sets up, read from its source lines.
 
 ## Rules for agents
 
 - Never invent results, run IDs, hostap options, rule citations or spec section numbers.
   If something is unverified, say so.
 - Spec-rule research needs the user to check the source; draft, don't declare.
+- The standards in `docs/references.md` are the authority for what is legal: IEEE Std
+  802.11be-2024 and 802.11-2024 ("shall", normative) and the WFA WPA3 / Enhanced Open
+  Deployment Guide v1.1 (guidance). Before writing or changing a rule, an admissible value
+  or a claim about Wi-Fi behavior, read the clause in the PDF (ask the user for their copy's
+  path; they're licensed, so never commit them or their extracted text) and cite it with
+  section, PDF page and strength. A NOTE is never a rule. Experiments that break a modeled
+  rule run only as labeled negative experiments, never as legal candidates or smoke values.
 - P0 models are strict (`strict=True`, `extra="forbid"`); cross-field Wi-Fi rules belong in P1.
 - The MCP SDK is v2 (`mcp==2.3.0`): `FastMCP` no longer exists, use
   `from mcp.server.mcpserver import MCPServer`. v1 examples from the web won't import.
 - Behavior facts come from real log lines. Before detecting a new behavior (e.g. ML probe,
   BTM), run the matching test and calibrate against its real logs; until then it stays `UNKNOWN`.
 - Run evidence: `runs/baseline/` (official baseline), `runs/calibration/` (runs a detector
-  was calibrated on), `runs/hwsim-logs/` (git-ignored trials). Never commit trials as evidence.
+  was calibrated on), `runs/smoke/` (runs showing a setting value executes),
+  `runs/hwsim-logs/` (git-ignored trials). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

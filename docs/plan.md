@@ -16,11 +16,11 @@ every rejection says which stage and which sourced rule rejected it:
 | Stage | Component | Question it answers | Status |
 |---|---|---|---|
 | P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | 🟡 Settings model (`model.Config`); actions model not yet |
-| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | 🟡 Rule registry (`rules.yaml` + `rules.load_rules()`); no rule is enforced yet |
+| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | 🟡 Rule registry (`rules.yaml` + `rules.load_rules()`); 3 rules coded (`validate.run_p1_checks`) and applied to hostap tests by `run_hwsim_test`; no `validate_candidate` pipeline yet |
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | ⬜ |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()` |
 | P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
-| – | MCP server | Lets the agent use all of the above in plain English | 🟡 Skeleton with `get_model` |
+| – | MCP server | Lets the agent use all of the above in plain English | 🟡 `get_model` and `run_hwsim_test` (runs an approved hostap test; one that breaks a modeled rule only as a labeled negative experiment) |
 
 Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come later.
 
@@ -28,7 +28,7 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `runner.py` (P3), `signatures.py` (behavior records), `mcp_server.py` (MCP skeleton). The rest are placeholders |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P1 rule checks), `runner.py` (P3), `signatures.py` (behavior records), `mcp_server.py` (MCP tools). The rest are placeholders |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
 | `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
@@ -36,10 +36,11 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 | `baseline/README.md` | Pinned versions and the baseline runs that show the environment is reproducible |
 | `runs/baseline/` | The three official baseline runs (committed evidence) |
 | `runs/calibration/` | Runs used to calibrate how `signatures.py` detects a behavior (committed evidence, not baseline) |
+| `runs/smoke/` | Runs showing each smoke-tested setting value executes (committed evidence; `surface_candidates.csv`'s `smoke_runs` column points here) |
 | `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
 | `docs/` | This plan and other notes |
 | `surface_candidates.csv` | Candidate settings, actions and observations found in hostap's tests, each with source lines (`tests/test_surface_candidates.py` checks it; set `WIFI7_HOSTAP_SRC` to also check the lines exist) |
-| `rules.yaml` | P1 rule registry: each rule's ID, kind (normative / guidance / dependency / harness / policy), meaning, predicate, exceptions, sources and examples, transcribed from `docs/research/`. `tests/test_rules.py` checks it; set `WIFI7_HOSTAP_SRC` to also check the hostap lines exist |
+| `rules.yaml` | P1 rule registry: each rule's ID, kind (normative / guidance / dependency / harness / policy), meaning, predicate, exceptions, sources (each tagged shall / note / unclassified / guidance / code; a normative rule needs a "shall") and examples, transcribed from `docs/research/`. `tests/test_rules.py` checks it; set `WIFI7_HOSTAP_SRC` to also check the hostap lines exist |
 
 The other data files (`model.json`, `anchor_coverage.csv`, `pruning_counts.json`) still
 sit in `src/` as placeholders and should move to the repo root (as in the spec's layout)
@@ -103,22 +104,27 @@ when they are first filled in.
 | Runner adapter | Simulation | ✅ Done. `runner.run_test()` |
 | Calibrate rekey facts | Simulation | ✅ Done. PTK/GTK rekey counts + traffic after the last rekey, from runs in `runs/calibration/` |
 | MCP server skeleton | MCP | ✅ Done. `get_model`, `.mcp.json`; verified in a Claude Code session |
-| Smoke-test 4 settings | Simulation | ⬜ Unblocked (candidate list done). Per the roadmap: ≥4 executable config/action dimensions, each with ≥2 verified choices. The security research narrows the choices: beacon protection and PMF look like fixed settings, not dimensions |
-| Support check (P2) | Simulation | ⬜ Waits on the settings smoke test |
-| Code rule: security type matches on every link | Research | ⬜ Unblocked: enforce `SEC.MLD_COMMON_SUITES` from `rules.yaml` against `model.Config`. Its research still needs a teammate's review |
+| Smoke-test 4 settings | Simulation | ✅ Done. 6 candidates have ≥2 values that both run and pass the coded P1 rules (AKM SAE-EXT-KEY / OWE on AP and STA, PTK rekey unset / 5, GTK rekey unset / 5, link advertised disabled 0 / 1, link removal absent / present): passing runs in `runs/smoke/` (Windows + WSL2), recorded in `surface_candidates.csv`'s `smoke_runs`; a test checks every listed run is legal under the coded rules. Plain SAE also runs but breaks 802.11be §12.12.9, so it doesn't count. Link removal is now in the behavior record (`link_reconfig_valid_links`). Caveats per value, with what the standards say, are in `runs/smoke/README.md` |
+| Support check (P2) | Simulation | ⬜ Unblocked (smoke runs recorded) |
+| Code rule: security type matches on every link | Research | ✅ Done, rechecked against the PDFs. Split by what the standard binds: `SEC.MLD_COMMON_SUITES` (802.11be §12.6.2, the AP MLD's own RSNE: same pairwise cipher, a common AKM) rejects hostap's `invalid_link`, `invalid_link_akm`, `invalid_link_pairwise` and `no_common_key_mgmt` configurations and allows different AKM lists that share an AKM; `SEC.MLD_CLIENT_COMMON_AKM` (§12.6.3.1) flags a client that allows none of the common AKMs, which a conforming client answers by declining. `SEC.EHT_SAE_AKM` (§12.12.9) is coded too. Rules stay `draft` until a teammate reviews the research |
 | Code rules: setting dependencies | Research | ⬜ Unblocked: rules are in `rules.yaml` (e.g. `SEC.SAE_PWE_NEEDS_SAE`). Their research still needs a teammate's review |
 | Action-order checker | Research | ⬜ Waits on the action data model (rules: `AO.*` in `rules.yaml`) |
 | Undetermined result (`SPEC_UNDETERMINED`) | Research | ⬜ Unblocked (rules file + loader done) |
 | `validate_candidate` pipeline | Data models | ⬜ Waits on all checks above |
-| Expose checks and runs over MCP | MCP | ⬜ Waits on the pipeline (runner and MCP skeleton are ready) |
+| Expose a real run over MCP | MCP | ✅ Done. `run_hwsim_test` runs one hostap test that has a passing committed run and a known configuration (`explorer.scenarios`) and returns its behavior record. It applies the coded P1 rules first: `get_model` lists each runnable test's `p1_status`, and a test that breaks a rule (the plain-SAE baseline, §12.12.9) is refused unless called with `negative_experiment=true`, which labels the result. Verified with a real run of `eht_mld_sae_ext_two_links` through an in-process MCP client (`WIFI7_DOCKER_TESTS=1`). Still to record: a transcript from a Claude Code session |
+| Expose validation and rules over MCP | MCP | ⬜ Waits on the `validate_candidate` pipeline |
 | Record the demo | MCP | ⬜ Last |
 | Write the 1-page report | MCP | ⬜ Last |
 
-**Main blockers:** a teammate review of `docs/research/security-guidance.md`, and the team
-decisions on the plain-SAE baseline (`SEC.EHT_SAE_AKM`) and the open questions in
-`docs/research/action-order.md` (the action data model waits on them). The rules file +
-loader is done, so the coded rules and `SPEC_UNDETERMINED` can start; so can the settings
-smoke test.
+**Main blockers:** a teammate review of `docs/research/security-guidance.md` (an AI agent
+has checked every IEEE and WFA citation against the PDF text, which doesn't replace it),
+and the team decisions on how to describe the plain-SAE baseline and on the two
+remaining open questions in `docs/research/action-order.md` (the last-link one is
+answered by 802.11be §35.3.6.3). Until the baseline decision, `run_hwsim_test` treats the
+plain-SAE baseline as a negative experiment because it breaks §12.12.9. The rules file +
+loader, the link security rules, the settings smoke test and a real run over MCP are
+done, so the remaining coded rules, `SPEC_UNDETERMINED` and the P2 support check can
+start.
 
 ## Checkpoint 1
 
