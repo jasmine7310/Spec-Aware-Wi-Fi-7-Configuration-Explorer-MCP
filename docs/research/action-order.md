@@ -95,18 +95,18 @@ Action names match `surface_candidates.csv`.
 | **Disallowed** | `[associate, link_remove(1), link_remove(1)]` |
 | **Note** | `LINK_REMOVE <count>` removes the link after `count` beacons (log message at `src/ap/hostapd.c:481`); the test uses 4 and 20. The command only exists in builds with `CONFIG_TESTING_OPTIONS` (`src/ap/hostapd.c:497`). |
 
-### AO.NO_LINKS_LEFT: removing the last link ends useful post-association actions
+### AO.NO_LINKS_LEFT: removing the last link disassociates the STA
 
 | | |
 |---|---|
 | **Applies to** | every `AO.ASSOC_REQUIRED` action after the STA has no active links |
 | **Rule** | After the last active link is removed, treat the STA as not associated until it associates again. |
 | **Predicate** | if `state.active_links` becomes empty, set `associated = false` |
-| **Enforced by** | **policy** |
-| **Source** | `tests/hwsim/test_eht.py:1416-1424`: after removing the last link the test expects traffic to fail (`traffic_test(..., success=False)`) |
+| **Enforced by** | **harness**, with the state change defined by the standard |
+| **Source** | IEEE-802.11be-2024 §35.3.6.3 "Removing affiliated AP(s)", PDF p. 517-518 (printed p. 516-517): when the removed AP's link is a non-AP MLD's only setup link, the MLMEs of the AP MLD and of the non-AP MLD both signal that non-AP MLD's disassociation ("shall"). `tests/hwsim/test_eht.py:1416-1424`: after removing the last link the test expects traffic to fail (`traffic_test(..., success=False)`) |
 | **Allowed** | `[associate, link_remove(1), link_remove(0)]` (ends there) |
 | **Disallowed** | `[associate, link_remove(1), link_remove(0), rekey_gtk_now]` |
-| **Note** | The test checks only that traffic fails; it doesn't check for a disconnect event. Whether the STA is formally disconnected is **undetermined** from the tests. |
+| **Note** | The test itself checks only that traffic fails. In `runs/smoke/1793690892` the STA logs a locally generated disconnect (reason 4) after the last link's removal, consistent with §35.3.6.3. Citation checked by Claude (AI agent) in the PDF text, 2026-11-02; not yet by a teammate. |
 
 ### AO.RECONFIG_DELETE_ACTIVE: link reconfig can only delete a current link
 
@@ -169,8 +169,9 @@ Not ordering rules, but the checker needs them to accept an action:
 
 - **ML probe while associated** (AO.ML_PROBE_STATE): allowed by the code, never tested.
   Needs a smoke test before it's admitted.
-- **Last link removed** (AO.NO_LINKS_LEFT): the tests don't say whether the STA is
-  disconnected or just has no working link.
+- ~~**Last link removed** (AO.NO_LINKS_LEFT): the tests don't say whether the STA is
+  disconnected or just has no working link.~~ Answered by 802.11be §35.3.6.3: the
+  non-AP MLD is disassociated (see the rule above).
 - **Disassociate / deauthenticate**: the test expects the STA to reconnect on its own
   afterwards (`tests/hwsim/test_eht.py:2050-2056`). Should the model treat
   `[ap_disassociate]` as returning to `associated` after a wait, or require an explicit

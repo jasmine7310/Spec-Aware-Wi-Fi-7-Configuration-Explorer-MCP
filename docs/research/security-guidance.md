@@ -13,9 +13,27 @@ checking against the documents before anything becomes a rule in `rules.yaml`.
 ## How to review
 
 Not reviewed by a second teammate yet. The author has checked some IEEE citations in the
-PDFs; each finding's **Status** row says what is verified and what isn't. A teammate with
-copies of the documents should check the rest (see "Reviewing research" in
-[`docs/plan.md`](../plan.md)):
+PDFs; each finding's **Status** row says what is verified and what isn't.
+
+**AI check, 2026-11-02:** Claude (an AI agent) read the text of all three PDFs (the whole
+WFA guide; the cited IEEE clauses plus the 802.11be MLO clauses on ML security, AP
+removal and link disablement) and checked every IEEE and WFA citation here: section,
+page, and "shall" vs NOTE vs MAND/RECOM/DISALLOW. All match, with these corrections and
+additions, already applied in `rules.yaml`:
+
+- SEC.MLD_COMMON_SUITES mixes two requirements. §12.6.2 binds the AP MLD's advertised
+  RSNE; §12.6.3.1 tells the client to pick a common AKM and to decline to associate if
+  none exists, which isn't a configuration fault. `rules.yaml` splits them into
+  SEC.MLD_COMMON_SUITES (AP side) and SEC.MLD_CLIENT_COMMON_AKM (client side).
+- SEC.SAE_PWE_NEEDS_SAE: the WFA guide does cover it. Table 3 (p. 10) says the SAE
+  Hash-to-Element setting applies only if an SAE AKM is used.
+- SEC.PMF: Table 5's column order is Required / Capable / Disabled. For an AP with EHT
+  enabled in WPA3-Personal Transition Mode, Capable is MAND and Required DISALLOW (p. 14).
+- WFA §3.1.4.1 (p. 28) restates §12.6.2 and adds that an AKM advertised on only some
+  links can be used only for non-ML associations to that link's BSS.
+
+An AI check isn't the teammate review this section asks for. A teammate should still
+check the rest (see "Reviewing research" in [`docs/plan.md`](../plan.md)):
 
 > Read `docs/research/security-guidance.md`. For each IEEE citation, open the clause in
 > IEEE Std 802.11be-2024 or 802.11-2024 and check that (1) the text says what the finding

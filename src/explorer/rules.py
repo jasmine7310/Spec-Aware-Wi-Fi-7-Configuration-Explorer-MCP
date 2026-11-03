@@ -32,6 +32,15 @@ RuleKind = Literal["normative", "guidance", "dependency", "harness", "policy"]
 # draft: the research behind the rule hasn't been reviewed by a second teammate yet.
 RuleStatus = Literal["draft", "reviewed"]
 
+# What kind of text a citation points at (docs/references.md):
+#   shall         a normative requirement in an IEEE standard
+#   note          an IEEE NOTE: informative, never a rule on its own
+#   unclassified  other IEEE text (a definition, a table) not recorded as a "shall"
+#   guidance      Wi-Fi Alliance deployment guidance
+#   code          hostap source or tests
+Strength = Literal["shall", "note", "unclassified", "guidance", "code"]
+_NORMATIVE_DOC_STRENGTHS = {"shall", "note", "unclassified"}
+
 _STRICT = ConfigDict(strict=True, extra="forbid", frozen=True)
 
 
@@ -53,6 +62,7 @@ class Citation(BaseModel):
     doc: str = Field(description="Key into the registry's sources.")
     location: str = Field(
         description="Section/table for a document; 'path:line' or 'path:start-end' in hostap.")
+    strength: Strength
     page: str | None = None
     says: str = Field(min_length=1, description="What this source says, in our own words.")
     checked: str | None = Field(
@@ -105,10 +115,14 @@ class RuleRegistry(BaseModel):
             for citation in rule.sources:
                 if citation.doc not in self.sources:
                     raise ValueError(f"{rule.id} cites unknown source {citation.doc!r}")
-            # A rule can only claim to be a spec rule if a normative document says so.
+                # shall / note / unclassified only exist in normative documents.
+                if (citation.strength in _NORMATIVE_DOC_STRENGTHS) != self.sources[citation.doc].normative:
+                    raise ValueError(f"{rule.id}: strength {citation.strength!r} doesn't fit "
+                                     f"source {citation.doc!r}")
+            # A rule is only a spec rule if a "shall" says so; NOTEs are informative.
             if rule.kind == "normative" and not any(
-                    self.sources[citation.doc].normative for citation in rule.sources):
-                raise ValueError(f"{rule.id} is normative but cites no normative source")
+                    citation.strength == "shall" for citation in rule.sources):
+                raise ValueError(f"{rule.id} is normative but cites no 'shall' requirement")
         return self
 
     @cached_property

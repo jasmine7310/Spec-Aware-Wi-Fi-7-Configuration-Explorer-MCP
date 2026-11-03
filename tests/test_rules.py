@@ -56,11 +56,12 @@ def test_get_finds_rules_by_id():
 
 
 def test_action_order_rules_are_not_spec_rules():
-    # action-order.md: these come from hostap's harness/code, never the Wi-Fi spec.
+    # action-order.md: refusing an action sequence is never a Wi-Fi spec violation,
+    # even when the standard defines the state change behind it (AO.NO_LINKS_LEFT).
     for rule in load_rules().rules:
         if rule.id.startswith("AO."):
             assert rule.kind in {"harness", "policy"}, rule.id
-            assert {c.doc for c in rule.sources} == {"hostap"}, rule.id
+            assert "hostap" in {c.doc for c in rule.sources}, rule.id
 
 
 @pytest.mark.parametrize("rule_id,location", _hostap_citations(),
@@ -104,12 +105,37 @@ def test_rejects_unknown_source_doc():
     assert "unknown source" in _invalid(mutate)
 
 
+def _rule(data, rule_id):
+    return next(rule for rule in data["rules"] if rule["id"] == rule_id)
+
+
 def test_rejects_normative_rule_without_normative_source():
     # A rule backed only by WFA guidance or hostap can't call itself a spec rule.
     def mutate(data):
         rule = data["rules"][0]
         rule["sources"] = [s for s in rule["sources"] if s["doc"] in {"WFA-WPA3", "hostap"}]
-    assert "no normative source" in _invalid(mutate)
+    assert "no 'shall'" in _invalid(mutate)
+
+
+def test_rejects_normative_rule_resting_on_a_note():
+    # docs/references.md: NOTEs are informative, not rules. SEC.PMF without its
+    # 802.11-2024 §11.52 "shall" has only a NOTE and WFA guidance left.
+    def mutate(data):
+        rule = _rule(data, "SEC.PMF")
+        rule["sources"] = [s for s in rule["sources"] if s["strength"] != "shall"]
+        assert {s["strength"] for s in rule["sources"]} == {"note", "guidance"}
+    assert "SEC.PMF is normative but cites no 'shall'" in _invalid(mutate)
+
+
+@pytest.mark.parametrize("doc,strength", [
+    ("WFA-WPA3", "shall"), ("hostap", "note"), ("IEEE-802.11be-2024", "code"),
+    ("IEEE-802.11be-2024", "guidance"),
+])
+def test_rejects_strength_that_doesnt_fit_the_source(doc, strength):
+    def mutate(data):
+        source = next(s for s in _rule(data, "SEC.EHT_SAE_AKM")["sources"] if s["doc"] == doc)
+        source["strength"] = strength
+    assert "doesn't fit source" in _invalid(mutate)
 
 
 def test_rejects_wrong_version():
@@ -127,7 +153,9 @@ def test_rejects_wrong_version():
     lambda data: data["rules"][0].update(applies_to=[]),
     lambda data: data["rules"][0].pop("sources"),
     lambda data: data["sources"]["hostap"].update(normative="no"),
+    lambda data: data["rules"][0]["sources"][0].pop("strength"),
+    lambda data: data["rules"][0]["sources"][0].update(strength="must"),
 ], ids=["kind", "status", "id-format", "extra-field", "no-disallowed-example",
-        "no-applies-to", "no-sources", "non-bool-normative"])
+        "no-applies-to", "no-sources", "non-bool-normative", "no-strength", "bad-strength"])
 def test_rejects_malformed_rule(mutate):
     _invalid(mutate)
