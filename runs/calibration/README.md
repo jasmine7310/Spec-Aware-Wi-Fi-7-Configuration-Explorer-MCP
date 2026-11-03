@@ -16,3 +16,9 @@ Both: 2026-10-30, Intel Mac + Docker Desktop, the `wifi7-env` image built from
 In both runs, hostap's traffic test reached AP links 0 and 1 after the last rekey; at
 the pinned hostap commit, `test_eht_mld_gtk_rekey` does check traffic after each group
 rekey.
+
+Also calibrated on a run kept elsewhere (not copied here):
+
+| Run ID | Test | Result | Used to calibrate |
+|---|---|---|---|
+| `runs/smoke/1793690892` | `eht_mld_link_removal` | PASS | Link removal: `CTRL-EVENT-LINK-RECONFIG valid_links=0x1` on the STA after `LINK_REMOVE 4` on link 1 (`link_reconfig_valid_links`) |

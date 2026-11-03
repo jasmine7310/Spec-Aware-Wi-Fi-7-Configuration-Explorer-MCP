@@ -1,13 +1,22 @@
 import csv
+import json
 import os
 import re
 from pathlib import Path
 
 import pytest
 
-CSV_PATH = Path(__file__).resolve().parent.parent / "surface_candidates.csv"
+from explorer.scenarios import TEST_CONFIGS
+from explorer.validate import run_p1_checks
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+CSV_PATH = REPO_ROOT / "surface_candidates.csv"
 COLUMNS = ["name", "category", "kind", "side", "values", "source",
-           "hostap_option_or_helper", "example_tests", "notes"]
+           "hostap_option_or_helper", "example_tests", "notes", "smoke_runs"]
+# Committed run evidence a smoke_runs entry may point to.
+EVIDENCE_DIRS = [REPO_ROOT / "runs" / d for d in ("baseline", "calibration", "smoke")]
+# e.g. "SAE=1793690818; OWE=1793690841"
+SMOKE_ENTRY = re.compile(r"^(?P<value>[^=;]+)=(?P<run_id>\d+)$")
 CATEGORIES = {"security", "key", "link", "management"}
 KINDS = {"config", "action", "observation"}
 SIDES = {"ap", "sta", "both"}
@@ -45,6 +54,43 @@ def test_row_is_well_formed(row):
         assert SOURCE_REF.match(ref), ref
     if row["kind"] == "config":
         assert row["values"], "config candidates list the values seen in the code"
+
+
+def _smoke_runs(row):
+    if not row["smoke_runs"]:
+        return {}
+    entries = [SMOKE_ENTRY.match(e.strip()) for e in row["smoke_runs"].split(";")]
+    assert all(entries), f"{row['name']}: smoke_runs must be 'value=run_id; ...'"
+    return {m["value"]: m["run_id"] for m in entries}
+
+
+def test_at_least_4_candidates_smoke_tested_with_2_values():
+    # Issue "Smoke test 4 settings": >=4 settings or actions, each with >=2 values run.
+    tested = [row["name"] for row in _rows() if len(_smoke_runs(row)) >= 2]
+    assert len(tested) >= 4, tested
+
+
+@pytest.mark.parametrize("row", [r for r in _rows() if r["smoke_runs"]],
+                         ids=lambda row: row["name"])
+def test_smoke_runs_are_committed_passing_runs(row):
+    for value, run_id in _smoke_runs(row).items():
+        folders = [d / run_id for d in EVIDENCE_DIRS if (d / run_id).is_dir()]
+        assert len(folders) == 1, f"{row['name']}={value}: no committed run {run_id}"
+        manifest = json.loads((folders[0] / "manifest.json").read_text())
+        assert manifest["overall"] == "PASS", f"{row['name']}={value}: run {run_id}"
+
+
+@pytest.mark.parametrize("row", [r for r in _rows() if r["smoke_runs"]],
+                         ids=lambda row: row["name"])
+def test_smoke_tested_values_pass_modeled_rules(row):
+    # A value only counts if the run that shows it executes is also legal under the
+    # coded P1 rules (e.g. plain SAE between EHT devices breaks 802.11be §12.12.9).
+    for value, run_id in _smoke_runs(row).items():
+        folder = next(d / run_id for d in EVIDENCE_DIRS if (d / run_id).is_dir())
+        for result in json.loads((folder / "manifest.json").read_text())["results"]:
+            config = TEST_CONFIGS.get(result["test"])
+            assert config is not None, f"{row['name']}={value}: {result['test']} has no scenario"
+            assert run_p1_checks(config) == [], f"{row['name']}={value}: {result['test']}"
 
 
 def test_covers_security_key_and_link():

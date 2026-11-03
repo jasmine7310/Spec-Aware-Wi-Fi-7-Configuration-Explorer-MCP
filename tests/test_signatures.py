@@ -10,6 +10,7 @@ BASELINE = RUNS / "baseline"
 BASELINE_RUNS = ["1793298094", "1793298125", "1793298146"]
 PTK_REKEY_RUN = RUNS / "calibration" / "1793402046"
 GTK_REKEY_RUN = RUNS / "calibration" / "1793402120"
+LINK_REMOVAL_RUN = RUNS / "smoke" / "1793690892"
 
 
 # --- Real baseline runs -------------------------------------------------------
@@ -100,6 +101,27 @@ def test_rekey_tests_dont_log_links_or_status():
         assert record.valid_links == UNKNOWN
         assert record.active_links == UNKNOWN
         assert record.station_status == UNKNOWN
+
+
+# --- Real link removal run (smoke, calibrates link_reconfig_valid_links) --------
+# Expected values were read from the run's eht_mld_link_removal.log.
+
+def test_link_removal_run():
+    record = extract_record(LINK_REMOVAL_RUN)
+
+    assert record.test == "eht_mld_link_removal"
+    assert record.test_result == "PASS"
+    # After LINK_REMOVE 4 on link 1, the STA keeps only link 0.
+    assert record.link_reconfig_valid_links == ("0x1",)
+    # REKEY_GTK, then two more group rekeys while the last link is being removed.
+    assert record.gtk_rekeys_completed == 3
+    # Disconnected after the last link is removed (802.11be §35.3.6.3).
+    assert record.disconnects == (Disconnect(reason=4, locally_generated=True),)
+
+
+def test_no_link_reconfig_is_an_empty_tuple():
+    record = extract_record(BASELINE / BASELINE_RUNS[0])
+    assert record.link_reconfig_valid_links == ()
 
 
 def test_reconnect_handshake_is_not_a_rekey(tmp_path):
