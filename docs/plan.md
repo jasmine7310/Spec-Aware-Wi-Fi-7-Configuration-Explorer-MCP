@@ -4,7 +4,7 @@ Shared context for the team and for coding agents. The GitHub issue board tracks
 individual tasks and their status; this file holds the big picture and the decisions
 behind it. Issues are referred to by name, not number.
 
-_Status last updated 2026-10-30 from what is merged on `main`. Work that exists only on
+_Status last updated 2026-11-02 from what is merged on `main`. Work that exists only on
 someone's laptop or on the board isn't reflected here._
 
 ## What we're building
@@ -16,7 +16,7 @@ every rejection says which stage and which sourced rule rejected it:
 | Stage | Component | Question it answers | Status |
 |---|---|---|---|
 | P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | 🟡 Settings model (`model.Config`); actions model not yet |
-| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | ⬜ |
+| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | 🟡 Rule registry (`rules.yaml` + `rules.load_rules()`); no rule is enforced yet |
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | ⬜ |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()` |
 | P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
@@ -28,7 +28,7 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `runner.py` (P3), `signatures.py` (behavior records), `mcp_server.py` (MCP skeleton). The rest are placeholders |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `runner.py` (P3), `signatures.py` (behavior records), `mcp_server.py` (MCP skeleton). The rest are placeholders |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
 | `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
@@ -39,10 +39,11 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 | `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
 | `docs/` | This plan and other notes |
 | `surface_candidates.csv` | Candidate settings, actions and observations found in hostap's tests, each with source lines (`tests/test_surface_candidates.py` checks it; set `WIFI7_HOSTAP_SRC` to also check the lines exist) |
+| `rules.yaml` | P1 rule registry: each rule's ID, kind (normative / guidance / dependency / harness / policy), meaning, predicate, exceptions, sources and examples, transcribed from `docs/research/`. `tests/test_rules.py` checks it; set `WIFI7_HOSTAP_SRC` to also check the hostap lines exist |
 
-The other data files (`rules.yaml`, `model.json`, `anchor_coverage.csv`,
-`pruning_counts.json`) still sit in `src/` as placeholders and should move to the repo
-root (as in the spec's layout) when they are first filled in.
+The other data files (`model.json`, `anchor_coverage.csv`, `pruning_counts.json`) still
+sit in `src/` as placeholders and should move to the repo root (as in the spec's layout)
+when they are first filled in.
 
 ## Decisions
 
@@ -93,7 +94,7 @@ root (as in the spec's layout) when they are first filled in.
 | Pick the 4 scenario families | ⬜ Nothing on `main` yet. Suggested: F01 SAE association, F05 beacon protection, F09 GTK (or F08 PTK) rekey, F06 link removal |
 | Data model for settings | ✅ `model.Config` (AP MLD with per-link AKMs + client), strict, `extra="forbid"`; values limited to those hostap's tests use. Wi-Fi rules are left to P1 |
 | Data model for actions | ⬜ Needs the settings model and a decision on the open questions in `docs/research/action-order.md` |
-| Readable format errors, rules file + loader | ⬜ Can slide to Week 2 |
+| Readable format errors, rules file + loader | 🟡 Rules file + loader done: `rules.yaml` holds 14 draft rules (6 `SEC.*` from the security research, 8 `AO.*` from the action-order research), loaded and checked by `rules.load_rules()`; hostap citations checked to exist at the pinned commit. Every rule stays `draft` until its research is reviewed. Readable format errors still to do |
 
 ## Week 2 status
 
@@ -104,18 +105,20 @@ root (as in the spec's layout) when they are first filled in.
 | MCP server skeleton | MCP | ✅ Done. `get_model`, `.mcp.json`; verified in a Claude Code session |
 | Smoke-test 4 settings | Simulation | ⬜ Unblocked (candidate list done). Per the roadmap: ≥4 executable config/action dimensions, each with ≥2 verified choices. The security research narrows the choices: beacon protection and PMF look like fixed settings, not dimensions |
 | Support check (P2) | Simulation | ⬜ Waits on the settings smoke test |
-| Code rule: security type matches on every link | Research | ⬜ Waits on its rule research, data model, rules file + loader |
-| Code rules: setting dependencies | Research | ⬜ Waits on their rule research, data model, rules file + loader |
-| Action-order checker | Research | ⬜ Waits on the action data model (research done: `docs/research/action-order.md`) |
-| Undetermined result (`SPEC_UNDETERMINED`) | Research | ⬜ Waits on rules file + loader |
+| Code rule: security type matches on every link | Research | ⬜ Unblocked: enforce `SEC.MLD_COMMON_SUITES` from `rules.yaml` against `model.Config`. Its research still needs a teammate's review |
+| Code rules: setting dependencies | Research | ⬜ Unblocked: rules are in `rules.yaml` (e.g. `SEC.SAE_PWE_NEEDS_SAE`). Their research still needs a teammate's review |
+| Action-order checker | Research | ⬜ Waits on the action data model (rules: `AO.*` in `rules.yaml`) |
+| Undetermined result (`SPEC_UNDETERMINED`) | Research | ⬜ Unblocked (rules file + loader done) |
 | `validate_candidate` pipeline | Data models | ⬜ Waits on all checks above |
 | Expose checks and runs over MCP | MCP | ⬜ Waits on the pipeline (runner and MCP skeleton are ready) |
 | Record the demo | MCP | ⬜ Last |
 | Write the 1-page report | MCP | ⬜ Last |
 
-**Main blockers:** the rules file + loader (the coded rules and `SPEC_UNDETERMINED` wait on
-it) and a teammate review of `docs/research/security-guidance.md`. The candidate settings
-list is done, so the settings smoke test can start.
+**Main blockers:** a teammate review of `docs/research/security-guidance.md`, and the team
+decisions on the plain-SAE baseline (`SEC.EHT_SAE_AKM`) and the open questions in
+`docs/research/action-order.md` (the action data model waits on them). The rules file +
+loader is done, so the coded rules and `SPEC_UNDETERMINED` can start; so can the settings
+smoke test.
 
 ## Checkpoint 1
 
