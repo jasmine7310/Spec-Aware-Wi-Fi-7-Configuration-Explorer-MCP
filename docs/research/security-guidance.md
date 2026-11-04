@@ -115,7 +115,7 @@ The guide marks each value per device type, and Wi-Fi 7 means the EHT rows:
 | **Strength** | IEEE "shall" (normative) |
 | **hostap mapping** | `00-0F-AC:24` is `RSN_AUTH_KEY_MGMT_SAE_EXT_KEY` and `00-0F-AC:25` is `RSN_AUTH_KEY_MGMT_FT_SAE_EXT_KEY` (`src/common/wpa_common.h:104-105`), i.e. hostap's `SAE-EXT-KEY` and `FT-SAE-EXT-KEY` |
 | **Candidates** | `ap_akm` (`SAE` / `SAE-EXT-KEY` / `OWE`), `sta_akm` |
-| **Effect on our baseline** | `eht_mld_sae_two_links`, our official baseline, configures both the AP (`tests/hwsim/test_eht.py:693`) and the client (`test_eht.py:715`) with `key_mgmt="SAE"`, i.e. AKM 8 between two EHT devices. If this rule is encoded, the baseline configuration is a SPEC_RULE_VIOLATION under our modeled rules, while the `sae_ext` tests comply. **Decide as a team** how this affects the SAE scenario family and how the baseline is described; hostap running it is P2/P3 evidence, not P1 evidence. |
+| **Effect on our baseline** | `eht_mld_sae_two_links`, our official baseline, configures both the AP (`tests/hwsim/test_eht.py:693`) and the client (`test_eht.py:715`) with `key_mgmt="SAE"`, i.e. AKM 8 between two EHT devices. If this rule is encoded, the baseline configuration is a SPEC_RULE_VIOLATION under our modeled rules, while the `sae_ext` tests comply. **Decided 2026-11-03** (`docs/plan.md`, "Baseline"): `runs/baseline/` stays the environment baseline, labeled a negative experiment, and anchor F02 (`eht_mld_sae_ext_two_links`) is the legal baseline; hostap running it is P2/P3 evidence, not P1 evidence. |
 | **Status** | IEEE §12.12.9 verified by Michelle in the PDF (2026-10-31); WFA row unverified |
 
 ### SEC.EHT_SAE_H2E: SAE between EHT devices uses Hash-to-Element

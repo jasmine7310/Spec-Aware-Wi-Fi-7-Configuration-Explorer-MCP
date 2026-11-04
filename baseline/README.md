@@ -47,6 +47,15 @@ build is reproducible from scratch.
 Three independent runs of hostap's `eht_mld_sae_two_links` (two-link SAE MLO
 association), each in a fresh container and UML guest, on 2026-10-29.
 
+**What they are evidence for** (team decision, 2026-11-03; see "Baseline" in
+[`docs/plan.md`](../docs/plan.md)): these runs are the *environment* baseline. They show
+that the Docker/UML setup reproduces a two-link MLO association. Their configuration
+(plain SAE, AKM 8, between two EHT devices) breaks IEEE 802.11be-2024 §12.12.9, which
+requires AKM 24 or 25, so under our modeled rules they are a negative experiment, never a
+legal candidate or one side of a contrast. The *legal* baseline is anchor family F02,
+`eht_mld_sae_ext_two_links` (AKM 24): three independent passing runs with identical
+behavior signatures, listed in [`anchor_coverage.csv`](../anchor_coverage.csv).
+
 | Run ID | Result | Started (UTC) | Wall time | Evidence |
 |---|---|---|---|---|
 | [`1793298094`](../runs/baseline/1793298094/) | PASS | 2026-10-29 18:21:34 | 25 s | `manifest.json`, `results.db`, `eht_mld_sae_two_links.log`, `console`, capture `.hwsim0.pcapng` 32,144 bytes (decrypted `.hwsim0.dec.pcapng` 58,624) |

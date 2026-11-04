@@ -284,9 +284,10 @@ rules:
       - "Coded as explorer.validate.check_eht_sae_akm."
       - >-
         Our plain-SAE baseline (eht_mld_sae_two_links) is a SPEC_RULE_VIOLATION under this
-        rule, so run_hwsim_test only runs it as a labeled negative experiment. How the
-        team describes the baseline is still its decision (issue "Decide baseline and
-        action model"). hostap running it is P2/P3 evidence, not P1 evidence.
+        rule, so run_hwsim_test only runs it as a labeled negative experiment. Decided
+        2026-11-03 (docs/plan.md, "Baseline"): runs/baseline/ stays the environment
+        baseline, and anchor F02 (eht_mld_sae_ext_two_links, AKM 24) is the legal
+        baseline. hostap running plain SAE is P2/P3 evidence, not P1 evidence.
 
   - id: SEC.EHT_SAE_H2E
     title: SAE between EHT devices uses hash-to-element
@@ -478,11 +479,12 @@ rules:
     meaning: >-
       The target AP must already be in the STA's scan results, and the STA must not be
       scanning or part-way through connecting.
-    predicate: "The AP was seen in a prior scan, and the STA is disconnected (after a scan) or associated."
+    predicate: "The AP was seen in a prior scan, and the STA is disconnected (not associated)."
     exceptions:
       - >-
-        The code allows probing while associated, but no test does it: treat
-        [associate, ml_probe_req] as permitted but untested until a smoke test admits it.
+        The code also allows probing while associated, but no hostap test does it, so
+        [associate, ml_probe_req] is not admitted (decided 2026-11-03, docs/plan.md
+        "Action model").
     sources:
       - doc: hostap
         strength: code

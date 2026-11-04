@@ -73,6 +73,25 @@ first filled in.
 - **Behavior facts:** every fact comes from a specific log line or file; missing evidence
   is `UNKNOWN`, never guessed. A fact is only detected after it has been calibrated
   against real runs (kept in `runs/calibration/`). ML probe and BTM are not calibrated yet.
+- **Baseline** (decided 2026-11-03): `runs/baseline/` (plain SAE, `eht_mld_sae_two_links`)
+  is the *environment* baseline: it shows the Docker/UML setup reproduces a two-link MLO
+  association. Its configuration breaks 802.11be §12.12.9 (AKM 8 between EHT devices), so
+  it's a negative experiment, never a legal candidate or a side of a contrast. The *legal*
+  baseline for experiments and contrasts is anchor family F02, `eht_mld_sae_ext_two_links`
+  (AKM 24), whose three runs with identical signatures are listed in
+  `anchor_coverage.csv`.
+- **Action model** (decided 2026-11-03, answers the open questions in
+  `docs/research/action-order.md`):
+  - *ML probe:* only `[scan, ml_probe_req]` is admitted. Probing while associated is
+    allowed by hostap's code but no hostap test does it, so it stays not admitted.
+  - *Last link removed:* the STA is disassociated (802.11be §35.3.6.3); post-association
+    actions need a new `associate`.
+  - *Disassociate / deauthenticate:* the STA is disconnected afterwards and continuing
+    needs an explicit `associate`. hostap's automatic reconnection is recorded as observed
+    behavior, not assumed by the action model.
+- **Anchor families** (approved by the team 2026-11-03): F02 SAE-EXT-KEY association, F08
+  PTK rekey, F09 GTK rekey, F06 link removal (`anchor_coverage.csv`). F01 (plain SAE) and
+  F05 (beacon protection off) are out because both break 802.11be §12.12.9.
 - **MCP SDK:** `mcp==2.3.0`. `FastMCP` was removed in v2; use
   `from mcp.server.mcpserver import MCPServer`. Most online examples are v1 and won't import.
 - **Dependencies:** pinned exactly in `pyproject.toml`. `setuptools==80.9.0` is pinned
@@ -93,10 +112,11 @@ first filled in.
 | List candidate settings from test code | ✅ `surface_candidates.csv`: 34 candidates (17 settings, 10 actions, 7 observations) from `test_eht.py` / `hostapd.py` at the pinned commit. Candidates only; admitting a dimension needs the settings smoke test |
 | Get the standards documents | 🟡 `docs/references.md` lists IEEE Std 802.11be-2024, IEEE Std 802.11-2024 and the WFA "WPA3 and Wi-Fi Enhanced Open Deployment and Implementation Guide" v1.1 (Feb 2025), with versions, links, normative vs guidance, relevant sections and how to get a copy. Still to do: every teammate doing rule research confirming they can open all three. Don't commit the PDFs |
 | Rule research: action order | ✅ `docs/research/action-order.md`: 8 rules (harness/code prerequisites, not spec rules), each with sources, who enforces it, and allowed/disallowed examples |
-| Rule research: link security match; SAE PWE / beacon protection | 🟡 Draft in `docs/research/security-guidance.md`: 6 findings (link suites, beacon protection, PMF, SAE AKM, SAE H2E, and the setting dependency "`sae_pwe` only with SAE"), citing 802.11be-2024 / 802.11-2024 and, where it applies, the WFA guide. IEEE citations checked against the PDFs; **the WFA rows (and a few hostap lines) still need a teammate's review** before merging. **Team decision needed:** 802.11be §12.12.9 requires AKM 24/25 for SAE between EHT devices, so the plain-SAE baseline test (`eht_mld_sae_two_links`) wouldn't pass the modeled rules |
-| Pick the 4 scenario families | 🟡 Drafted, **pending team approval**: `anchor_coverage.csv` (moved to the repo root) lists F02 SAE-EXT-KEY association, F08 PTK rekey, F09 GTK rekey and F06 link removal, with helpers checked against the pinned tests. All four are `PASS`: 3 independent passing runs each with identical behavior signatures (new runs in `runs/anchors/`; F08 and F09 span an Intel Mac and Windows + WSL2). F01 (plain SAE) and F05 (beacon protection off) were dropped: both break 802.11be §12.12.9. `tests/test_anchor_coverage.py` checks the file |
+| Rule research: link security match; SAE PWE / beacon protection | 🟡 Draft in `docs/research/security-guidance.md`: 6 findings (link suites, beacon protection, PMF, SAE AKM, SAE H2E, and the setting dependency "`sae_pwe` only with SAE"), citing 802.11be-2024 / 802.11-2024 and, where it applies, the WFA guide. IEEE citations checked against the PDFs; **the WFA rows (and a few hostap lines) still need a teammate's review** before merging. The plain-SAE baseline question (802.11be §12.12.9 requires AKM 24/25 between EHT devices) is decided: see "Baseline" under Decisions |
+| Pick the 4 scenario families | ✅ Done, approved by the team 2026-11-03. `anchor_coverage.csv` (moved to the repo root) lists F02 SAE-EXT-KEY association, F08 PTK rekey, F09 GTK rekey and F06 link removal, with helpers checked against the pinned tests. All four are `PASS`: 3 independent passing runs each with identical behavior signatures (new runs in `runs/anchors/`; F08 and F09 span an Intel Mac and Windows + WSL2). F01 (plain SAE) and F05 (beacon protection off) were dropped: both break 802.11be §12.12.9. `tests/test_anchor_coverage.py` checks the file |
 | Data model for settings | ✅ `model.Config` (AP MLD with per-link AKMs + client), strict, `extra="forbid"`; values limited to those hostap's tests use. Wi-Fi rules are left to P1 |
-| Data model for actions | ⬜ Needs the settings model and a decision on the open questions in `docs/research/action-order.md` |
+| Data model for actions | ⬜ Unblocked: the action-model questions are decided (see "Action model" under Decisions) |
+| Decide baseline and action model | ✅ Done 2026-11-03. Recorded under Decisions ("Baseline", "Action model") and in `docs/research/action-order.md` |
 | Readable format errors, rules file + loader | 🟡 Rules file + loader done: `rules.yaml` holds 14 draft rules (6 `SEC.*` from the security research, 8 `AO.*` from the action-order research), loaded and checked by `rules.load_rules()`; hostap citations checked to exist at the pinned commit. Every rule stays `draft` until its research is reviewed. Readable format errors still to do |
 
 ## Week 2 status
@@ -110,7 +130,7 @@ first filled in.
 | Support check (P2) | Simulation | ⬜ Unblocked (smoke runs recorded) |
 | Code rule: security type matches on every link | Research | ✅ Done, rechecked against the PDFs. Split by what the standard binds: `SEC.MLD_COMMON_SUITES` (802.11be §12.6.2, the AP MLD's own RSNE: same pairwise cipher, a common AKM) rejects hostap's `invalid_link`, `invalid_link_akm`, `invalid_link_pairwise` and `no_common_key_mgmt` configurations and allows different AKM lists that share an AKM; `SEC.MLD_CLIENT_COMMON_AKM` (§12.6.3.1) flags a client that allows none of the common AKMs, which a conforming client answers by declining. `SEC.EHT_SAE_AKM` (§12.12.9) is coded too. Rules stay `draft` until a teammate reviews the research |
 | Code rules: setting dependencies | Research | ⬜ Unblocked: rules are in `rules.yaml` (e.g. `SEC.SAE_PWE_NEEDS_SAE`). Their research still needs a teammate's review |
-| Action-order checker | Research | ⬜ Waits on the action data model (rules: `AO.*` in `rules.yaml`) |
+| Action-order checker | Research | ⬜ Waits on the action data model, which is now unblocked (rules: `AO.*` in `rules.yaml`) |
 | Undetermined result (`SPEC_UNDETERMINED`) | Research | ⬜ Unblocked (rules file + loader done) |
 | `validate_candidate` pipeline | Data models | ⬜ Waits on all checks above |
 | Expose a real run over MCP | MCP | ✅ Done. `run_hwsim_test` runs one hostap test that has a passing committed run and a known configuration (`explorer.scenarios`) and returns its behavior record. It applies the coded P1 rules first: `get_model` lists each runnable test's `p1_status`, and a test that breaks a rule (the plain-SAE baseline, §12.12.9) is refused unless called with `negative_experiment=true`, which labels the result. Verified with a real run of `eht_mld_sae_ext_two_links` through an in-process MCP client (`WIFI7_DOCKER_TESTS=1`). Still to record: a transcript from a Claude Code session |
@@ -119,14 +139,11 @@ first filled in.
 | Write the 1-page report | MCP | ⬜ Last |
 
 **Main blockers:** a teammate review of `docs/research/security-guidance.md` (an AI agent
-has checked every IEEE and WFA citation against the PDF text, which doesn't replace it),
-and the team decisions on how to describe the plain-SAE baseline and on the two
-remaining open questions in `docs/research/action-order.md` (the last-link one is
-answered by 802.11be §35.3.6.3). Until the baseline decision, `run_hwsim_test` treats the
-plain-SAE baseline as a negative experiment because it breaks §12.12.9. The rules file +
-loader, the link security rules, the settings smoke test and a real run over MCP are
-done, so the remaining coded rules, `SPEC_UNDETERMINED` and the P2 support check can
-start.
+has checked every IEEE and WFA citation against the PDF text, which doesn't replace it).
+The baseline and action-model decisions are made and the anchor families approved, so
+the action data model (then the action-order checker) can start, alongside the remaining
+coded rules, `SPEC_UNDETERMINED` and the P2 support check. `run_hwsim_test` treats the
+plain-SAE baseline as a negative experiment, as decided.
 
 ## Checkpoint 1
 

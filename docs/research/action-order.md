@@ -165,14 +165,20 @@ Not ordering rules, but the checker needs them to accept an action:
 | `bss_tm_link_removal_imminent` | `ap_bss_transition=1` (and `mbo=1` in the test) | `tests/hwsim/test_eht.py:1438-1439` | Harness: set in the only test; not checked in the `BSS_TM_REQ` handler I read |
 | `link_remove` | hostapd built with `CONFIG_TESTING_OPTIONS` | `src/ap/hostapd.c:497` | hostap build |
 
-## Open questions
+## Decided questions
 
-- **ML probe while associated** (AO.ML_PROBE_STATE): allowed by the code, never tested.
-  Needs a smoke test before it's admitted.
-- ~~**Last link removed** (AO.NO_LINKS_LEFT): the tests don't say whether the STA is
-  disconnected or just has no working link.~~ Answered by 802.11be §35.3.6.3: the
-  non-AP MLD is disassociated (see the rule above).
+All three were decided on 2026-11-03 (also recorded under "Action model" in
+[`docs/plan.md`](../plan.md)).
+
+- **ML probe while associated** (AO.ML_PROBE_STATE): allowed by the code, never tested,
+  and our runner can only run existing hostap tests. **Decision:** only
+  `[scan, ml_probe_req]` is admitted; probing while associated stays not admitted.
+- **Last link removed** (AO.NO_LINKS_LEFT): the tests didn't say whether the STA is
+  disconnected or just has no working link. **Answered** by 802.11be §35.3.6.3: the
+  non-AP MLD is disassociated (see the rule above), so post-association actions need a
+  new `associate`.
 - **Disassociate / deauthenticate**: the test expects the STA to reconnect on its own
-  afterwards (`tests/hwsim/test_eht.py:2050-2056`). Should the model treat
-  `[ap_disassociate]` as returning to `associated` after a wait, or require an explicit
-  `associate`? A choice for the action data model.
+  afterwards (`tests/hwsim/test_eht.py:2050-2056`). **Decision:** after `ap_disassociate`
+  or `ap_deauthenticate` the model treats the STA as disconnected, and continuing needs an
+  explicit `associate`. The automatic reconnection is wpa_supplicant's behavior, so it is
+  recorded as an observation, not assumed by the action model.
