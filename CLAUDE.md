@@ -68,7 +68,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `rules.yaml` (rules plus `UND.*` open questions). `explorer.validate`: `parse_candidate`
   (readable `P0.*` errors), `P1_CHECKS` / `run_p1_checks(config)` (coded rule checks by
   rule ID), `find_undetermined(config)`, `check_action_order(candidate)` (AO.* rules), all
-  returning `Finding`s with an outcome; `p1_status` sums them up. `explorer.scenarios.TEST_CONFIGS`: the `Config` each runnable
+  returning `Finding`s with an outcome; `p1_status` sums them up; `validate_candidate(data)`
+  chains P0 and P1 for raw input and explains each finding from `rules.yaml`. `explorer.scenarios.TEST_CONFIGS`: the `Config` each runnable
   hostap test sets up, read from its source lines.
 
 ## Rules for agents

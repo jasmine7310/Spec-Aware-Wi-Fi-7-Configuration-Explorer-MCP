@@ -11,19 +11,24 @@ Every finding names its stage, its outcome and the ID it rests on:
 ``P1_CHECKS`` maps rule IDs to their configuration checks and ``run_p1_checks`` runs
 them; ``find_undetermined`` asks the configuration questions; ``check_action_order``
 walks a candidate's actions. ``p1_status`` sums findings up. No finding means only
-that the candidate passes the modeled rules, not that it complies with 802.11be. The
-``validate_candidate`` pipeline will build on these.
+that the candidate passes the modeled rules, not that it complies with 802.11be.
+
+``validate_candidate`` chains them for raw input, without booting a guest: P0, then
+(if well formed) every P1 check, with each finding explained from ``rules.yaml``.
+P2 (implementation support) isn't checked yet.
 """
 
 from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from explorer.model import Candidate, Config
+from explorer.rules import Citation, RuleRegistry, load_rules
 
 Outcome = Literal["MALFORMED", "SPEC_RULE_VIOLATION", "SPEC_UNDETERMINED"]
 
@@ -448,3 +453,87 @@ def _apply(state: _State, step) -> tuple[str, str] | None:
         state.leave(f"the AP {'disassociated' if name == 'ap_disassociate' else 'deauthenticated'} "
                     f"the STA (continuing needs an explicit associate)")
     return None
+
+
+# --- The pipeline -----------------------------------------------------------------
+
+CandidateStatus = Literal["MALFORMED", "SPEC_RULE_VIOLATION", "SPEC_UNDETERMINED",
+                          "PASSES_MODELED_RULES"]
+
+
+class ExplainedFinding(BaseModel):
+    """A finding plus what the registry says about the rule or question behind it."""
+
+    stage: Literal["P0", "P1"]
+    outcome: Outcome
+    rule_id: str
+    reason: str
+    title: str
+    kind: str
+    """normative / guidance / dependency / harness / policy, open_question, or format (P0)."""
+    sources: list[str]
+    """e.g. 'IEEE-802.11be-2024 §12.12.9 Security constraints for EHT, PDF 446 (printed 445) (shall)'."""
+
+
+class ValidationResult(BaseModel):
+    status: CandidateStatus
+    stage_reached: Literal["P0", "P1"]
+    """P0 if the input is malformed (P1 wasn't run), otherwise P1."""
+    findings: list[ExplainedFinding]
+    p2: Literal["NOT_CHECKED"] = "NOT_CHECKED"
+    """Implementation support (P2) isn't checked by this pipeline yet."""
+    note: str
+
+
+_NOTES = {
+    "MALFORMED": "Rejected at P0: the input doesn't fit the model, so the rules weren't checked.",
+    "SPEC_RULE_VIOLATION": (
+        "Rejected at P1 by the modeled rules listed. An AO.* (harness/policy) rule means the "
+        "action sequence doesn't make sense for our experiments, not that it breaks the Wi-Fi "
+        "specification."),
+    "SPEC_UNDETERMINED": (
+        "The modeled rules can't decide this candidate: it is neither approved nor a "
+        "violation, and stays out of the default campaign."),
+    "PASSES_MODELED_RULES": (
+        "Passes the modeled rules: no coded rule objects. This is not full 802.11be "
+        "compliance."),
+}
+
+
+def cite(citation: Citation) -> str:
+    page = f", {citation.page}" if citation.page else ""
+    return f"{citation.doc} {citation.location}{page} ({citation.strength})"
+
+
+@lru_cache(maxsize=1)
+def _registry() -> RuleRegistry:
+    return load_rules()
+
+
+def explain(finding: Finding, registry: RuleRegistry | None = None) -> ExplainedFinding:
+    if finding.stage == "P0":
+        return ExplainedFinding(**finding.model_dump(), title=P0_ERRORS[finding.rule_id],
+                                kind="format", sources=[])
+    entry = (registry or _registry()).get(finding.rule_id)
+    return ExplainedFinding(**finding.model_dump(), title=entry.title,
+                            kind=getattr(entry, "kind", "open_question"),
+                            sources=[cite(c) for c in entry.sources])
+
+
+def validate_candidate(data: object) -> ValidationResult:
+    """P0 then P1 for one candidate given as raw input (e.g. JSON from the agent).
+
+    Never boots a guest. A malformed candidate stops at P0; otherwise every coded
+    setting rule, open question and the action order are checked, and all findings are
+    returned. P2 isn't checked yet.
+    """
+    candidate, malformed = parse_candidate(data)
+    if candidate is None:
+        return ValidationResult(status="MALFORMED", stage_reached="P0",
+                                findings=[explain(f) for f in malformed],
+                                note=_NOTES["MALFORMED"])
+    findings = (run_p1_checks(candidate.config) + find_undetermined(candidate.config)
+                + check_action_order(candidate))
+    status = p1_status(findings)
+    return ValidationResult(status=status, stage_reached="P1",
+                            findings=[explain(f) for f in findings], note=_NOTES[status])
