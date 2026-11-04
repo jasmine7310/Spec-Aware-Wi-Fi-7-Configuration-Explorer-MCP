@@ -111,6 +111,33 @@ def test_last_link_reason_cites_the_standard():
     assert "§35.3.6.3" in violations[0].reason
 
 
+def test_only_disabled_links_left_reason_cites_link_disablement():
+    # Link 1 still exists but is advertised as disabled, so §35.3.6.3 isn't the clause.
+    violations = _check([ASSOC, remove(0), REKEY], test="eht_mld_owe_two_links_one_disabled")
+    assert [v.rule_id for v in violations] == ["AO.NO_LINKS_LEFT"]
+    assert "§35.3.7.5.2" in violations[0].reason
+    assert "§35.3.6.3" not in violations[0].reason
+
+
+def test_associating_with_only_disabled_links_is_rejected():
+    violations = _check([ASSOC, remove(0), ASSOC], test="eht_mld_owe_two_links_one_disabled")
+    assert [v.rule_id for v in violations] == ["AO.NO_LINKS_LEFT"]
+    assert violations[0].reason.startswith("actions[2] ")
+    assert "§35.3.7.5.2" in violations[0].reason
+
+
+def test_associating_with_every_configured_link_disabled_is_rejected():
+    config = TEST_CONFIGS["eht_mld_owe_two_links_one_disabled"].model_dump()
+    config["ap"]["links"][0]["indicate_disabled"] = True
+    candidate = Candidate.model_validate({"config": config, "actions": [ASSOC]})
+    assert [v.rule_id for v in check_action_order(candidate)] == ["AO.NO_LINKS_LEFT"]
+
+
+def test_associating_with_an_enabled_link_left_is_allowed():
+    # Removing the disabled link leaves enabled link 0.
+    assert _check([ASSOC, remove(1), ASSOC, REKEY], test="eht_mld_owe_two_links_one_disabled") == []
+
+
 def test_reassociating_after_every_link_is_removed_is_undetermined():
     # No AP links are left; none of our sources say what associating then does.
     findings = _check([ASSOC, remove(1), remove(0), ASSOC])

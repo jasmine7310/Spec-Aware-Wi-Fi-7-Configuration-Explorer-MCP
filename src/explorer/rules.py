@@ -32,7 +32,7 @@ REGISTRY_VERSION = 1
 
 RuleKind = Literal["normative", "guidance", "dependency", "harness", "policy"]
 
-# draft: the research behind the rule hasn't been reviewed by a second teammate yet.
+# draft: a person hasn't finished checking the citations behind the rule yet.
 RuleStatus = Literal["draft", "reviewed"]
 
 # What kind of text a citation points at (docs/references.md):

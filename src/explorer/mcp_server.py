@@ -121,7 +121,7 @@ class RuleExplanation(BaseModel):
     kind: str
     """A rule kind, open_question (UND.*), or format (P0.*)."""
     status: str | None
-    """draft until a teammate has reviewed the research behind it."""
+    """draft until a person has finished checking the citations behind it."""
     title: str
     meaning: str
     predicate: str | None
@@ -157,7 +157,8 @@ STAGES = [
                 note="A modeled subset, not full 802.11be: six security/setting rules, eight "
                      "action-order rules and three open questions (SPEC_UNDETERMINED), all "
                      "applied by validate_candidate and explained by explain_rule. Every "
-                     "rule is still a draft until a teammate reviews its research."),
+                     "rule's citations are checked, and they're reviewed except "
+                     "SEC.EHT_BEACON_PROT, a draft because its client side isn't modeled."),
     StageStatus(stage="P2 implementation support", implemented=False,
                 note="Smoke runs are recorded (surface_candidates.csv smoke_runs); no "
                      "support check uses them yet."),

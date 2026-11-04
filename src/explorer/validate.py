@@ -393,6 +393,10 @@ def _apply(state: _State, step) -> tuple[str, str] | None:
             return ("UND.ASSOC_WITHOUT_AP_LINKS",
                     "every AP link was removed; our sources don't say what associating "
                     "with an AP MLD that has no affiliated APs does")
+        if not state.ap_links - state.disabled_links:
+            return ("AO.NO_LINKS_LEFT",
+                    "only disabled links remain, and a STA that isn't associated doesn't send "
+                    "(Re)association Requests on a disabled link (802.11be §35.3.7.5.2)")
         state.associate()
     elif name == "scan":
         state.scanned = True
@@ -408,10 +412,14 @@ def _apply(state: _State, step) -> tuple[str, str] | None:
         state.ap_links.discard(step.link_id)
         state.active_links.discard(step.link_id)
         if not state.active_links:
-            # Its last usable setup link is gone: 802.11be §35.3.6.3 (and §35.3.7.5.2
-            # when only disabled links remain) disassociate the non-AP MLD.
-            state.leave("the last link was removed, which disassociates the STA "
-                        "(802.11be §35.3.6.3)", rule="AO.NO_LINKS_LEFT")
+            # Its last usable setup link is gone: 802.11be §35.3.6.3 (or §35.3.7.5.2
+            # when only disabled links remain) disassociates the non-AP MLD.
+            if state.ap_links & state.disabled_links:
+                why = ("the last enabled link was removed and only disabled links remain, "
+                       "which disassociates the STA (802.11be §35.3.7.5.2)")
+            else:
+                why = "the last link was removed, which disassociates the STA (802.11be §35.3.6.3)"
+            state.leave(why, rule="AO.NO_LINKS_LEFT")
     elif name == "setup_link_reconfig":
         if step.operation == "delete":
             if step.link_id not in state.active_links:

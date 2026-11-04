@@ -166,11 +166,16 @@ def _explain(rule_id):
 
 def test_explain_a_normative_rule():
     entry = _explain("SEC.EHT_SAE_AKM").structured_content
-    assert (entry["kind"], entry["status"]) == ("normative", "draft")
+    assert (entry["kind"], entry["status"]) == ("normative", "reviewed")
     shall = [s for s in entry["sources"] if s["strength"] == "shall"]
     assert shall[0]["location"].startswith("§12.12.9")
     assert shall[0]["page"] == "PDF 446 (printed 445)"
     assert entry["examples"]["disallowed"]
+
+
+def test_beacon_protection_stays_a_draft():
+    # Its client side isn't modeled yet (docs/plan.md, "Main blockers").
+    assert _explain("SEC.EHT_BEACON_PROT").structured_content["status"] == "draft"
 
 
 def test_explain_an_action_order_rule():

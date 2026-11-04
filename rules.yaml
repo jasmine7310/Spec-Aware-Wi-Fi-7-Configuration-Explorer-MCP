@@ -17,10 +17,12 @@
 #   code          hostap source or tests
 # A normative rule needs at least one "shall"; the loader checks this. Every IEEE and
 # WFA citation's section, page and strength was checked against the PDF text on
-# 2026-11-02 by Claude (an AI agent); that is not a teammate review.
+# 2026-11-02 by Claude (an AI agent); that doesn't replace a person's check.
 #
-# status is "draft" until a second teammate has reviewed the research the rule comes
-# from (docs/research/*.md). Each source's `checked` says who verified that citation
+# status is "draft" until Michelle has finished checking the citations behind the rule's
+# research (docs/research/*.md). Reviewed on that basis on 2026-11-04; a hostap citation
+# marked "accepted by Michelle" was compared with the code by Claude and accepted by her.
+# SEC.EHT_BEACON_PROT stays draft: see its notes. Each source's `checked` says who verified that citation
 # against the document or hostap line, and is null if nobody has yet. `says` fields
 # paraphrase the source; don't paste the standards' text (docs/references.md).
 #
@@ -56,7 +58,7 @@ rules:
   - id: SEC.MLD_COMMON_SUITES
     title: AP MLD links advertise one RSNE apart from the AKM list and MFPR, with a common AKM
     kind: normative
-    status: draft
+    status: reviewed
     applies_to: [ap_akm, link_akm_mismatch, ap_pairwise_cipher]
     meaning: >-
       All links of one AP MLD advertise the same RSNE (and RSNXE) except the AKM list and
@@ -104,7 +106,7 @@ rules:
   - id: SEC.MLD_CLIENT_COMMON_AKM
     title: For an ML association the client selects an AKM offered on every link, or declines
     kind: normative
-    status: draft
+    status: reviewed
     applies_to: [sta_akm, ap_akm]
     meaning: >-
       A non-AP MLD's RSNE carries one AKM, one pairwise and one group cipher common to all
@@ -179,7 +181,7 @@ rules:
         says: >-
           test_eht_mld_sae_two_links and test_eht_mld_sae_two_links_no_beacon_prot run the
           same function and differ only in beacon_prot.
-        checked: null
+        checked: "Michelle, at the pinned commit, 2026-11-04"
     examples:
       allowed:
         - "AP beacon_prot=1 (the helper default, e.g. eht_mld_sae_ext_two_links)."
@@ -187,12 +189,16 @@ rules:
         - "AP beacon_prot=0 (eht_mld_sae_two_links_no_beacon_prot)."
     notes:
       - "With one admissible value, beacon protection is a fixed setting, not a search dimension."
+      - >-
+        Stays draft: the rule covers the AP and the client, but explorer.model has no client
+        setting and the client leaves beacon protection off in F02, F08, F09 and F06. Waiting
+        on the team's decision (docs/plan.md).
       - "Coded as explorer.validate.check_eht_beacon_prot."
 
   - id: SEC.PMF
     title: PMF must be on for EHT with RSN
     kind: normative
-    status: draft
+    status: reviewed
     applies_to: [ap_pmf, sta_pmf]
     meaning: >-
       Beacon protection requires PMF, and EHT with RSN requires beacon protection, so an
@@ -240,7 +246,7 @@ rules:
   - id: SEC.EHT_SAE_AKM
     title: SAE between EHT devices uses AKM 24 or 25
     kind: normative
-    status: draft
+    status: reviewed
     applies_to: [ap_akm, sta_akm]
     meaning: >-
       When two EHT devices negotiate SAE they must use AKM 00-0F-AC:24 or :25 (hostap's
@@ -270,12 +276,12 @@ rules:
         strength: code
         location: "src/common/wpa_common.h:104-105"
         says: "AKM 24 is RSN_AUTH_KEY_MGMT_SAE_EXT_KEY and 25 is RSN_AUTH_KEY_MGMT_FT_SAE_EXT_KEY."
-        checked: null
+        checked: "Michelle, at the pinned commit, 2026-11-04"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:693, 715"
         says: "eht_mld_sae_two_links configures both the AP and the client with key_mgmt=SAE (AKM 8)."
-        checked: null
+        checked: "Michelle, at the pinned commit, 2026-11-04"
     examples:
       allowed:
         - "AP and client use SAE-EXT-KEY (eht_mld_sae_ext_two_links)."
@@ -294,7 +300,7 @@ rules:
   - id: SEC.EHT_SAE_H2E
     title: SAE between EHT devices uses hash-to-element
     kind: normative
-    status: draft
+    status: reviewed
     applies_to: [ap_sae_pwe, sta_sae_pwe, ap_akm]
     meaning: >-
       When two EHT devices perform SAE they must use the hash-to-element method. Judge
@@ -325,28 +331,28 @@ rules:
       - doc: hostap
         strength: code
         location: "hostapd/hostapd.conf:2292-2294"
-        says: "sae_pwe 0 = hunting-and-pecking only, 1 = H2E only, 2 = both; 0 is the default."
-        checked: null
+        says: "sae_pwe 0 = hunting-and-pecking only, 1 = H2E only, 2 = both; 0 is the default without a password identifier."
+        checked: "Michelle, at the pinned commit, 2026-11-04"
       - doc: hostap
         strength: code
         location: "src/ap/wpa_auth_ie.c:553-557"
         says: "With SAE-EXT-KEY the AP advertises H2E in the RSNXE even when sae_pwe is unset."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "src/ap/ieee802_11_shared.c:1130-1136"
         says: "Same H2E advertisement for SAE-EXT-KEY in the RSNXE builder."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "src/ap/ieee802_11.c:2006-2009"
         says: "The AP accepts H2E with SAE-EXT-KEY."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "wpa_supplicant/sme.c:364-366, 1278-1281"
         says: "The client uses and advertises H2E with SAE-EXT-KEY."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "SAE with sae_pwe=1 (eht_mld_sae_two_links)."
@@ -361,7 +367,7 @@ rules:
   - id: SEC.SAE_PWE_NEEDS_SAE
     title: sae_pwe only means something with an SAE AKM
     kind: dependency
-    status: draft
+    status: reviewed
     applies_to: [ap_sae_pwe, sta_sae_pwe, ap_akm]
     meaning: >-
       sae_pwe chooses how SAE derives its password element, so it only has an effect
@@ -374,7 +380,7 @@ rules:
         location: "§12.4.4.2.3 (ECC) and §12.4.4.3.3 (FFC)"
         page: "§12.4.4.2.3: PDF 2967 (printed 2966)"
         says: "Hash-to-element is one of SAE's two ways to derive the password element, under the SAE clause."
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, §12.4.4.2.3 only, §12.4.4.3.3 still to check, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
       - doc: IEEE-802.11-2024
         strength: note
         location: "§9.4.2.240, Table 9-373, bit 5 SAE Hash-to-element (NOTE)"
@@ -391,12 +397,12 @@ rules:
         strength: code
         location: "hostapd/config_file.c:4675-4676"
         says: "sae_pwe is read as a number with no check against the AKM."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "src/ap/ap_config.c:512-518"
         says: "Without an SAE AKM no H2E setup happens (PT not needed)."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "SAE with sae_pwe=1."
@@ -415,7 +421,7 @@ rules:
   - id: AO.ASSOC_REQUIRED
     title: Post-association actions need an associated STA
     kind: harness
-    status: draft
+    status: reviewed
     applies_to:
       - rekey_gtk_now
       - link_remove
@@ -431,42 +437,45 @@ rules:
         strength: code
         location: "src/ap/ctrl_iface_ap.c:1715-1720"
         says: "BSS_TM_REQ fails if the STA isn't known to the AP (hostap code)."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "wpa_supplicant/ctrl_iface.c:12803-12805"
         says: "Setup link reconfiguration fails with 'Not connected' (hostap code)."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "src/ap/wpa_auth.c:7906-7914"
         says: "REKEY_GTK schedules a rekey and succeeds with no STA; its evidence needs one (harness)."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:1392, 1400-1404, 1406-1411"
         says: "The link removal test connects, then removes a link and rekeys the GTK."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "src/ap/hostapd.c:477"
         says: "hostapd_link_remove() only checks that the AP is an AP MLD (harness)."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "src/ap/ctrl_iface_ap.c:688-698, 753-766"
-        says: "Deauth / disassoc send the frame whether or not the STA is known (harness)."
-        checked: null
+        says: "Without tx=0 or test=, deauth / disassoc send the frame whether or not the STA is known (harness). The test uses neither."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:2030, 2045-2048"
         says: "The test disassociates / deauthenticates a connected STA and waits for it to disconnect."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:714, 740, 1165, 1170"
-        says: "DISCONNECT is only used after connect."
-        checked: null
+        says: >-
+          In the MLD tests, DISCONNECT follows a completed connect. A non-MLD test also uses it
+          after a rejected association (tests/hwsim/test_eht.py:229), so requiring an
+          association is our choice for MLD candidates.
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "[associate, rekey_gtk_now]"
@@ -479,7 +488,7 @@ rules:
   - id: AO.ML_PROBE_STATE
     title: ML probe needs a known AP and an idle or completed STA
     kind: harness
-    status: draft
+    status: reviewed
     applies_to: [ml_probe_req]
     meaning: >-
       The target AP must already be in the STA's scan results, and the STA must not be
@@ -495,12 +504,12 @@ rules:
         strength: code
         location: "wpa_supplicant/ctrl_iface.c:12946-12955"
         says: "wpas_ctrl_ml_probe fails if the BSS isn't known, if scanning, or while connecting (hostap code)."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:387-395, 422, 439, 446"
         says: "test_eht_mld_discovery scans, then probes, with no association."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "[scan, ml_probe_req]"
@@ -510,7 +519,7 @@ rules:
   - id: AO.LINK_MUST_EXIST
     title: Only remove links that still exist
     kind: harness
-    status: draft
+    status: reviewed
     applies_to: [link_remove]
     meaning: "The AP link being removed must not have been removed already."
     predicate: "link in state.ap_links; afterwards remove it from ap_links and from the STA's active links."
@@ -519,12 +528,12 @@ rules:
         strength: code
         location: "src/ap/hostapd.c:475-494"
         says: "hostapd_link_remove() doesn't check whether the link was already removed."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:1400, 1416"
         says: "The test removes link 1, then link 0."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "[associate, link_remove(1), link_remove(0)]"
@@ -536,13 +545,17 @@ rules:
   - id: AO.NO_LINKS_LEFT
     title: Removing the last link disassociates the STA
     kind: harness
-    status: draft
-    applies_to: [link_remove]
+    status: reviewed
+    applies_to: [link_remove, associate]
     meaning: >-
       When the AP removes the last setup link, the non-AP MLD is disassociated (802.11be
       §35.3.6.3), so every AO.ASSOC_REQUIRED action is refused until it associates again.
-      The state change comes from the standard; refusing the later actions is ours.
-    predicate: "If state.active_links becomes empty, set state.associated to false."
+      The same applies when only disabled links remain (§35.3.7.5.2), and the STA can't
+      associate again while that's so. The state change comes from the standard; refusing
+      the later actions is ours.
+    predicate: >-
+      If state.active_links becomes empty, set state.associated to false. associate needs
+      at least one AP link that isn't disabled.
     sources:
       - doc: IEEE-802.11be-2024
         strength: shall
@@ -551,17 +564,28 @@ rules:
         says: >-
           When the removed AP's link was a non-AP MLD's only setup link, the MLMEs of both
           the AP MLD and the non-AP MLD signal the disassociation of that non-AP MLD.
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
+      - doc: IEEE-802.11be-2024
+        strength: shall
+        location: "§35.3.7.5.2 Affiliated AP link disablement"
+        page: "PDF 532-534"
+        says: >-
+          After an advertised TTLM's Mapping Switch Time, the MLME of a non-AP MLD whose setup
+          links are all on disabled links signals its disassociation, and a STA that isn't
+          associated doesn't send (Re)association Requests on a disabled link. hostap's
+          mld_indicate_disabled is a static setting, not that TTLM procedure.
+        checked: "Michelle, in the PDF, 2026-11-04"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:1416-1424"
         says: "After removing the last link the test expects traffic to fail."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "[associate, link_remove(1), link_remove(0)] (ends there)"
       disallowed:
         - "[associate, link_remove(1), link_remove(0), rekey_gtk_now]"
+        - "[associate, link_remove(0), associate] while link 1 is advertised as disabled"
     notes:
       - >-
         Seen in runs/smoke/1793690892 (eht_mld_link_removal): after the last link's
@@ -571,7 +595,7 @@ rules:
   - id: AO.RECONFIG_DELETE_ACTIVE
     title: Link reconfig can only delete a current link
     kind: harness
-    status: draft
+    status: reviewed
     applies_to: [setup_link_reconfig]
     meaning: "setup_link_reconfig delete=<link> needs the link to be one of the STA's current links."
     predicate: "link in state.active_links; afterwards remove it."
@@ -580,12 +604,12 @@ rules:
         strength: code
         location: "wpa_supplicant/ctrl_iface.c:12847-12853"
         says: "Fails with 'not a valid delete link' (hostap code)."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:3024, 3034"
         says: "The test deletes a current link."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "[associate, setup_link_reconfig delete=1]"
@@ -595,7 +619,7 @@ rules:
   - id: AO.RECONFIG_ADD_ABSENT
     title: Link reconfig adds only links the STA doesn't have
     kind: harness
-    status: draft
+    status: reviewed
     applies_to: [setup_link_reconfig]
     meaning: "setup_link_reconfig add=<link> needs the AP MLD to advertise the link and the STA not to have it."
     predicate: "link in state.ap_links and link not in state.active_links; afterwards add it."
@@ -606,12 +630,12 @@ rules:
         strength: code
         location: "wpa_supplicant/ctrl_iface.c:12819-12830"
         says: "Fails with 'add link info not present' if the AP MLD doesn't advertise the link (hostap code)."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:3024, 3044, 3054"
         says: "The test deletes a link, adds the same link back and checks CTRL-EVENT-LINK-STA-ADDED."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "[associate, setup_link_reconfig delete=1, setup_link_reconfig add=1]"
@@ -621,7 +645,7 @@ rules:
   - id: AO.RECONNECT_AFTER_DISCONNECT
     title: RECONNECT only after DISCONNECT
     kind: harness
-    status: draft
+    status: reviewed
     applies_to: [sta_disconnect_reconnect]
     meaning: "RECONNECT only has an effect after DISCONNECT; otherwise it silently does nothing."
     predicate: "state.disconnected_by_command before RECONNECT; afterwards associated once the reconnect completes."
@@ -629,13 +653,16 @@ rules:
       - doc: hostap
         strength: code
         location: "wpa_supplicant/ctrl_iface.c:13925-13929"
-        says: "RECONNECT replies OK but does nothing unless the STA was disconnected with DISCONNECT."
-        checked: null
+        says: >-
+          RECONNECT fails if the interface is disabled; otherwise it replies OK but does nothing
+          unless wpa_s->disconnected is set. DISCONNECT sets it (wpa_supplicant/wpa_supplicant.c:10559),
+          as do a few paths we don't model, such as wpa_supplicant/events.c:5381.
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:740, 760, 1170, 1181"
         says: "The tests use DISCONNECT then RECONNECT."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "[associate, DISCONNECT, RECONNECT]"
@@ -645,7 +672,7 @@ rules:
   - id: AO.ENABLE_AFTER_DISABLE
     title: ENABLE_MLD only after DISABLE_MLD
     kind: harness
-    status: draft
+    status: reviewed
     applies_to: [disable_enable_mld]
     meaning: >-
       ENABLE_MLD follows DISABLE_MLD. While the AP MLD is disabled the STA must be
@@ -655,9 +682,19 @@ rules:
     sources:
       - doc: hostap
         strength: code
-        location: "tests/hwsim/test_eht.py:728-748"
-        says: "mac80211 doesn't notice the AP going away, so the test forces DISCONNECT / RECONNECT around ENABLE_MLD."
-        checked: null
+        location: "tests/hwsim/test_eht.py:728-748, 760"
+        says: >-
+          A comment says mac80211 doesn't seem to detect beacon loss or deauthentication for a
+          non-AP MLD, so the test forces DISCONNECT before ENABLE_MLD, then RECONNECT after it.
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
+      - doc: hostap
+        strength: code
+        location: "src/ap/hostapd.c:3671-3675"
+        says: >-
+          ENABLE_MLD reaches hostapd_enable_iface() (hostapd/ctrl_iface.c:3652), which fails with
+          "already enabled" on an interface that is already up. So hostap code enforces ENABLE_MLD
+          following DISABLE_MLD; the DISCONNECT / RECONNECT order is harness. Read, not run.
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
     examples:
       allowed:
         - "[associate, DISABLE_MLD, DISCONNECT, ENABLE_MLD, RECONNECT]"
@@ -675,7 +712,7 @@ undetermined:
 
   - id: UND.AKM_PREFERENCE
     title: Which AKM family is negotiated when several are usable
-    status: draft
+    status: reviewed
     applies_to: [sta_akm, ap_akm]
     meaning: >-
       When the client and every AP link share AKMs from different families (an
@@ -696,7 +733,7 @@ undetermined:
 
   - id: UND.STA_STATE_WHILE_MLD_DISABLED
     title: Whether the STA is still associated while the AP MLD is disabled
-    status: draft
+    status: reviewed
     applies_to: [disable_enable_mld]
     meaning: >-
       After DISABLE_MLD, hostap's own test forces a DISCONNECT because mac80211 doesn't
@@ -709,11 +746,11 @@ undetermined:
         says: >-
           A comment says mac80211 doesn't seem to detect beacon loss or deauthentication
           for a non-AP MLD, so the test disconnects the STA itself.
-        checked: "Claude (AI agent), 2026-11-03"
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
 
   - id: UND.ASSOC_WITHOUT_AP_LINKS
     title: Associating again after every AP link was removed
-    status: draft
+    status: reviewed
     applies_to: [associate, link_remove, sta_disconnect_reconnect]
     meaning: >-
       Removing the last link disassociates the STA, but none of our sources say what
@@ -726,9 +763,9 @@ undetermined:
         says: >-
           Covers announcing and removing affiliated APs and disassociating a non-AP MLD
           whose only setup link is removed; nothing about associating afterwards.
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:1416-1424"
         says: "The link removal test ends after removing the last link; no test associates again."
-        checked: null
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"

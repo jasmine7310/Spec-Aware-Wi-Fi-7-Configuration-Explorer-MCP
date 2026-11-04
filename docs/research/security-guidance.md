@@ -12,8 +12,10 @@ checking against the documents before anything becomes a rule in `rules.yaml`.
 
 ## How to review
 
-Not reviewed by a second teammate yet. The author has checked some IEEE citations in the
-PDFs; each finding's **Status** row says what is verified and what isn't.
+The team doesn't need a second teammate's review of the IEEE or WFA citations. Michelle has
+checked them in the PDFs. Claude (an AI agent) checked the hostap lines at the pinned commit
+on 2026-11-04, and Michelle accepted the result. Each
+finding's **Status** row says what is verified and what isn't.
 
 **AI check, 2026-11-02:** Claude (an AI agent) read the text of all three PDFs (the whole
 WFA guide; the cited IEEE clauses plus the 802.11be MLO clauses on ML security, AP
@@ -65,8 +67,8 @@ additions, already applied in `rules.yaml`:
 - §3.2: EHT or MLO associations using a password need WPA3 enabled, as `docs/references.md`
   says.
 
-An AI check isn't the teammate review this section asks for. A teammate should still
-check the rest (see "Reviewing research" in [`docs/plan.md`](../plan.md)):
+An AI check doesn't replace a person's. To check the rest (see "Reviewing research" in
+[`docs/plan.md`](../plan.md)):
 
 > Read `docs/research/security-guidance.md`. For each IEEE citation, open the clause in
 > IEEE Std 802.11be-2024 or 802.11-2024 and check that (1) the text says what the finding
@@ -158,10 +160,10 @@ The guide marks each value per device type, and Wi-Fi 7 means the EHT rows:
 | **IEEE** | IEEE-802.11be-2024 §12.12.9 "Security constraints for EHT", PDF p. 446 (printed p. 445): when an EHT STA performs SAE with a peer EHT STA, it **shall** set the SAE Hash-to-element field in the RSNXE and use the hash-to-element method. |
 | **WFA** | WFA-WPA3 Table 8 (p. 18) and footnotes (pp. 18–19). Columns are "H2E Only", "Enabled" and "Disabled". As extracted, for an AP with EHT enabled: H2E Only is MAND in 6 GHz or sub-1 GHz, Enabled is MAND in other bands, Disabled is DISALLOW. For an EHT STA: Enabled MAND, H2E Only DISALLOW, with a footnote allowing H2E Only where all APs and STAs are known to support EHT. This table is the one most likely to be misread from the extracted text: check its columns first. |
 | **Strength** | IEEE "shall" (normative); WFA adds band-dependent detail |
-| **hostap mapping** | `sae_pwe`: `0` = hunting-and-pecking only, `1` = H2E only, `2` = both (`hostapd/hostapd.conf:2292-2294`); `0` is the default. hostap overrides an unset / `0` value in some cases: **(a)** on 6 GHz the AP switches SAE to both (`src/ap/ap_config.c:1269-1274`); **(b)** with `SAE-EXT-KEY` / `FT-SAE-EXT-KEY` the AP still advertises H2E in the RSNXE (`src/ap/wpa_auth_ie.c:553-557`, `src/ap/ieee802_11_shared.c:1130-1136`) and accepts H2E (`src/ap/ieee802_11.c:2006-2009`), and the client uses H2E and advertises it (`wpa_supplicant/sme.c:364-366`, `1278-1281`). Neither applies to plain `SAE` on 2.4 / 5 GHz. |
+| **hostap mapping** | `sae_pwe`: `0` = hunting-and-pecking only, `1` = H2E only, `2` = both (`hostapd/hostapd.conf:2292-2294`); `0` is the default without a password identifier. hostap overrides an unset / `0` value in some cases: **(a)** on 6 GHz the AP switches SAE to both (`src/ap/ap_config.c:1269-1274`); **(b)** with `SAE-EXT-KEY` / `FT-SAE-EXT-KEY` the AP still advertises H2E in the RSNXE (`src/ap/wpa_auth_ie.c:553-557`, `src/ap/ieee802_11_shared.c:1130-1136`) and accepts H2E (`src/ap/ieee802_11.c:2006-2009`), and the client uses H2E and advertises it (`wpa_supplicant/sme.c:364-366`, `1278-1281`). Neither applies to plain `SAE` on 2.4 / 5 GHz. |
 | **Candidates** | `ap_sae_pwe` (`1` / `2` / unset), `sta_sae_pwe` |
 | **Effect** | `sae_pwe = 0` breaks the IEEE rule, and so does "unset" with plain `SAE` on 2.4 / 5 GHz, because that means hunting-and-pecking. "Unset" with `SAE-EXT-KEY` (e.g. `eht_mld_sae_ext_one_link`) still uses H2E, so it looks admissible. `1` and `2` both advertise and use H2E between EHT devices, so both look admissible under IEEE (WFA marks Enabled, i.e. `2`, as mandatory for an EHT AP outside 6 GHz and sub-1 GHz). The model should judge the effective H2E use, not the raw `sae_pwe` value. |
-| **Status** | IEEE §12.12.9 verified by Michelle in the PDF (2026-10-31); WFA Tables 5 and 8 and footnotes verified by Michelle in the PDF (2026-11-04); hostap lines unverified |
+| **Status** | IEEE §12.12.9 verified by Michelle in the PDF (2026-10-31); WFA Tables 5 and 8 and footnotes verified by Michelle in the PDF (2026-11-04); hostap lines checked by Claude, accepted by Michelle (2026-11-04) |
 
 ### SEC.SAE_PWE_NEEDS_SAE: `sae_pwe` only means something with an SAE AKM
 
@@ -174,7 +176,7 @@ The guide marks each value per device type, and Wi-Fi 7 means the EHT rows:
 | **Rule candidate** | `ap_sae_pwe` / `sta_sae_pwe` apply only when the AKM includes `SAE` or `SAE-EXT-KEY`. A P1 dependency rule (`docs/plan.md`: "Code rules: setting dependencies"), not a spec violation. |
 | **Candidates** | `ap_sae_pwe`, `sta_sae_pwe`, `ap_akm` |
 | **Effect** | A candidate like OWE + `sae_pwe=1` would run in P2/P3, because hostap ignores the setting, but varying `sae_pwe` under OWE is a meaningless difference. `sae_pwe` only counts as a dimension under an SAE-family AKM. |
-| **Status** | IEEE Table 9-373 NOTE and §12.4.4.2.3 verified by Michelle in the PDF (2026-10-31); WFA Table 3 row verified by Michelle in the PDF (2026-11-04); hostap lines unverified |
+| **Status** | IEEE Table 9-373 NOTE and §12.4.4.2.3 verified by Michelle in the PDF (2026-10-31); WFA Table 3 row verified by Michelle in the PDF (2026-11-04); hostap lines checked by Claude, accepted by Michelle (2026-11-04) |
 
 ## What this changes for the smoke test
 

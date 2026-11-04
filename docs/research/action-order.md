@@ -11,7 +11,8 @@ doesn't make sense for our experiments", never "this violates the Wi-Fi specific
 
 ## How to review
 
-Not reviewed yet. A teammate should check it before the pull request is merged (see
+Claude (an AI agent) checked the hostap lines at the pinned commit on 2026-11-04, and Michelle
+accepted the result; no second teammate is needed (see
 "Reviewing research" in [`docs/plan.md`](../plan.md)). Paste into Claude Code or Codex:
 
 > Read `docs/research/action-order.md`. For each rule, open the cited hostap lines at
@@ -65,8 +66,8 @@ Action names match `surface_candidates.csv`.
 | `setup_link_reconfig` | **hostap code**: fails with "Not connected" | `wpa_supplicant/ctrl_iface.c:12803-12805` |
 | `rekey_gtk_now` | **harness**: `REKEY_GTK` just schedules a rekey and succeeds with no STA (`src/ap/wpa_auth.c:7906-7914`), but the evidence (`MLO RSN: Group rekeying completed` on the STA) needs one | `tests/hwsim/test_eht.py:1392, 1406-1411` |
 | `link_remove` | **harness**: `hostapd_link_remove()` only checks the AP is an AP MLD (`src/ap/hostapd.c:477`); the test removes links after `connect` and checks traffic on the remaining link | `tests/hwsim/test_eht.py:1392, 1400-1404` |
-| `ap_disassociate`, `ap_deauthenticate` | **harness**: the handlers send the frame through the driver whether or not the STA is known; `if (sta)` only guards the extra cleanup (`src/ap/ctrl_iface_ap.c:688-698` deauth, `753-766` disassoc); the test waits for that STA to disconnect | `tests/hwsim/test_eht.py:2030, 2045-2048` |
-| DISCONNECT | **harness**: used only after `connect` | `tests/hwsim/test_eht.py:714, 740`; `1165, 1170` |
+| `ap_disassociate`, `ap_deauthenticate` | **harness**: without `tx=0` or `test=` (the test uses neither), the handlers send the frame through the driver whether or not the STA is known; `if (sta)` only guards the extra cleanup (`src/ap/ctrl_iface_ap.c:688-698` deauth, `753-766` disassoc); the test waits for that STA to disconnect | `tests/hwsim/test_eht.py:2030, 2045-2048` |
+| DISCONNECT | **harness**: in the MLD tests, used only after a completed `connect` (a non-MLD test also uses it after a rejected association, `tests/hwsim/test_eht.py:229`) | `tests/hwsim/test_eht.py:714, 740`; `1165, 1170` |
 
 ### AO.ML_PROBE_STATE: ML probe needs a known AP and an idle or completed STA
 
@@ -100,13 +101,13 @@ Action names match `surface_candidates.csv`.
 | | |
 |---|---|
 | **Applies to** | every `AO.ASSOC_REQUIRED` action after the STA has no active links |
-| **Rule** | After the last active link is removed, treat the STA as not associated until it associates again. |
-| **Predicate** | if `state.active_links` becomes empty, set `associated = false` |
+| **Rule** | After the last active link is removed, treat the STA as not associated until it associates again. It can't associate again while only disabled links remain. |
+| **Predicate** | if `state.active_links` becomes empty, set `associated = false`; `associate` needs at least one AP link that isn't disabled |
 | **Enforced by** | **harness**, with the state change defined by the standard |
 | **Source** | IEEE-802.11be-2024 §35.3.6.3 "Removing affiliated AP(s)", PDF p. 517-518 (printed p. 516-517): when the removed AP's link is a non-AP MLD's only setup link, the MLMEs of the AP MLD and of the non-AP MLD both signal that non-AP MLD's disassociation ("shall"). `tests/hwsim/test_eht.py:1416-1424`: after removing the last link the test expects traffic to fail (`traffic_test(..., success=False)`) |
 | **Allowed** | `[associate, link_remove(1), link_remove(0)]` (ends there) |
-| **Disallowed** | `[associate, link_remove(1), link_remove(0), rekey_gtk_now]` |
-| **Note** | The test itself checks only that traffic fails. In `runs/smoke/1793690892` the STA logs a locally generated disconnect (reason 4) after the last link's removal, consistent with §35.3.6.3. Citation checked by Claude (AI agent) in the PDF text, 2026-11-02; not yet by a teammate. |
+| **Disallowed** | `[associate, link_remove(1), link_remove(0), rekey_gtk_now]`; `[associate, link_remove(0), associate]` while link 1 is advertised as disabled |
+| **Note** | The test itself checks only that traffic fails. In `runs/smoke/1793690892` the STA logs a locally generated disconnect (reason 4) after the last link's removal, consistent with §35.3.6.3. Citation checked by Claude (AI agent) in the PDF text, 2026-11-02. Both the AP MLD and non-AP MLD sides ("shall") checked by Michelle in the PDF, 2026-11-04. When only disabled links remain, §35.3.7.5.2 applies instead ("shall", after an advertised TTLM's Mapping Switch Time; also checked by Michelle). hostap's `mld_indicate_disabled` is a static setting, not that procedure, and no test removes the last enabled link while a disabled one remains. |
 
 ### AO.RECONFIG_DELETE_ACTIVE: link reconfig can only delete a current link
 
@@ -139,7 +140,7 @@ Action names match `surface_candidates.csv`.
 | **Applies to** | `sta_disconnect_reconnect` (RECONNECT) |
 | **Rule** | RECONNECT is only meaningful after DISCONNECT. |
 | **Predicate** | `state.disconnected_by_command` before RECONNECT; afterwards `associated = true` once the reconnect completes |
-| **Enforced by** | **harness**: RECONNECT replies OK but does nothing unless the STA was disconnected with DISCONNECT, so a misplaced RECONNECT silently has no effect |
+| **Enforced by** | **harness**: RECONNECT fails if the interface is disabled; otherwise it replies OK but does nothing unless `wpa_s->disconnected` is set, so a misplaced RECONNECT silently has no effect. DISCONNECT sets it, as do a few paths we don't model (e.g. `wpa_supplicant/events.c:5381`) |
 | **Source** | `wpa_supplicant/ctrl_iface.c:13925-13929`; tested at `tests/hwsim/test_eht.py:740, 760`; `1170, 1181` |
 | **Allowed** | `[associate, DISCONNECT, RECONNECT]` |
 | **Disallowed** | `[associate, RECONNECT]` |
@@ -151,8 +152,8 @@ Action names match `surface_candidates.csv`.
 | **Applies to** | `disable_enable_mld` |
 | **Rule** | `ENABLE_MLD` follows `DISABLE_MLD`. While the AP MLD is disabled, the STA must be disconnected with DISCONNECT before the AP is re-enabled, and reconnected with RECONNECT afterwards. |
 | **Predicate** | `not state.ap_enabled` before `ENABLE_MLD` |
-| **Enforced by** | **harness** |
-| **Source** | `tests/hwsim/test_eht.py:728-748`; comment at `737`: mac80211 doesn't detect the AP going away, so the test forces the disconnect |
+| **Enforced by** | Mixed: **hostap code** for `ENABLE_MLD` on an AP MLD that's already enabled (`src/ap/hostapd.c:3671-3675`, read but not run); **harness** for the DISCONNECT / RECONNECT order |
+| **Source** | `tests/hwsim/test_eht.py:728-748, 760`; comment at `737`: mac80211 doesn't seem to detect beacon loss or deauthentication for a non-AP MLD, so the test forces the disconnect, then reconnects after `PMKSA_FLUSH` and `BSS_FLUSH 0` |
 | **Allowed** | `[associate, DISABLE_MLD, DISCONNECT, ENABLE_MLD, RECONNECT]` |
 | **Disallowed** | `[associate, ENABLE_MLD]`; `[associate, DISABLE_MLD, ENABLE_MLD, rekey_gtk_now]` (STA never disconnected/reconnected) |
 
