@@ -122,13 +122,14 @@ class RunReport(BaseModel):
 
 STAGES = [
     StageStatus(stage="P0 structural validation", implemented=False,
-                note="Settings model (explorer.model.Config) exists; the action model "
-                     "and readable format errors don't yet."),
+                note="Settings and action models (explorer.model.Candidate) exist; "
+                     "readable format errors don't yet."),
     StageStatus(stage="P1 specification rules", implemented=False,
-                note="Rule registry (rules.yaml) and three coded checks "
-                     "(SEC.MLD_COMMON_SUITES, SEC.MLD_CLIENT_COMMON_AKM, SEC.EHT_SAE_AKM). "
-                     "run_hwsim_test applies them to hostap tests; there's no tool to "
-                     "validate an arbitrary candidate yet."),
+                note="Rule registry (rules.yaml), three coded security checks "
+                     "(SEC.MLD_COMMON_SUITES, SEC.MLD_CLIENT_COMMON_AKM, SEC.EHT_SAE_AKM) and "
+                     "the action-order checker (all AO.* rules). run_hwsim_test applies the "
+                     "security checks to hostap tests; there's no tool to validate an "
+                     "arbitrary candidate yet."),
     StageStatus(stage="P2 implementation support", implemented=False,
                 note="Smoke runs are recorded (surface_candidates.csv smoke_runs); no "
                      "support check uses them yet."),

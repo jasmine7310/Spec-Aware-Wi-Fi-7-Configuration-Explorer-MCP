@@ -63,9 +63,10 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 - `explorer.mcp_server`: `MCPServer` with `get_model` and `run_hwsim_test`. Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
-- `explorer.model.Config`: P0 settings model. `explorer.rules.load_rules()`: the P1 rule
-  registry from `rules.yaml`. `explorer.validate.P1_CHECKS` / `run_p1_checks(config)`: coded
-  rule checks by rule ID. `explorer.scenarios.TEST_CONFIGS`: the `Config` each runnable
+- `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
+  ordered typed actions. `explorer.rules.load_rules()`: the P1 rule registry from
+  `rules.yaml`. `explorer.validate.P1_CHECKS` / `run_p1_checks(config)`: coded security
+  rule checks by rule ID; `check_action_order(candidate)`: the AO.* action-order rules. `explorer.scenarios.TEST_CONFIGS`: the `Config` each runnable
   hostap test sets up, read from its source lines.
 
 ## Rules for agents
