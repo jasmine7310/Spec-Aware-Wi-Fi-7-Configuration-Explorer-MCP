@@ -187,6 +187,7 @@ rules:
         - "AP beacon_prot=0 (eht_mld_sae_two_links_no_beacon_prot)."
     notes:
       - "With one admissible value, beacon protection is a fixed setting, not a search dimension."
+      - "Coded as explorer.validate.check_eht_beacon_prot."
 
   - id: SEC.PMF
     title: PMF must be on for EHT with RSN
@@ -233,7 +234,7 @@ rules:
       disallowed:
         - "AP pmf disabled (ieee80211w=0)."
     notes:
-      - "explorer.model doesn't offer pmf disabled, so P0 already rejects it; this rule records why."
+      - "explorer.model doesn't offer pmf disabled, so P0 already rejects it; this rule records why. No P1 check is coded, since none could fire."
 
   - id: SEC.EHT_SAE_AKM
     title: SAE between EHT devices uses AKM 24 or 25
@@ -354,6 +355,7 @@ rules:
         - "Plain SAE with sae_pwe unset on 2.4 / 5 GHz."
     notes:
       - "explorer.model doesn't offer sae_pwe=0, so P0 already rejects that value."
+      - "Coded as explorer.validate.check_eht_sae_h2e (hostap lines checked by Claude, 2026-11-03)."
 
   - id: SEC.SAE_PWE_NEEDS_SAE
     title: sae_pwe only means something with an SAE AKM
@@ -401,6 +403,7 @@ rules:
         - "OWE with sae_pwe=1: hostap accepts it but the setting has no effect."
     notes:
       - "sae_pwe only counts as a search dimension under an SAE-family AKM."
+      - "Coded as explorer.validate.check_sae_pwe_needs_sae."
 
   # --- Action order (docs/research/action-order.md) --------------------------------
   # Harness and policy rules, not IEEE / Wi-Fi Alliance rules: a violation means the

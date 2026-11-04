@@ -212,16 +212,53 @@ def check_eht_sae_akm(config: Config) -> list[Finding]:
                 f"and every link share {usable} but not SAE-EXT-KEY (AKM 24)"))]
 
 
+def check_eht_beacon_prot(config: Config) -> list[Finding]:
+    """SEC.EHT_BEACON_PROT (802.11be §12.12.9): an EHT AP using RSN has beacon protection
+    enabled. Every AKM in ``model.Akm`` is an RSN AKM."""
+    if config.ap.beacon_protection:
+        return []
+    return [Finding(rule_id="SEC.EHT_BEACON_PROT",
+                    reason="beacon protection is off on an EHT AP that uses RSN")]
 
 
+def check_eht_sae_h2e(config: Config) -> list[Finding]:
+    """SEC.EHT_SAE_H2E (802.11be §12.12.9): SAE between EHT devices uses hash-to-element.
+
+    Judges the effective method, as hostap applies it at the pinned commit: with
+    SAE-EXT-KEY, H2E is used even if sae_pwe is unset (src/ap/wpa_auth_ie.c:553-557,
+    src/ap/ieee802_11.c:2006-2009, wpa_supplicant/sme.c:364-366); with plain SAE an
+    unset sae_pwe means hunting-and-pecking only (hostapd/hostapd.conf:2292-2294) on
+    the 2.4 GHz channels the model allows. A conforming client prefers SAE-EXT-KEY over
+    plain SAE (§12.12.9), so plain SAE is the SAE AKM only when SAE-EXT-KEY isn't usable.
+    """
+    usable = _usable_akms(config)
+    if "SAE" not in usable or "SAE-EXT-KEY" in usable or config.ap.sae_pwe is not None:
+        return []
+    return [Finding(
+        rule_id="SEC.EHT_SAE_H2E",
+        reason=("plain SAE with sae_pwe unset uses hunting-and-pecking, not hash-to-element; "
+                "set sae_pwe to hash_to_element or both"))]
 
 
+def check_sae_pwe_needs_sae(config: Config) -> list[Finding]:
+    """SEC.SAE_PWE_NEEDS_SAE (setting dependency): sae_pwe only has an effect when an AP
+    link offers an SAE-family AKM; otherwise the setting is meaningless."""
+    if config.ap.sae_pwe is None or any(
+            akm in _SAE_FAMILY for link in config.ap.links for akm in link.akms):
+        return []
+    return [Finding(
+        rule_id="SEC.SAE_PWE_NEEDS_SAE",
+        reason=(f"sae_pwe={config.ap.sae_pwe} is set but no AP link offers SAE or "
+                f"SAE-EXT-KEY, so it has no effect"))]
 
 
 P1_CHECKS: dict[str, Callable[[Config], list[Finding]]] = {
     "SEC.MLD_COMMON_SUITES": check_mld_common_suites,
     "SEC.MLD_CLIENT_COMMON_AKM": check_mld_client_common_akm,
     "SEC.EHT_SAE_AKM": check_eht_sae_akm,
+    "SEC.EHT_BEACON_PROT": check_eht_beacon_prot,
+    "SEC.EHT_SAE_H2E": check_eht_sae_h2e,
+    "SEC.SAE_PWE_NEEDS_SAE": check_sae_pwe_needs_sae,
 }
 
 

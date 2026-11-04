@@ -4,8 +4,9 @@ Shared context for the team and for coding agents. The GitHub issue board tracks
 individual tasks and their status; this file holds the big picture and the decisions
 behind it. Issues are referred to by name, not number.
 
-_Status last updated 2026-11-02 from what is merged on `main`. Work that exists only on
-someone's laptop or on the board isn't reflected here._
+_Status last updated 2026-11-03 from what is committed on `main` and the `week2-jas`
+branch (Week 2 work lands on `week2-jas` first). Work that exists only on someone's
+laptop or on the board isn't reflected here._
 
 ## What we're building
 
@@ -16,7 +17,7 @@ every rejection says which stage and which sourced rule rejected it:
 | Stage | Component | Question it answers | Status |
 |---|---|---|---|
 | P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | ✅ Settings model (`model.Config`), action model (`model.Candidate`: config + ordered actions) and readable `P0.*` errors (`validate.parse_candidate`) |
-| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | 🟡 Rule registry (`rules.yaml` + `rules.load_rules()`); 3 security rules coded (`validate.run_p1_checks`, applied to hostap tests by `run_hwsim_test`) and all 8 action-order rules (`validate.check_action_order`); no `validate_candidate` pipeline yet |
+| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | 🟡 Rule registry (`rules.yaml` + `rules.load_rules()`); 6 security/setting rules coded (`validate.run_p1_checks`, applied to hostap tests by `run_hwsim_test`), all 8 action-order rules (`validate.check_action_order`) and 3 open questions that give `SPEC_UNDETERMINED`; no `validate_candidate` pipeline yet |
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | ⬜ |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()` |
 | P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
@@ -129,7 +130,7 @@ first filled in.
 | Smoke-test 4 settings | Simulation | ✅ Done. 6 candidates have ≥2 values that both run and pass the coded P1 rules (AKM SAE-EXT-KEY / OWE on AP and STA, PTK rekey unset / 5, GTK rekey unset / 5, link advertised disabled 0 / 1, link removal absent / present): passing runs in `runs/smoke/` (Windows + WSL2), recorded in `surface_candidates.csv`'s `smoke_runs`; a test checks every listed run is legal under the coded rules. Plain SAE also runs but breaks 802.11be §12.12.9, so it doesn't count. Link removal is now in the behavior record (`link_reconfig_valid_links`). Caveats per value, with what the standards say, are in `runs/smoke/README.md` |
 | Support check (P2) | Simulation | ⬜ Unblocked (smoke runs recorded) |
 | Code rule: security type matches on every link | Research | ✅ Done, rechecked against the PDFs. Split by what the standard binds: `SEC.MLD_COMMON_SUITES` (802.11be §12.6.2, the AP MLD's own RSNE: same pairwise cipher, a common AKM) rejects hostap's `invalid_link`, `invalid_link_akm`, `invalid_link_pairwise` and `no_common_key_mgmt` configurations and allows different AKM lists that share an AKM; `SEC.MLD_CLIENT_COMMON_AKM` (§12.6.3.1) flags a client that allows none of the common AKMs, which a conforming client answers by declining. `SEC.EHT_SAE_AKM` (§12.12.9) is coded too. Rules stay `draft` until a teammate reviews the research |
-| Code rules: setting dependencies | Research | ⬜ Unblocked: rules are in `rules.yaml` (e.g. `SEC.SAE_PWE_NEEDS_SAE`). Their research still needs a teammate's review |
+| Code rules: setting dependencies | Research | ✅ Done. `SEC.EHT_BEACON_PROT` (beacon protection on), `SEC.EHT_SAE_H2E` (plain SAE with `sae_pwe` unset uses hunting-and-pecking; judged by hostap's effective behavior, lines checked at the pinned commit) and `SEC.SAE_PWE_NEEDS_SAE` (`sae_pwe` without an SAE AKM has no effect) are in `validate.P1_CHECKS`, with allowed/disallowed tests. `SEC.PMF` isn't coded: the model can't express PMF disabled, so P0 rejects it. Research still needs a teammate's review |
 | Action-order checker | Research | ✅ Done. `validate.check_action_order(candidate)` walks the actions through the state model in `action-order.md` and returns the first violation with its AO rule ID and the failing action's index. Enforces all 8 `AO.*` rules plus the 2026-11-03 decisions (no ML probe while associated; disconnected after disassociate/deauthenticate; disassociated when the last usable link is removed, 802.11be §35.3.6.3; links advertised disabled aren't the STA's links, §35.3.7.5.2). Tested with every rule's allowed and disallowed examples and hostap's own sequences |
 | Undetermined result (`SPEC_UNDETERMINED`) | Research | ✅ Done. Findings carry an outcome (`MALFORMED`, `SPEC_RULE_VIOLATION`, `SPEC_UNDETERMINED`) and `validate.p1_status` sums them up. `rules.yaml` gains an `undetermined:` section of open questions with sources: `UND.AKM_PREFERENCE` (several AKM families usable; the choice follows the WPA3 Specification, which we don't have; WFA guide Table 3), `UND.STA_STATE_WHILE_MLD_DISABLED` (actions while the AP MLD is disabled and the STA wasn't disconnected; hostap's test says mac80211 may not notice) and `UND.ASSOC_WITHOUT_AP_LINKS` (associating after every AP link was removed). No runnable hostap test hits one |
 | `validate_candidate` pipeline | Data models | ⬜ Unblocked: P0 errors, the coded P1 rules, the action-order checker and the open questions all exist |
@@ -140,10 +141,11 @@ first filled in.
 
 **Main blockers:** a teammate review of `docs/research/security-guidance.md` (an AI agent
 has checked every IEEE and WFA citation against the PDF text, which doesn't replace it).
-The baseline and action-model decisions are made and the anchor families approved, so
-the action data model (then the action-order checker) can start, alongside the remaining
-coded rules, `SPEC_UNDETERMINED` and the P2 support check. `run_hwsim_test` treats the
-plain-SAE baseline as a negative experiment, as decided.
+The baseline and action-model decisions are made, the anchor families approved, and the
+action model, action-order checker, P0 errors, setting rules and `SPEC_UNDETERMINED` are
+done, so the `validate_candidate` pipeline (then exposing it over MCP) and the P2 support
+check are next. `run_hwsim_test` treats the plain-SAE baseline as a negative experiment,
+as decided.
 
 ## Checkpoint 1
 

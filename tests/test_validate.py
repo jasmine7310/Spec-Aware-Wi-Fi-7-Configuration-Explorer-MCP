@@ -3,8 +3,9 @@ import pytest
 from explorer.model import Config
 from explorer.rules import load_rules
 from explorer.scenarios import TEST_CONFIGS
-from explorer.validate import (CONFIG_QUESTIONS, P1_CHECKS, Finding, check_eht_sae_akm,
-                               check_mld_client_common_akm, check_mld_common_suites,
+from explorer.validate import (CONFIG_QUESTIONS, P1_CHECKS, Finding, check_eht_beacon_prot,
+                               check_eht_sae_akm, check_eht_sae_h2e, check_mld_client_common_akm,
+                               check_mld_common_suites, check_sae_pwe_needs_sae,
                                find_undetermined, p1_status, run_p1_checks)
 
 
@@ -148,6 +149,54 @@ def test_every_check_has_a_rule_in_the_registry():
         assert registry.get(rule_id).kind in {"normative", "dependency"}, rule_id
     for question_id in CONFIG_QUESTIONS:
         assert question_id in {q.id for q in registry.undetermined}
+
+
+# --- SEC.EHT_BEACON_PROT (802.11be §12.12.9) ---
+
+def test_beacon_protection_on_passes():
+    assert check_eht_beacon_prot(TEST_CONFIGS["eht_mld_sae_ext_two_links"]) == []
+
+
+def test_beacon_protection_off_is_rejected():
+    # test_eht_mld_sae_two_links_no_beacon_prot: beacon_prot=0 (test_eht.py:767-773)
+    config = _config({"akms": ["SAE"]}, {"akms": ["SAE"]}, ["SAE"],
+                     sae_pwe="hash_to_element", beacon_protection=False)
+    assert [f.rule_id for f in check_eht_beacon_prot(config)] == ["SEC.EHT_BEACON_PROT"]
+
+
+# --- SEC.EHT_SAE_H2E (802.11be §12.12.9) ---
+
+@pytest.mark.parametrize("name", ["eht_mld_sae_two_links",     # SAE with sae_pwe=1
+                                  "eht_mld_sae_ext_two_links",  # SAE-EXT-KEY, sae_pwe unset
+                                  "eht_mld_owe_two_links"])     # no SAE at all
+def test_h2e_in_effect_passes(name):
+    assert check_eht_sae_h2e(TEST_CONFIGS[name]) == []
+
+
+def test_plain_sae_with_unset_pwe_is_rejected():
+    config = _config({"akms": ["SAE"]}, {"akms": ["SAE"]}, ["SAE"])
+    findings = check_eht_sae_h2e(config)
+    assert [f.rule_id for f in findings] == ["SEC.EHT_SAE_H2E"]
+    assert "hunting-and-pecking" in findings[0].reason
+
+
+def test_sae_ext_key_preferred_so_unset_pwe_is_fine():
+    config = _config({"akms": ["SAE-EXT-KEY", "SAE"]}, {"akms": ["SAE-EXT-KEY", "SAE"]},
+                     ["SAE", "SAE-EXT-KEY"])
+    assert check_eht_sae_h2e(config) == []
+
+
+# --- SEC.SAE_PWE_NEEDS_SAE (setting dependency) ---
+
+def test_sae_pwe_with_sae_passes():
+    assert check_sae_pwe_needs_sae(TEST_CONFIGS["eht_mld_sae_two_links"]) == []
+
+
+def test_sae_pwe_with_owe_is_rejected():
+    config = _config({"akms": ["OWE"]}, {"akms": ["OWE"]}, ["OWE"], sae_pwe="hash_to_element")
+    findings = check_sae_pwe_needs_sae(config)
+    assert [f.rule_id for f in findings] == ["SEC.SAE_PWE_NEEDS_SAE"]
+    assert "no effect" in findings[0].reason
 
 
 # --- SPEC_UNDETERMINED (configuration questions) ---
