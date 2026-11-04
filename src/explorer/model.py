@@ -11,9 +11,11 @@ Fields and allowed values come from ``surface_candidates.csv`` and hostap at the
 commit (43ee60e1). Values are limited to those hostap's EHT/MLD tests actually use;
 meanings are from ``hostapd/hostapd.conf`` and ``wpa_supplicant/wpa_supplicant.conf``.
 
-Fixed by the harness, so not fields (each has only one value in passing tests):
-client PMF is required (``ieee80211w=2``), client beacon protection is enabled
-(``beacon_prot=1``) and client SAE PWE is hash-to-element (``sae_pwe=1``). SSID and
+Not fields, because the tests don't vary them as settings of their own: client PMF is
+required (``ieee80211w=2``). Client beacon protection and SAE PWE aren't modeled either,
+but they do differ between tests: the plain-SAE tests set ``beacon_prot=1`` and
+``sae_pwe=1``, while the SAE-EXT-KEY, OWE, rekey and link removal tests leave both unset,
+so that client doesn't use beacon protection (docs/plan.md, "Main blockers"). SSID and
 passphrase are supplied by the harness.
 
 Actions are the runtime operations in ``surface_candidates.csv`` (kind "action"), as

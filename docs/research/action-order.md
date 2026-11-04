@@ -53,12 +53,12 @@ Action names match `surface_candidates.csv`.
 
 | | |
 |---|---|
-| **Applies to** | `rekey_gtk_now`, `link_remove`, `ap_disassociate`, `ap_deauthenticate`, `bss_tm_link_removal_imminent`, `setup_link_reconfig`, `sta_disconnect_reconnect` (DISCONNECT) |
-| **Rule** | The action is only allowed while the STA is `associated`. |
-| **Predicate** | `state.associated` before the action |
+| **Applies to** | `rekey_gtk_now`, `link_remove`, `ap_disassociate`, `ap_deauthenticate`, `bss_tm_link_removal_imminent`, `setup_link_reconfig`, `sta_disconnect_reconnect` (DISCONNECT); `associate` for the reverse check |
+| **Rule** | The action is only allowed while the STA is `associated`. `associate` itself needs a STA that isn't already associated (policy: no test in `test_eht.py` associates twice without disconnecting). |
+| **Predicate** | `state.associated` before the action; `not state.associated` before `associate` |
 | **Enforced by** | Mixed, per action (below) |
 | **Allowed** | `[associate, rekey_gtk_now]` |
-| **Disallowed** | `[rekey_gtk_now, associate]`; `[link_remove]` |
+| **Disallowed** | `[rekey_gtk_now, associate]`; `[link_remove]`; `[associate, associate]` |
 
 | Action | Who enforces it | Source |
 |---|---|---|
@@ -80,7 +80,7 @@ Action names match `surface_candidates.csv`.
 | **Source** | `wpa_supplicant/ctrl_iface.c:12946-12955` (`wpas_ctrl_ml_probe`: fails if the BSS isn't known, if scanning, or if `WPA_SCANNING < wpa_state < WPA_COMPLETED`) |
 | **Tested order** | `tests/hwsim/test_eht.py:387-395` (scan), `422`, `439`, `446` (probes); no association in `test_eht_mld_discovery` |
 | **Allowed** | `[scan, ml_probe_req]` |
-| **Disallowed** | `[ml_probe_req]` with no prior scan |
+| **Disallowed** | `[ml_probe_req]` with no prior scan; a probe after the scanned AP MLD was disabled, lost every link, or lost the requested link |
 | **Note** | The code also allows probing while `associated`, but no test does it. Treat `[associate, ml_probe_req]` as permitted by the code but **untested**: it needs a smoke test before it's admitted. |
 
 ### AO.LINK_MUST_EXIST: only remove links that still exist
@@ -102,7 +102,7 @@ Action names match `surface_candidates.csv`.
 |---|---|
 | **Applies to** | every `AO.ASSOC_REQUIRED` action after the STA has no active links |
 | **Rule** | After the last active link is removed, treat the STA as not associated until it associates again. It can't associate again while only disabled links remain. |
-| **Predicate** | if `state.active_links` becomes empty, set `associated = false`; `associate` needs at least one AP link that isn't disabled |
+| **Predicate** | if `state.active_links` becomes empty, set `associated = false`; `associate` needs at least one AP link that isn't disabled. Deleting the last link with `setup_link_reconfig` counts too (policy; no test does it) |
 | **Enforced by** | **harness**, with the state change defined by the standard |
 | **Source** | IEEE-802.11be-2024 §35.3.6.3 "Removing affiliated AP(s)", PDF p. 517-518 (printed p. 516-517): when the removed AP's link is a non-AP MLD's only setup link, the MLMEs of the AP MLD and of the non-AP MLD both signal that non-AP MLD's disassociation ("shall"). `tests/hwsim/test_eht.py:1416-1424`: after removing the last link the test expects traffic to fail (`traffic_test(..., success=False)`) |
 | **Allowed** | `[associate, link_remove(1), link_remove(0)]` (ends there) |
@@ -126,12 +126,12 @@ Action names match `surface_candidates.csv`.
 | | |
 |---|---|
 | **Applies to** | `setup_link_reconfig add=<link>` |
-| **Rule** | The AP MLD must advertise the link, and the STA must not currently have it. |
-| **Predicate** | `link ∈ state.ap_links` and `link ∉ state.active_links`; afterwards add it |
+| **Rule** | The AP MLD must advertise the link, the STA must not currently have it, and the link must not be advertised as disabled (policy, from §35.3.7.5.2). |
+| **Predicate** | `link ∈ state.ap_links`, `link ∉ state.active_links` and `link ∉ state.disabled_links`; afterwards add it |
 | **Enforced by** | First half **hostap code** ("add link info not present", `wpa_supplicant/ctrl_iface.c:12819-12830`); second half **policy**: wpa_supplicant doesn't check it |
 | **Source** | `tests/hwsim/test_eht.py:3024` (delete) then `3044` (add the same link), checked by `CTRL-EVENT-LINK-STA-ADDED` at `3054` |
 | **Allowed** | `[associate, setup_link_reconfig delete=1, setup_link_reconfig add=1]` |
-| **Disallowed** | `[associate, setup_link_reconfig add=1]` while link 1 is still active |
+| **Disallowed** | `[associate, setup_link_reconfig add=1]` while link 1 is still active or advertised as disabled |
 
 ### AO.RECONNECT_AFTER_DISCONNECT: RECONNECT only after DISCONNECT
 
@@ -151,11 +151,11 @@ Action names match `surface_candidates.csv`.
 |---|---|
 | **Applies to** | `disable_enable_mld` |
 | **Rule** | `ENABLE_MLD` follows `DISABLE_MLD`. While the AP MLD is disabled, the STA must be disconnected with DISCONNECT before the AP is re-enabled, and reconnected with RECONNECT afterwards. |
-| **Predicate** | `not state.ap_enabled` before `ENABLE_MLD` |
-| **Enforced by** | Mixed: **hostap code** for `ENABLE_MLD` on an AP MLD that's already enabled (`src/ap/hostapd.c:3671-3675`, read but not run); **harness** for the DISCONNECT / RECONNECT order |
+| **Predicate** | `not state.ap_enabled` before `ENABLE_MLD`; `state.ap_enabled` before `DISABLE_MLD`, `associate` and RECONNECT |
+| **Enforced by** | Mixed: **hostap code** for `ENABLE_MLD` on an AP MLD that's already enabled (`src/ap/hostapd.c:3671-3675`, read but not run) and `DISABLE_MLD` on one that's already disabled (`src/ap/hostapd.c:3754-3757`, same); **harness** for the DISCONNECT / RECONNECT order |
 | **Source** | `tests/hwsim/test_eht.py:728-748, 760`; comment at `737`: mac80211 doesn't seem to detect beacon loss or deauthentication for a non-AP MLD, so the test forces the disconnect, then reconnects after `PMKSA_FLUSH` and `BSS_FLUSH 0` |
 | **Allowed** | `[associate, DISABLE_MLD, DISCONNECT, ENABLE_MLD, RECONNECT]` |
-| **Disallowed** | `[associate, ENABLE_MLD]`; `[associate, DISABLE_MLD, ENABLE_MLD, rekey_gtk_now]` (STA never disconnected/reconnected) |
+| **Disallowed** | `[associate, ENABLE_MLD]`; `[associate, DISABLE_MLD, ENABLE_MLD, rekey_gtk_now]` (STA never disconnected/reconnected); `[DISABLE_MLD, DISABLE_MLD]`; `[DISABLE_MLD, associate]` |
 
 ## Config prerequisites seen alongside actions
 

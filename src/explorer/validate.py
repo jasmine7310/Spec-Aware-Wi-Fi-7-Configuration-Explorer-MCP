@@ -206,10 +206,11 @@ def check_eht_sae_akm(config: Config) -> list[Finding]:
     """SEC.EHT_SAE_AKM (802.11be §12.12.9): two EHT devices negotiating SAE use AKM 24 or
     25 (hostap ``SAE-EXT-KEY`` / ``FT-SAE-EXT-KEY``), never plain ``SAE`` (AKM 8).
 
-    If plain SAE is usable but SAE-EXT-KEY isn't, SAE can only be negotiated with AKM 8.
+    Fires only when plain SAE is the one usable AKM. If another family is usable too, the
+    negotiated AKM is unknown, so that is UND.AKM_PREFERENCE, not a violation.
     """
     usable = _usable_akms(config)
-    if "SAE" not in usable or "SAE-EXT-KEY" in usable:
+    if usable != ["SAE"]:
         return []
     return [Finding(
         rule_id="SEC.EHT_SAE_AKM",
@@ -234,10 +235,10 @@ def check_eht_sae_h2e(config: Config) -> list[Finding]:
     src/ap/ieee802_11.c:2006-2009, wpa_supplicant/sme.c:364-366); with plain SAE an
     unset sae_pwe means hunting-and-pecking only (hostapd/hostapd.conf:2292-2294) on
     the 2.4 GHz channels the model allows. A conforming client prefers SAE-EXT-KEY over
-    plain SAE (§12.12.9), so plain SAE is the SAE AKM only when SAE-EXT-KEY isn't usable.
+    plain SAE (§12.12.9). Fires only when plain SAE is the one usable AKM; with another
+    family usable too, the negotiated AKM is unknown (UND.AKM_PREFERENCE).
     """
-    usable = _usable_akms(config)
-    if "SAE" not in usable or "SAE-EXT-KEY" in usable or config.ap.sae_pwe is not None:
+    if _usable_akms(config) != ["SAE"] or config.ap.sae_pwe is not None:
         return []
     return [Finding(
         rule_id="SEC.EHT_SAE_H2E",
@@ -389,6 +390,12 @@ def _apply(state: _State, step) -> tuple[str, str] | None:
                 "still associated is unknown")
 
     if name == "associate":
+        if state.associated:
+            return ("AO.ASSOC_REQUIRED",
+                    "the STA is already associated; associating again isn't admitted without "
+                    "a DISCONNECT first (no test in test_eht.py does it)")
+        if not state.ap_enabled:
+            return "AO.ENABLE_AFTER_DISABLE", "associate comes after ENABLE_MLD"
         if not state.ap_links:
             return ("UND.ASSOC_WITHOUT_AP_LINKS",
                     "every AP link was removed; our sources don't say what associating "
@@ -399,13 +406,20 @@ def _apply(state: _State, step) -> tuple[str, str] | None:
                     "(Re)association Requests on a disabled link (802.11be §35.3.7.5.2)")
         state.associate()
     elif name == "scan":
-        state.scanned = True
+        # A disabled AP MLD, or one with no links left, can't be seen in a scan.
+        state.scanned = state.ap_enabled and bool(state.ap_links)
     elif name == "ml_probe_req":
         if not state.scanned:
             return "AO.ML_PROBE_STATE", "the AP MLD hasn't been seen in a scan yet"
         if state.associated:
             return "AO.ML_PROBE_STATE", ("probing while associated isn't admitted (no hostap "
                                          "test does it)")
+        if not state.ap_enabled:
+            return "AO.ML_PROBE_STATE", "the AP MLD was disabled after the scan"
+        if not state.ap_links:
+            return "AO.ML_PROBE_STATE", "every AP link was removed after the scan"
+        if step.link_id != -1 and step.link_id not in state.ap_links:
+            return "AO.ML_PROBE_STATE", f"AP link {step.link_id} was removed after the scan"
     elif name == "link_remove":
         if step.link_id not in state.ap_links:
             return "AO.LINK_MUST_EXIST", f"AP link {step.link_id} was already removed"
@@ -425,11 +439,18 @@ def _apply(state: _State, step) -> tuple[str, str] | None:
             if step.link_id not in state.active_links:
                 return "AO.RECONFIG_DELETE_ACTIVE", f"link {step.link_id} isn't one of the STA's links"
             state.active_links.discard(step.link_id)
+            if not state.active_links:
+                state.leave("link reconfiguration deleted the STA's last link",
+                            rule="AO.NO_LINKS_LEFT")
         else:
             if step.link_id not in state.ap_links:
                 return "AO.RECONFIG_ADD_ABSENT", f"the AP MLD doesn't have link {step.link_id}"
             if step.link_id in state.active_links:
                 return "AO.RECONFIG_ADD_ABSENT", f"the STA already has link {step.link_id}"
+            if step.link_id in state.disabled_links:
+                return ("AO.RECONFIG_ADD_ABSENT",
+                        f"link {step.link_id} is advertised as disabled, and a STA doesn't use "
+                        f"a disabled link (802.11be §35.3.7.5.2)")
             state.active_links.add(step.link_id)
     elif name == "sta_disconnect_reconnect":
         if step.command == "DISCONNECT":
@@ -448,6 +469,8 @@ def _apply(state: _State, step) -> tuple[str, str] | None:
             state.associate()
     elif name == "disable_enable_mld":
         if step.command == "DISABLE_MLD":
+            if not state.ap_enabled:
+                return "AO.ENABLE_AFTER_DISABLE", "the AP MLD is already disabled"
             state.ap_enabled = False
         else:
             if state.ap_enabled:
@@ -496,9 +519,9 @@ class ValidationResult(BaseModel):
 _NOTES = {
     "MALFORMED": "Rejected at P0: the input doesn't fit the model, so the rules weren't checked.",
     "SPEC_RULE_VIOLATION": (
-        "Rejected at P1 by the modeled rules listed. An AO.* (harness/policy) rule means the "
-        "action sequence doesn't make sense for our experiments, not that it breaks the Wi-Fi "
-        "specification."),
+        "Rejected at P1 by the modeled rules listed. An AO.* (harness/policy) or dependency "
+        "rule means the candidate doesn't make sense for our experiments, not that it breaks "
+        "the Wi-Fi specification; each finding's kind says which."),
     "SPEC_UNDETERMINED": (
         "The modeled rules can't decide this candidate: it is neither approved nor a "
         "violation, and stays out of the default campaign."),
@@ -514,7 +537,7 @@ def cite(citation: Citation) -> str:
 
 
 @lru_cache(maxsize=1)
-def _registry() -> RuleRegistry:
+def cached_rules() -> RuleRegistry:
     return load_rules()
 
 
@@ -522,7 +545,7 @@ def explain(finding: Finding, registry: RuleRegistry | None = None) -> Explained
     if finding.stage == "P0":
         return ExplainedFinding(**finding.model_dump(), title=P0_ERRORS[finding.rule_id],
                                 kind="format", sources=[])
-    entry = (registry or _registry()).get(finding.rule_id)
+    entry = (registry or cached_rules()).get(finding.rule_id)
     return ExplainedFinding(**finding.model_dump(), title=entry.title,
                             kind=getattr(entry, "kind", "open_question"),
                             sources=[cite(c) for c in entry.sources])

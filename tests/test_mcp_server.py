@@ -8,6 +8,7 @@ from mcp import Client, StdioServerParameters
 
 from explorer import mcp_server
 from explorer.mcp_server import pinned_versions, server
+from explorer.model import Config
 from explorer.runner import REPO_ROOT, RunnerError, RunResult
 from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import extract_record
@@ -222,6 +223,24 @@ def test_runnable_tests_report_their_p1_status():
     assert [f["rule_id"] for f in plain_sae["p1_findings"]] == ["SEC.EHT_SAE_AKM"]
     assert plain_sae["p1_findings"][0]["sources"] == [
         "IEEE-802.11be-2024 §12.12.9 Security constraints for EHT"]
+
+
+def test_runnable_test_with_an_open_question_is_undetermined(monkeypatch):
+    akms = ["SAE-EXT-KEY", "WPA-PSK"]
+    config = Config.model_validate({
+        "ap": {"links": [{"link_id": 0, "channel": 1, "akms": akms},
+                         {"link_id": 1, "channel": 6, "akms": akms}]},
+        "sta": {"akms": akms}})
+    monkeypatch.setitem(mcp_server.TEST_CONFIGS, "eht_mld_sae_ext_two_links", config)
+    monkeypatch.setattr(mcp_server, "run_test", lambda test: pytest.fail("must not run"))
+
+    entry = _runnable()["eht_mld_sae_ext_two_links"]
+    assert entry["p1_status"] == "SPEC_UNDETERMINED"
+    assert entry["p1_findings"][0]["sources"][0].startswith("WFA-WPA3 Table 3")
+
+    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links"})
+    assert result.is_error
+    assert "UND.AKM_PREFERENCE" in result.content[0].text
 
 
 def _fake_completed(monkeypatch, run_dir):

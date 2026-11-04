@@ -135,7 +135,8 @@ def test_associating_with_every_configured_link_disabled_is_rejected():
 
 def test_associating_with_an_enabled_link_left_is_allowed():
     # Removing the disabled link leaves enabled link 0.
-    assert _check([ASSOC, remove(1), ASSOC, REKEY], test="eht_mld_owe_two_links_one_disabled") == []
+    assert _check([ASSOC, remove(1), DISCONNECT, ASSOC, REKEY],
+                  test="eht_mld_owe_two_links_one_disabled") == []
 
 
 def test_reassociating_after_every_link_is_removed_is_undetermined():
@@ -147,7 +148,48 @@ def test_reassociating_after_every_link_is_removed_is_undetermined():
 
 
 def test_reassociating_while_a_link_remains_is_allowed():
-    assert _check([ASSOC, remove(1), ASSOC, REKEY]) == []
+    assert _check([ASSOC, remove(1), DISCONNECT, ASSOC, REKEY]) == []
+
+
+def test_associating_while_associated_is_rejected():
+    violations = _check([ASSOC, remove(1), ASSOC])
+    assert [v.rule_id for v in violations] == ["AO.ASSOC_REQUIRED"]
+    assert "already associated" in violations[0].reason
+
+
+@pytest.mark.parametrize("actions", [[DISABLE, ASSOC], [ASSOC, DISABLE, DISCONNECT, ASSOC]])
+def test_associating_while_the_mld_is_disabled_is_rejected(actions):
+    assert [v.rule_id for v in _check(actions)] == ["AO.ENABLE_AFTER_DISABLE"]
+
+
+def test_disabling_twice_is_rejected():
+    assert [v.rule_id for v in _check([DISABLE, DISABLE])] == ["AO.ENABLE_AFTER_DISABLE"]
+
+
+def test_deleting_the_last_link_by_reconfig_leaves_the_sta_unassociated():
+    violations = _check([ASSOC, reconfig("delete", 1), reconfig("delete", 0), REKEY])
+    assert [v.rule_id for v in violations] == ["AO.NO_LINKS_LEFT"]
+    assert _check([ASSOC, reconfig("delete", 1), reconfig("delete", 0), ASSOC, REKEY]) == []
+
+
+def test_adding_a_disabled_link_is_rejected():
+    violations = _check([ASSOC, reconfig("add", 1)], test="eht_mld_owe_two_links_one_disabled")
+    assert [v.rule_id for v in violations] == ["AO.RECONFIG_ADD_ABSENT"]
+    assert "§35.3.7.5.2" in violations[0].reason
+
+
+@pytest.mark.parametrize("actions", [
+    [SCAN, DISABLE, PROBE],
+    [DISABLE, SCAN, ENABLE, PROBE],
+    [SCAN, ASSOC, remove(1), remove(0), PROBE],
+    [SCAN, ASSOC, remove(1), DISCONNECT, {"action": "ml_probe_req", "link_id": 1}],
+])
+def test_probe_needs_the_scanned_ap_to_still_exist(actions):
+    assert [v.rule_id for v in _check(actions)] == ["AO.ML_PROBE_STATE"]
+
+
+def test_probe_of_a_remaining_link_after_a_removal_is_allowed():
+    assert _check([SCAN, ASSOC, remove(1), DISCONNECT, PROBE]) == []
 
 
 def test_actions_while_mld_disabled_without_disconnect_are_undetermined():

@@ -90,6 +90,11 @@ first filled in.
   - *Disassociate / deauthenticate:* the STA is disconnected afterwards and continuing
     needs an explicit `associate`. hostap's automatic reconnection is recorded as observed
     behavior, not assumed by the action model.
+  - *Added 2026-11-04 from code review (policy, for the team to check):* `associate` is
+    refused while already associated or while the AP MLD or every remaining link is disabled;
+    deleting the STA's last link with link reconfiguration leaves it unassociated; a disabled
+    link can't be added; an ML probe needs the scanned AP MLD and requested link to still
+    exist; `DISABLE_MLD` is refused if already disabled.
 - **Anchor families** (approved by the team 2026-11-03): F02 SAE-EXT-KEY association, F08
   PTK rekey, F09 GTK rekey, F06 link removal (`anchor_coverage.csv`). F01 (plain SAE) and
   F05 (beacon protection off) are out because both break 802.11be §12.12.9.

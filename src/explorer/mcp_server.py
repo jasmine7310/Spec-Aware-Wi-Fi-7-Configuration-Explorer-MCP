@@ -35,7 +35,7 @@ from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test
 from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import UNKNOWN, BehaviorRecord
-from explorer.validate import P0_ERRORS, ValidationResult, run_p1_checks
+from explorer.validate import P0_ERRORS, ValidationResult, find_undetermined, run_p1_checks
 
 DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
 # Committed run evidence; runs/hwsim-logs/ holds git-ignored trial runs and is skipped.
@@ -80,7 +80,7 @@ class RecordedRun(BaseModel):
     """Repo-relative path of the run folder."""
 
 
-P1Status = Literal["PASSES_MODELED_RULES", "SPEC_RULE_VIOLATION"]
+P1Status = Literal["PASSES_MODELED_RULES", "SPEC_RULE_VIOLATION", "SPEC_UNDETERMINED"]
 
 
 class P1Finding(BaseModel):
@@ -198,16 +198,21 @@ def recorded_runs(evidence_dirs=EVIDENCE_DIRS) -> list[RecordedRun]:
     return runs
 
 
-def p1_findings(test: str) -> list[P1Finding]:
-    """What the coded P1 rules say about a hostap test's configuration."""
-    registry = load_rules()
-    findings = []
-    for violation in run_p1_checks(TEST_CONFIGS[test]):
-        rule = registry.get(violation.rule_id)
-        findings.append(P1Finding(
-            rule_id=violation.rule_id, reason=violation.reason,
-            sources=[f"{c.doc} {c.location}" for c in rule.sources if c.strength == "shall"]))
-    return findings
+def _finding_sources(rule_id: str) -> list[str]:
+    """A rule's "shall" citations, or all of them if it has none (e.g. a dependency rule
+    or an open question)."""
+    sources = validate.cached_rules().get(rule_id).sources
+    cited = [c for c in sources if c.strength == "shall"] or sources
+    return [f"{c.doc} {c.location}" for c in cited]
+
+
+def p1_check(test: str) -> tuple[P1Status, list[P1Finding]]:
+    """What the coded P1 rules and open questions say about a hostap test's configuration."""
+    config = TEST_CONFIGS[test]
+    findings = run_p1_checks(config) + find_undetermined(config)
+    return validate.p1_status(findings), [
+        P1Finding(rule_id=f.rule_id, reason=f.reason, sources=_finding_sources(f.rule_id))
+        for f in findings]
 
 
 def runnable_tests(evidence_dirs=EVIDENCE_DIRS) -> list[RunnableTest]:
@@ -216,10 +221,10 @@ def runnable_tests(evidence_dirs=EVIDENCE_DIRS) -> list[RunnableTest]:
     passed = {run.test for run in recorded_runs(evidence_dirs) if run.result == "PASS"}
     runnable = []
     for test in sorted(passed & TEST_CONFIGS.keys()):
-        findings = p1_findings(test)
+        status, findings = p1_check(test)
         runnable.append(RunnableTest(
             test=test, p1_findings=findings,
-            p1_status="SPEC_RULE_VIOLATION" if findings else "PASSES_MODELED_RULES"))
+            p1_status=status))
     return runnable
 
 
@@ -301,10 +306,11 @@ def run_hwsim_test(test: str, negative_experiment: bool = False) -> RunReport:
     mac80211_hwsim, pinned hostap/kernel) and return the observed behavior record.
     Only tests in get_model's runnable_tests are accepted. Takes about 30 seconds.
 
-    The test's configuration is checked against the coded P1 rules first. If it breaks
-    one (p1_status SPEC_RULE_VIOLATION), the run is refused unless negative_experiment
-    is true; such a run is labeled as a negative experiment and is never evidence that
-    the configuration is legal. PASSES_MODELED_RULES means no coded rule objects, not
+    The test's configuration is checked against the coded P1 rules and open questions
+    first. If it breaks a rule or hits an open question (p1_status SPEC_RULE_VIOLATION or
+    SPEC_UNDETERMINED), the run is refused unless negative_experiment is true; such a run
+    is labeled as a negative experiment and is never evidence that the configuration is
+    legal. PASSES_MODELED_RULES means no coded rule objects, not
     full 802.11be compliance.
 
     A COMPLETED run whose test_result is FAIL is still a real observation; SETUP_FAIL
@@ -317,7 +323,7 @@ def run_hwsim_test(test: str, negative_experiment: bool = False) -> RunReport:
     if entry.p1_findings and not negative_experiment:
         broken = "; ".join(f"{f.rule_id} ({', '.join(f.sources)}): {f.reason}"
                            for f in entry.p1_findings)
-        raise ToolError(f"{test!r} breaks modeled rules: {broken}. Pass "
+        raise ToolError(f"{test!r} doesn't pass the modeled rules ({entry.p1_status}): {broken}. Pass "
                         f"negative_experiment=true to run it anyway as a labeled "
                         f"negative experiment.")
     try:

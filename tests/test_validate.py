@@ -201,6 +201,14 @@ def test_sae_pwe_with_owe_is_rejected():
 
 # --- SPEC_UNDETERMINED (configuration questions) ---
 
+@pytest.mark.parametrize("other", ["OWE", "WPA-PSK"])
+def test_plain_sae_with_another_family_is_undetermined_not_a_violation(other):
+    # The negotiated AKM is unknown, so the SAE rules can't say it breaks them.
+    config = _config({"akms": [other, "SAE"]}, {"akms": [other, "SAE"]}, [other, "SAE"])
+    assert run_p1_checks(config) == []
+    assert [f.rule_id for f in find_undetermined(config)] == ["UND.AKM_PREFERENCE"]
+
+
 def test_akm_families_mixed_is_undetermined():
     config = _config({"akms": ["SAE-EXT-KEY", "WPA-PSK"]}, {"akms": ["SAE-EXT-KEY", "WPA-PSK"]},
                      ["WPA-PSK", "SAE-EXT-KEY"])

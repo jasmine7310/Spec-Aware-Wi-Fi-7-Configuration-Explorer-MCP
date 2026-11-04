@@ -256,6 +256,9 @@ rules:
       - >-
         An AP may still advertise plain SAE for non-EHT clients (WFA Table 8); the rule
         is about the AKM two EHT devices negotiate.
+      - >-
+        Fires only when plain SAE is the one usable AKM. If another family is usable too, the
+        negotiated AKM is unknown, so the candidate is UND.AKM_PREFERENCE instead.
     sources:
       - doc: IEEE-802.11be-2024
         strength: shall
@@ -311,6 +314,7 @@ rules:
       fails.
     exceptions:
       - "On 6 GHz hostap switches an unset sae_pwe to both methods (src/ap/ap_config.c:1269-1274); our tests use 2.4 GHz."
+      - "Fires only when plain SAE is the one usable AKM; with another family usable too, the candidate is UND.AKM_PREFERENCE."
     sources:
       - doc: IEEE-802.11be-2024
         strength: shall
@@ -430,8 +434,12 @@ rules:
       - bss_tm_link_removal_imminent
       - setup_link_reconfig
       - sta_disconnect_reconnect
-    meaning: "These actions are only allowed while the STA is associated."
-    predicate: "state.associated is true before the action."
+      - associate
+    meaning: >-
+      These actions are only allowed while the STA is associated. associate itself needs a STA
+      that isn't already associated (our policy: no test in test_eht.py associates twice
+      without disconnecting).
+    predicate: "state.associated is true before the action, and false before associate."
     sources:
       - doc: hostap
         strength: code
@@ -482,6 +490,7 @@ rules:
       disallowed:
         - "[rekey_gtk_now, associate]"
         - "[link_remove]"
+        - "[associate, associate]"
     notes:
       - "Enforcement is mixed: hostap code for bss_tm_link_removal_imminent and setup_link_reconfig, the harness for the rest."
 
@@ -546,12 +555,13 @@ rules:
     title: Removing the last link disassociates the STA
     kind: harness
     status: reviewed
-    applies_to: [link_remove, associate]
+    applies_to: [link_remove, associate, setup_link_reconfig]
     meaning: >-
       When the AP removes the last setup link, the non-AP MLD is disassociated (802.11be
       §35.3.6.3), so every AO.ASSOC_REQUIRED action is refused until it associates again.
       The same applies when only disabled links remain (§35.3.7.5.2), and the STA can't
-      associate again while that's so. The state change comes from the standard; refusing
+      associate again while that's so. We treat deleting the last link with link
+      reconfiguration the same way, as our policy; no test does it. The state change comes from the standard; refusing
       the later actions is ours.
     predicate: >-
       If state.active_links becomes empty, set state.associated to false. associate needs
@@ -586,6 +596,7 @@ rules:
       disallowed:
         - "[associate, link_remove(1), link_remove(0), rekey_gtk_now]"
         - "[associate, link_remove(0), associate] while link 1 is advertised as disabled"
+        - "[associate, setup_link_reconfig delete=1, setup_link_reconfig delete=0, rekey_gtk_now]"
     notes:
       - >-
         Seen in runs/smoke/1793690892 (eht_mld_link_removal): after the last link's
@@ -621,10 +632,13 @@ rules:
     kind: harness
     status: reviewed
     applies_to: [setup_link_reconfig]
-    meaning: "setup_link_reconfig add=<link> needs the AP MLD to advertise the link and the STA not to have it."
-    predicate: "link in state.ap_links and link not in state.active_links; afterwards add it."
+    meaning: >-
+      setup_link_reconfig add=<link> needs the AP MLD to advertise the link, the STA not to
+      have it, and the link not to be advertised as disabled.
+    predicate: "link in state.ap_links, not in state.active_links and not disabled; afterwards add it."
     exceptions:
       - "Only the first half is checked by hostap code; 'the STA doesn't have it' is our policy, wpa_supplicant doesn't check it."
+      - "Refusing a disabled link is also our policy, from §35.3.7.5.2's rule that an associated STA doesn't use a disabled link to send to its AP."
     sources:
       - doc: hostap
         strength: code
@@ -641,6 +655,7 @@ rules:
         - "[associate, setup_link_reconfig delete=1, setup_link_reconfig add=1]"
       disallowed:
         - "[associate, setup_link_reconfig add=1] while link 1 is still active"
+        - "[associate, setup_link_reconfig add=1] while link 1 is advertised as disabled"
 
   - id: AO.RECONNECT_AFTER_DISCONNECT
     title: RECONNECT only after DISCONNECT
@@ -678,7 +693,7 @@ rules:
       ENABLE_MLD follows DISABLE_MLD. While the AP MLD is disabled the STA must be
       disconnected with DISCONNECT before the AP is re-enabled, and reconnected with
       RECONNECT afterwards.
-    predicate: "state.ap_enabled is false before ENABLE_MLD."
+    predicate: "state.ap_enabled is false before ENABLE_MLD, and true before DISABLE_MLD, associate and RECONNECT."
     sources:
       - doc: hostap
         strength: code
@@ -695,11 +710,18 @@ rules:
           "already enabled" on an interface that is already up. So hostap code enforces ENABLE_MLD
           following DISABLE_MLD; the DISCONNECT / RECONNECT order is harness. Read, not run.
         checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
+      - doc: hostap
+        strength: code
+        location: "src/ap/hostapd.c:3754-3757"
+        says: "hostapd_disable_iface() fails with \"already disabled\" on an interface that is already down. Read, not run."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-04"
     examples:
       allowed:
         - "[associate, DISABLE_MLD, DISCONNECT, ENABLE_MLD, RECONNECT]"
       disallowed:
         - "[associate, ENABLE_MLD]"
+        - "[DISABLE_MLD, DISABLE_MLD]"
+        - "[DISABLE_MLD, associate]"
         - "[associate, DISABLE_MLD, ENABLE_MLD, rekey_gtk_now]"
 
 # --- Open questions (SPEC_UNDETERMINED) -------------------------------------------
