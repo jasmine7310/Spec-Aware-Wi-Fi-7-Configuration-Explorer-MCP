@@ -4,7 +4,7 @@ Shared context for the team and for coding agents. The GitHub issue board tracks
 individual tasks and their status; this file holds the big picture and the decisions
 behind it. Issues are referred to by name, not number.
 
-_Status last updated 2026-11-03 from what is committed on `main` and the `week2-jas`
+_Status last updated 2026-11-04 from what is committed on `main` and the `week2-jas`
 branch (Week 2 work lands on `week2-jas` first). Work that exists only on someone's
 laptop or on the board isn't reflected here._
 
@@ -113,7 +113,7 @@ first filled in.
 | List candidate settings from test code | ✅ `surface_candidates.csv`: 34 candidates (17 settings, 10 actions, 7 observations) from `test_eht.py` / `hostapd.py` at the pinned commit. Candidates only; admitting a dimension needs the settings smoke test |
 | Get the standards documents | 🟡 `docs/references.md` lists IEEE Std 802.11be-2024, IEEE Std 802.11-2024 and the WFA "WPA3 and Wi-Fi Enhanced Open Deployment and Implementation Guide" v1.1 (Feb 2025), with versions, links, normative vs guidance, relevant sections and how to get a copy. Still to do: every teammate doing rule research confirming they can open all three. Don't commit the PDFs |
 | Rule research: action order | ✅ `docs/research/action-order.md`: 8 rules (harness/code prerequisites, not spec rules), each with sources, who enforces it, and allowed/disallowed examples |
-| Rule research: link security match; SAE PWE / beacon protection | 🟡 Draft in `docs/research/security-guidance.md`: 6 findings (link suites, beacon protection, PMF, SAE AKM, SAE H2E, and the setting dependency "`sae_pwe` only with SAE"), citing 802.11be-2024 / 802.11-2024 and, where it applies, the WFA guide. IEEE citations checked against the PDFs; **the WFA rows (and a few hostap lines) still need a teammate's review** before merging. The plain-SAE baseline question (802.11be §12.12.9 requires AKM 24/25 between EHT devices) is decided: see "Baseline" under Decisions |
+| Rule research: link security match; SAE PWE / beacon protection | 🟡 Draft in `docs/research/security-guidance.md`: 6 findings (link suites, beacon protection, PMF, SAE AKM, SAE H2E, and the setting dependency "`sae_pwe` only with SAE"), citing 802.11be-2024 / 802.11-2024 and, where it applies, the WFA guide. IEEE citations checked against the PDFs; WFA citations checked by Michelle in the PDF (2026-11-04), who found that the PTK / GTK rekey tests fit Transition Mode on the AP side only. **A second teammate's review and the remaining hostap lines are still to do.** The plain-SAE baseline question (802.11be §12.12.9 requires AKM 24/25 between EHT devices) is decided: see "Baseline" under Decisions |
 | Pick the 4 scenario families | ✅ Done, approved by the team 2026-11-03. `anchor_coverage.csv` (moved to the repo root) lists F02 SAE-EXT-KEY association, F08 PTK rekey, F09 GTK rekey and F06 link removal, with helpers checked against the pinned tests. All four are `PASS`: 3 independent passing runs each with identical behavior signatures (new runs in `runs/anchors/`; F08 and F09 span an Intel Mac and Windows + WSL2). F01 (plain SAE) and F05 (beacon protection off) were dropped: both break 802.11be §12.12.9. `tests/test_anchor_coverage.py` checks the file |
 | Data model for settings | ✅ `model.Config` (AP MLD with per-link AKMs + client), strict, `extra="forbid"`; values limited to those hostap's tests use. Wi-Fi rules are left to P1 |
 | Data model for actions | ✅ Done. `model.Candidate` = `Config` + an ordered list of typed actions (a discriminated union on `action`, strict, `extra="forbid"`), one class per action in `surface_candidates.csv` with its hostap source lines; arguments (link ID, removal count, DISABLE/ENABLE_MLD, DISCONNECT/RECONNECT, reconfig delete/add) are typed, and a link an action names must be a configured AP link. Added the `scan` action to `surface_candidates.csv` (the ML probe needs it). Action order is left to P1 |
@@ -139,8 +139,9 @@ first filled in.
 | Record the demo | MCP | ⬜ Last |
 | Write the 1-page report | MCP | ⬜ Last |
 
-**Main blockers:** a teammate review of `docs/research/security-guidance.md` (an AI agent
-has checked every IEEE and WFA citation against the PDF text, which doesn't replace it).
+**Main blockers:** a second teammate's review of `docs/research/security-guidance.md`. An
+AI agent has checked every IEEE and WFA citation against the PDF text, and Michelle has
+checked the WFA citations in the PDF, but that doesn't replace it.
 The baseline and action-model decisions are made, the anchor families approved, and the
 action model, action-order checker, P0 errors, setting rules, `SPEC_UNDETERMINED`, the
 `validate_candidate` pipeline and its MCP tools are done, so the P2 support check, the

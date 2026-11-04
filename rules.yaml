@@ -88,7 +88,7 @@ rules:
         says: >-
           Restates the 802.11be rule; AKMs advertised on every link can be used for ML
           associations, the others only for non-ML associations to the advertising BSS.
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
     examples:
       allowed:
         - "Both links advertise OWE (eht_mld_owe_two_links)."
@@ -133,7 +133,7 @@ rules:
         says: >-
           With an AP MLD the STA picks an AKM and pairwise cipher enabled by the BSSs of
           all affiliated links; if none exists it does not attempt to associate.
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
     examples:
       allowed:
         - "Links share SAE-EXT-KEY and the client allows SAE-EXT-KEY (eht_mld_sae_ext_two_links)."
@@ -172,7 +172,7 @@ rules:
         location: "Table 4"
         page: "p. 12"
         says: "For EHT APs and EHT STAs, beacon protection Enabled is MAND and Disabled is DISALLOW in every mode."
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:694, 767-773"
@@ -226,7 +226,7 @@ rules:
           AP with EHT enabled: PMF Required is MAND in WPA3-Personal Only and Enhanced Open
           Only; in WPA3-Personal Transition Mode Capable is MAND and Required DISALLOW.
           Disabled is DISALLOW in all three.
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
     examples:
       allowed:
         - "AP pmf required (ieee80211w=2)."
@@ -234,6 +234,7 @@ rules:
       disallowed:
         - "AP pmf disabled (ieee80211w=0)."
     notes:
+      - "hostap's PTK / GTK rekey tests fit Table 5's AP values, but their client doesn't fit its EHT STA values (ieee80211w=2 where Required is DISALLOW, and no SAE :8 where it is MAND). WFA guidance, not an IEEE rule."
       - "explorer.model doesn't offer pmf disabled, so P0 already rejects it; this rule records why. No P1 check is coded, since none could fire."
 
   - id: SEC.EHT_SAE_AKM
@@ -264,7 +265,7 @@ rules:
           For an AP with EHT enabled, SAE-GDH (:24) and SAE (:8) are both MAND in WPA3-Personal
           Transition and Only modes; in Only mode :8 can be left out where every device
           supports EHT.
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
       - doc: hostap
         strength: code
         location: "src/common/wpa_common.h:104-105"
@@ -320,7 +321,7 @@ rules:
           Transition Mode (H2E Only DISALLOW) and in Only mode outside 6 GHz / sub-1 GHz,
           where H2E Only is MAND. EHT STA: Enabled MAND, H2E Only DISALLOW except where all
           devices are known to support EHT.
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
       - doc: hostap
         strength: code
         location: "hostapd/hostapd.conf:2292-2294"
@@ -385,7 +386,7 @@ rules:
         location: "Table 3, SAE Hash-to-Element row"
         page: "p. 10"
         says: "The SAE Hash-to-Element setting applies only if an SAE AKM is used, for both AP and STA."
-        checked: "Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
       - doc: hostap
         strength: code
         location: "hostapd/config_file.c:4675-4676"
@@ -689,7 +690,7 @@ undetermined:
         says: >-
           When several AKMs are enabled on both sides, the selection preference order is
           defined in the WPA3 Specification (its reference [1]).
-        checked: "Claude (AI agent), PDF text, 2026-11-03"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-03"
     notes:
       - "Two SAE-family AKMs don't count: between EHT devices 802.11be §12.12.9 forces SAE-EXT-KEY."
 
