@@ -15,7 +15,7 @@ every rejection says which stage and which sourced rule rejected it:
 
 | Stage | Component | Question it answers | Status |
 |---|---|---|---|
-| P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | 🟡 Settings model (`model.Config`) and action model (`model.Candidate`: config + ordered actions); readable format errors not yet |
+| P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | ✅ Settings model (`model.Config`), action model (`model.Candidate`: config + ordered actions) and readable `P0.*` errors (`validate.parse_candidate`) |
 | P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | 🟡 Rule registry (`rules.yaml` + `rules.load_rules()`); 3 security rules coded (`validate.run_p1_checks`, applied to hostap tests by `run_hwsim_test`) and all 8 action-order rules (`validate.check_action_order`); no `validate_candidate` pipeline yet |
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | ⬜ |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()` |
@@ -117,7 +117,7 @@ first filled in.
 | Data model for settings | ✅ `model.Config` (AP MLD with per-link AKMs + client), strict, `extra="forbid"`; values limited to those hostap's tests use. Wi-Fi rules are left to P1 |
 | Data model for actions | ✅ Done. `model.Candidate` = `Config` + an ordered list of typed actions (a discriminated union on `action`, strict, `extra="forbid"`), one class per action in `surface_candidates.csv` with its hostap source lines; arguments (link ID, removal count, DISABLE/ENABLE_MLD, DISCONNECT/RECONNECT, reconfig delete/add) are typed, and a link an action names must be a configured AP link. Added the `scan` action to `surface_candidates.csv` (the ML probe needs it). Action order is left to P1 |
 | Decide baseline and action model | ✅ Done 2026-11-03. Recorded under Decisions ("Baseline", "Action model") and in `docs/research/action-order.md` |
-| Readable format errors, rules file + loader | 🟡 Rules file + loader done: `rules.yaml` holds 14 draft rules (6 `SEC.*` from the security research, 8 `AO.*` from the action-order research), loaded and checked by `rules.load_rules()`; hostap citations checked to exist at the pinned commit. Every rule stays `draft` until its research is reviewed. Readable format errors still to do |
+| Readable format errors, rules file + loader | 🟡 Rules file + loader done: `rules.yaml` holds 14 draft rules (6 `SEC.*` from the security research, 8 `AO.*` from the action-order research), loaded and checked by `rules.load_rules()`; hostap citations checked to exist at the pinned commit. Every rule stays `draft` until its research is reviewed. Readable format errors done too: `validate.parse_candidate` turns bad input into `P0.*` findings (`P0.TYPE_ERROR`, `MISSING_FIELD`, `UNKNOWN_FIELD`, `NOT_ALLOWED`, `OUT_OF_RANGE`, `INVALID_VALUE`) with a path, e.g. `P0.TYPE_ERROR: config.ap.links[0].link_id must be an integer`; 12 bad inputs tested |
 
 ## Week 2 status
 

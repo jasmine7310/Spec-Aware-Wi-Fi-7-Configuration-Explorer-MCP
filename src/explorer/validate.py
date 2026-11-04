@@ -2,6 +2,8 @@
 
 Every finding names its stage, its outcome and the ID it rests on:
 
+- P0, ``MALFORMED``: the input doesn't fit ``model.Candidate``; IDs are ``P0.*``
+  (``P0_ERRORS``), from ``parse_candidate`` / ``format_errors``.
 - P1, ``SPEC_RULE_VIOLATION``: a rule in ``rules.yaml`` rejects the candidate.
 - P1, ``SPEC_UNDETERMINED``: an open question in ``rules.yaml`` (``UND.*``) the modeled
   rules can't decide. A distinct non-approval, never treated as legal or as a violation.
@@ -19,7 +21,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError
 
 from explorer.model import Candidate, Config
 
@@ -50,6 +52,85 @@ def p1_status(findings: list[Finding]) -> Literal[
     if "SPEC_UNDETERMINED" in outcomes:
         return "SPEC_UNDETERMINED"
     return "PASSES_MODELED_RULES"
+
+
+# --- P0: readable format errors --------------------------------------------------
+
+P0_ERRORS = {
+    "P0.TYPE_ERROR": "a value has the wrong type (e.g. a string where an integer is needed)",
+    "P0.MISSING_FIELD": "a required field is missing",
+    "P0.UNKNOWN_FIELD": "a field that isn't part of the model, e.g. a raw hostapd option",
+    "P0.NOT_ALLOWED": "a value outside the allowed set (e.g. an unknown AKM or action)",
+    "P0.OUT_OF_RANGE": "a number or list length outside its bounds",
+    "P0.INVALID_VALUE": "a value the model's own checks refuse (e.g. a repeated link ID)",
+}
+
+_TYPE_NAMES = {"int": "an integer", "bool": "true or false", "string": "a string",
+               "list": "a list", "dict": "an object", "model": "an object",
+               "model_attributes": "an object"}
+
+
+def format_errors(exc: ValidationError) -> list[Finding]:
+    """Turn a model ValidationError into P0 findings like
+    'P0.TYPE_ERROR: config.ap.links[0].link_id must be an integer'."""
+    return [_p0_finding(error) for error in exc.errors(include_url=False)]
+
+
+def parse_candidate(data: object) -> tuple[Candidate | None, list[Finding]]:
+    """Validate raw input (e.g. JSON from the agent) as a Candidate."""
+    try:
+        return Candidate.model_validate(data), []
+    except ValidationError as exc:
+        return None, format_errors(exc)
+
+
+def _p0_finding(error: dict) -> Finding:
+    kind, ctx = error["type"], error.get("ctx", {})
+    path = _path(error["loc"])
+    if kind == "missing":
+        rule, text = "P0.MISSING_FIELD", "is required"
+    elif kind == "union_tag_not_found":
+        rule, text = "P0.MISSING_FIELD", f"needs an {ctx.get('discriminator', 'action')!s} field"
+    elif kind == "extra_forbidden":
+        rule, text = "P0.UNKNOWN_FIELD", "is not a known field"
+    elif kind == "literal_error":
+        rule, text = "P0.NOT_ALLOWED", f"must be one of {ctx['expected']}"
+    elif kind == "union_tag_invalid":
+        rule, text = "P0.NOT_ALLOWED", (f"unknown action {ctx['tag']!r}; expected one of "
+                                        f"{ctx['expected_tags']}")
+    elif kind in ("greater_than_equal", "greater_than"):
+        rule, text = "P0.OUT_OF_RANGE", f"must be >= {ctx.get('ge', ctx.get('gt'))}"
+    elif kind in ("less_than_equal", "less_than"):
+        rule, text = "P0.OUT_OF_RANGE", f"must be <= {ctx.get('le', ctx.get('lt'))}"
+    elif kind == "too_short":
+        rule, text = "P0.OUT_OF_RANGE", f"needs at least {ctx['min_length']} item(s)"
+    elif kind == "too_long":
+        rule, text = "P0.OUT_OF_RANGE", f"allows at most {ctx['max_length']} item(s)"
+    elif kind.endswith(("_type", "_parsing")):
+        name = kind.rsplit("_", 1)[0]
+        rule, text = "P0.TYPE_ERROR", f"must be {_TYPE_NAMES.get(name, name)}"
+    else:
+        # The model's own checks phrase a full sentence, so separate it from the path.
+        rule, text = "P0.INVALID_VALUE", error["msg"].removeprefix("Value error, ")
+        path = f"{path}:" if path else path
+    return Finding(stage="P0", outcome="MALFORMED", rule_id=rule,
+                   reason=f"{path} {text}" if path else text)
+
+
+def _path(loc: tuple) -> str:
+    """('config', 'ap', 'links', 0, 'link_id') -> 'config.ap.links[0].link_id'. The
+    action tag Pydantic inserts after an action's index is dropped."""
+    out = ""
+    previous = None
+    for part in loc:
+        if isinstance(part, int):
+            out += f"[{part}]"
+        elif isinstance(previous, int) and out.startswith("actions"):
+            pass  # discriminator tag, e.g. actions[0].link_remove.link_id
+        else:
+            out += f".{part}" if out else part
+        previous = part
+    return out
 
 
 # --- P1: configuration rules -----------------------------------------------------
