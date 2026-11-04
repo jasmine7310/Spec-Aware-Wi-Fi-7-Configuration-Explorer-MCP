@@ -60,7 +60,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   returns a `RunResult` (`COMPLETED` / `SETUP_FAIL` / `TIMEOUT`) with its behavior record.
 - `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
   `.signature()` gives the comparable facts.
-- `explorer.mcp_server`: `MCPServer` with `get_model` and `run_hwsim_test`. Add new tools
+- `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`
+  and `run_hwsim_test`. Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus

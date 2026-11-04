@@ -9,6 +9,7 @@ from mcp import Client, StdioServerParameters
 from explorer import mcp_server
 from explorer.mcp_server import pinned_versions, server
 from explorer.runner import REPO_ROOT, RunnerError, RunResult
+from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import extract_record
 
 BASELINE_RUN = REPO_ROOT / "runs" / "baseline" / "1793298094"
@@ -41,9 +42,19 @@ def test_pinned_versions_come_from_the_dockerfile():
     assert re.fullmatch(r"[0-9a-f]{40}", versions["hostap_commit"])
 
 
-def test_only_p3_is_reported_as_implemented():
-    stages = {s["stage"].split()[0]: s["implemented"] for s in _get_model()["stages"]}
-    assert stages == {"P0": False, "P1": False, "P2": False, "P3": True, "P4": False}
+def test_implemented_stages():
+    stages = {s["stage"].split()[0]: s for s in _get_model()["stages"]}
+    assert {k: s["implemented"] for k, s in stages.items()} == {
+        "P0": True, "P1": True, "P2": False, "P3": True, "P4": False}
+    assert "not full 802.11be" in stages["P1"]["note"]
+
+
+def test_get_model_lists_every_rule_and_question():
+    rules = {r["id"]: r for r in _get_model()["rules"]}
+    assert rules["SEC.MLD_COMMON_SUITES"]["kind"] == "normative"
+    assert rules["AO.ASSOC_REQUIRED"]["kind"] == "harness"
+    assert rules["UND.AKM_PREFERENCE"]["kind"] == "open_question"
+    assert len(rules) == 15 + 3   # rules.yaml: 15 rules + 3 open questions
 
 
 def test_uncalibrated_facts_are_flagged():
@@ -95,9 +106,94 @@ def test_server_starts_the_way_mcp_json_launches_it():
                                    cwd=str(REPO_ROOT))
     tools, result = _call(params, "get_model")
 
-    assert sorted(tools) == ["get_model", "run_hwsim_test"]
+    assert sorted(tools) == ["explain_rule", "get_model", "run_hwsim_test", "validate_candidate"]
     assert not result.is_error
     assert result.structured_content["stages"][3]["implemented"] is True
+
+    # A real validation over stdio, as the agent would call it.
+    _, result = _call(params, "validate_candidate", {"candidate": {
+        "config": TEST_CONFIGS["eht_mld_sae_two_links"].model_dump(),
+        "actions": [{"action": "associate"}]}})
+    assert result.structured_content["status"] == "SPEC_RULE_VIOLATION"
+
+
+# --- validate_candidate and explain_rule ----------------------------------------
+
+def _validate(candidate):
+    tools, result = _call(server, "validate_candidate", {"candidate": candidate})
+    assert "validate_candidate" in tools
+    assert not result.is_error
+    return result.structured_content
+
+
+def test_validate_candidate_legal():
+    result = _validate({"config": TEST_CONFIGS["eht_mld_sae_ext_two_links"].model_dump(),
+                        "actions": [{"action": "associate"}, {"action": "rekey_gtk_now"}]})
+    assert (result["status"], result["findings"], result["p2"]) == (
+        "PASSES_MODELED_RULES", [], "NOT_CHECKED")
+
+
+def test_validate_candidate_malformed_is_a_result_not_a_tool_error():
+    config = TEST_CONFIGS["eht_mld_sae_ext_two_links"].model_dump()
+    config["ap"]["links"][0]["link_id"] = "0"
+    result = _validate({"config": config})
+    assert result["status"] == "MALFORMED"
+    assert [(f["rule_id"], f["reason"]) for f in result["findings"]] == [
+        ("P0.TYPE_ERROR", "config.ap.links[0].link_id must be an integer")]
+
+
+def test_validate_candidate_explains_a_spec_rejection():
+    config = TEST_CONFIGS["eht_mld_sae_ext_two_links"].model_dump()
+    config["ap"]["links"][0]["akms"] = ["SAE"]
+    config["sta"]["akms"] = ["SAE", "SAE-EXT-KEY"]
+    result = _validate({"config": config})
+    finding = result["findings"][0]
+    assert (result["status"], finding["rule_id"], finding["kind"]) == (
+        "SPEC_RULE_VIOLATION", "SEC.MLD_COMMON_SUITES", "normative")
+    assert any("§12.6.2" in s for s in finding["sources"])
+
+
+def test_validate_candidate_action_order():
+    result = _validate({"config": TEST_CONFIGS["eht_mld_sae_ext_two_links"].model_dump(),
+                        "actions": [{"action": "rekey_gtk_now"}]})
+    assert [f["rule_id"] for f in result["findings"]] == ["AO.ASSOC_REQUIRED"]
+
+
+def _explain(rule_id):
+    _, result = _call(server, "explain_rule", {"rule_id": rule_id})
+    return result
+
+
+def test_explain_a_normative_rule():
+    entry = _explain("SEC.EHT_SAE_AKM").structured_content
+    assert (entry["kind"], entry["status"]) == ("normative", "draft")
+    shall = [s for s in entry["sources"] if s["strength"] == "shall"]
+    assert shall[0]["location"].startswith("§12.12.9")
+    assert shall[0]["page"] == "PDF 446 (printed 445)"
+    assert entry["examples"]["disallowed"]
+
+
+def test_explain_an_action_order_rule():
+    entry = _explain("AO.NO_LINKS_LEFT").structured_content
+    assert entry["kind"] == "harness"
+    assert entry["predicate"]
+
+
+def test_explain_an_open_question():
+    entry = _explain("UND.AKM_PREFERENCE").structured_content
+    assert (entry["kind"], entry["predicate"], entry["examples"]) == ("open_question", None, None)
+    assert entry["sources"][0]["doc"] == "WFA-WPA3"
+
+
+def test_explain_a_format_error():
+    entry = _explain("P0.TYPE_ERROR").structured_content
+    assert entry["kind"] == "format"
+
+
+def test_explain_an_unknown_rule_is_an_error():
+    result = _explain("SEC.NOT_A_RULE")
+    assert result.is_error
+    assert "known IDs" in result.content[0].text
 
 
 # --- run_hwsim_test -----------------------------------------------------------

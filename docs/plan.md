@@ -21,7 +21,7 @@ every rejection says which stage and which sourced rule rejected it:
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | ⬜ |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()` |
 | P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
-| – | MCP server | Lets the agent use all of the above in plain English | 🟡 `get_model` and `run_hwsim_test` (runs an approved hostap test; one that breaks a modeled rule only as a labeled negative experiment) |
+| – | MCP server | Lets the agent use all of the above in plain English | 🟡 `get_model`, `validate_candidate` (P0 + P1, no guest), `explain_rule` (full registry entry behind any finding) and `run_hwsim_test` (runs an approved hostap test; one that breaks a modeled rule only as a labeled negative experiment). Campaign and contrast tools come with P4 |
 
 Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come later.
 
@@ -135,16 +135,16 @@ first filled in.
 | Undetermined result (`SPEC_UNDETERMINED`) | Research | ✅ Done. Findings carry an outcome (`MALFORMED`, `SPEC_RULE_VIOLATION`, `SPEC_UNDETERMINED`) and `validate.p1_status` sums them up. `rules.yaml` gains an `undetermined:` section of open questions with sources: `UND.AKM_PREFERENCE` (several AKM families usable; the choice follows the WPA3 Specification, which we don't have; WFA guide Table 3), `UND.STA_STATE_WHILE_MLD_DISABLED` (actions while the AP MLD is disabled and the STA wasn't disconnected; hostap's test says mac80211 may not notice) and `UND.ASSOC_WITHOUT_AP_LINKS` (associating after every AP link was removed). No runnable hostap test hits one |
 | `validate_candidate` pipeline | Data models | ✅ Done. `validate.validate_candidate(data)` takes raw input, stops at P0 if it's malformed, otherwise runs every coded setting rule, open question and the action-order check, and returns the status (`MALFORMED` / `SPEC_RULE_VIOLATION` / `SPEC_UNDETERMINED` / `PASSES_MODELED_RULES`) with each finding explained from `rules.yaml` (title, kind, cited sources). Never boots a guest. P2 is reported as `NOT_CHECKED` until the support check exists. Tested with the Checkpoint 1 cases: P0 malformed, link-AKM rejection (§12.6.2), action-order rejection, an undetermined case and a legal candidate |
 | Expose a real run over MCP | MCP | ✅ Done. `run_hwsim_test` runs one hostap test that has a passing committed run and a known configuration (`explorer.scenarios`) and returns its behavior record. It applies the coded P1 rules first: `get_model` lists each runnable test's `p1_status`, and a test that breaks a rule (the plain-SAE baseline, §12.12.9) is refused unless called with `negative_experiment=true`, which labels the result. Verified with a real run of `eht_mld_sae_ext_two_links` through an in-process MCP client (`WIFI7_DOCKER_TESTS=1`). Still to record: a transcript from a Claude Code session |
-| Expose validation and rules over MCP | MCP | ⬜ Waits on the `validate_candidate` pipeline |
+| Expose validation and rules over MCP | MCP | ✅ Done. MCP tools `validate_candidate` (takes the candidate as a plain JSON object, so malformed input comes back as readable `P0.*` findings, not a tool error) and `explain_rule` (any `SEC.*` / `AO.*` / `UND.*` / `P0.*` ID: kind, review status, meaning, predicate, exceptions, every citation with page, strength and who checked it, examples). `get_model` now lists every rule and open question and reports P0 and P1 as implemented. Tested in process and over stdio as `.mcp.json` launches it. Still to record: a transcript from a Claude Code session (demo issue) |
 | Record the demo | MCP | ⬜ Last |
 | Write the 1-page report | MCP | ⬜ Last |
 
 **Main blockers:** a teammate review of `docs/research/security-guidance.md` (an AI agent
 has checked every IEEE and WFA citation against the PDF text, which doesn't replace it).
 The baseline and action-model decisions are made, the anchor families approved, and the
-action model, action-order checker, P0 errors, setting rules and `SPEC_UNDETERMINED` are
-done, so the `validate_candidate` pipeline (then exposing it over MCP) and the P2 support
-check are next. `run_hwsim_test` treats the plain-SAE baseline as a negative experiment,
+action model, action-order checker, P0 errors, setting rules, `SPEC_UNDETERMINED`, the
+`validate_candidate` pipeline and its MCP tools are done, so the P2 support check, the
+demo (with a Claude Code transcript) and the 1-page report are next. `run_hwsim_test` treats the plain-SAE baseline as a negative experiment,
 as decided.
 
 ## Checkpoint 1

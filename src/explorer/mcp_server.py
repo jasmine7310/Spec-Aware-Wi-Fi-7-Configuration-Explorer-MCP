@@ -13,8 +13,10 @@ known configuration (``explorer.scenarios``), so the agent can't start arbitrary
 or commands. Before running, it applies the coded P1 rules: a test whose
 configuration breaks one (e.g. plain SAE between EHT devices, 802.11be §12.12.9) only
 runs as an explicitly labeled negative experiment, so it never passes for a legal
-candidate. Validation, campaign and contrast tools are added as the stages behind
-them are built.
+candidate. ``validate_candidate`` checks any candidate (configuration plus ordered
+actions) through P0 and P1 without booting a guest, and ``explain_rule`` returns the
+full registry entry behind any finding. Campaign and contrast tools are added as the
+stages behind them are built.
 """
 
 from __future__ import annotations
@@ -22,17 +24,18 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from pydantic import BaseModel
 
-from explorer.rules import load_rules
+from explorer import validate
+from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test
 from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import UNKNOWN, BehaviorRecord
-from explorer.validate import run_p1_checks
+from explorer.validate import P0_ERRORS, ValidationResult, run_p1_checks
 
 DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
 # Committed run evidence; runs/hwsim-logs/ holds git-ignored trial runs and is skipped.
@@ -44,7 +47,9 @@ server = MCPServer(
     instructions=(
         "Spec-aware Wi-Fi 7 MLO configuration explorer (CS 211 Project F). "
         "Only report what the tools return; stages marked not implemented "
-        "cannot validate, run or compare candidates yet."
+        "cannot validate, run or compare candidates yet. PASSES_MODELED_RULES means "
+        "only that no modeled rule objects, never full 802.11be compliance; "
+        "SPEC_UNDETERMINED is neither approval nor a violation."
     ),
 )
 
@@ -92,6 +97,13 @@ class RunnableTest(BaseModel):
     p1_findings: list[P1Finding]
 
 
+class RuleSummary(BaseModel):
+    id: str
+    kind: str
+    """normative / guidance / dependency / harness / policy, or open_question (UND.*)."""
+    title: str
+
+
 class ModelInfo(BaseModel):
     status: str
     pinned_versions: PinnedVersions
@@ -100,6 +112,23 @@ class ModelInfo(BaseModel):
     recorded_runs: list[RecordedRun]
     runnable_tests: list[RunnableTest]
     """Tests ``run_hwsim_test`` accepts, with what the coded P1 rules say about each."""
+    rules: list[RuleSummary]
+    """Every rule and open question in rules.yaml; explain_rule gives the full entry."""
+
+
+class RuleExplanation(BaseModel):
+    id: str
+    kind: str
+    """A rule kind, open_question (UND.*), or format (P0.*)."""
+    status: str | None
+    """draft until a teammate has reviewed the research behind it."""
+    title: str
+    meaning: str
+    predicate: str | None
+    exceptions: list[str]
+    sources: list[Citation]
+    examples: Examples | None
+    notes: list[str]
 
 
 class RunReport(BaseModel):
@@ -121,14 +150,14 @@ class RunReport(BaseModel):
 
 
 STAGES = [
-    StageStatus(stage="P0 structural validation", implemented=False,
-                note="Settings and action models (explorer.model.Candidate) and readable "
-                     "P0.* errors exist; no tool exposes them yet."),
-    StageStatus(stage="P1 specification rules", implemented=False,
-                note="Rule registry (rules.yaml), six coded security/setting checks, the "
-                     "action-order checker (all AO.* rules) and open questions that give "
-                     "SPEC_UNDETERMINED. run_hwsim_test applies the setting checks to "
-                     "hostap tests; there's no tool to validate an arbitrary candidate yet."),
+    StageStatus(stage="P0 structural validation", implemented=True,
+                note="validate_candidate checks a candidate against the settings and action "
+                     "models and reports readable P0.* errors."),
+    StageStatus(stage="P1 specification rules", implemented=True,
+                note="A modeled subset, not full 802.11be: six security/setting rules, eight "
+                     "action-order rules and three open questions (SPEC_UNDETERMINED), all "
+                     "applied by validate_candidate and explained by explain_rule. Every "
+                     "rule is still a draft until a teammate reviews its research."),
     StageStatus(stage="P2 implementation support", implemented=False,
                 note="Smoke runs are recorded (surface_candidates.csv smoke_runs); no "
                      "support check uses them yet."),
@@ -193,22 +222,76 @@ def runnable_tests(evidence_dirs=EVIDENCE_DIRS) -> list[RunnableTest]:
     return runnable
 
 
+def rule_summaries() -> list[RuleSummary]:
+    registry = load_rules()
+    return [RuleSummary(id=entry.id, kind=getattr(entry, "kind", "open_question"),
+                        title=entry.title)
+            for entry in [*registry.rules, *registry.undetermined]]
+
+
 @server.tool()
 def get_model() -> ModelInfo:
     """Describe the explorer's current scope: pinned hostap/kernel versions, which
     pipeline stages (P0-P4) are implemented, which behavior facts runs can report,
-    which hostap tests have recorded runs in the repo, and which tests
-    run_hwsim_test accepts, with what the coded P1 rules say about each."""
+    which hostap tests have recorded runs in the repo, which tests run_hwsim_test
+    accepts (with what the coded P1 rules say about each), and every modeled rule and
+    open question by ID."""
     return ModelInfo(
-        status=("Early: real hostap tests can be run (run_hwsim_test) and are checked "
-                "against the coded P1 rules first, but arbitrary candidates cannot be "
-                "validated yet; the validation pipeline isn't built."),
+        status=("Candidates can be validated through P0 and P1 (validate_candidate) and "
+                "approved hostap tests run in fresh guests (run_hwsim_test). P2 support "
+                "checks, campaigns and contrasts aren't built yet."),
         pinned_versions=pinned_versions(),
         stages=STAGES,
         observable_facts=observable_facts(),
         recorded_runs=recorded_runs(),
         runnable_tests=runnable_tests(),
+        rules=rule_summaries(),
     )
+
+
+@server.tool()
+def validate_candidate(candidate: dict[str, Any]) -> ValidationResult:
+    """Check one candidate without running it: P0 (does it fit the model?) then P1 (do
+    the modeled rules accept it?). Nothing is booted.
+
+    A candidate is {"config": {"ap": {...}, "sta": {...}}, "actions": [...]}; see
+    get_model's runnable_tests and explorer.model for the fields. For example:
+    {"config": {"ap": {"links": [{"link_id": 0, "channel": 1, "akms": ["SAE-EXT-KEY"]},
+    {"link_id": 1, "channel": 6, "akms": ["SAE-EXT-KEY"]}]}, "sta": {"akms":
+    ["SAE-EXT-KEY"]}}, "actions": [{"action": "associate"}, {"action": "rekey_gtk_now"}]}.
+
+    status is MALFORMED (P0.* findings), SPEC_RULE_VIOLATION, SPEC_UNDETERMINED (the
+    modeled rules can't decide; neither approved nor a violation) or
+    PASSES_MODELED_RULES (not full 802.11be compliance). Each finding gives its stage,
+    rule ID, reason, the rule's kind and its cited sources; call explain_rule for the
+    full entry. P2 (implementation support) isn't checked yet."""
+    return validate.validate_candidate(candidate)
+
+
+@server.tool()
+def explain_rule(rule_id: str) -> RuleExplanation:
+    """The full entry behind a rule ID from a finding or get_model: a rule (SEC.*,
+    AO.*), an open question (UND.*) or a P0 format error (P0.*). Gives its kind
+    (normative rules come from an IEEE "shall"; AO.* rules are harness/policy, not
+    Wi-Fi spec rules), review status, meaning, the check in plain language,
+    exceptions, every cited source (document, section, page, strength, what it says,
+    who checked it) and allowed/disallowed examples."""
+    if rule_id in P0_ERRORS:
+        return RuleExplanation(
+            id=rule_id, kind="format", status=None, title=P0_ERRORS[rule_id],
+            meaning=f"The candidate doesn't fit explorer.model: {P0_ERRORS[rule_id]}.",
+            predicate=None, exceptions=[], sources=[], examples=None, notes=[])
+    registry = load_rules()
+    try:
+        entry = registry.get(rule_id)
+    except KeyError:
+        known = sorted([*registry.by_id, *P0_ERRORS])
+        raise ToolError(f"no rule {rule_id!r}; known IDs: {known}") from None
+    return RuleExplanation(
+        id=entry.id, kind=getattr(entry, "kind", "open_question"), status=entry.status,
+        title=entry.title, meaning=entry.meaning, predicate=getattr(entry, "predicate", None),
+        exceptions=getattr(entry, "exceptions", []), sources=entry.sources,
+        examples=getattr(entry, "examples", None), notes=entry.notes)
 
 
 @server.tool()
