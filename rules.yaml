@@ -660,3 +660,71 @@ rules:
       disallowed:
         - "[associate, ENABLE_MLD]"
         - "[associate, DISABLE_MLD, ENABLE_MLD, rekey_gtk_now]"
+
+# --- Open questions (SPEC_UNDETERMINED) -------------------------------------------
+# Cases the modeled rules can't decide. A candidate that hits one is SPEC_UNDETERMINED:
+# neither approved nor a violation, kept out of the default campaign. Each is asked by
+# explorer.validate (find_undetermined for configurations, check_action_order for
+# actions).
+
+undetermined:
+
+  - id: UND.AKM_PREFERENCE
+    title: Which AKM family is negotiated when several are usable
+    status: draft
+    applies_to: [sta_akm, ap_akm]
+    meaning: >-
+      When the client and every AP link share AKMs from different families (an
+      SAE-family AKM and PSK, say), which one the client selects follows the WPA3
+      Specification's preference order. That document isn't one of our sources, so the
+      negotiated AKM, and the rules that depend on it, can't be decided.
+    sources:
+      - doc: WFA-WPA3
+        strength: guidance
+        location: "Table 3, AKM Suite row (STA Network Profile)"
+        page: "p. 9"
+        says: >-
+          When several AKMs are enabled on both sides, the selection preference order is
+          defined in the WPA3 Specification (its reference [1]).
+        checked: "Claude (AI agent), PDF text, 2026-11-03"
+    notes:
+      - "Two SAE-family AKMs don't count: between EHT devices 802.11be §12.12.9 forces SAE-EXT-KEY."
+
+  - id: UND.STA_STATE_WHILE_MLD_DISABLED
+    title: Whether the STA is still associated while the AP MLD is disabled
+    status: draft
+    applies_to: [disable_enable_mld]
+    meaning: >-
+      After DISABLE_MLD, hostap's own test forces a DISCONNECT because mac80211 doesn't
+      seem to notice the AP going away. If the STA isn't disconnected, whether it is
+      still associated (and so whether post-association actions make sense) is unknown.
+    sources:
+      - doc: hostap
+        strength: code
+        location: "tests/hwsim/test_eht.py:737-741"
+        says: >-
+          A comment says mac80211 doesn't seem to detect beacon loss or deauthentication
+          for a non-AP MLD, so the test disconnects the STA itself.
+        checked: "Claude (AI agent), 2026-11-03"
+
+  - id: UND.ASSOC_WITHOUT_AP_LINKS
+    title: Associating again after every AP link was removed
+    status: draft
+    applies_to: [associate, link_remove, sta_disconnect_reconnect]
+    meaning: >-
+      Removing the last link disassociates the STA, but none of our sources say what
+      associating (or RECONNECT) with an AP MLD that has no affiliated APs left does.
+    sources:
+      - doc: IEEE-802.11be-2024
+        strength: shall
+        location: "§35.3.6.3 Removing affiliated AP(s)"
+        page: "PDF 515-518 (printed 514-517)"
+        says: >-
+          Covers announcing and removing affiliated APs and disassociating a non-AP MLD
+          whose only setup link is removed; nothing about associating afterwards.
+        checked: "Claude (AI agent), PDF text, 2026-11-02"
+      - doc: hostap
+        strength: code
+        location: "tests/hwsim/test_eht.py:1416-1424"
+        says: "The link removal test ends after removing the last link; no test associates again."
+        checked: null

@@ -3,7 +3,7 @@ import pytest
 from explorer.model import Candidate
 from explorer.rules import load_rules
 from explorer.scenarios import TEST_CONFIGS
-from explorer.validate import ACTION_ORDER_RULES, check_action_order
+from explorer.validate import ACTION_ORDER_QUESTIONS, ACTION_ORDER_RULES, check_action_order
 
 ASSOC = {"action": "associate"}
 SCAN = {"action": "scan"}
@@ -111,9 +111,32 @@ def test_last_link_reason_cites_the_standard():
     assert "§35.3.6.3" in violations[0].reason
 
 
-def test_reassociating_after_the_last_link_is_removed_is_allowed():
-    # The STA associates again, but no AP links are left; no modeled rule covers this.
-    assert _check([ASSOC, remove(0), ASSOC]) == []
+def test_reassociating_after_every_link_is_removed_is_undetermined():
+    # No AP links are left; none of our sources say what associating then does.
+    findings = _check([ASSOC, remove(1), remove(0), ASSOC])
+    assert [(f.rule_id, f.outcome) for f in findings] == [
+        ("UND.ASSOC_WITHOUT_AP_LINKS", "SPEC_UNDETERMINED")]
+    assert findings[0].reason.startswith("actions[3] ")
+
+
+def test_reassociating_while_a_link_remains_is_allowed():
+    assert _check([ASSOC, remove(1), ASSOC, REKEY]) == []
+
+
+def test_actions_while_mld_disabled_without_disconnect_are_undetermined():
+    # mac80211 may not notice the AP MLD going away (test_eht.py:737-739).
+    findings = _check([ASSOC, DISABLE, REKEY])
+    assert [(f.rule_id, f.outcome) for f in findings] == [
+        ("UND.STA_STATE_WHILE_MLD_DISABLED", "SPEC_UNDETERMINED")]
+
+
+def test_disconnect_while_mld_disabled_is_allowed():
+    assert _check([ASSOC, DISABLE, DISCONNECT, ENABLE, RECONNECT, REKEY]) == []
+
+
+def test_every_action_order_question_is_registered():
+    registry = load_rules()
+    assert set(ACTION_ORDER_QUESTIONS) <= {q.id for q in registry.undetermined}
 
 
 # --- A link advertised as disabled isn't one of the STA's links (802.11be §35.3.7.5.2) ---

@@ -3,8 +3,9 @@ import pytest
 from explorer.model import Config
 from explorer.rules import load_rules
 from explorer.scenarios import TEST_CONFIGS
-from explorer.validate import (P1_CHECKS, check_eht_sae_akm, check_mld_client_common_akm,
-                               check_mld_common_suites, run_p1_checks)
+from explorer.validate import (CONFIG_QUESTIONS, P1_CHECKS, Finding, check_eht_sae_akm,
+                               check_mld_client_common_akm, check_mld_common_suites,
+                               find_undetermined, p1_status, run_p1_checks)
 
 
 def _config(link0, link1, sta_akms, **ap):
@@ -141,7 +142,41 @@ def test_runnable_tests_other_than_plain_sae_pass_modeled_rules():
     assert failing == {"eht_mld_sae_two_links"}
 
 
-def test_every_check_has_a_normative_rule_in_the_registry():
+def test_every_check_has_a_rule_in_the_registry():
     registry = load_rules()
     for rule_id in P1_CHECKS:
-        assert registry.get(rule_id).kind == "normative", rule_id
+        assert registry.get(rule_id).kind in {"normative", "dependency"}, rule_id
+    for question_id in CONFIG_QUESTIONS:
+        assert question_id in {q.id for q in registry.undetermined}
+
+
+# --- SPEC_UNDETERMINED (configuration questions) ---
+
+def test_akm_families_mixed_is_undetermined():
+    config = _config({"akms": ["SAE-EXT-KEY", "WPA-PSK"]}, {"akms": ["SAE-EXT-KEY", "WPA-PSK"]},
+                     ["WPA-PSK", "SAE-EXT-KEY"])
+    findings = find_undetermined(config)
+    assert [(f.rule_id, f.outcome) for f in findings] == [
+        ("UND.AKM_PREFERENCE", "SPEC_UNDETERMINED")]
+    assert run_p1_checks(config) == []
+    assert p1_status(run_p1_checks(config) + findings) == "SPEC_UNDETERMINED"
+
+
+@pytest.mark.parametrize("name", sorted(TEST_CONFIGS))
+def test_runnable_tests_have_no_open_questions(name):
+    # The rekey tests' AP offers PSK too, but their client only allows SAE-EXT-KEY.
+    assert find_undetermined(TEST_CONFIGS[name]) == []
+
+
+def test_two_sae_akms_are_one_family():
+    config = _config({"akms": ["SAE-EXT-KEY", "SAE"]}, {"akms": ["SAE-EXT-KEY", "SAE"]},
+                     ["SAE", "SAE-EXT-KEY"])
+    assert find_undetermined(config) == []
+
+
+def test_status_precedence():
+    violation = Finding(rule_id="SEC.EHT_SAE_AKM", reason="x")
+    question = Finding(outcome="SPEC_UNDETERMINED", rule_id="UND.AKM_PREFERENCE", reason="y")
+    assert p1_status([]) == "PASSES_MODELED_RULES"
+    assert p1_status([question]) == "SPEC_UNDETERMINED"
+    assert p1_status([question, violation]) == "SPEC_RULE_VIOLATION"

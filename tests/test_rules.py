@@ -21,8 +21,9 @@ def _raw():
 
 
 def _hostap_citations():
+    registry = load_rules()
     return [(rule.id, citation.location)
-            for rule in load_rules().rules
+            for rule in [*registry.rules, *registry.undetermined]
             for citation in rule.sources if citation.doc == "hostap"]
 
 
@@ -44,15 +45,33 @@ def test_meets_checkpoint_minimum():
 def test_applies_to_names_are_candidates():
     with CSV_PATH.open(newline="") as f:
         names = {row["name"] for row in csv.DictReader(f)}
-    for rule in load_rules().rules:
-        assert set(rule.applies_to) <= names, rule.id
+    registry = load_rules()
+    for entry in [*registry.rules, *registry.undetermined]:
+        assert set(entry.applies_to) <= names, entry.id
 
 
-def test_get_finds_rules_by_id():
+def test_get_finds_rules_and_questions_by_id():
     registry = load_rules()
     assert registry.get("SEC.MLD_COMMON_SUITES").kind == "normative"
+    assert registry.get("UND.AKM_PREFERENCE").title
     with pytest.raises(KeyError, match="NOPE.RULE"):
         registry.get("NOPE.RULE")
+
+
+def test_rejects_a_question_that_reuses_a_rule_id():
+    def mutate(data):
+        data["undetermined"][0]["id"] = "UND.X"
+        data["undetermined"][1]["id"] = "UND.X"
+    assert "unique" in _invalid(mutate)
+
+
+@pytest.mark.parametrize("mutate", [
+    lambda data: data["undetermined"][0].update(id="SEC.NOT_A_QUESTION"),
+    lambda data: data["undetermined"][0].update(sources=[]),
+    lambda data: data["undetermined"][0]["sources"][0].update(strength="shall"),
+], ids=["id-prefix", "no-sources", "wfa-as-shall"])
+def test_rejects_malformed_question(mutate):
+    _invalid(mutate)
 
 
 def test_action_order_rules_are_not_spec_rules():

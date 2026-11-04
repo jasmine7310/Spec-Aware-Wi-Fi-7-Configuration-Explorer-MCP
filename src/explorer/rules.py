@@ -11,6 +11,9 @@ Wi-Fi specification rules; ``harness`` and ``policy`` rules keep candidates mean
 for our experiments, and ``dependency`` rules mark settings that only mean something
 together with another one. Passing every rule means "passes modeled rules", never
 full 802.11be compliance.
+
+The registry also lists open questions (``undetermined``, IDs ``UND.*``): cases the
+modeled rules can't decide, which make a candidate SPEC_UNDETERMINED.
 """
 
 from __future__ import annotations
@@ -96,22 +99,39 @@ class Rule(BaseModel):
     notes: list[str] = []
 
 
+class OpenQuestion(BaseModel):
+    """Something the modeled rules can't decide; candidates that hit it are
+    SPEC_UNDETERMINED, neither legal nor a violation."""
+
+    model_config = _STRICT
+
+    id: str = Field(pattern=r"^UND\.[A-Z0-9_]+$")
+    title: str
+    status: RuleStatus
+    applies_to: list[str] = Field(
+        min_length=1, description="Candidate names from surface_candidates.csv.")
+    meaning: str = Field(min_length=1, description="What is undecided, and why.")
+    sources: list[Citation] = Field(min_length=1)
+    notes: list[str] = []
+
+
 class RuleRegistry(BaseModel):
     model_config = _STRICT
 
     version: int
     sources: dict[str, SourceDoc]
     rules: list[Rule] = Field(min_length=1)
+    undetermined: list[OpenQuestion] = []
 
     @model_validator(mode="after")
     def _check_references(self) -> RuleRegistry:
         if self.version != REGISTRY_VERSION:
             raise ValueError(f"version must be {REGISTRY_VERSION}, got {self.version}")
-        ids = [rule.id for rule in self.rules]
+        ids = [entry.id for entry in [*self.rules, *self.undetermined]]
         repeated = sorted({rule_id for rule_id in ids if ids.count(rule_id) > 1})
         if repeated:
             raise ValueError(f"rule IDs must be unique, repeated: {repeated}")
-        for rule in self.rules:
+        for rule in [*self.rules, *self.undetermined]:
             for citation in rule.sources:
                 if citation.doc not in self.sources:
                     raise ValueError(f"{rule.id} cites unknown source {citation.doc!r}")
@@ -120,16 +140,17 @@ class RuleRegistry(BaseModel):
                     raise ValueError(f"{rule.id}: strength {citation.strength!r} doesn't fit "
                                      f"source {citation.doc!r}")
             # A rule is only a spec rule if a "shall" says so; NOTEs are informative.
-            if rule.kind == "normative" and not any(
+            if getattr(rule, "kind", None) == "normative" and not any(
                     citation.strength == "shall" for citation in rule.sources):
                 raise ValueError(f"{rule.id} is normative but cites no 'shall' requirement")
         return self
 
     @cached_property
-    def by_id(self) -> dict[str, Rule]:
-        return {rule.id: rule for rule in self.rules}
+    def by_id(self) -> dict[str, Rule | OpenQuestion]:
+        return {entry.id: entry for entry in [*self.rules, *self.undetermined]}
 
-    def get(self, rule_id: str) -> Rule:
+    def get(self, rule_id: str) -> Rule | OpenQuestion:
+        """A rule (SEC.*, AO.*) or an open question (UND.*) by ID."""
         try:
             return self.by_id[rule_id]
         except KeyError:
