@@ -170,13 +170,13 @@ The guide marks each value per device type, and Wi-Fi 7 means the EHT rows:
 | | |
 |---|---|
 | **Kind** | **Setting dependency**, not a normative prohibition: nothing forbids setting it with another AKM, it just has no effect |
-| **IEEE** | IEEE-802.11-2024 §12.4.4.2.3 "Hash-to-element generation of the password element with ECC groups", PDF p. 2967 (printed p. 2966), and the FFC counterpart §12.4.4.3.3: hash-to-element is defined as one of SAE's two ways to derive the password element, under the SAE clause §12.4.4. §9.4.2.240 "RSNXE", Table 9-373 "Extended RSN Capabilities field", bit 5 "SAE Hash-to-element", PDF p. 1433 (printed p. 1432): a NOTE says the receiver ignores this field when SAE isn't negotiated (informative). |
+| **IEEE** | IEEE-802.11-2024 §12.4.4.2.3 "Hash-to-element generation of the password element with ECC groups", PDF p. 2967 (printed p. 2966), and the FFC counterpart §12.4.4.3.3 "Direct generation of the password element with FFC groups", starting printed p. 2969: hash-to-element is defined as one of SAE's two ways to derive the password element, under the SAE clause §12.4.4. §9.4.2.240 "RSNXE", Table 9-373 "Extended RSN Capabilities field", bit 5 "SAE Hash-to-element", PDF p. 1433 (printed p. 1432): a NOTE says the receiver ignores this field when SAE isn't negotiated (informative). |
 | **WFA** | WFA-WPA3 Table 3, SAE Hash-to-Element row (p. 10): the setting applies only if an SAE AKM is used |
 | **hostap evidence** | `hostapd/config_file.c:4675-4676` reads `sae_pwe` as a number with no check against the AKM, so OWE + `sae_pwe=1` is accepted. Without an SAE AKM it then has no effect: no H2E setup (`src/ap/ap_config.c:512-518`, "PT not needed" at line 517) and no H2E bit in the RSNXE (`src/ap/wpa_auth_ie.c:553`, `src/ap/ieee802_11_shared.c:1130`). hostap's tests only set `sae_pwe` with SAE-family AKMs (`ap_sae_pwe` row of `surface_candidates.csv`). |
 | **Rule candidate** | `ap_sae_pwe` / `sta_sae_pwe` apply only when the AKM includes `SAE` or `SAE-EXT-KEY`. A P1 dependency rule (`docs/plan.md`: "Code rules: setting dependencies"), not a spec violation. |
 | **Candidates** | `ap_sae_pwe`, `sta_sae_pwe`, `ap_akm` |
 | **Effect** | A candidate like OWE + `sae_pwe=1` would run in P2/P3, because hostap ignores the setting, but varying `sae_pwe` under OWE is a meaningless difference. `sae_pwe` only counts as a dimension under an SAE-family AKM. |
-| **Status** | IEEE Table 9-373 NOTE and §12.4.4.2.3 verified by Michelle in the PDF (2026-10-31); WFA Table 3 row verified by Michelle in the PDF (2026-11-04); hostap lines checked by Claude, accepted by Michelle (2026-11-04) |
+| **Status** | IEEE Table 9-373 NOTE and §12.4.4.2.3 verified by Michelle in the PDF (2026-10-31), and §12.4.4.3.3 (2026-11-05); WFA Table 3 row verified by Michelle in the PDF (2026-11-04); hostap lines checked by Claude, accepted by Michelle (2026-11-04) |
 
 ## What this changes for the smoke test
 
