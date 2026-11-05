@@ -724,6 +724,40 @@ rules:
         - "[DISABLE_MLD, DISABLE_MLD]"
         - "[DISABLE_MLD, associate]"
         - "[associate, DISABLE_MLD, ENABLE_MLD, rekey_gtk_now]"
+  - id: AO.BSS_TM_NEEDS_BSS_TRANSITION
+    title: A BSS TM request needs the AP to advertise BSS transition
+    kind: harness
+    status: draft
+    applies_to: [bss_tm_link_removal_imminent, ap_bss_transition]
+    meaning: >-
+      bss_tm_link_removal_imminent is only admitted when the AP has bss_transition on, as in
+      the only test that sends it. hostap sends the request either way, but without the
+      setting the AP doesn't advertise BSS transition support.
+    predicate: "ap.bss_transition is true before bss_tm_link_removal_imminent."
+    exceptions:
+      - "The test also sets mbo=1, which explorer.model doesn't have."
+    sources:
+      - doc: hostap
+        strength: code
+        location: "tests/hwsim/test_eht.py:1438-1439"
+        says: "test_eht_mld_bss_trans_mgmt_link_removal_imminent sets bss_transition=1 and mbo=1 before its BSS_TM_REQ."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-05"
+      - doc: hostap
+        strength: code
+        location: "src/ap/wnm_ap.c:959-977"
+        says: "wnm_send_bss_tm_req() doesn't check bss_transition, so hostap sends the request either way."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-05"
+      - doc: hostap
+        strength: code
+        location: "src/ap/ieee802_11_shared.c:393"
+        says: "bss_transition sets the BSS Transition bit the AP advertises in its Extended Capabilities."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-05"
+    examples:
+      allowed:
+        - "[associate, bss_tm_link_removal_imminent] with bss_transition on (eht_mld_bss_trans_mgmt_link_removal_imminent)"
+      disallowed:
+        - "[associate, bss_tm_link_removal_imminent] with bss_transition off"
+
 
 # --- Open questions (SPEC_UNDETERMINED) -------------------------------------------
 # Cases the modeled rules can't decide. A candidate that hits one is SPEC_UNDETERMINED:

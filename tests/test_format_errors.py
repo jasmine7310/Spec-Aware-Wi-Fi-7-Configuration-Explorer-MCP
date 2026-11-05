@@ -51,6 +51,13 @@ CASES = {
     "repeated link IDs": (
         lambda d: d["config"]["ap"]["links"][1].update(link_id=0),
         "P0.INVALID_VALUE: config.ap: links[].link_id must not repeat values"),
+    "two links on one channel": (
+        lambda d: d["config"]["ap"]["links"][1].update(channel=1),
+        "P0.INVALID_VALUE: config.ap: links[].channel must not repeat values"),
+    "more links than the tests use": (
+        lambda d: d["config"]["ap"]["links"].append(
+            {"link_id": 2, "channel": 1, "akms": ["OWE"]}),
+        "P0.OUT_OF_RANGE: config.ap.links allows at most 2 item(s)"),
     "unknown action": (
         lambda d: d["actions"].append({"action": "reboot"}),
         "P0.NOT_ALLOWED: actions[2] unknown action 'reboot'; expected one of 'associate', "

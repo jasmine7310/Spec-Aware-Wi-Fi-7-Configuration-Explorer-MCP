@@ -34,6 +34,11 @@ Akm = Literal["SAE", "SAE-EXT-KEY", "OWE", "WPA-PSK", "WPA-PSK-SHA256"]
 # Link IDs 0..14: MAX_NUM_MLD_LINKS is 15 (src/common/defs.h:568).
 MAX_LINKS = 15
 
+# hostap's MLD tests use one link, or two on different channels (1 and 6). Limiting P0 to
+# those layouts isn't a Wi-Fi rule, just what has been tested; loosen it once smoke runs or
+# a P2 support check cover more.
+MAX_TESTED_LINKS = 2
+
 # 2.4 GHz channels the two-link tests use (link 0 on 1, link 1 on 6).
 CHANNELS = {1, 6}
 
@@ -97,7 +102,9 @@ class ApConfig(BaseModel):
 
     model_config = _STRICT
 
-    links: list[ApLink] = Field(min_length=1, max_length=MAX_LINKS)
+    links: list[ApLink] = Field(
+        min_length=1, max_length=MAX_TESTED_LINKS,
+        description="One or two AP MLD links on different channels, as in hostap's tests.")
     pmf: Pmf = Field(default="required",
                      description="Management frame protection (hostapd ieee80211w: optional=1, required=2).")
     beacon_protection: bool = Field(default=True, description="hostapd beacon_prot.")
@@ -115,6 +122,7 @@ class ApConfig(BaseModel):
     @model_validator(mode="after")
     def _link_ids_unique(self) -> ApConfig:
         _unique([link.link_id for link in self.links], "links[].link_id")
+        _unique([link.channel for link in self.links], "links[].channel")
         return self
 
 

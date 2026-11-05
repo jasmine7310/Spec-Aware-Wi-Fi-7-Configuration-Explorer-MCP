@@ -163,7 +163,7 @@ Not ordering rules, but the checker needs them to accept an action:
 
 | Action | Needs config | Source | Enforced by |
 |---|---|---|---|
-| `bss_tm_link_removal_imminent` | `ap_bss_transition=1` (and `mbo=1` in the test) | `tests/hwsim/test_eht.py:1438-1439` | Harness: set in the only test; not checked in the `BSS_TM_REQ` handler I read |
+| `bss_tm_link_removal_imminent` | `ap_bss_transition=1` (and `mbo=1` in the test) | `tests/hwsim/test_eht.py:1438-1439` | Harness: set in the only test. hostap sends the request either way (`src/ap/wnm_ap.c:959-977`); the setting only makes the AP advertise BSS transition (`src/ap/ieee802_11_shared.c:393`). Coded as `AO.BSS_TM_NEEDS_BSS_TRANSITION` (2026-11-05) |
 | `link_remove` | hostapd built with `CONFIG_TESTING_OPTIONS` | `src/ap/hostapd.c:497` | hostap build |
 
 ## Decided questions

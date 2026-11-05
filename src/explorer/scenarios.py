@@ -66,6 +66,12 @@ TEST_CONFIGS: dict[str, Config] = {name: Config.model_validate(raw) for name, ra
         "ap": _two_links(["OWE"]),
         "sta": {"akms": ["OWE"], "beacon_protection": False},
     },
+    # test_eht_mld_bss_trans_mgmt_link_removal_imminent: OWE, mfp 2, bss_transition 1 and
+    # mbo 1 (1436-1439; mbo isn't modeled); STA OWE (1446). No committed run yet.
+    "eht_mld_bss_trans_mgmt_link_removal_imminent": {
+        "ap": _two_links(["OWE"], bss_transition=True),
+        "sta": {"akms": ["OWE"], "beacon_protection": False},
+    },
 }.items()}
 
 CLIENT_BP_SUFFIX = "_client_bp"

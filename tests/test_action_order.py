@@ -13,6 +13,7 @@ DISCONNECT = {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"}
 RECONNECT = {"action": "sta_disconnect_reconnect", "command": "RECONNECT"}
 DISABLE = {"action": "disable_enable_mld", "command": "DISABLE_MLD"}
 ENABLE = {"action": "disable_enable_mld", "command": "ENABLE_MLD"}
+BSS_TM = {"action": "bss_tm_link_removal_imminent"}
 
 
 def remove(link_id, count=4):
@@ -38,7 +39,11 @@ ALLOWED = {
     "AO.RECONFIG_ADD_ABSENT": [ASSOC, reconfig("delete", 1), reconfig("add", 1)],
     "AO.RECONNECT_AFTER_DISCONNECT": [ASSOC, DISCONNECT, RECONNECT],
     "AO.ENABLE_AFTER_DISABLE": [ASSOC, DISABLE, DISCONNECT, ENABLE, RECONNECT],
+    "AO.BSS_TM_NEEDS_BSS_TRANSITION": [ASSOC, BSS_TM],
 }
+
+# Allowed examples that need a configuration other than _check's default.
+ALLOWED_TEST = {"AO.BSS_TM_NEEDS_BSS_TRANSITION": "eht_mld_bss_trans_mgmt_link_removal_imminent"}
 
 DISALLOWED = [
     ("AO.ASSOC_REQUIRED", [REKEY, ASSOC], 0),
@@ -55,12 +60,14 @@ DISALLOWED = [
     # The STA was never disconnected or reconnected around the re-enable.
     ("AO.ENABLE_AFTER_DISABLE", [ASSOC, DISABLE, ENABLE, REKEY], 2),
     ("AO.ENABLE_AFTER_DISABLE", [ASSOC, DISABLE, DISCONNECT, RECONNECT], 3),
+    # eht_mld_owe_two_links leaves bss_transition off.
+    ("AO.BSS_TM_NEEDS_BSS_TRANSITION", [ASSOC, BSS_TM], 1),
 ]
 
 
 @pytest.mark.parametrize("rule_id", ALLOWED)
 def test_allowed_examples_pass(rule_id):
-    assert _check(ALLOWED[rule_id]) == []
+    assert _check(ALLOWED[rule_id], test=ALLOWED_TEST.get(rule_id, "eht_mld_owe_two_links")) == []
 
 
 @pytest.mark.parametrize("rule_id,actions,index", DISALLOWED,
@@ -93,7 +100,8 @@ REAL_SEQUENCES = {
 
 @pytest.mark.parametrize("name", REAL_SEQUENCES)
 def test_hostap_sequences_pass(name):
-    assert _check(REAL_SEQUENCES[name]) == []
+    assert _check(REAL_SEQUENCES[name],
+                  test=name if name in TEST_CONFIGS else "eht_mld_owe_two_links") == []
 
 
 # --- Decisions of 2026-11-03 (docs/plan.md, "Action model") ---

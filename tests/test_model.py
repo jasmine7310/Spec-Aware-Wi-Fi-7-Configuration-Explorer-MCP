@@ -132,6 +132,10 @@ MALFORMED = {
     "link_id out of range": _set(("ap", "links", 1, "link_id"), 15),
     "negative link_id": _set(("ap", "links", 0, "link_id"), -1),
     "duplicate link_id": _set(("ap", "links", 1, "link_id"), 0),
+    "two links on one channel": _set(("ap", "links", 1, "channel"), 1),
+    "three links (untested layout)": _set(("ap", "links"), [
+        {"link_id": 0, "channel": 1, "akms": ["SAE"]}, {"link_id": 1, "channel": 6, "akms": ["SAE"]},
+        {"link_id": 2, "channel": 1, "akms": ["SAE"]}]),
     "channel not used in tests": _set(("ap", "links", 0, "channel"), 11),
     "channel as bool": _set(("ap", "links", 0, "channel"), True),
     "unknown AKM": _set(("sta", "akms"), ["WEP"]),

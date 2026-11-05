@@ -316,7 +316,8 @@ _NEEDS_ASSOCIATION = {"rekey_gtk_now", "link_remove", "ap_disassociate", "ap_dea
 
 ACTION_ORDER_RULES = ("AO.ASSOC_REQUIRED", "AO.ML_PROBE_STATE", "AO.LINK_MUST_EXIST",
                       "AO.NO_LINKS_LEFT", "AO.RECONFIG_DELETE_ACTIVE", "AO.RECONFIG_ADD_ABSENT",
-                      "AO.RECONNECT_AFTER_DISCONNECT", "AO.ENABLE_AFTER_DISABLE")
+                      "AO.RECONNECT_AFTER_DISCONNECT", "AO.ENABLE_AFTER_DISABLE",
+                      "AO.BSS_TM_NEEDS_BSS_TRANSITION")
 ACTION_ORDER_QUESTIONS = ("UND.STA_STATE_WHILE_MLD_DISABLED", "UND.ASSOC_WITHOUT_AP_LINKS")
 
 
@@ -336,6 +337,8 @@ class _State:
     scanned: bool = False
     ap_enabled: bool = True
     disconnected_by_command: bool = False
+    bss_transition: bool = False
+    """The AP's bss_transition setting (AO.BSS_TM_NEEDS_BSS_TRANSITION)."""
 
     def associate(self) -> None:
         self.associated = True
@@ -359,7 +362,8 @@ def check_action_order(candidate: Candidate) -> list[Finding]:
     """
     links = candidate.config.ap.links
     state = _State(ap_links={link.link_id for link in links},
-                   disabled_links={link.link_id for link in links if link.indicate_disabled})
+                   disabled_links={link.link_id for link in links if link.indicate_disabled},
+                   bss_transition=candidate.config.ap.bss_transition)
     for index, step in enumerate(candidate.actions):
         problem = _apply(state, step)
         if problem is not None:
@@ -480,6 +484,10 @@ def _apply(state: _State, step) -> tuple[str, str] | None:
                 return ("AO.ENABLE_AFTER_DISABLE",
                         "the STA must be disconnected with DISCONNECT before ENABLE_MLD")
             state.ap_enabled = True
+    elif name == "bss_tm_link_removal_imminent":
+        if not state.bss_transition:
+            return ("AO.BSS_TM_NEEDS_BSS_TRANSITION",
+                    "bss_transition is off, so the AP doesn't advertise BSS transition support")
     elif name in ("ap_disassociate", "ap_deauthenticate"):
         # Decided 2026-11-03: hostap's automatic reconnection isn't assumed.
         state.leave(f"the AP {'disassociated' if name == 'ap_disassociate' else 'deauthenticated'} "
