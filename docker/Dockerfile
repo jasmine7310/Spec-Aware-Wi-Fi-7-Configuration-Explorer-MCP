@@ -67,6 +67,9 @@ RUN git init -q \
 
 COPY --from=kernel /opt/uml/linux /opt/uml/linux
 
+# Our wrappers: hostap's tests with client beacon protection on (see the file).
+COPY test_eht_client_bp.py /opt/hostap/tests/hwsim/
+
 WORKDIR /opt/hostap/tests/hwsim/vm
 RUN printf 'KERNEL=/opt/uml/linux\nMEMORY=512\n' > vm-config
 

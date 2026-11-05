@@ -11,12 +11,10 @@ Fields and allowed values come from ``surface_candidates.csv`` and hostap at the
 commit (43ee60e1). Values are limited to those hostap's EHT/MLD tests actually use;
 meanings are from ``hostapd/hostapd.conf`` and ``wpa_supplicant/wpa_supplicant.conf``.
 
-Not fields, because the tests don't vary them as settings of their own: client PMF is
-required (``ieee80211w=2``). Client beacon protection and SAE PWE aren't modeled either,
-but they do differ between tests: the plain-SAE tests set ``beacon_prot=1`` and
-``sae_pwe=1``, while the SAE-EXT-KEY, OWE, rekey and link removal tests leave both unset,
-so that client doesn't use beacon protection (docs/plan.md, "Main blockers"). SSID and
-passphrase are supplied by the harness.
+Not fields: client PMF is required (``ieee80211w=2``) in the MLD tests. Client SAE PWE
+isn't modeled: the plain-SAE tests set ``sae_pwe=1``, the SAE-EXT-KEY tests leave it unset,
+and wpa_supplicant uses hash-to-element with SAE-EXT-KEY either way. SSID and passphrase
+are supplied by the harness.
 
 Actions are the runtime operations in ``surface_candidates.csv`` (kind "action"), as
 hostap's tests issue them at the pinned commit; each class names its source lines.
@@ -131,6 +129,10 @@ class StaConfig(BaseModel):
     sae_groups: list[SaeGroup] | None = Field(
         default=None, min_length=1,
         description="wpa_supplicant sae_groups, tried in order; None = default.")
+    beacon_protection: bool = Field(
+        default=True,
+        description="wpa_supplicant beacon_prot; False leaves it unset, as most of hostap's "
+                    "MLD tests do.")
 
     @field_validator("akms", "sae_groups")
     @classmethod

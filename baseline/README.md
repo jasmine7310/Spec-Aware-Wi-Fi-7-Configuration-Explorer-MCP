@@ -3,6 +3,9 @@
 Record of the exact environment used for every experiment. Anyone rebuilding the
 project (teammates or graders) should get the same versions listed here.
 
+The image also adds one file of ours, `docker/test_eht_client_bp.py` (wrappers around
+hostap's tests), and leaves hostap's own files unchanged.
+
 ## Pinned versions
 
 | Component | Repository | Commit | Commit date |

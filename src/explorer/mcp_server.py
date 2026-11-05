@@ -157,8 +157,7 @@ STAGES = [
                 note="A modeled subset, not full 802.11be: six security/setting rules, eight "
                      "action-order rules and three open questions (SPEC_UNDETERMINED), all "
                      "applied by validate_candidate and explained by explain_rule. Every "
-                     "rule's citations are checked, and they're reviewed except "
-                     "SEC.EHT_BEACON_PROT, a draft because its client side isn't modeled."),
+                     "rule's citations are checked, and they're all reviewed."),
     StageStatus(stage="P2 implementation support", implemented=False,
                 note="Smoke runs are recorded (surface_candidates.csv smoke_runs); no "
                      "support check uses them yet."),

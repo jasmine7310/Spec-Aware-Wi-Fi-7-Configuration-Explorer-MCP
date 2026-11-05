@@ -2,7 +2,7 @@ import pytest
 
 from explorer.model import Config
 from explorer.rules import load_rules
-from explorer.scenarios import TEST_CONFIGS
+from explorer.scenarios import CLIENT_BP_SUFFIX, TEST_CONFIGS
 from explorer.validate import (CONFIG_QUESTIONS, P1_CHECKS, Finding, check_eht_beacon_prot,
                                check_eht_sae_akm, check_eht_sae_h2e, check_mld_client_common_akm,
                                check_mld_common_suites, check_sae_pwe_needs_sae,
@@ -138,9 +138,9 @@ def test_ap_offering_sae_ext_key_doesnt_help_a_plain_sae_client():
 
 # --- All checks ---
 
-def test_runnable_tests_other_than_plain_sae_pass_modeled_rules():
-    failing = {name for name, config in TEST_CONFIGS.items() if run_p1_checks(config)}
-    assert failing == {"eht_mld_sae_two_links"}
+def test_only_the_client_beacon_protection_wrappers_pass_modeled_rules():
+    passing = {name for name, config in TEST_CONFIGS.items() if not run_p1_checks(config)}
+    assert passing == {name for name in TEST_CONFIGS if name.endswith(CLIENT_BP_SUFFIX)}
 
 
 def test_every_check_has_a_rule_in_the_registry():
@@ -154,7 +154,14 @@ def test_every_check_has_a_rule_in_the_registry():
 # --- SEC.EHT_BEACON_PROT (802.11be §12.12.9) ---
 
 def test_beacon_protection_on_passes():
-    assert check_eht_beacon_prot(TEST_CONFIGS["eht_mld_sae_ext_two_links"]) == []
+    assert check_eht_beacon_prot(TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"]) == []
+
+
+def test_client_beacon_protection_off_is_rejected():
+    # test_eht_mld_sae_ext_two_links leaves the client's beacon_prot unset (test_eht.py:826-827).
+    findings = check_eht_beacon_prot(TEST_CONFIGS["eht_mld_sae_ext_two_links"])
+    assert [f.rule_id for f in findings] == ["SEC.EHT_BEACON_PROT"]
+    assert "client" in findings[0].reason
 
 
 def test_beacon_protection_off_is_rejected():

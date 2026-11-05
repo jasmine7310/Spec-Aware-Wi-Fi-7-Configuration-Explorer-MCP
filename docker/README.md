@@ -25,6 +25,10 @@ docker/run-test.sh eht_mld_sae_two_links
 `run-test.sh` exits 0 only if every requested test passed. Logs (per-test logs,
 `results.db`, pcapng captures, UML console) are copied to `runs/hwsim-logs/<timestamp>/`.
 
+`test_eht_client_bp.py` is ours, not hostap's: it adds `_client_bp` versions of six hostap
+tests that turn on the MLD client's beacon protection, and the image copies it next to
+`test_eht.py`. Rebuild the image after pulling a change to it.
+
 ## Status (issue #4)
 
 | Platform | Build | `eht_mld_sae_two_links` |

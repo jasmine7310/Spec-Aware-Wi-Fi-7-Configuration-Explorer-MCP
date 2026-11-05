@@ -9,12 +9,13 @@ from mcp import Client, StdioServerParameters
 from explorer import mcp_server
 from explorer.mcp_server import pinned_versions, server
 from explorer.model import Config
+from explorer.rules import load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunResult
 from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import extract_record
 
 BASELINE_RUN = REPO_ROOT / "runs" / "baseline" / "1793298094"
-SAE_EXT_RUN = REPO_ROOT / "runs" / "smoke" / "1793690831"
+SAE_EXT_RUN = REPO_ROOT / "runs" / "smoke" / "1793897820"
 
 
 def _call(target, tool, arguments=None):
@@ -128,14 +129,14 @@ def _validate(candidate):
 
 
 def test_validate_candidate_legal():
-    result = _validate({"config": TEST_CONFIGS["eht_mld_sae_ext_two_links"].model_dump(),
+    result = _validate({"config": TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump(),
                         "actions": [{"action": "associate"}, {"action": "rekey_gtk_now"}]})
     assert (result["status"], result["findings"], result["p2"]) == (
         "PASSES_MODELED_RULES", [], "NOT_CHECKED")
 
 
 def test_validate_candidate_malformed_is_a_result_not_a_tool_error():
-    config = TEST_CONFIGS["eht_mld_sae_ext_two_links"].model_dump()
+    config = TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump()
     config["ap"]["links"][0]["link_id"] = "0"
     result = _validate({"config": config})
     assert result["status"] == "MALFORMED"
@@ -144,7 +145,7 @@ def test_validate_candidate_malformed_is_a_result_not_a_tool_error():
 
 
 def test_validate_candidate_explains_a_spec_rejection():
-    config = TEST_CONFIGS["eht_mld_sae_ext_two_links"].model_dump()
+    config = TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump()
     config["ap"]["links"][0]["akms"] = ["SAE"]
     config["sta"]["akms"] = ["SAE", "SAE-EXT-KEY"]
     result = _validate({"config": config})
@@ -155,7 +156,7 @@ def test_validate_candidate_explains_a_spec_rejection():
 
 
 def test_validate_candidate_action_order():
-    result = _validate({"config": TEST_CONFIGS["eht_mld_sae_ext_two_links"].model_dump(),
+    result = _validate({"config": TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump(),
                         "actions": [{"action": "rekey_gtk_now"}]})
     assert [f["rule_id"] for f in result["findings"]] == ["AO.ASSOC_REQUIRED"]
 
@@ -174,9 +175,9 @@ def test_explain_a_normative_rule():
     assert entry["examples"]["disallowed"]
 
 
-def test_beacon_protection_stays_a_draft():
-    # Its client side isn't modeled yet (docs/plan.md, "Main blockers").
-    assert _explain("SEC.EHT_BEACON_PROT").structured_content["status"] == "draft"
+def test_every_rule_is_reviewed():
+    for rule in load_rules().rules:
+        assert _explain(rule.id).structured_content["status"] == "reviewed", rule.id
 
 
 def test_explain_an_action_order_rule():
@@ -210,14 +211,14 @@ def _runnable():
 
 def test_runnable_tests_are_those_with_a_passing_committed_run():
     runnable = _runnable()
-    assert {"eht_mld_sae_ext_two_links", "eht_mld_ptk_rekey", "eht_mld_gtk_rekey"} <= set(runnable)
+    assert {"eht_mld_sae_ext_two_links_client_bp", "eht_mld_ptk_rekey", "eht_mld_gtk_rekey"} <= set(runnable)
     passed = {r["test"] for r in _get_model()["recorded_runs"] if r["result"] == "PASS"}
     assert set(runnable) <= passed
 
 
 def test_runnable_tests_report_their_p1_status():
     runnable = _runnable()
-    assert runnable["eht_mld_sae_ext_two_links"]["p1_status"] == "PASSES_MODELED_RULES"
+    assert runnable["eht_mld_sae_ext_two_links_client_bp"]["p1_status"] == "PASSES_MODELED_RULES"
     plain_sae = runnable["eht_mld_sae_two_links"]
     assert plain_sae["p1_status"] == "SPEC_RULE_VIOLATION"
     assert [f["rule_id"] for f in plain_sae["p1_findings"]] == ["SEC.EHT_SAE_AKM"]
@@ -231,14 +232,14 @@ def test_runnable_test_with_an_open_question_is_undetermined(monkeypatch):
         "ap": {"links": [{"link_id": 0, "channel": 1, "akms": akms},
                          {"link_id": 1, "channel": 6, "akms": akms}]},
         "sta": {"akms": akms}})
-    monkeypatch.setitem(mcp_server.TEST_CONFIGS, "eht_mld_sae_ext_two_links", config)
+    monkeypatch.setitem(mcp_server.TEST_CONFIGS, "eht_mld_sae_ext_two_links_client_bp", config)
     monkeypatch.setattr(mcp_server, "run_test", lambda test: pytest.fail("must not run"))
 
-    entry = _runnable()["eht_mld_sae_ext_two_links"]
+    entry = _runnable()["eht_mld_sae_ext_two_links_client_bp"]
     assert entry["p1_status"] == "SPEC_UNDETERMINED"
     assert entry["p1_findings"][0]["sources"][0].startswith("WFA-WPA3 Table 3")
 
-    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links"})
+    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links_client_bp"})
     assert result.is_error
     assert "UND.AKM_PREFERENCE" in result.content[0].text
 
@@ -258,17 +259,17 @@ def _fake_completed(monkeypatch, run_dir):
 def test_run_returns_the_behavior_record(monkeypatch):
     calls = _fake_completed(monkeypatch, SAE_EXT_RUN)
 
-    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links"})
+    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links_client_bp"})
 
     assert not result.is_error
     report = result.structured_content
-    assert calls == ["eht_mld_sae_ext_two_links"]
+    assert calls == ["eht_mld_sae_ext_two_links_client_bp"]
     assert (report["p1_status"], report["negative_experiment"]) == ("PASSES_MODELED_RULES", False)
     assert report["status"] == "COMPLETED"
-    assert report["run_id"] == "1793690831"
+    assert report["run_id"] == "1793897820"
     assert report["test_result"] == "PASS"
     assert report["record"]["station_status"]["key_mgmt"] == "SAE-EXT-KEY"
-    assert report["run_folder"] == "runs/smoke/1793690831"
+    assert report["run_folder"] == "runs/smoke/1793897820"
     assert report["output_tail"] is None
 
 
@@ -282,6 +283,15 @@ def test_refuses_a_test_that_breaks_a_modeled_rule(monkeypatch):
     text = result.content[0].text
     assert "SEC.EHT_SAE_AKM" in text and "§12.12.9" in text
     assert "negative_experiment=true" in text
+
+
+def test_refuses_the_hostap_original_with_client_beacon_protection_off(monkeypatch):
+    monkeypatch.setattr(mcp_server, "run_test", lambda test: pytest.fail("must not run"))
+
+    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links"})
+
+    assert result.is_error
+    assert "SEC.EHT_BEACON_PROT" in result.content[0].text
 
 
 def test_negative_experiment_runs_and_is_labeled(monkeypatch):
@@ -301,7 +311,7 @@ def test_negative_experiment_flag_on_a_legal_test_is_not_a_label(monkeypatch):
     _fake_completed(monkeypatch, SAE_EXT_RUN)
 
     _, result = _call(server, "run_hwsim_test",
-                      {"test": "eht_mld_sae_ext_two_links", "negative_experiment": True})
+                      {"test": "eht_mld_sae_ext_two_links_client_bp", "negative_experiment": True})
 
     assert result.structured_content["negative_experiment"] is False
 
@@ -311,7 +321,7 @@ def test_setup_fail_reports_console_output(monkeypatch):
         test=test, status="SETUP_FAIL", run_dir=None, record=None, manifest=None,
         exit_code=1, output_tail="guest didn't boot"))
 
-    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links"})
+    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links_client_bp"})
 
     report = result.structured_content
     assert (report["status"], report["run_id"], report["record"]) == ("SETUP_FAIL", None, None)
@@ -333,7 +343,7 @@ def test_environment_problem_is_an_error(monkeypatch):
         raise RunnerError("Docker isn't running; start Docker Desktop")
     monkeypatch.setattr(mcp_server, "run_test", no_docker)
 
-    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links"})
+    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links_client_bp"})
 
     assert result.is_error
     assert "Docker isn't running" in result.content[0].text
@@ -343,7 +353,7 @@ def test_environment_problem_is_an_error(monkeypatch):
                     reason="set WIFI7_DOCKER_TESTS=1 to run against the real simulation image")
 def test_real_run_over_mcp():
     # SAE-EXT-KEY (AKM 24) passes the modeled rules, so it runs without the override.
-    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links"})
+    _, result = _call(server, "run_hwsim_test", {"test": "eht_mld_sae_ext_two_links_client_bp"})
 
     assert not result.is_error
     report = result.structured_content

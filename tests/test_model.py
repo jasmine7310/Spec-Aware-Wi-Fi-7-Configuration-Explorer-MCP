@@ -31,26 +31,26 @@ REAL_TEST_CONFIGS = {
     # _eht_mld_owe_two_links: OWE, mfp=2
     "eht_mld_owe_two_links": {
         "ap": _two_links(["OWE"]),
-        "sta": {"akms": ["OWE"]},
+        "sta": {"akms": ["OWE"], "beacon_protection": False},
     },
     # test_eht_mld_ptk_rekey: mixed AKM list, mfp=1, wpa_ptk_rekey=5; STA SAE-EXT-KEY
     "eht_mld_ptk_rekey": {
         "ap": _two_links(["SAE-EXT-KEY", "SAE", "WPA-PSK", "WPA-PSK-SHA256"],
                          pmf="optional", ptk_rekey_interval_s=5),
-        "sta": {"akms": ["SAE-EXT-KEY"]},
+        "sta": {"akms": ["SAE-EXT-KEY"], "beacon_protection": False},
     },
     # test_eht_mld_gtk_rekey: same, wpa_group_rekey=5
     "eht_mld_gtk_rekey": {
         "ap": _two_links(["SAE-EXT-KEY", "SAE", "WPA-PSK", "WPA-PSK-SHA256"],
                          pmf="optional", gtk_rekey_interval_s=5),
-        "sta": {"akms": ["SAE-EXT-KEY"]},
+        "sta": {"akms": ["SAE-EXT-KEY"], "beacon_protection": False},
     },
     # test_eht_mld_owe_two_links_one_disabled: mld_indicate_disabled=1 on link 1
     "eht_mld_owe_two_links_one_disabled": {
         "ap": {"links": [{"link_id": 0, "channel": 1, "akms": ["OWE"]},
                          {"link_id": 1, "channel": 6, "akms": ["OWE"],
                           "indicate_disabled": True}]},
-        "sta": {"akms": ["OWE"]},
+        "sta": {"akms": ["OWE"], "beacon_protection": False},
     },
     # test_eht_mld_bss_trans_mgmt_link_removal_imminent: bss_transition=1
     "eht_mld_bss_trans_mgmt_link_removal_imminent": {
@@ -92,6 +92,7 @@ def test_defaults():
     assert config.ap.links[0].pairwise_cipher == "CCMP"
     assert config.ap.links[0].indicate_disabled is False
     assert config.sta.sae_groups is None
+    assert config.sta.beacon_protection is True
 
 
 def test_accepts_json_input():
@@ -139,6 +140,7 @@ MALFORMED = {
     "PMF disabled (not used in MLD tests)": _set(("ap", "pmf"), "disabled"),
     "PMF as hostapd number": _set(("ap", "pmf"), 2),
     "beacon_protection as int": _set(("ap", "beacon_protection"), 1),
+    "client beacon_protection as int": _set(("sta", "beacon_protection"), 1),
     "SAE PWE hunting-and-pecking (not used in tests)": _set(("ap", "sae_pwe"), "hunting_and_pecking"),
     "zero rekey interval": _set(("ap", "gtk_rekey_interval_s"), 0),
     "rekey interval as string": _set(("ap", "ptk_rekey_interval_s"), "5"),

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from explorer.scenarios import TEST_CONFIGS
+from explorer.scenarios import CLIENT_BP_SUFFIX, TEST_CONFIGS
 from explorer.signatures import extract_record
 from explorer.validate import run_p1_checks
 
@@ -85,6 +85,15 @@ def test_source_test_passes_modeled_rules(row):
     assert run_p1_checks(TEST_CONFIGS[row["source_test"]]) == []
 
 
+@pytest.mark.parametrize("row", _rows(), ids=lambda row: row["family_id"])
+def test_runs_show_client_beacon_protection_on(row):
+    # 802.11be §12.12.9: the setting was issued, and the client installed the key.
+    for run_id in _split(row["run_ids"]):
+        log = (_run_folder(run_id) / f"{row['source_test']}.log5").read_text(errors="replace")
+        assert "SET_NETWORK 0 beacon_prot 1" in log, run_id
+        assert re.search(r"MLO Link \d+ BIGTK keyid", log), run_id
+
+
 def _test_function(source, test):
     # The body of "def test_<name>(" up to the next top-level def.
     match = re.search(rf"^def test_{test}\(.*?(?=^def )", source, re.MULTILINE | re.DOTALL)
@@ -97,6 +106,7 @@ def _test_function(source, test):
 @pytest.mark.parametrize("row", _rows(), ids=lambda row: row["family_id"])
 def test_helpers_are_called_by_the_pinned_test(row):
     source = (Path(os.environ["WIFI7_HOSTAP_SRC"]) / "tests/hwsim/test_eht.py").read_text()
-    body = _test_function(source, row["source_test"])
+    # A _client_bp wrapper runs hostap's own test with client beacon protection on.
+    body = _test_function(source, row["source_test"].removesuffix(CLIENT_BP_SUFFIX))
     for helper in (h.strip() for h in row["source_helpers"].split(",")):
         assert f"{helper.split('.')[-1]}(" in body, f"{row['family_id']}: {helper}"

@@ -37,3 +37,27 @@ it isn't used as a smoke-tested value.
 | `ap_gtk_rekey_interval` | unset `1793690831`, 5 `1793690867` | Same caveat as PTK rekey. Each affiliated AP has its own GTK and updates it per link (§35.3.5.2, §12.6.19) |
 | `ap_link_indicate_disabled` | 0 `1793690841`, 1 `1793690878` | Same OWE helper; only `second_link_disabled` differs. The observation matches §35.3.7.5.2: a STA doesn't send individually addressed frames on a disabled link, and the AP on it doesn't send to the associated MLD's STAs. hostap's `mld_indicate_disabled` is a static setting, not the standard's runtime TTLM disablement procedure, so the claim is limited to that observed behavior |
 | `link_remove` | absent `1793690841`, present `1793690892` | The record now shows the removal: `CTRL-EVENT-LINK-RECONFIG valid_links=0x1` after `LINK_REMOVE 4` on link 1 (calibrated on this run). After the last link is removed the STA logs a locally generated disconnect (reason 4) and rescans, before the test ends; §35.3.6.3 says a non-AP MLD whose only setup link is removed is disassociated. The log doesn't say why it disconnected. Of the 3 GTK rekeys, the first follows the test's `REKEY_GTK`; the other two occur after `LINK_REMOVE 20` on the last link, for reasons not yet explained |
+
+## Client beacon protection on (current evidence)
+
+Added 2026-11-05. The runs above leave the client's `beacon_prot` unset, which breaks
+`SEC.EHT_BEACON_PROT` (802.11be §12.12.9), so they're kept only as records of hostap's
+original tests. `surface_candidates.csv` now points at these runs of our `_client_bp` wrappers
+(`docker/test_eht_client_bp.py`), which run the same hostap tests with `beacon_prot="1"` on
+the MLD client.
+
+All six: Intel Mac, macOS 15.8.1, Docker 27.4, image `sha256:d2309acc…`, hostap `43ee60e1`.
+All passed. Each manifest has `repo_docker_dir_modified: true`, because the wrapper wasn't
+committed yet when they ran.
+
+| Run ID | Test | Compared with the run with the client's setting unset |
+|---|---|---|
+| `1793897820` | `eht_mld_sae_ext_two_links_client_bp` | Adds `bigtk_set=1` to the status; otherwise the same |
+| `1793897854` | `eht_mld_owe_two_links_client_bp` | Adds `bigtk_set=1`; otherwise the same |
+| `1793897892` | `eht_mld_owe_two_links_one_disabled_client_bp` | Adds `bigtk_set=1`; otherwise the same |
+| `1793897917` | `eht_mld_ptk_rekey_client_bp` | Same signature (the test logs no status) |
+| `1793897930` | `eht_mld_gtk_rekey_client_bp` | Same signature (the test logs no status) |
+| `1793897945` | `eht_mld_link_removal_client_bp` | Adds `bigtk_set=1`; otherwise the same |
+
+The caveats per value above still apply. WFA Table 5's EHT STA values still don't fit the
+rekey tests' client, so the Transition Mode fit covers the AP only.

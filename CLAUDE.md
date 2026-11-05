@@ -34,6 +34,7 @@ WIFI7_DOCKER_TESTS=1 .venv/bin/pytest                        # also run a real s
 scripts/build-env.sh                                         # build simulation image + smoke test
 docker build --progress=plain -t wifi7-env docker/           # simulation image only (slow first time)
 docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in a fresh UML guest
+docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: client beacon protection on
 .venv/bin/python -m explorer.mcp_server                      # MCP server over stdio
 ```
 

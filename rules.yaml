@@ -22,7 +22,7 @@
 # status is "draft" until Michelle has finished checking the citations behind the rule's
 # research (docs/research/*.md). Reviewed on that basis on 2026-11-04; a hostap citation
 # marked "accepted by Michelle" was compared with the code by Claude and accepted by her.
-# SEC.EHT_BEACON_PROT stays draft: see its notes. Each source's `checked` says who verified that citation
+# Each source's `checked` says who verified that citation
 # against the document or hostap line, and is null if nobody has yet. `says` fields
 # paraphrase the source; don't paste the standards' text (docs/references.md).
 #
@@ -148,12 +148,12 @@ rules:
   - id: SEC.EHT_BEACON_PROT
     title: Beacon protection is mandatory for EHT with RSN
     kind: normative
-    status: draft
+    status: reviewed
     applies_to: [ap_beacon_protection, sta_beacon_protection]
     meaning: >-
       An EHT AP and an EHT client using RSN must have beacon protection enabled, and all
       links of an AP MLD use the same setting.
-    predicate: "ap.beacon_protection is true whenever the AP uses RSN."
+    predicate: "ap.beacon_protection and sta.beacon_protection are both true whenever RSN is used."
     sources:
       - doc: IEEE-802.11be-2024
         strength: shall
@@ -184,15 +184,16 @@ rules:
         checked: "Michelle, at the pinned commit, 2026-11-04"
     examples:
       allowed:
-        - "AP beacon_prot=1 (the helper default, e.g. eht_mld_sae_ext_two_links)."
+        - "AP and client beacon_prot=1 (eht_mld_sae_ext_two_links_client_bp, eht_mld_sae_two_links)."
       disallowed:
         - "AP beacon_prot=0 (eht_mld_sae_two_links_no_beacon_prot)."
+        - "Client beacon_prot unset (eht_mld_sae_ext_two_links)."
     notes:
       - "With one admissible value, beacon protection is a fixed setting, not a search dimension."
       - >-
-        Stays draft: the rule covers the AP and the client, but explorer.model has no client
-        setting and the client leaves beacon protection off in F02, F08, F09 and F06. Waiting
-        on the team's decision (docs/plan.md).
+        Most of hostap's MLD tests leave the client's beacon_prot unset (e.g.
+        tests/hwsim/test_eht.py:826-827), so they break this rule on the client side. The
+        anchor families use our _client_bp wrappers instead (docker/test_eht_client_bp.py).
       - "Coded as explorer.validate.check_eht_beacon_prot."
 
   - id: SEC.PMF

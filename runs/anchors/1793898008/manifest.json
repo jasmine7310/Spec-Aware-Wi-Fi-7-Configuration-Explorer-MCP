@@ -1,0 +1,54 @@
+{
+  "run_id": "1793898008",
+  "tests_requested": [
+    "eht_mld_link_removal_client_bp"
+  ],
+  "overall": "PASS",
+  "results": [
+    {
+      "test": "eht_mld_link_removal_client_bp",
+      "result": "PASS",
+      "duration_s": 3.786916
+    }
+  ],
+  "started_at": "2026-11-05T17:00:07Z",
+  "finished_at": "2026-11-05T17:00:23Z",
+  "wall_seconds": 16,
+  "versions": {
+    "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",
+    "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda",
+    "image": "wifi7-env",
+    "image_id": "sha256:d2309accb79c3b130474ac24fe752dbc17b37dcae6851acd0efb1f93ff55f67d",
+    "repo_commit": "29d49928fbe3f3e90f74b0e20e5b7b683b489725",
+    "repo_docker_dir_modified": true
+  },
+  "environment": {
+    "host_os": "macOS 15.8.1",
+    "host_kernel": "Darwin 24.6.0 x86_64",
+    "docker_server_version": "27.4.0",
+    "docker_vm_os": "Docker Desktop",
+    "docker_vm_kernel": "6.10.14-linuxkit",
+    "docker_vm_cpus": 6,
+    "docker_vm_memory_bytes": 5154570240
+  },
+  "docker_run_settings": [
+    "--cpuset-cpus=0",
+    "--tmpfs /umltmp:rw,exec,size=1g",
+    "-e TMPDIR=/umltmp",
+    "-e HWSIM_TEST_LOG_DIR=/tmp/hwsim-test-logs"
+  ],
+  "packet_captures": [
+    {
+      "file": "eht_mld_link_removal_client_bp.hwsim0.dec.pcapng",
+      "bytes": 111988
+    },
+    {
+      "file": "eht_mld_link_removal_client_bp.hwsim0.pcapng",
+      "bytes": 66184
+    },
+    {
+      "file": "hwsim0.pcapng",
+      "bytes": 48
+    }
+  ]
+}

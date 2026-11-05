@@ -7,6 +7,10 @@ link 0 on channel 1 and link 1 on channel 6.
 
 These let the P1 checks judge a hostap test before it runs. Runtime actions (rekey,
 link removal) aren't part of ``Config`` yet.
+
+Only ``eht_mld_sae_two_links`` turns on the client's beacon protection (715), so the other
+tests are recorded with it off and break SEC.EHT_BEACON_PROT. The ``_client_bp`` tests are
+our wrappers around them with it on (``docker/test_eht_client_bp.py``).
 """
 
 from __future__ import annotations
@@ -33,33 +37,43 @@ TEST_CONFIGS: dict[str, Config] = {name: Config.model_validate(raw) for name, ra
     # the fixed hash-to-element STA explorer.model assumes.
     "eht_mld_sae_ext_two_links": {
         "ap": _two_links(["SAE-EXT-KEY"]),
-        "sta": {"akms": ["SAE-EXT-KEY"]},
+        "sta": {"akms": ["SAE-EXT-KEY"], "beacon_protection": False},
     },
     # _eht_mld_owe_two_links: AP key_mgmt OWE, mfp 2 (502); STA key_mgmt OWE (522)
     "eht_mld_owe_two_links": {
         "ap": _two_links(["OWE"]),
-        "sta": {"akms": ["OWE"]},
+        "sta": {"akms": ["OWE"], "beacon_protection": False},
     },
     # Same helper with second_link_disabled: mld_indicate_disabled 1 on link 1 (510)
     "eht_mld_owe_two_links_one_disabled": {
         "ap": _two_links(["OWE"], link1={"indicate_disabled": True}),
-        "sta": {"akms": ["OWE"]},
+        "sta": {"akms": ["OWE"], "beacon_protection": False},
     },
     # test_eht_mld_ptk_rekey: mixed AKM list, mfp 1 (917-919), wpa_ptk_rekey 5 (920);
     # STA key_mgmt SAE-EXT-KEY (928)
     "eht_mld_ptk_rekey": {
         "ap": _two_links(_REKEY_AKMS, pmf="optional", ptk_rekey_interval_s=5),
-        "sta": {"akms": ["SAE-EXT-KEY"]},
+        "sta": {"akms": ["SAE-EXT-KEY"], "beacon_protection": False},
     },
     # test_eht_mld_gtk_rekey: same, wpa_group_rekey 5 (958-961); STA (969)
     "eht_mld_gtk_rekey": {
         "ap": _two_links(_REKEY_AKMS, pmf="optional", gtk_rekey_interval_s=5),
-        "sta": {"akms": ["SAE-EXT-KEY"]},
+        "sta": {"akms": ["SAE-EXT-KEY"], "beacon_protection": False},
     },
     # test_eht_mld_link_removal: AP key_mgmt OWE, mfp 2 (1386); STA OWE (1392).
     # The LINK_REMOVE / REKEY_GTK actions aren't modeled.
     "eht_mld_link_removal": {
         "ap": _two_links(["OWE"]),
-        "sta": {"akms": ["OWE"]},
+        "sta": {"akms": ["OWE"], "beacon_protection": False},
     },
 }.items()}
+
+CLIENT_BP_SUFFIX = "_client_bp"
+
+TEST_CONFIGS |= {
+    name + CLIENT_BP_SUFFIX: TEST_CONFIGS[name].model_copy(update={
+        "sta": TEST_CONFIGS[name].sta.model_copy(update={"beacon_protection": True})})
+    for name in ("eht_mld_sae_ext_two_links", "eht_mld_owe_two_links",
+                 "eht_mld_owe_two_links_one_disabled", "eht_mld_ptk_rekey",
+                 "eht_mld_gtk_rekey", "eht_mld_link_removal")
+}

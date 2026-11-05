@@ -219,12 +219,13 @@ def check_eht_sae_akm(config: Config) -> list[Finding]:
 
 
 def check_eht_beacon_prot(config: Config) -> list[Finding]:
-    """SEC.EHT_BEACON_PROT (802.11be §12.12.9): an EHT AP using RSN has beacon protection
-    enabled. Every AKM in ``model.Akm`` is an RSN AKM."""
-    if config.ap.beacon_protection:
-        return []
+    """SEC.EHT_BEACON_PROT (802.11be §12.12.9): an EHT AP and an EHT client using RSN have
+    beacon protection enabled. Every AKM in ``model.Akm`` is an RSN AKM."""
+    sides = [("an EHT AP", config.ap.beacon_protection),
+             ("an EHT client", config.sta.beacon_protection)]
     return [Finding(rule_id="SEC.EHT_BEACON_PROT",
-                    reason="beacon protection is off on an EHT AP that uses RSN")]
+                    reason=f"beacon protection is off on {side} that uses RSN")
+            for side, enabled in sides if not enabled]
 
 
 def check_eht_sae_h2e(config: Config) -> list[Finding]:

@@ -45,7 +45,7 @@ additions, already applied in `rules.yaml`:
   Hash-to-Element row doesn't carry that footnote marker; its STA row does. Another footnote
   says SAE-GDH needs H2E.
 - Table 4: beacon protection Enabled is MAND and Disabled DISALLOW, for an AP with EHT
-  enabled and for an EHT STA. This matches SEC.EHT_BEACON_PROT.
+  enabled and for an EHT STA. This matches SEC.EHT_BEACON_PROT, now checked on both sides.
 - Table 15, AP with EHT enabled: PMF Required is MAND, with Capable and Disabled DISALLOW.
 - Table 5, AP with EHT enabled: PMF Capable is MAND, with Required and Disabled DISALLOW;
   SAE-GDH (`:24`), SAE (`:8`) and PSK (`:2`) are MAND; PSK-SHA256 (`:6`) is RECOM; SAE Hash-to-Element Enabled is MAND, with H2E Only and Disabled DISALLOW. These

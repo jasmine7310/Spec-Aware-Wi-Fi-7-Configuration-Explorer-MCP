@@ -1,6 +1,6 @@
 import copy
 
-from explorer.scenarios import TEST_CONFIGS
+from explorer.scenarios import CLIENT_BP_SUFFIX, TEST_CONFIGS
 from explorer.validate import validate_candidate
 
 ASSOC = {"action": "associate"}
@@ -18,7 +18,7 @@ def _ids(result):
 # --- The Checkpoint 1 cases ---------------------------------------------------
 
 def test_malformed_candidate_stops_at_p0():
-    config = _config("eht_mld_sae_ext_two_links")
+    config = _config("eht_mld_sae_ext_two_links_client_bp")
     config["ap"]["links"][0]["link_id"] = "0"
     result = validate_candidate({"config": config, "actions": [ASSOC]})
 
@@ -30,7 +30,7 @@ def test_malformed_candidate_stops_at_p0():
 
 def test_link_akm_intersection_is_rejected_with_its_source():
     # hostap's test_eht_mld_no_common_key_mgmt: link 0 SAE, link 1 SAE-EXT-KEY.
-    config = _config("eht_mld_sae_ext_two_links")
+    config = _config("eht_mld_sae_ext_two_links_client_bp")
     config["ap"]["links"][0]["akms"] = ["SAE"]
     config["sta"]["akms"] = ["SAE", "SAE-EXT-KEY"]
     result = validate_candidate({"config": config, "actions": [ASSOC]})
@@ -44,7 +44,7 @@ def test_link_akm_intersection_is_rejected_with_its_source():
 
 
 def test_action_order_is_rejected():
-    result = validate_candidate({"config": _config("eht_mld_sae_ext_two_links"),
+    result = validate_candidate({"config": _config("eht_mld_sae_ext_two_links_client_bp"),
                                  "actions": [REKEY, ASSOC]})
     assert result.status == "SPEC_RULE_VIOLATION"
     assert _ids(result) == ["AO.ASSOC_REQUIRED"]
@@ -53,7 +53,7 @@ def test_action_order_is_rejected():
 
 
 def test_undetermined_candidate():
-    config = _config("eht_mld_sae_ext_two_links")
+    config = _config("eht_mld_sae_ext_two_links_client_bp")
     for link in config["ap"]["links"]:
         link["akms"] = ["SAE-EXT-KEY", "WPA-PSK"]
     config["sta"]["akms"] = ["WPA-PSK", "SAE-EXT-KEY"]
@@ -66,7 +66,7 @@ def test_undetermined_candidate():
 
 
 def test_legal_candidate_passes_modeled_rules_only():
-    result = validate_candidate({"config": _config("eht_mld_sae_ext_two_links"),
+    result = validate_candidate({"config": _config("eht_mld_sae_ext_two_links_client_bp"),
                                  "actions": [ASSOC, REKEY]})
     assert (result.status, result.findings) == ("PASSES_MODELED_RULES", [])
     assert "not full 802.11be compliance" in result.note
@@ -82,14 +82,14 @@ def test_plain_sae_baseline_is_a_violation():
 # --- Combining findings ---------------------------------------------------------
 
 def test_all_p1_findings_are_reported_together():
-    config = _config("eht_mld_sae_ext_two_links")
+    config = _config("eht_mld_sae_ext_two_links_client_bp")
     config["ap"]["beacon_protection"] = False
     result = validate_candidate({"config": config, "actions": [REKEY]})
     assert _ids(result) == ["SEC.EHT_BEACON_PROT", "AO.ASSOC_REQUIRED"]
 
 
 def test_violation_outweighs_an_open_question():
-    config = _config("eht_mld_sae_ext_two_links")
+    config = _config("eht_mld_sae_ext_two_links_client_bp")
     for link in config["ap"]["links"]:
         link["akms"] = ["SAE-EXT-KEY", "WPA-PSK"]
     config["sta"]["akms"] = ["WPA-PSK", "SAE-EXT-KEY"]
@@ -102,12 +102,13 @@ def test_violation_outweighs_an_open_question():
 def test_every_runnable_hostap_config_gets_the_status_run_hwsim_test_reports():
     for name, config in TEST_CONFIGS.items():
         result = validate_candidate({"config": config.model_dump()})
-        expected = "SPEC_RULE_VIOLATION" if name == "eht_mld_sae_two_links" else "PASSES_MODELED_RULES"
+        expected = ("PASSES_MODELED_RULES" if name.endswith(CLIENT_BP_SUFFIX)
+                    else "SPEC_RULE_VIOLATION")
         assert result.status == expected, name
 
 
 def test_input_is_not_modified():
-    data = {"config": _config("eht_mld_sae_ext_two_links"), "actions": [ASSOC]}
+    data = {"config": _config("eht_mld_sae_ext_two_links_client_bp"), "actions": [ASSOC]}
     before = copy.deepcopy(data)
     validate_candidate(data)
     assert data == before
