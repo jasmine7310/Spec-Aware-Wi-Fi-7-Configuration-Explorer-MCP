@@ -2,7 +2,9 @@
 
 The documents our P1 rules (`rules.yaml`) and research files (`docs/research/`) cite. Every
 rule names one of these by its **ID**, plus a clause or table, e.g.
-`IEEE-802.11be-2024 §12.12.9`.
+`IEEE-802.11be-2024 §12.12.9`, and says what kind of text it cites (`strength`: a "shall",
+a NOTE, other IEEE text, WFA guidance or hostap code). `rules.load_rules()` refuses a
+normative rule without a "shall".
 
 **Don't commit the PDFs.** They are licensed for personal use; link to them instead. Quote
 only a short phrase where needed and paraphrase the rest.
@@ -25,19 +27,25 @@ rules.
 
 ## Relevant sections
 
-Found so far by the security research ([`docs/research/security-guidance.md`](research/security-guidance.md)).
-IEEE pages are "PDF p. N (printed p. M)"; the printed page is one less.
+Found by the security research ([`docs/research/security-guidance.md`](research/security-guidance.md))
+and the 2026-11-02 check of all three PDFs (the clause 35 and §12.6.19 rows come from
+that check). IEEE pages are "PDF p. N (printed p. M)"; the printed page is one less.
 
 | ID | Section | What it covers | Page |
 |---|---|---|---|
 | `IEEE-802.11be-2024` | §9.4.2.25, Table 9-192 (bit 84) | Beacon Protection Enabled is the same on all links of an AP MLD | PDF 209 (printed 208) |
 | `IEEE-802.11be-2024` | §12.6.2 | AP MLD links advertise the same RSNE except the AKM list and MFPR; at least one common AKM | PDF 411 (printed 410) |
 | `IEEE-802.11be-2024` | §12.6.3.1–12.6.3.2 | The client picks one AKM / pairwise / group cipher common to all affiliated APs; the AP MLD checks MFPC / MFPR per link | PDF 411–412 (printed 410–411) |
+| `IEEE-802.11be-2024` | §12.6.19 | RSNA rekeying for MLO: the AP MLD manages the PTKSA, each affiliated AP its own GTKSA / IGTKSA / BIGTKSA; a new PTKSA *should* be set up before the old one expires | PDF 413 (printed 412) |
 | `IEEE-802.11be-2024` | §12.12.9 | Security constraints for EHT: beacon protection, SAE hash-to-element, AKM 24 / 25 | PDF 446 (printed 445) |
+| `IEEE-802.11be-2024` | §35.3.5.2 | ML security: one PTKSA across setup links, a GTKSA / IGTKSA / BIGTKSA per link; different links use different group keys | PDF 512 (printed 511) |
+| `IEEE-802.11be-2024` | §35.3.6.3 | Removing affiliated AP(s): announcement, removal timer, and disassociation of a non-AP MLD whose only setup link is removed | PDF 515–518 (printed 514–517) |
+| `IEEE-802.11be-2024` | §35.3.7.5 | Affiliated AP link disablement / enablement: no individually addressed frames on a disabled link | PDF 533–535 (printed 532–534) |
 | `IEEE-802.11-2024` | §9.4.2.240, Table 9-373 (bit 5) | SAE Hash-to-element bit in the RSNXE; ignored when SAE isn't negotiated (NOTE) | PDF 1433 (printed 1432) |
 | `IEEE-802.11-2024` | §11.52 | Beacon protection requires PMF | PDF 2931 (printed 2930) |
 | `IEEE-802.11-2024` | §12.4.4.2.3, §12.4.4.3.3 | SAE hash-to-element derivation of the password element (ECC / FFC groups) | §12.4.4.2.3: PDF 2967 (printed 2966) |
-| `WFA-WPA3` | §2.1, Table 3 | Security parameters; what applies at the AP MLD level | pp. 7–11 |
+| `WFA-WPA3` | §2.1, Table 3 | Security parameters; what applies at the AP MLD level; SAE Hash-to-Element applies only with an SAE AKM (p. 10) | pp. 7–11 |
+| `WFA-WPA3` | §3.1.4.1 (NOTE), §3.2 | AP MLD links share RSNE / RSNXE except AKM list and MFPR (p. 28); EHT / MLO with a password needs WPA3 (p. 29) | pp. 28–29 |
 | `WFA-WPA3` | Table 4 | Settings common to all WPA3 / Enhanced Open modes (incl. beacon protection) | pp. 12–13 |
 | `WFA-WPA3` | Tables 5, 8, 15 | WPA3-Personal Transition, WPA3-Personal Only, Enhanced Open Only | pp. 13–14, 18–19, 24–25 |
 

@@ -50,6 +50,9 @@ _FOUR_WAY = re.compile(_EVENT + r"EAPOL-4WAY-HS-COMPLETED ")
 # in real runs; the non-MLO "WPA: Group rekeying completed" is not matched.
 _PTK_NEGOTIATED = re.compile(_EVENT + r"WPA: Key negotiation completed ")
 _GTK_REKEYED = re.compile(_EVENT + r"MLO RSN: Group rekeying completed ")
+# The STA's view of its links after the AP MLD removes one (802.11be §35.3.6.3), as
+# logged in eht_mld_link_removal (calibrated on runs/smoke/1793690892).
+_LINK_RECONFIG = re.compile(_EVENT + r"CTRL-EVENT-LINK-RECONFIG valid_links=(?P<value>0x[0-9a-fA-F]+)")
 _DATA_RX = re.compile(r"DEBUG [A-Za-z0-9]+_link(?P<link>\d+): <3>DATA-TEST-RX ")
 _LINKS = re.compile(r"INFO (?P<kind>valid|active)_links=(?P<value>0x[0-9a-fA-F]+)")
 _STATUS = re.compile(r"INFO station status: (?P<dict>\{.*\})$")
@@ -103,6 +106,10 @@ class BehaviorRecord(BaseModel):
     data_test_rx_after_last_rekey_ap_links: tuple[int, ...] | Unknown
     """AP links with ``DATA-TEST-RX`` after the last PTK/GTK rekey; ``UNKNOWN`` if none."""
 
+    link_reconfig_valid_links: tuple[str, ...] | Unknown
+    """``valid_links=`` bitmap of each ``CTRL-EVENT-LINK-RECONFIG`` event, in order (e.g.
+    ``("0x1",)`` after link 1 is removed); ``UNKNOWN`` only if the log is missing."""
+
     # Not calibrated yet: no run so far performs these actions, so we don't know
     # which log lines prove them. Fill in once real runs of the matching tests exist.
     ml_probe_handled: Unknown = UNKNOWN
@@ -133,6 +140,7 @@ class BehaviorRecord(BaseModel):
             "ptk_rekeys_completed": self.ptk_rekeys_completed,
             "gtk_rekeys_completed": self.gtk_rekeys_completed,
             "data_test_rx_after_last_rekey_ap_links": self.data_test_rx_after_last_rekey_ap_links,
+            "link_reconfig_valid_links": self.link_reconfig_valid_links,
             "ml_probe_handled": self.ml_probe_handled,
             "btm_request_handled": self.btm_request_handled,
         }
@@ -187,6 +195,7 @@ def extract_record(run_dir: Path | str, test: str | None = None) -> BehaviorReco
     ptk_rekeys = 0
     gtk_rekeys = 0
     disconnects: list[Disconnect] = []
+    link_reconfigs: list[str] = []
     status: dict[str, str] | None = None
 
     for line in lines:
@@ -205,6 +214,8 @@ def extract_record(run_dir: Path | str, test: str | None = None) -> BehaviorReco
         elif _GTK_REKEYED.search(line):
             gtk_rekeys += 1
             rx_links_since_rekey = set()
+        elif m := _LINK_RECONFIG.search(line):
+            link_reconfigs.append(m["value"].lower())
         elif m := _DATA_RX.search(line):
             rx_links.add(int(m["link"]))
             rx_links_since_rekey.add(int(m["link"]))
@@ -233,4 +244,5 @@ def extract_record(run_dir: Path | str, test: str | None = None) -> BehaviorReco
         gtk_rekeys_completed=gtk_rekeys if have_log else UNKNOWN,
         data_test_rx_after_last_rekey_ap_links=(
             tuple(sorted(rx_links_since_rekey)) if ptk_rekeys or gtk_rekeys else UNKNOWN),
+        link_reconfig_valid_links=tuple(link_reconfigs) if have_log else UNKNOWN,
     )

@@ -3,6 +3,9 @@
 Record of the exact environment used for every experiment. Anyone rebuilding the
 project (teammates or graders) should get the same versions listed here.
 
+The image also adds one file of ours, `docker/test_eht_client_bp.py` (wrappers around
+hostap's tests), and leaves hostap's own files unchanged.
+
 ## Pinned versions
 
 | Component | Repository | Commit | Commit date |
@@ -46,6 +49,15 @@ build is reproducible from scratch.
 
 Three independent runs of hostap's `eht_mld_sae_two_links` (two-link SAE MLO
 association), each in a fresh container and UML guest, on 2026-10-29.
+
+**What they are evidence for** (team decision, 2026-11-03; see "Baseline" in
+[`docs/plan.md`](../docs/plan.md)): these runs are the *environment* baseline. They show
+that the Docker/UML setup reproduces a two-link MLO association. Their configuration
+(plain SAE, AKM 8, between two EHT devices) breaks IEEE 802.11be-2024 §12.12.9, which
+requires AKM 24 or 25, so under our modeled rules they are a negative experiment, never a
+legal candidate or one side of a contrast. The *legal* baseline is anchor family F02,
+`eht_mld_sae_ext_two_links` (AKM 24): three independent passing runs with identical
+behavior signatures, listed in [`anchor_coverage.csv`](../anchor_coverage.csv).
 
 | Run ID | Result | Started (UTC) | Wall time | Evidence |
 |---|---|---|---|---|

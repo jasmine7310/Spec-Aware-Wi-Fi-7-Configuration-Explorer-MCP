@@ -34,6 +34,7 @@ WIFI7_DOCKER_TESTS=1 .venv/bin/pytest                        # also run a real s
 scripts/build-env.sh                                         # build simulation image + smoke test
 docker build --progress=plain -t wifi7-env docker/           # simulation image only (slow first time)
 docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in a fresh UML guest
+docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: client beacon protection on
 .venv/bin/python -m explorer.mcp_server                      # MCP server over stdio
 ```
 
@@ -60,18 +61,42 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   returns a `RunResult` (`COMPLETED` / `SETUP_FAIL` / `TIMEOUT`) with its behavior record.
 - `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
   `.signature()` gives the comparable facts.
-- `explorer.mcp_server`: `MCPServer` with `get_model`. Add new tools here with `@server.tool()`.
+- `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`
+  and `run_hwsim_test`. Add new tools
+  here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
+  reaches the agent only as "Error executing tool").
+- `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
+  ordered typed actions. `explorer.rules.load_rules()`: the P1 rule registry from
+  `rules.yaml` (rules plus `UND.*` open questions). `explorer.validate`: `parse_candidate`
+  (readable `P0.*` errors), `P1_CHECKS` / `run_p1_checks(config)` (coded rule checks by
+  rule ID), `find_undetermined(config)`, `check_action_order(candidate)` (AO.* rules), all
+  returning `Finding`s with an outcome; `p1_status` sums them up; `validate_candidate(data)`
+  chains P0, P1 and P2 for raw input and explains each finding from `rules.yaml`.
+- `explorer.scenarios`: `TEST_CONFIGS` (the `Config` each runnable hostap test sets up) and
+  `TEST_CANDIDATES` (config plus its actions), read from the tests' source lines.
+- `explorer.support.check_support(candidate)`: the P2 check. `SUPPORTED` only for an exact
+  match to a tested scenario with passing committed runs; otherwise `UNRESOLVED` with the
+  evidence per value. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
 
 ## Rules for agents
 
 - Never invent results, run IDs, hostap options, rule citations or spec section numbers.
   If something is unverified, say so.
 - Spec-rule research needs the user to check the source; draft, don't declare.
+- The standards in `docs/references.md` are the authority for what is legal: IEEE Std
+  802.11be-2024 and 802.11-2024 ("shall", normative) and the WFA WPA3 / Enhanced Open
+  Deployment Guide v1.1 (guidance). Before writing or changing a rule, an admissible value
+  or a claim about Wi-Fi behavior, read the clause in the PDF (ask the user for their copy's
+  path; they're licensed, so never commit them or their extracted text) and cite it with
+  section, PDF page and strength. A NOTE is never a rule. Experiments that break a modeled
+  rule run only as labeled negative experiments, never as legal candidates or smoke values.
 - P0 models are strict (`strict=True`, `extra="forbid"`); cross-field Wi-Fi rules belong in P1.
 - The MCP SDK is v2 (`mcp==2.3.0`): `FastMCP` no longer exists, use
   `from mcp.server.mcpserver import MCPServer`. v1 examples from the web won't import.
 - Behavior facts come from real log lines. Before detecting a new behavior (e.g. ML probe,
   BTM), run the matching test and calibrate against its real logs; until then it stays `UNKNOWN`.
 - Run evidence: `runs/baseline/` (official baseline), `runs/calibration/` (runs a detector
-  was calibrated on), `runs/hwsim-logs/` (git-ignored trials). Never commit trials as evidence.
+  was calibrated on), `runs/smoke/` (runs showing a setting value executes),
+  `runs/anchors/` (extra runs so each anchor family has 3), `runs/hwsim-logs/` (git-ignored
+  trials). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

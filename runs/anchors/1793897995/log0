@@ -1,0 +1,49 @@
+1793898006.413756: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=3
+1793898006.414178: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-3\x00
+1793898006.414179: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=3
+1793898006.414182: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-1\x00
+1793898006.414182: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=3
+1793898006.414593: RTM_NEWLINK: ifi_index=10 ifname=hwsim0 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1793898006.414594: wlan0: Removing interface wlan0
+1793898006.414594: nl80211: Getting wowlan status
+1793898006.414595: nl80211: Getting wowlan status failed
+1793898006.414595: wlan0: Request to deauthenticate - bssid=00:00:00:00:00:00 pending_bssid=00:00:00:00:00:00 reason=3 (DEAUTH_LEAVING) state=DISCONNECTED valid_links=0x0 ap_mld_addr=00:00:00:00:00:00
+1793898006.414595: TDLS: Tear down peers
+1793898006.414595: nl80211: Data frame filter flags=0x0
+1793898006.414596: wlan0: State: DISCONNECTED -> DISCONNECTED
+1793898006.414596: nl80211: Set wlan0 operstate 0->0 (DORMANT)
+1793898006.414596: netlink: Operstate: ifindex=3 linkmode=-1 (no change), operstate=5 (IF_OPER_DORMANT)
+1793898006.414596: NAN: state change notif: n_active=0, p2p_in_progress=0
+1793898006.414597: NAN: Configuring NAN DE: n=(0, 0), suspend=0, cycle=0
+1793898006.414597: EAPOL: External notification - portEnabled=0
+1793898006.414598: EAPOL: External notification - portValid=0
+1793898006.414598: QM: Clear all active DSCP policies
+1793898006.414598: wlan0: CTRL-EVENT-DSCP-POLICY clear_all
+1793898006.414598: PTKSA: Deinit. n_ptksa=0
+1793898006.414599: wlan0: WPA: Clear old PMK and PTK
+1793898006.414599: wlan0: Cancelling scan request
+1793898006.414599: wlan0: Cancelling authentication timeout
+1793898006.414599: Off-channel: Clear pending Action frame TX (pending_action_tx=(nil)
+1793898006.414600: nl80211: Data frame filter flags=0x0
+1793898006.414600: Off-channel: Action frame sequence done notification: pending_action_tx=(nil) drv_offchan_tx=1 action_tx_wait_time=0 off_channel_freq=0 roc_waiting_drv_freq=0
+1793898006.414600: Off-channel: Action frame sequence done notification: pending_action_tx=(nil) drv_offchan_tx=1 action_tx_wait_time=0 off_channel_freq=0 roc_waiting_drv_freq=0
+1793898006.414600: QM: Clear all active DSCP policies
+1793898006.414601: wlan0: CTRL-EVENT-DSCP-POLICY clear_all
+1793898006.414601: wlan0: P2P: Disable P2P since removing the management interface is being removed
+1793898006.414601: P2P: All ASP advertisements flushed
+1793898006.414601: P2P: Disabling Extended Listen Timing
+1793898006.414602: P2P: Stopping find
+1793898006.414602: P2P: Clear timeout (state=IDLE)
+1793898006.414602: P2P: State IDLE -> IDLE
+1793898006.414602: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1793898006.414603: P2P: All ASP advertisements flushed
+1793898006.414603: Remove interface wlan0 from radio phy0
+1793898006.414603: Remove radio phy0
+1793898006.414603: nl80211: deinit ifname=wlan0 disabled_11b_rates=0
+1793898006.414604: netlink: Operstate: ifindex=3 linkmode=0 (kernel-control), operstate=6 (IF_OPER_UP)
+1793898006.414604: nl80211: Set mode ifindex 3 iftype 2 (STATION)
+1793898006.414604: nl80211: Unsubscribe mgmt frames handle 0x8888dd8888c7b039 (mode change)
+1793898006.414604: dbus: Unregister interface object '/fi/w1/wpa_supplicant1/Interfaces/0'
+1793898006.414605: wlan0: CTRL-EVENT-TERMINATING 
+1793898006.414606: Control interface directory not empty - leaving it behind
+1793898006.414606: dbus: Unregister D-Bus object '/fi/w1/wpa_supplicant1'
