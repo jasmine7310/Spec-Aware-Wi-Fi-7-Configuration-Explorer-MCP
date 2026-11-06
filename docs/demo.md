@@ -3,7 +3,7 @@
 How to run the explorer for the Checkpoint 1 demo. The demo runs in a **Claude Code
 session that talks to our MCP server** (the checkpoint wants an MCP transcript); a
 terminal covers what isn't MCP (tests, rebuild). Every expected result below was
-checked against `week2-jas` on 2026-11-06.
+checked against `week2-jas` on 2026-11-05.
 
 What it shows, against `docs/plan.md`'s Checkpoint 1 list:
 
@@ -64,8 +64,8 @@ candidate is the same.
 
 *"Use get_model and summarize the stages, rules and runnable tests."*
 
-Expect P0, P1, P2 (basic) and P3 implemented and P4 not yet; 15 rules and 3 open
-questions; the six `_client_bp` tests as `PASSES_MODELED_RULES` and hostap's originals as
+Expect P0, P1, P2 (basic) and P3 implemented and P4 not yet; 16 rules (one,
+`AO.BSS_TM_NEEDS_BSS_TRANSITION`, still a draft) and 3 open questions; the six `_client_bp` tests as `PASSES_MODELED_RULES` and hostap's originals as
 `SPEC_RULE_VIOLATION` (they leave the client's beacon protection off, 802.11be §12.12.9).
 
 ### Step 2: P0 malformed rejection
