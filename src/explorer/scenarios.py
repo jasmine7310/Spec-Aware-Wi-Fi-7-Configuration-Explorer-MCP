@@ -1,12 +1,14 @@
-"""The configuration each runnable hostap test sets up, as a ``model.Config``.
+"""The configuration and actions each runnable hostap test sets up, as model objects.
 
 Read from ``tests/hwsim/test_eht.py`` at the pinned hostap commit (43ee60e1); line
 numbers are given per test. ``eht_mld_ap_wpa2_params()`` defaults to ``mfp="2"``,
 ``pwe=None`` (sae_pwe unset) and ``beacon_prot="1"``, and every two-link test puts
 link 0 on channel 1 and link 1 on channel 6.
 
-These let the P1 checks judge a hostap test before it runs. Runtime actions (rekey,
-link removal) aren't part of ``Config`` yet.
+``TEST_CONFIGS`` lets the P1 checks judge a hostap test before it runs.
+``TEST_CANDIDATES`` adds the actions each test performs, in order, so the P2 support
+check can tell which test, if any, executes a candidate exactly. Traffic tests,
+waits and the legacy ``dev[0]`` client some tests also connect aren't modeled.
 
 Only ``eht_mld_sae_two_links`` turns on the client's beacon protection (715), so the other
 tests are recorded with it off and break SEC.EHT_BEACON_PROT. The ``_client_bp`` tests are
@@ -15,7 +17,7 @@ our wrappers around them with it on (``docker/test_eht_client_bp.py``).
 
 from __future__ import annotations
 
-from explorer.model import Config
+from explorer.model import Candidate, Config
 
 
 def _two_links(akms, *, link1=None, **ap):
@@ -82,4 +84,37 @@ TEST_CONFIGS |= {
     for name in ("eht_mld_sae_ext_two_links", "eht_mld_owe_two_links",
                  "eht_mld_owe_two_links_one_disabled", "eht_mld_ptk_rekey",
                  "eht_mld_gtk_rekey", "eht_mld_link_removal")
+}
+
+_ASSOC = {"action": "associate"}
+_DISCONNECT = {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"}
+
+# The MLD client's actions in each test, in order. The PTK/GTK rekeys in the rekey tests
+# come from the AP's rekey interval, not from an action.
+_TEST_ACTIONS = {
+    "eht_mld_sae_two_links": [_ASSOC],                          # connect 714
+    "eht_mld_sae_ext_two_links": [_ASSOC],                      # connect 826
+    # _eht_mld_owe_two_links: connect 522, then DISCONNECT 557-558 (not wait_for_timeout)
+    "eht_mld_owe_two_links": [_ASSOC, _DISCONNECT],
+    "eht_mld_owe_two_links_one_disabled": [_ASSOC, _DISCONNECT],
+    "eht_mld_ptk_rekey": [_ASSOC],                              # connect 928
+    "eht_mld_gtk_rekey": [_ASSOC],                              # connect 969
+    # connect 1392, LINK_REMOVE 4 on link 1 (1400), REKEY_GTK (1406), LINK_REMOVE 20 on
+    # link 0 (1416)
+    "eht_mld_link_removal": [
+        _ASSOC, {"action": "link_remove", "link_id": 1, "count": 4},
+        {"action": "rekey_gtk_now"}, {"action": "link_remove", "link_id": 0, "count": 20}],
+    # connect 1447, BSS_TM_REQ with link_removal_imminent=1 (1457-1458)
+    "eht_mld_bss_trans_mgmt_link_removal_imminent": [
+        _ASSOC, {"action": "bss_tm_link_removal_imminent"}],
+}
+
+
+def _actions(name: str) -> list:
+    return _TEST_ACTIONS[name.removesuffix(CLIENT_BP_SUFFIX)]
+
+
+TEST_CANDIDATES: dict[str, Candidate] = {
+    name: Candidate.model_validate({"config": config, "actions": _actions(name)})
+    for name, config in TEST_CONFIGS.items()
 }

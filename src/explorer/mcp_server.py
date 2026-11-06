@@ -35,12 +35,10 @@ from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test
 from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import UNKNOWN, BehaviorRecord
+from explorer.support import EVIDENCE_DIRS
 from explorer.validate import P0_ERRORS, ValidationResult, find_undetermined, run_p1_checks
 
 DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
-# Committed run evidence; runs/hwsim-logs/ holds git-ignored trial runs and is skipped.
-EVIDENCE_DIRS = (REPO_ROOT / "runs" / "baseline", REPO_ROOT / "runs" / "calibration",
-                 REPO_ROOT / "runs" / "smoke", REPO_ROOT / "runs" / "anchors")
 
 server = MCPServer(
     name="wifi7-config-explorer",
@@ -158,9 +156,11 @@ STAGES = [
                      "action-order rules and three open questions (SPEC_UNDETERMINED), all "
                      "applied by validate_candidate and explained by explain_rule. Every "
                      "rule's citations are checked, and they're all reviewed."),
-    StageStatus(stage="P2 implementation support", implemented=False,
-                note="Smoke runs are recorded (surface_candidates.csv smoke_runs); no "
-                     "support check uses them yet."),
+    StageStatus(stage="P2 implementation support", implemented=True,
+                note="Basic: validate_candidate reports SUPPORTED only when a tested hostap "
+                     "scenario executes the candidate exactly (with its passing committed "
+                     "runs), otherwise UNRESOLVED with per-value run evidence. Nothing is "
+                     "UNSUPPORTED_IMPLEMENTATION without a recorded failure."),
     StageStatus(stage="P3 execution", implemented=True,
                 note="run_hwsim_test runs one approved hostap hwsim test in a fresh "
                      "UML guest and returns its behavior record."),
@@ -242,9 +242,9 @@ def get_model() -> ModelInfo:
     accepts (with what the coded P1 rules say about each), and every modeled rule and
     open question by ID."""
     return ModelInfo(
-        status=("Candidates can be validated through P0 and P1 (validate_candidate) and "
-                "approved hostap tests run in fresh guests (run_hwsim_test). P2 support "
-                "checks, campaigns and contrasts aren't built yet."),
+        status=("Candidates can be validated through P0, P1 and a basic P2 support check "
+                "(validate_candidate), and approved hostap tests run in fresh guests "
+                "(run_hwsim_test). Campaigns and contrasts aren't built yet."),
         pinned_versions=pinned_versions(),
         stages=STAGES,
         observable_facts=observable_facts(),
@@ -269,7 +269,13 @@ def validate_candidate(candidate: dict[str, Any]) -> ValidationResult:
     modeled rules can't decide; neither approved nor a violation) or
     PASSES_MODELED_RULES (not full 802.11be compliance). Each finding gives its stage,
     rule ID, reason, the rule's kind and its cited sources; call explain_rule for the
-    full entry. P2 (implementation support) isn't checked yet."""
+    full entry.
+
+    A candidate that passes the modeled rules also gets p2, the implementation support
+    check: SUPPORTED with the test name and run IDs when a tested hostap scenario executes
+    it exactly (then run it with run_hwsim_test), otherwise UNRESOLVED with the committed
+    runs behind each of its values and the closest tests. UNRESOLVED isn't "unsupported";
+    it means no run shows this exact combination."""
     return validate.validate_candidate(candidate)
 
 

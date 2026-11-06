@@ -14,8 +14,8 @@ walks a candidate's actions. ``p1_status`` sums findings up. No finding means on
 that the candidate passes the modeled rules, not that it complies with 802.11be.
 
 ``validate_candidate`` chains them for raw input, without booting a guest: P0, then
-(if well formed) every P1 check, with each finding explained from ``rules.yaml``.
-P2 (implementation support) isn't checked yet.
+(if well formed) every P1 check, with each finding explained from ``rules.yaml``, then
+(if the modeled rules pass it) the P2 support check in ``explorer.support``.
 """
 
 from __future__ import annotations
@@ -29,6 +29,7 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 
 from explorer.model import Candidate, Config
 from explorer.rules import Citation, RuleRegistry, load_rules
+from explorer.support import SupportResult, check_support
 
 Outcome = Literal["MALFORMED", "SPEC_RULE_VIOLATION", "SPEC_UNDETERMINED"]
 
@@ -517,11 +518,12 @@ class ExplainedFinding(BaseModel):
 
 class ValidationResult(BaseModel):
     status: CandidateStatus
-    stage_reached: Literal["P0", "P1"]
-    """P0 if the input is malformed (P1 wasn't run), otherwise P1."""
+    """The P0 / P1 outcome; P2 is reported separately in p2."""
+    stage_reached: Literal["P0", "P1", "P2"]
+    """P0 if the input is malformed, P1 if the modeled rules didn't pass it, else P2."""
     findings: list[ExplainedFinding]
-    p2: Literal["NOT_CHECKED"] = "NOT_CHECKED"
-    """Implementation support (P2) isn't checked by this pipeline yet."""
+    p2: SupportResult | None
+    """Implementation support, checked only when the candidate passes the modeled rules."""
     note: str
 
 
@@ -561,19 +563,25 @@ def explain(finding: Finding, registry: RuleRegistry | None = None) -> Explained
 
 
 def validate_candidate(data: object) -> ValidationResult:
-    """P0 then P1 for one candidate given as raw input (e.g. JSON from the agent).
+    """P0, P1 and P2 for one candidate given as raw input (e.g. JSON from the agent).
 
     Never boots a guest. A malformed candidate stops at P0; otherwise every coded
     setting rule, open question and the action order are checked, and all findings are
-    returned. P2 isn't checked yet.
+    returned. Only a candidate that passes the modeled rules goes on to the P2 support
+    check (``support.check_support``).
     """
     candidate, malformed = parse_candidate(data)
     if candidate is None:
         return ValidationResult(status="MALFORMED", stage_reached="P0",
-                                findings=[explain(f) for f in malformed],
+                                findings=[explain(f) for f in malformed], p2=None,
                                 note=_NOTES["MALFORMED"])
     findings = (run_p1_checks(candidate.config) + find_undetermined(candidate.config)
                 + check_action_order(candidate))
     status = p1_status(findings)
-    return ValidationResult(status=status, stage_reached="P1",
-                            findings=[explain(f) for f in findings], note=_NOTES[status])
+    explained = [explain(f) for f in findings]
+    if status != "PASSES_MODELED_RULES":
+        return ValidationResult(status=status, stage_reached="P1", findings=explained,
+                                p2=None, note=_NOTES[status])
+    support = check_support(candidate)
+    return ValidationResult(status=status, stage_reached="P2", findings=explained,
+                            p2=support, note=f"{_NOTES[status]} P2: {support.note}")

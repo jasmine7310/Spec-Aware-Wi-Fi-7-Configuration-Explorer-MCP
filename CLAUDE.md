@@ -71,8 +71,12 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   (readable `P0.*` errors), `P1_CHECKS` / `run_p1_checks(config)` (coded rule checks by
   rule ID), `find_undetermined(config)`, `check_action_order(candidate)` (AO.* rules), all
   returning `Finding`s with an outcome; `p1_status` sums them up; `validate_candidate(data)`
-  chains P0 and P1 for raw input and explains each finding from `rules.yaml`. `explorer.scenarios.TEST_CONFIGS`: the `Config` each runnable
-  hostap test sets up, read from its source lines.
+  chains P0, P1 and P2 for raw input and explains each finding from `rules.yaml`.
+- `explorer.scenarios`: `TEST_CONFIGS` (the `Config` each runnable hostap test sets up) and
+  `TEST_CANDIDATES` (config plus its actions), read from the tests' source lines.
+- `explorer.support.check_support(candidate)`: the P2 check. `SUPPORTED` only for an exact
+  match to a tested scenario with passing committed runs; otherwise `UNRESOLVED` with the
+  evidence per value. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
 
 ## Rules for agents
 

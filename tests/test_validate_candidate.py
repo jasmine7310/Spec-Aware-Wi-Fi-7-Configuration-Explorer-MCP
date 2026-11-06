@@ -70,7 +70,25 @@ def test_legal_candidate_passes_modeled_rules_only():
                                  "actions": [ASSOC, REKEY]})
     assert (result.status, result.findings) == ("PASSES_MODELED_RULES", [])
     assert "not full 802.11be compliance" in result.note
-    assert result.p2 == "NOT_CHECKED"
+    # No tested scenario rekeys right after associating with SAE-EXT-KEY.
+    assert (result.stage_reached, result.p2.status) == ("P2", "UNRESOLVED")
+
+
+def test_tested_scenario_is_supported():
+    result = validate_candidate({"config": _config("eht_mld_sae_ext_two_links_client_bp"),
+                                 "actions": [ASSOC]})
+    assert (result.status, result.p2.status, result.p2.test) == (
+        "PASSES_MODELED_RULES", "SUPPORTED", "eht_mld_sae_ext_two_links_client_bp")
+    assert "run_hwsim_test" in result.note
+
+
+def test_p2_only_runs_after_p1_passes():
+    rejected = validate_candidate({"config": _config("eht_mld_sae_two_links"), "actions": [ASSOC]})
+    assert (rejected.stage_reached, rejected.p2) == ("P1", None)
+    config = _config("eht_mld_sae_ext_two_links")
+    config["ap"]["links"][0]["link_id"] = "0"
+    malformed = validate_candidate({"config": config})
+    assert (malformed.stage_reached, malformed.p2) == ("P0", None)
 
 
 def test_plain_sae_baseline_is_a_violation():

@@ -47,8 +47,9 @@ def test_pinned_versions_come_from_the_dockerfile():
 def test_implemented_stages():
     stages = {s["stage"].split()[0]: s for s in _get_model()["stages"]}
     assert {k: s["implemented"] for k, s in stages.items()} == {
-        "P0": True, "P1": True, "P2": False, "P3": True, "P4": False}
+        "P0": True, "P1": True, "P2": True, "P3": True, "P4": False}
     assert "not full 802.11be" in stages["P1"]["note"]
+    assert stages["P2"]["note"].startswith("Basic")
 
 
 def test_get_model_lists_every_rule_and_question():
@@ -131,8 +132,16 @@ def _validate(candidate):
 def test_validate_candidate_legal():
     result = _validate({"config": TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump(),
                         "actions": [{"action": "associate"}, {"action": "rekey_gtk_now"}]})
-    assert (result["status"], result["findings"], result["p2"]) == (
-        "PASSES_MODELED_RULES", [], "NOT_CHECKED")
+    assert (result["status"], result["findings"]) == ("PASSES_MODELED_RULES", [])
+    assert result["p2"]["status"] == "UNRESOLVED"
+
+
+def test_validate_candidate_supported_names_the_test_to_run():
+    result = _validate({"config": TEST_CONFIGS["eht_mld_gtk_rekey_client_bp"].model_dump(),
+                        "actions": [{"action": "associate"}]})
+    assert (result["p2"]["status"], result["p2"]["test"]) == (
+        "SUPPORTED", "eht_mld_gtk_rekey_client_bp")
+    assert len(result["p2"]["run_ids"]) == 3
 
 
 def test_validate_candidate_malformed_is_a_result_not_a_tool_error():
