@@ -5,7 +5,7 @@ import pytest
 from explorer.model import Candidate
 from explorer.scenarios import TEST_CANDIDATES, TEST_CONFIGS
 from explorer.support import (EVIDENCE_DIRS, action_key, check_support, passing_runs,
-                              setting_values, smoke_evidence)
+                              setting_values, smoke_evidence, rule_passing_tests)
 
 ASSOC = {"action": "associate"}
 CLIENT_BP_TESTS = sorted(name for name in TEST_CANDIDATES if name.endswith("_client_bp"))
@@ -73,6 +73,30 @@ def test_action_never_run_has_no_evidence():
     assert evidence[("sta_disconnect_reconnect", "DISCONNECT")]   # the OWE tests do it
     assert evidence[("sta_disconnect_reconnect", "RECONNECT")] == []
     assert "sta_disconnect_reconnect=RECONNECT" in result.note
+
+
+def test_only_the_client_bp_tests_pass_the_modeled_rules():
+    # hostap's originals leave the client's beacon protection off (SEC.EHT_BEACON_PROT)
+    # and the baseline uses plain SAE (SEC.EHT_SAE_AKM).
+    assert sorted(rule_passing_tests()) == CLIENT_BP_TESTS
+
+
+def test_rule_breaking_runs_never_count_as_action_evidence():
+    runs = passing_runs()
+    legal_runs = {run for test in rule_passing_tests() for run in runs.get(test, [])}
+    result = check_support(_candidate("eht_mld_sae_ext_two_links_client_bp", [
+        ASSOC, {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"},
+        {"action": "rekey_gtk_now"}, {"action": "bss_tm_link_removal_imminent"}]))
+    evidence = {(v.candidate, v.value): v.run_ids for v in result.values}
+    for key in [("associate", "present"), ("sta_disconnect_reconnect", "DISCONNECT"),
+                ("rekey_gtk_now", "present")]:
+        assert evidence[key] and set(evidence[key]) <= legal_runs, (key, evidence[key])
+    # The baseline (plain SAE) and the original link-removal test performed these, but
+    # they're negative experiments.
+    assert not set(runs["eht_mld_sae_two_links"]) & {r for ids in evidence.values() for r in ids}
+    # Only hostap's original BSS TM test sends this request, and it breaks a rule.
+    assert evidence[("bss_tm_link_removal_imminent", "present")] == []
+    assert "bss_tm_link_removal_imminent=present" in result.note
 
 
 def test_owe_association_alone_points_at_the_closest_tests():

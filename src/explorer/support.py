@@ -8,8 +8,11 @@ Only committed evidence counts:
 - ``UNRESOLVED``: no test executes this exact candidate. The result lists the committed
   runs that show each of its values executes, or none: for settings, the smoke-tested
   dimensions in ``surface_candidates.csv``'s ``smoke_runs``; for each action (with its
-  command or operation), passing runs of the tests that perform it. Values that each
-  ran somewhere don't prove their combination runs.
+  command or operation), passing runs of the tests that perform it and pass the modeled
+  rules. Runs of tests that break a modeled rule (the plain-SAE baseline, hostap's
+  originals with the client's beacon protection off) are negative experiments and never
+  count as a value's evidence. Values that each ran somewhere don't prove their
+  combination runs.
 - ``UNSUPPORTED_IMPLEMENTATION``: needs real evidence that the pinned versions can't do
   it, such as a run that failed to set up. We have none recorded, so nothing returns
   this yet; it is never inferred from missing evidence.
@@ -59,7 +62,7 @@ class SupportResult(BaseModel):
     run_ids: list[str]
     """That test's passing committed runs (SUPPORTED only)."""
     values: list[ValueEvidence]
-    """Per-value smoke evidence (UNRESOLVED only)."""
+    """Per-value run evidence (UNRESOLVED only)."""
     closest_tests: list[str]
     """Tests with this exact configuration but different actions (UNRESOLVED only)."""
     note: str
@@ -97,6 +100,18 @@ def smoke_evidence(path: Path = CANDIDATES_CSV) -> dict[str, dict[str, str]]:
 @lru_cache(maxsize=1)
 def _cached_smoke_evidence() -> dict[str, dict[str, str]]:
     return smoke_evidence()
+
+
+@lru_cache(maxsize=1)
+def rule_passing_tests() -> frozenset[str]:
+    """Runnable tests whose config and actions pass the modeled rules (no finding)."""
+    # Imported here because explorer.validate imports this module.
+    from explorer.validate import (check_action_order, find_undetermined, p1_status,
+                                   run_p1_checks)
+    return frozenset(
+        test for test, known in TEST_CANDIDATES.items()
+        if p1_status(run_p1_checks(known.config) + find_undetermined(known.config)
+                     + check_action_order(known)) == "PASSES_MODELED_RULES")
 
 
 def _interval(seconds: int | None) -> str:
@@ -147,7 +162,8 @@ def check_support(candidate: Candidate) -> SupportResult:
         if name == "link_remove":
             continue  # covered by the smoke-tested link_remove dimension above
         performed_by = [test for test, known in TEST_CANDIDATES.items()
-                        if (name, label) in {action_key(s) for s in known.actions}]
+                        if test in rule_passing_tests()
+                        and (name, label) in {action_key(s) for s in known.actions}]
         values.append(ValueEvidence(candidate=name, value=label, run_ids=sorted(
             {run for test in performed_by for run in runs.get(test, [])})[:MAX_EXAMPLE_RUNS]))
     closest = sorted(test for test, known in TEST_CANDIDATES.items()
@@ -156,7 +172,9 @@ def check_support(candidate: Candidate) -> SupportResult:
     note = "No tested hostap scenario executes this exact candidate."
     if closest:
         note += f" {', '.join(closest)} set up this configuration with other actions."
-    note += (f" No smoke run for: {', '.join(missing)}." if missing else
-             " Each listed value has a smoke run, but not in this combination.")
+    note += (f" No passing run under the modeled rules for: {', '.join(missing)}."
+             if missing else
+             " Each listed value has a passing run under the modeled rules, but not in "
+             "this combination.")
     return SupportResult(status="UNRESOLVED", test=None, run_ids=[], values=values,
                          closest_tests=closest, note=note)

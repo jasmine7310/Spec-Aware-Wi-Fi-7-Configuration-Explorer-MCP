@@ -50,8 +50,8 @@ What it shows, against `docs/plan.md`'s Checkpoint 1 list:
 WIFI7_DOCKER_TESTS=1 WIFI7_HOSTAP_SRC=~/hostap .venv/bin/pytest -q
 ```
 
-Everything should pass with nothing skipped (about a minute, including two real
-simulation runs). `WIFI7_HOSTAP_SRC` points at a hostap checkout at the pinned commit
+Everything should pass with nothing skipped (a few minutes: the unit tests take about
+90 s on an Intel Mac, plus two real simulation runs). `WIFI7_HOSTAP_SRC` points at a hostap checkout at the pinned commit
 (see `CLAUDE.md`). If anything fails, fix it before presenting.
 
 ## Part 3: The demo script
