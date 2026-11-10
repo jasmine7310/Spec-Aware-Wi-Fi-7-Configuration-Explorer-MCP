@@ -1,9 +1,11 @@
 import os
 import stat
+import subprocess
 from pathlib import Path
 
 import pytest
 
+from explorer import runner
 from explorer.runner import RunnerError, run_test
 
 BASELINE_RUN = Path(__file__).resolve().parent.parent / "runs" / "baseline" / "1793298094"
@@ -94,6 +96,87 @@ def test_rejects_non_test_names(tmp_path, name):
 def test_missing_script_is_environment_error(tmp_path):
     with pytest.raises(RunnerError):
         run_test("eht_mld_sae_two_links", script=tmp_path / "nope.sh")
+
+
+# --- Environment check (fake docker CLI) -----------------------------------
+
+class _FakeDocker:
+    """Stands in for subprocess.run; answers each docker subcommand from a table."""
+
+    def __init__(self, **answers):
+        self.answers = {"info": (0, "x86_64\n", ""), **answers}
+        self.calls = []
+
+    def __call__(self, argv, **kwargs):
+        key = " ".join(argv[1:3])
+        self.calls.append((key, kwargs.get("timeout")))
+        answer = self.answers.get(key) or self.answers[argv[1]]
+        if isinstance(answer, BaseException):
+            raise answer
+        code, out, err = answer
+        return subprocess.CompletedProcess(argv, code, out, err)
+
+
+CACHED_404 = (1, "", 'Error response from daemon: {"message":"No such image: wifi7-env"}\n')
+
+
+def _patch(monkeypatch, fake):
+    monkeypatch.setattr(runner.subprocess, "run", fake)
+    return fake
+
+
+def test_image_found_needs_no_second_check(monkeypatch):
+    fake = _patch(monkeypatch, _FakeDocker(**{"image inspect": (0, "[]", "")}))
+    runner.check_environment()
+    assert [key for key, _ in fake.calls] == ["info -f", "image inspect"]
+
+
+def test_cached_not_found_is_rechecked_and_passes(monkeypatch):
+    # Docker Desktop's Resource Saver: inspect gets a cached 404 while the VM sleeps;
+    # the filtered image list wakes the VM and finds the image.
+    fake = _patch(monkeypatch, _FakeDocker(**{"image inspect": CACHED_404,
+                                              "image ls": (0, "f58d11e3a0fa\n", "")}))
+    runner.check_environment()
+    assert fake.calls[-1] == ("image ls", runner.DOCKER_WAKE_TIMEOUT_S)
+
+
+def test_really_missing_image_says_so_with_dockers_message(monkeypatch):
+    _patch(monkeypatch, _FakeDocker(**{"image inspect": CACHED_404, "image ls": (0, "", "")}))
+    with pytest.raises(RunnerError, match=r"not found \(.*No such image: wifi7-env.*\); build"):
+        runner.check_environment()
+
+
+def test_failed_image_list_reports_its_error(monkeypatch):
+    _patch(monkeypatch, _FakeDocker(**{"image inspect": CACHED_404,
+                                       "image ls": (1, "", "Cannot connect to the Docker daemon")}))
+    with pytest.raises(RunnerError, match="Cannot connect to the Docker daemon"):
+        runner.check_environment()
+
+
+def test_docker_not_running(monkeypatch):
+    _patch(monkeypatch, _FakeDocker(info=(1, "", "Cannot connect to the Docker daemon")))
+    with pytest.raises(RunnerError, match="isn't running.*Cannot connect"):
+        runner.check_environment()
+
+
+def test_docker_not_answering_is_an_environment_error(monkeypatch):
+    _patch(monkeypatch, _FakeDocker(**{
+        "image inspect": CACHED_404,
+        "image ls": subprocess.TimeoutExpired(["docker"], runner.DOCKER_WAKE_TIMEOUT_S)}))
+    with pytest.raises(RunnerError, match="didn't answer within 120 s"):
+        runner.check_environment()
+
+
+def test_docker_not_installed(monkeypatch):
+    _patch(monkeypatch, _FakeDocker(info=FileNotFoundError("docker")))
+    with pytest.raises(RunnerError, match="docker not found"):
+        runner.check_environment()
+
+
+def test_non_x86_docker_is_refused(monkeypatch):
+    _patch(monkeypatch, _FakeDocker(info=(0, "aarch64\n", "")))
+    with pytest.raises(RunnerError, match="aarch64; UML needs x86-64"):
+        runner.check_environment()
 
 
 # --- Real environment (opt-in) ----------------------------------------------
