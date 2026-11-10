@@ -11,10 +11,8 @@ record. Tools: `get_model`, `validate_candidate`, `explain_rule`, `run_hwsim_tes
 Passing means **"passes modeled rules"**, not full 802.11be compliance.
 
 **Demo reference:** Jasmine's Claude Code session of 2026-11-06,
-`2026-11-06-103510-validate-this-candidate-config-ap-link.txt` (steps 2–6); a later export
-of the same session, `…-104238-…-2.txt`, adds step 1 (`get_model`). Both are on branch
-`demo-terminal-transcript`.
-A second session on an Intel Mac is in `docs/demo-transcript.md`.
+`docs/demo-transcript-terminal.txt` (steps 2–6, then step 1, `get_model`). A second
+session on an Intel Mac is in `docs/demo-transcript.md`.
 
 | Checkpoint 1 item | Evidence |
 |---|---|
