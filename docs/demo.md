@@ -154,6 +154,7 @@ session to export it) and save it as `docs/demo-transcript.md`, next to the repo
 |---|---|
 | The `wifi7-explorer` server failed to connect | Open the session on the WSL repo folder, not a Windows-drive copy. On Windows, check `WIFI7_MCP_LAUNCHER` is `wsl.exe` (`echo $env:WIFI7_MCP_LAUNCHER` in PowerShell) and that the app was restarted after `setx`. |
 | `run_hwsim_test`: "Docker isn't running" | Start Docker Desktop, wait until it's running, retry. |
-| "image 'wifi7-env' not found" | Run `scripts/build-env.sh`. |
+| "image 'wifi7-env' not found" | Run `scripts/build-env.sh`. (Before the fix for #81, this also appeared falsely when Docker Desktop's Resource Saver had stopped its VM after 5 idle minutes; the check now wakes the VM first.) |
+| The first `run_hwsim_test` after a break takes ~30 s longer | Docker Desktop's Resource Saver is waking its VM; expected. |
 | "is not a runnable test" | Use a `_client_bp` name from `get_model`'s `runnable_tests`. |
 | A result differs from this page | `git pull`, rerun Part 2, and update this page if the code has changed on purpose. |

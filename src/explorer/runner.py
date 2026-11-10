@@ -37,6 +37,10 @@ RUN_SCRIPT = REPO_ROOT / "docker" / "run-test.sh"
 DEFAULT_LOG_DIR = REPO_ROOT / "runs" / "hwsim-logs"
 DEFAULT_IMAGE = "wifi7-env"
 DEFAULT_TIMEOUT_S = 600
+# Ordinary docker CLI calls, and the one that may have to wake Docker Desktop's VM
+# (it took 29 s on an Intel Mac; see check_environment).
+DOCKER_TIMEOUT_S = 30
+DOCKER_WAKE_TIMEOUT_S = 120
 
 RunStatus = Literal["COMPLETED", "SETUP_FAIL", "TIMEOUT"]
 
@@ -66,21 +70,45 @@ class RunResult(BaseModel):
     """Last lines of the run's console output, for debugging."""
 
 
-def check_environment(image: str = DEFAULT_IMAGE) -> None:
-    """Raise ``RunnerError`` unless Docker is running and ``image`` exists."""
+def _docker(args: list[str], timeout_s: float) -> subprocess.CompletedProcess:
     try:
-        info = subprocess.run(["docker", "info", "-f", "{{.Architecture}}"],
-                              capture_output=True, text=True, timeout=30)
+        return subprocess.run(["docker", *args], capture_output=True, text=True,
+                              timeout=timeout_s)
     except FileNotFoundError:
         raise RunnerError("docker not found; install Docker Desktop") from None
+    except subprocess.TimeoutExpired:
+        raise RunnerError(f"`docker {' '.join(args)}` didn't answer within {timeout_s:.0f} s; "
+                          "check that Docker Desktop is running") from None
+
+
+def check_environment(image: str = DEFAULT_IMAGE) -> None:
+    """Raise ``RunnerError`` unless Docker is running and ``image`` exists.
+
+    Docker Desktop's Resource Saver stops its VM after 5 idle minutes and answers some
+    API calls from a cache until something wakes it. ``docker info`` then succeeds, but
+    ``docker image inspect <name>`` gets "No such image" from the cache every time, and
+    retrying doesn't wake the VM (backend log: ``apicache 404 << GET
+    /v1.47/images/wifi7-env/json``; seen on an Intel Mac, Docker Desktop 4.37.1). A
+    filtered ``docker image ls`` isn't cached: it wakes the VM (about 30 s) and answers
+    for real. So a "not found" is only believed after that check also finds nothing.
+    """
+    info = _docker(["info", "-f", "{{.Architecture}}"], DOCKER_TIMEOUT_S)
     if info.returncode != 0:
-        raise RunnerError("Docker isn't running; start Docker Desktop")
+        raise RunnerError("Docker isn't running; start Docker Desktop "
+                          f"(docker info: {info.stderr.strip() or info.returncode})")
     if info.stdout.strip() not in ("x86_64", "amd64"):
         raise RunnerError(f"Docker runs on {info.stdout.strip()}; UML needs x86-64")
-    image_check = subprocess.run(["docker", "image", "inspect", image],
-                                 capture_output=True, text=True, timeout=30)
-    if image_check.returncode != 0:
-        raise RunnerError(f"image {image!r} not found; build it with scripts/build-env.sh")
+    inspect = _docker(["image", "inspect", image], DOCKER_TIMEOUT_S)
+    if inspect.returncode == 0:
+        return
+    listed = _docker(["image", "ls", "-q", "--filter", f"reference={image}"],
+                     DOCKER_WAKE_TIMEOUT_S)
+    if listed.returncode == 0 and listed.stdout.strip():
+        return
+    detail = (listed.stderr.strip() if listed.returncode != 0
+              else inspect.stderr.strip() or f"exit code {inspect.returncode}")
+    raise RunnerError(f"image {image!r} not found ({detail}); "
+                      "build it with scripts/build-env.sh")
 
 
 def run_test(test: str, *,
