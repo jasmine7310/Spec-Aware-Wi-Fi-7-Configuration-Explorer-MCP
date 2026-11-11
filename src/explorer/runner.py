@@ -115,13 +115,15 @@ def run_test(test: str, *,
              log_dir: Path | str = DEFAULT_LOG_DIR,
              image: str = DEFAULT_IMAGE,
              timeout_s: float = DEFAULT_TIMEOUT_S,
-             script: Path | str = RUN_SCRIPT) -> RunResult:
+             script: Path | str = RUN_SCRIPT,
+             plan_file: Path | str | None = None) -> RunResult:
     """Run one hwsim test in a fresh guest and return what was observed.
 
     ``log_dir`` defaults to the git-ignored trial folder; pass ``runs/baseline``
     (or similar) for runs that should be kept as evidence. ``script`` exists so
     tests can substitute a fake; with the real script, the environment is
-    checked first.
+    checked first. ``plan_file`` is a candidate plan for the adapter test
+    (``explorer.adapter``); the script copies it into the container and the run folder.
     """
     if not _TEST_NAME.match(test):
         raise ValueError(f"not a hwsim test name: {test!r}")
@@ -135,6 +137,9 @@ def run_test(test: str, *,
     container = f"wifi7-run-{uuid.uuid4().hex[:12]}"
     env = {**os.environ, "LOG_DIR": str(log_dir), "IMAGE": image,
            "CONTAINER_NAME": container}
+    env.pop("PLAN_FILE", None)
+    if plan_file is not None:
+        env["PLAN_FILE"] = str(Path(plan_file).resolve())
 
     # Own process group, so a timeout can stop the script and everything it started.
     proc = subprocess.Popen([str(script), test], env=env, text=True,

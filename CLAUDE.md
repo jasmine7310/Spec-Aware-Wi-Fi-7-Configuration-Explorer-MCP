@@ -61,8 +61,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   returns a `RunResult` (`COMPLETED` / `SETUP_FAIL` / `TIMEOUT`) with its behavior record.
 - `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
   `.signature()` gives the comparable facts.
-- `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`
-  and `run_hwsim_test`. Add new tools
+- `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`,
+  `run_hwsim_test` and `run_candidate`. Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
@@ -74,6 +74,11 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   chains P0, P1 and P2 for raw input and explains each finding from `rules.yaml`.
 - `explorer.scenarios`: `TEST_CONFIGS` (the `Config` each runnable hostap test sets up) and
   `TEST_CANDIDATES` (config plus its actions), read from the tests' source lines.
+- `explorer.adapter`: `build_plan(candidate)` (hostapd parameters, client connect arguments
+  and actions for `docker/test_explorer_candidate.py`), `run_candidate(candidate)` (fresh
+  guest, P3 status `ACCEPTED` / `REJECTED` / `SETUP_FAIL` / `TIMEOUT`), `unsupported()`,
+  `compare_signatures()`. MCP tool `run_candidate` validates first. Changing the adapter
+  test means rebuilding the image.
 - `explorer.support.check_support(candidate)`: the P2 check. `SUPPORTED` only for an exact
   match to a tested scenario with passing committed runs; otherwise `UNRESOLVED` with the
   evidence per value. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
