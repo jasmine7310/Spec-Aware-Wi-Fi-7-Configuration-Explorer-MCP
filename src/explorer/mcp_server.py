@@ -30,12 +30,12 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from pydantic import BaseModel
 
-from explorer import validate
+from explorer import adapter, validate
 from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test
 from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import UNKNOWN, BehaviorRecord
-from explorer.support import EVIDENCE_DIRS
+from explorer.support import EVIDENCE_DIRS, SupportResult
 from explorer.validate import P0_ERRORS, ValidationResult, find_undetermined, run_p1_checks
 
 DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
@@ -163,7 +163,9 @@ STAGES = [
                      "UNSUPPORTED_IMPLEMENTATION without a recorded failure."),
     StageStatus(stage="P3 execution", implemented=True,
                 note="run_hwsim_test runs one approved hostap hwsim test in a fresh "
-                     "UML guest and returns its behavior record."),
+                     "UML guest and returns its behavior record; run_candidate runs any "
+                     "candidate the adapter supports (ACCEPTED / REJECTED / SETUP_FAIL / "
+                     "TIMEOUT)."),
     StageStatus(stage="P4 compare and minimize", implemented=False,
                 note="Planned for Weeks 3-5."),
 ]
@@ -353,6 +355,69 @@ def run_hwsim_test(test: str, negative_experiment: bool = False) -> RunReport:
         run_folder=run_folder,
         output_tail=None if completed else result.output_tail,
     )
+
+
+class CandidateRunReport(BaseModel):
+    status: str
+    """validate_candidate's status for the candidate (PASSES_MODELED_RULES, or a rule
+    violation / undetermined case run as a negative experiment)."""
+    findings: list[validate.ExplainedFinding]
+    negative_experiment: bool
+    """True when the candidate doesn't pass the modeled rules and was run on request anyway."""
+    p2: SupportResult | None
+    """validate_candidate's P2 result: SUPPORTED means a tested hostap scenario does exactly
+    this; UNRESOLVED means this run is a support probe. None when the modeled rules
+    didn't pass the candidate."""
+    p3_status: adapter.P3Status
+    """ACCEPTED (every action carried out), REJECTED (hostapd/wpa_supplicant refused a
+    setup step or action; see reason), SETUP_FAIL or TIMEOUT (nothing said about the
+    candidate). Not a statement about the Wi-Fi spec."""
+    reason: str | None
+    run_id: str | None
+    record: BehaviorRecord | None
+    run_folder: str | None
+    """Logs, the plan (explorer_plan.json) and manifest; trial runs are git-ignored."""
+
+
+@server.tool()
+def run_candidate(candidate: dict[str, Any], negative_experiment: bool = False) -> CandidateRunReport:
+    """Run a candidate (same JSON as validate_candidate) in a fresh simulated network,
+    even one no hostap test sets up, and return its P3 status and behavior record. Takes
+    about 30-60 seconds.
+
+    The candidate is validated first. Unless it passes the modeled rules, it's refused,
+    or run only with negative_experiment=true and labeled as such. Settings and actions
+    the adapter can't express yet (GCMP-256; actions other than associate, link_remove,
+    rekey_gtk_now and sta_disconnect_reconnect) are refused before anything boots.
+
+    The adapter observes the same way after every action (links, station status,
+    traffic on each active link) and after interval rekeys, so its record can differ
+    from a hostap test's own record on facts that test chose to observe differently."""
+    result = validate.validate_candidate(candidate)
+    if result.status == "MALFORMED":
+        raise ToolError("malformed candidate: " + "; ".join(
+            f"{f.rule_id}: {f.reason}" for f in result.findings))
+    if result.status != "PASSES_MODELED_RULES" and not negative_experiment:
+        broken = "; ".join(f"{f.rule_id}: {f.reason}" for f in result.findings)
+        raise ToolError(f"the candidate doesn't pass the modeled rules ({result.status}): "
+                        f"{broken}. Pass negative_experiment=true to run it anyway as a "
+                        "labeled negative experiment.")
+    parsed, _ = validate.parse_candidate(candidate)
+    if reasons := adapter.unsupported(parsed):
+        raise ToolError("the adapter can't run this candidate yet: " + "; ".join(reasons))
+    try:
+        run = adapter.run_candidate(parsed)
+    except RunnerError as exc:
+        raise ToolError(f"simulation environment unavailable: {exc}") from exc
+    run_folder = None
+    if run.run_dir is not None:
+        run_folder = (str(run.run_dir.relative_to(REPO_ROOT))
+                      if run.run_dir.is_relative_to(REPO_ROOT) else str(run.run_dir))
+    return CandidateRunReport(
+        status=result.status, findings=result.findings,
+        negative_experiment=result.status != "PASSES_MODELED_RULES", p2=result.p2,
+        p3_status=run.status, reason=run.reason, run_id=run.run_id, record=run.record,
+        run_folder=run_folder)
 
 
 def main() -> None:

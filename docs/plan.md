@@ -19,9 +19,9 @@ every rejection says which stage and which sourced rule rejected it:
 | P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | ✅ Settings model (`model.Config`), action model (`model.Candidate`: config + ordered actions) and readable `P0.*` errors (`validate.parse_candidate`) |
 | P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | ✅ Rule registry (`rules.yaml` + `rules.load_rules()`); 6 security/setting rules coded (`validate.run_p1_checks`, applied to hostap tests by `run_hwsim_test`), all 9 action-order rules (`validate.check_action_order`) and 3 open questions that give `SPEC_UNDETERMINED`, chained by `validate.validate_candidate` |
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | 🟡 Basic (`support.check_support`): `SUPPORTED` only for an exact match to a tested scenario with passing committed runs, otherwise `UNRESOLVED` with per-value run evidence |
-| P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()` |
+| P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()`; any candidate the adapter supports runs through `adapter.run_candidate()` (ACCEPTED / REJECTED / SETUP_FAIL / TIMEOUT) |
 | P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
-| – | MCP server | Lets the agent use all of the above in plain English | 🟡 `get_model`, `validate_candidate` (P0 + P1 + basic P2, no guest), `explain_rule` (full registry entry behind any finding) and `run_hwsim_test` (runs an approved hostap test; one that breaks a modeled rule only as a labeled negative experiment). Campaign and contrast tools come with P4 |
+| – | MCP server | Lets the agent use all of the above in plain English | 🟡 `get_model`, `validate_candidate` (P0 + P1 + basic P2, no guest), `explain_rule` (full registry entry behind any finding) `run_hwsim_test` (runs an approved hostap test; one that breaks a modeled rule only as a labeled negative experiment) and `run_candidate` (runs any candidate the adapter supports, after validating it, with the same negative-experiment rule). Campaign and contrast tools come with P4 |
 
 Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come later.
 
@@ -29,7 +29,7 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `signatures.py` (behavior records), `mcp_server.py` (MCP tools). The rest are placeholders |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `mcp_server.py` (MCP tools). The rest are placeholders |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
 | `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
@@ -38,6 +38,8 @@ Weeks 1–2 cover P0, P1, basic P2/P3 and MCP. P4 and the large campaign come la
 | `runs/baseline/` | The three official baseline runs (committed evidence) |
 | `runs/calibration/` | Runs used to calibrate how `signatures.py` detects a behavior (committed evidence, not baseline) |
 | `docker/test_eht_client_bp.py` | Our `_client_bp` wrappers: hostap's tests with client beacon protection on |
+| `docker/test_explorer_candidate.py` | Our adapter test: runs one candidate's plan (from `adapter.build_plan`) with hostap's own helpers |
+| `scripts/reproduce-scenarios.py` | Runs each rule-passing hostap scenario through the adapter and lists the facts that differ from its committed runs |
 | `runs/smoke/` | Runs showing each smoke-tested setting value executes (committed evidence; `surface_candidates.csv`'s `smoke_runs` column points here) |
 | `runs/anchors/` | Extra runs so each anchor family in `anchor_coverage.csv` has 3 independent passing runs (committed evidence) |
 | `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
@@ -105,6 +107,20 @@ first filled in.
   hostap's own test with `beacon_prot="1"` on the MLD client. The originals are violations
   of `SEC.EHT_BEACON_PROT`, so they only run as negative experiments. After pulling, rebuild
   the image (`scripts/build-env.sh`).
+- **Candidate adapter** (#79, 2026-11-10; **the team should confirm**): any candidate runs
+  through one hwsim test (`docker/test_explorer_candidate.py`) that uses hostap's own
+  helpers. It observes the same way after every action (links, station status, traffic on
+  each active link; after a disconnect or the last link's removal, that traffic fails) and
+  after interval rekeys (one PTK rekey, two GTK rekeys, as hostap's rekey tests wait for).
+  Rekey intervals whose waits exceed 610 s of guest time are refused (a 300 s GTK interval
+  took 194 s of wall time). Each run folder's `explorer_plan.json` and manifest record the
+  candidate, its validation (status, rule IDs, P2) and `negative_experiment`, and the model's
+  schema version. A setup step or action that hostapd/wpa_supplicant refuses is P3
+  `REJECTED`; traffic, link and rekey results are observations, never a rejection. Because
+  each hostap test chooses what to observe, an adapter run is compared with that test's
+  runs only on facts both observed (`adapter.compare_signatures`). Not supported yet, and
+  refused before a guest boots: GCMP-256 and actions other than associate, link_remove,
+  rekey_gtk_now and sta_disconnect_reconnect. After pulling, rebuild the image.
 - **MCP SDK:** `mcp==2.3.0`. `FastMCP` was removed in v2; use
   `from mcp.server.mcpserver import MCPServer`. Most online examples are v1 and won't import.
 - **Dependencies:** pinned exactly in `pyproject.toml`. `setuptools==80.9.0` is pinned
@@ -159,6 +175,13 @@ action model, action-order checker, P0 errors, setting rules, `SPEC_UNDETERMINED
 `validate_candidate` pipeline, its MCP tools and a basic P2 support check are done, so the
 demo (with a Claude Code transcript) and the 1-page report are next. `run_hwsim_test` treats the plain-SAE baseline as a negative experiment,
 as decided.
+
+## Week 3 status
+
+| Issue | Area | Status |
+|---|---|---|
+| #81 False "image not found" | Simulation | ✅ Done (PR #85). Docker Desktop's Resource Saver answers `docker image inspect` from a cache while its VM sleeps; `check_environment` re-checks with a filtered `docker image ls`, which wakes the VM |
+| #79 Run any candidate (adapter) | Simulation | ✅ Done. `adapter.build_plan` / `run_candidate`, `docker/test_explorer_candidate.py`, MCP `run_candidate`. All 6 rule-passing scenarios run `ACCEPTED` through it (`scripts/reproduce-scenarios.py`, trial runs 1794367274–1794367744). Three match their committed runs on every fact both observed. The other three differ because hostap's legacy client `dev[0]` isn't modeled (OWE: an extra handshake and disconnect) and because the record keeps each fact's last value: the adapter's last look is after the final DISCONNECT or link removal (links `0x0`, not associated), hostap's tests last look while associated. Reviewed and tested on Windows/WSL by a teammate. Follow-up: the record can't show per-step state (e.g. traffic lost after an action); needs a signature issue before Week 4 contrasts. A candidate no hostap test covers (associate, then a GTK rekey on its own) runs `ACCEPTED` over MCP |
 
 ## Checkpoint 1
 

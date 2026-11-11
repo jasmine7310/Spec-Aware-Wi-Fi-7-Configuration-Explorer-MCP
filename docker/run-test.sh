@@ -11,6 +11,10 @@
 #
 # Set CONTAINER_NAME to give the container a known name, so a caller that gives
 # up on a stuck run can remove it (`docker rm -f "$CONTAINER_NAME"`).
+#
+# Set PLAN_FILE to a candidate plan (JSON, from explorer.adapter) for the
+# explorer_candidate test: it's copied into the container before the guest boots and
+# saved as explorer_plan.json in the run folder.
 set -euo pipefail
 
 IMAGE="${IMAGE:-wifi7-env}"
@@ -44,6 +48,12 @@ container=$(docker create \
     "$IMAGE" "$@")
 trap 'docker rm -f "$container" >/dev/null 2>&1 || true' EXIT
 
+# The guest sees the container's files (apart from /tmp), so the adapter test reads
+# its plan from next to itself.
+if [ -n "${PLAN_FILE:-}" ]; then
+    docker cp "$PLAN_FILE" "$container:/opt/hostap/tests/hwsim/explorer_plan.json" >/dev/null
+fi
+
 started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 start_s=$(date +%s)
 # The UML console uses CRLF line endings; strip the CRs so the checks below match.
@@ -61,6 +71,9 @@ run_id=$(printf '%s\n' "$output" | sed -n "s|^Logfiles are at $GUEST_LOGS/\([^ ]
 if [ -n "$run_id" ]; then
     run_dir="$LOG_DIR/$run_id"
     docker cp "$container:$GUEST_LOGS/$run_id" "$run_dir" >/dev/null
+    if [ -n "${PLAN_FILE:-}" ]; then
+        cp "$PLAN_FILE" "$run_dir/explorer_plan.json"
+    fi
 
     if [ "$(uname -s)" = Darwin ]; then
         host_os="macOS $(sw_vers -productVersion)"
@@ -125,6 +138,8 @@ manifest = {
         for p in sorted(run_dir.glob("*.pcapng"))
     ],
 }
+if env.get("PLAN_FILE"):
+    manifest["explorer_plan"] = json.loads(pathlib.Path(env["PLAN_FILE"]).read_text())
 (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 PY
     echo "Logs and manifest.json copied to $run_dir"

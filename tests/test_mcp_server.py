@@ -6,7 +6,7 @@ import re
 import pytest
 from mcp import Client, StdioServerParameters
 
-from explorer import mcp_server
+from explorer import adapter, mcp_server
 from explorer.mcp_server import pinned_versions, server
 from explorer.model import Config
 from explorer.rules import load_rules
@@ -109,7 +109,8 @@ def test_server_starts_the_way_mcp_json_launches_it():
                                    cwd=str(REPO_ROOT))
     tools, result = _call(params, "get_model")
 
-    assert sorted(tools) == ["explain_rule", "get_model", "run_hwsim_test", "validate_candidate"]
+    assert sorted(tools) == ["explain_rule", "get_model", "run_candidate", "run_hwsim_test",
+                            "validate_candidate"]
     assert not result.is_error
     assert result.structured_content["stages"][3]["implemented"] is True
 
@@ -373,4 +374,92 @@ def test_real_run_over_mcp():
     assert report["test_result"] == "PASS"
     assert report["record"]["valid_links"] == "0x3"
     assert report["record"]["station_status"]["key_mgmt"] == "SAE-EXT-KEY"
+    assert report["run_folder"].startswith("runs/hwsim-logs/")
+
+
+# --- run_candidate ----------------------------------------------------------
+
+LEGAL = {"config": {"ap": {"links": [{"link_id": 0, "channel": 1, "akms": ["SAE-EXT-KEY"]},
+                                     {"link_id": 1, "channel": 6, "akms": ["SAE-EXT-KEY"]}]},
+                    "sta": {"akms": ["SAE-EXT-KEY"]}},
+         "actions": [{"action": "associate"}, {"action": "rekey_gtk_now"}]}
+
+
+def _no_run(monkeypatch):
+    monkeypatch.setattr(adapter, "run_candidate", lambda *a, **k: pytest.fail("must not run"))
+
+
+def test_run_candidate_runs_a_legal_candidate(monkeypatch):
+    seen = []
+
+    def fake_run(candidate, **kwargs):
+        seen.append(candidate)
+        return adapter.CandidateRun(status="ACCEPTED", reason=None, run_id="1793897820",
+                                    run_dir=SAE_EXT_RUN, record=extract_record(SAE_EXT_RUN),
+                                    plan={})
+    monkeypatch.setattr(adapter, "run_candidate", fake_run)
+
+    _, result = _call(server, "run_candidate", {"candidate": LEGAL})
+
+    assert not result.is_error, result.content[0].text
+    report = result.structured_content
+    assert [s.action for s in seen[0].actions] == ["associate", "rekey_gtk_now"]
+    assert (report["status"], report["negative_experiment"]) == ("PASSES_MODELED_RULES", False)
+    assert report["p3_status"] == "ACCEPTED" and report["run_id"] == "1793897820"
+    # No hostap test does associate + rekey_gtk_now alone, so this run is a support probe.
+    assert report["p2"]["status"] == "UNRESOLVED"
+    assert report["run_folder"] == "runs/smoke/1793897820"
+
+
+def test_run_candidate_refuses_a_rule_violation(monkeypatch):
+    _no_run(monkeypatch)
+    plain_sae = json.loads(json.dumps(LEGAL).replace('"SAE-EXT-KEY"', '"SAE"'))
+    _, result = _call(server, "run_candidate", {"candidate": plain_sae})
+    assert result.is_error
+    assert "SEC.EHT_SAE_AKM" in result.content[0].text
+    assert "negative_experiment=true" in result.content[0].text
+
+
+def test_run_candidate_refuses_malformed_input(monkeypatch):
+    _no_run(monkeypatch)
+    bad = json.loads(json.dumps(LEGAL).replace('"link_id": 0', '"link_id": "0"'))
+    _, result = _call(server, "run_candidate", {"candidate": bad})
+    assert result.is_error and "P0.TYPE_ERROR" in result.content[0].text
+
+
+def test_run_candidate_refuses_what_the_adapter_cant_express(monkeypatch):
+    _no_run(monkeypatch)
+    probe = {**LEGAL, "actions": [{"action": "scan"}, {"action": "ml_probe_req"}]}
+    _, result = _call(server, "run_candidate", {"candidate": probe})
+    assert result.is_error
+    assert "can't run this candidate yet" in result.content[0].text
+
+
+def test_run_candidate_negative_experiment_is_labeled(monkeypatch):
+    def fake_run(candidate, **kwargs):
+        return adapter.CandidateRun(status="REJECTED", reason="actions[0] associate: timed out",
+                                    run_id=None, run_dir=None, record=None, plan={})
+    monkeypatch.setattr(adapter, "run_candidate", fake_run)
+    plain_sae = json.loads(json.dumps(LEGAL).replace('"SAE-EXT-KEY"', '"SAE"'))
+
+    _, result = _call(server, "run_candidate",
+                      {"candidate": plain_sae, "negative_experiment": True})
+
+    report = result.structured_content
+    assert report["negative_experiment"] is True
+    assert report["status"] == "SPEC_RULE_VIOLATION" and report["p2"] is None
+    assert (report["p3_status"], report["reason"]) == ("REJECTED", "actions[0] associate: timed out")
+
+
+@pytest.mark.skipif(os.environ.get("WIFI7_DOCKER_TESTS") != "1",
+                    reason="set WIFI7_DOCKER_TESTS=1 to run against the real simulation image")
+def test_real_candidate_over_mcp():
+    # No hostap test does exactly this: associate, then a GTK rekey on its own.
+    _, result = _call(server, "run_candidate", {"candidate": LEGAL})
+
+    assert not result.is_error, result.content[0].text
+    report = result.structured_content
+    assert report["p3_status"] == "ACCEPTED", report["reason"]
+    assert report["record"]["gtk_rekeys_completed"] >= 1
+    assert report["record"]["data_test_rx_after_last_rekey_ap_links"] == [0, 1]
     assert report["run_folder"].startswith("runs/hwsim-logs/")
