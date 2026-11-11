@@ -141,10 +141,11 @@ def build_plan(candidate: Candidate) -> dict:
         connect["beacon_prot"] = "1"
     if any(link.pairwise_cipher != "CCMP" for link in ap.links):
         # The client's cipher lists aren't modeled. wpa_supplicant's defaults don't include
-        # GCMP-256 (wpa_supplicant/config_ssid.h:23-27), so when an AP link uses it the client allows both, as hostap's own MLD
-        # test does (test_eht.py:2751-2752); hostapd picks GCMP-256 as the group cipher when
-        # it is the only pairwise cipher (src/common/wpa_common.c:3823-3825, called from
-        # src/ap/ap_config.c:1727). With CCMP only, the client stays as before.
+        # GCMP-256 (wpa_supplicant/config_ssid.h:23-27), so when an AP link uses it the
+        # client allows both, as hostap's own MLD test does (test_eht.py:2751-2752);
+        # hostapd picks GCMP-256 as the group cipher when it is the only pairwise cipher
+        # (src/common/wpa_common.c:3823-3825, called from src/ap/ap_config.c:1727). With
+        # CCMP only, the client stays as before.
         connect["pairwise"] = "CCMP GCMP-256"
         connect["group"] = "CCMP GCMP-256"
 
@@ -172,7 +173,8 @@ class CandidateRun(BaseModel):
     plan: dict
 
 
-def classify(test_status: str, record: BehaviorRecord | None, log_text: str) -> tuple[P3Status, str | None]:
+def classify(test_status: str, record: BehaviorRecord | None,
+             log_text: str) -> tuple[P3Status, str | None]:
     """Map a runner result plus the adapter's log markers onto a P3 status."""
     if test_status == "TIMEOUT":
         return "TIMEOUT", None

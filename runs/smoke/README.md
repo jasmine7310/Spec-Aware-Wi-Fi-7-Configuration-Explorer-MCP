@@ -71,12 +71,13 @@ its `validate_candidate` verdict are in each run's `explorer_plan.json` and mani
 Windows 11 + WSL2 Ubuntu + Docker Desktop (Docker 28.0.4), image
 `sha256:e61362e4…`, hostap `43ee60e1`. `repo_docker_dir_modified` is true: the adapter
 changes weren't committed yet when they ran. Details per dimension: `docs/dimensions.md`.
+The `ap_sae_pwe=1` candidate from the same batch was `REJECTED`; its run is in
+`runs/rejected/` (not a smoke value).
 
 | Run ID | Candidate | P3 | What the behavior record shows (compared with the base run) |
 |---|---|---|---|
 | `1794384666` | base (F02 through the adapter) | ACCEPTED | `key_mgmt` SAE-EXT-KEY, `sae_h2e=1`, `bigtk_set=1`; links `0x3`; traffic on links 0 and 1 |
 | `1794384680` | `ap_sae_pwe=2` | ACCEPTED | Same signature |
-| `1794384673` | `ap_sae_pwe=1` | **REJECTED** | The client never associates: it skips the AP for the "SAE H2E only" selector because its own `sae_pwe` is unset (`docs/dimensions.md`). Not a smoke value |
 | `1794384688` | `ap_pairwise_cipher=GCMP-256` | ACCEPTED | Same signature; the logged station status shows pairwise and group cipher GCMP-256 (not in the record yet) |
 | `1794384695` | `rekey_gtk_now` | ACCEPTED | 1 GTK rekey; traffic on links 0 and 1 after it |
 | `1794384702` | `disable_enable_mld` | ACCEPTED | 2 four-way handshakes and 2 locally generated disconnects (reason 3); traffic on links 0 and 1 after RECONNECT |

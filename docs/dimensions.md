@@ -35,7 +35,7 @@ and the "base" candidate is F02 itself through the adapter, so each value's run 
 from the base run in that dimension only. All six candidates pass the modeled rules
 (`scripts/smoke_dimensions.py --check`). They ran on 2026-11-11 (Windows 11 + WSL2 Ubuntu +
 Docker Desktop, image `sha256:e61362e4…`, one fresh guest each): five `ACCEPTED`, and
-`sae_pwe_h2e` (`ap_sae_pwe=1`) `REJECTED` (`1794384673`, kept in `runs/smoke/` as a labeled
+`sae_pwe_h2e` (`ap_sae_pwe=1`) `REJECTED` (`1794384673`, kept in `runs/rejected/` as a labeled
 rejection, not a smoke value). So all 10 dimensions are admitted, `ap_sae_pwe` with the values
 unset and 2.
 
