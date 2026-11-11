@@ -13,7 +13,10 @@ meanings are from ``hostapd/hostapd.conf`` and ``wpa_supplicant/wpa_supplicant.c
 
 Not fields: client PMF is required (``ieee80211w=2``) in the MLD tests. Client SAE PWE
 isn't modeled: the plain-SAE tests set ``sae_pwe=1``, the SAE-EXT-KEY tests leave it unset,
-and wpa_supplicant uses hash-to-element with SAE-EXT-KEY either way. SSID and passphrase
+and wpa_supplicant uses hash-to-element with SAE-EXT-KEY either way. But BSS selection
+does depend on it: a client with it unset skips an AP with ``sae_pwe=1`` (hash_to_element)
+and only SAE AKMs, which advertises the SAE H2E-only selector (run 1794384673,
+docs/dimensions.md). Modeling it is open. SSID and passphrase
 are supplied by the harness.
 
 Actions are the runtime operations in ``surface_candidates.csv`` (kind "action"), as

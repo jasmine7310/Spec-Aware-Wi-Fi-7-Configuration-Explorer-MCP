@@ -7,7 +7,8 @@ from pathlib import Path
 import pytest
 
 from explorer.scenarios import TEST_CONFIGS
-from explorer.validate import run_p1_checks
+from explorer.adapter import ADAPTER_TEST
+from explorer.validate import run_p1_checks, validate_candidate
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CSV_PATH = REPO_ROOT / "surface_candidates.csv"
@@ -64,10 +65,11 @@ def _smoke_runs(row):
     return {m["value"]: m["run_id"] for m in entries}
 
 
-def test_at_least_4_candidates_smoke_tested_with_2_values():
-    # Issue "Smoke test 4 settings": >=4 settings or actions, each with >=2 values run.
+def test_at_least_8_dimensions_smoke_tested_with_2_values():
+    # Issue "Admit >=8 executable dimensions" (#61; Week 2 asked for 4): >=8 settings or
+    # actions, each with >=2 values run (docs/dimensions.md).
     tested = [row["name"] for row in _rows() if len(_smoke_runs(row)) >= 2]
-    assert len(tested) >= 4, tested
+    assert len(tested) >= 8, tested
 
 
 @pytest.mark.parametrize("row", [r for r in _rows() if r["smoke_runs"]],
@@ -87,7 +89,15 @@ def test_smoke_tested_values_pass_modeled_rules(row):
     # coded P1 rules (e.g. plain SAE between EHT devices breaks 802.11be §12.12.9).
     for value, run_id in _smoke_runs(row).items():
         folder = next(d / run_id for d in EVIDENCE_DIRS if (d / run_id).is_dir())
-        for result in json.loads((folder / "manifest.json").read_text())["results"]:
+        manifest = json.loads((folder / "manifest.json").read_text())
+        for result in manifest["results"]:
+            if result["test"] == ADAPTER_TEST:
+                # A candidate run through the adapter (issue #79): its manifest records the
+                # candidate, which must pass every modeled rule, action order included.
+                candidate = manifest["explorer_plan"]["explorer"]["candidate"]
+                status = validate_candidate(candidate).status
+                assert status == "PASSES_MODELED_RULES", f"{row['name']}={value}: {status}"
+                continue
             config = TEST_CONFIGS.get(result["test"])
             assert config is not None, f"{row['name']}={value}: {result['test']} has no scenario"
             assert run_p1_checks(config) == [], f"{row['name']}={value}: {result['test']}"

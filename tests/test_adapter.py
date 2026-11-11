@@ -97,17 +97,56 @@ def test_every_rule_passing_scenario_is_supported():
         assert unsupported(TEST_CANDIDATES[test]) == [], test
 
 
-def test_gcmp_and_unsupported_actions_are_refused():
+def test_unsupported_actions_are_refused():
     base = TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump()
-    for link in base["ap"]["links"]:
-        link["pairwise_cipher"] = "GCMP-256"
     candidate = Candidate.model_validate({
         "config": base, "actions": [ASSOC, {"action": "ml_probe_req"}]})
     reasons = unsupported(candidate)
-    assert any("GCMP-256" in r for r in reasons)
-    assert any("actions[1] (ml_probe_req)" in r for r in reasons)
+    assert len(reasons) == 1 and "actions[1] (ml_probe_req)" in reasons[0]
     with pytest.raises(UnsupportedCandidate):
         build_plan(candidate)
+
+
+def _sae_ext(actions=(ASSOC,), **ap):
+    config = TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump()
+    config["ap"].update(ap)
+    return Candidate.model_validate({"config": config, "actions": list(actions)})
+
+
+def test_gcmp_256_on_every_link():
+    candidate = _sae_ext()
+    config = candidate.config.model_dump()
+    for link in config["ap"]["links"]:
+        link["pairwise_cipher"] = "GCMP-256"
+    plan = build_plan(Candidate.model_validate({"config": config, "actions": [ASSOC]}))
+    assert [link["params"]["rsn_pairwise"] for link in plan["ap_links"]] == ["GCMP-256"] * 2
+    # The client allows both, as in test_eht.py:2751-2752
+    assert plan["sta"]["connect"]["pairwise"] == "CCMP GCMP-256"
+    assert plan["sta"]["connect"]["group"] == "CCMP GCMP-256"
+
+
+def test_ccmp_client_is_unchanged():
+    connect = build_plan(_sae_ext())["sta"]["connect"]
+    assert "pairwise" not in connect and "group" not in connect
+
+
+def test_sae_pwe_values():
+    assert "sae_pwe" not in build_plan(_sae_ext())["ap_shared"]
+    assert build_plan(_sae_ext(sae_pwe="hash_to_element"))["ap_shared"]["sae_pwe"] == "1"
+    assert build_plan(_sae_ext(sae_pwe="both"))["ap_shared"]["sae_pwe"] == "2"
+
+
+def test_disable_enable_mld_in_hostaps_order():
+    # test_eht.py:727-760: DISABLE_MLD, DISCONNECT, ENABLE_MLD, RECONNECT
+    actions = [ASSOC,
+               {"action": "disable_enable_mld", "command": "DISABLE_MLD"},
+               {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"},
+               {"action": "disable_enable_mld", "command": "ENABLE_MLD"},
+               {"action": "sta_disconnect_reconnect", "command": "RECONNECT"}]
+    candidate = _sae_ext(actions)
+    assert unsupported(candidate) == []
+    assert [s.get("command") for s in build_plan(candidate)["actions"]] == [
+        None, "DISABLE_MLD", "DISCONNECT", "ENABLE_MLD", "RECONNECT"]
 
 
 def _with_intervals(ptk=None, gtk=None):

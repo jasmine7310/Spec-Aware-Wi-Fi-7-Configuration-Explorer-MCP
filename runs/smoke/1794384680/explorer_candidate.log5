@@ -1,0 +1,1378 @@
+1794384681.399889: wpa_supplicant v2.13-devel
+1794384681.399890: Global control interface '/tmp/wpas-wlan5'
+1794384681.399890: Using UNIX control socket '/tmp/wpas-wlan5'
+1794384681.399894: ctrl_interface_group=0 (from group name 'adm')
+1794384681.399895: Successfully initialized wpa_supplicant
+1794384681.402525: RX global ctrl_iface - hexdump_ascii(len=10):
+     49 4e 54 45 52 46 41 43 45 53                     INTERFACES      
+1794384681.402525: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=0
+1794384681.402645: RX global ctrl_iface - hexdump_ascii(len=34):
+     4e 4f 54 45 20 54 45 53 54 2d 53 54 41 52 54 20   NOTE TEST-START 
+     65 78 70 6c 6f 72 65 72 5f 63 61 6e 64 69 64 61   explorer_candida
+     74 65                                             te              
+1794384681.402645: NOTE: TEST-START explorer_candidate
+1794384681.402645: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=3
+1794384681.402921: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-21\x00
+1794384681.402921: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=3
+1794384681.403002: RX global ctrl_iface - hexdump_ascii(len=66):
+     49 4e 54 45 52 46 41 43 45 5f 41 44 44 20 77 6c   INTERFACE_ADD wl
+     61 6e 38 09 09 6e 6c 38 30 32 31 31 09 44 49 52   an8__nl80211_DIR
+     3d 2f 76 61 72 2f 72 75 6e 2f 77 70 61 5f 73 75   =/var/run/wpa_su
+     70 70 6c 69 63 61 6e 74 20 47 52 4f 55 50 3d 61   pplicant GROUP=a
+     64 6d                                             dm              
+1794384681.403002: CTRL_IFACE GLOBAL INTERFACE_ADD 'wlan8		nl80211	DIR=/var/run/wpa_supplicant GROUP=adm'
+1794384681.403002: Initializing interface 'wlan8' conf 'N/A' driver 'nl80211' ctrl_interface 'DIR=/var/run/wpa_supplicant GROUP=adm' bridge 'N/A'
+1794384681.403002: nl80211: Kernel version: Linux 7.3.0-rc4 (#1 Fri Nov  6 18:13:36 UTC 2026; x86_64)
+1794384681.403003: nl80211: Maximum supported attribute ID: 370
+1794384681.403003: nl80211: Initialize interface wlan8 (driver: mac80211_hwsim)
+1794384681.403003: nl80211: wlan8 wdev_id=0x800000001
+1794384681.403003: nl80211: TDLS supported
+1794384681.403004: nl80211: TDLS external setup
+1794384681.403004: nl80211: Supported cipher 00-0f-ac:1
+1794384681.403004: nl80211: Supported cipher 00-0f-ac:5
+1794384681.403004: nl80211: Supported cipher 00-0f-ac:2
+1794384681.403005: nl80211: Supported cipher 00-0f-ac:4
+1794384681.403005: nl80211: Supported cipher 00-0f-ac:10
+1794384681.403005: nl80211: Supported cipher 00-0f-ac:8
+1794384681.403005: nl80211: Supported cipher 00-0f-ac:9
+1794384681.403006: nl80211: Supported cipher 00-0f-ac:6
+1794384681.403006: nl80211: Supported cipher 00-0f-ac:13
+1794384681.403006: nl80211: Supported cipher 00-0f-ac:11
+1794384681.403006: nl80211: Supported cipher 00-0f-ac:12
+1794384681.403007: nl80211: Using driver-based off-channel TX
+1794384681.403007: nl80211: Driver-advertised extended capabilities (default) - hexdump(len=8): 04 00 40 00 00 00 00 40
+1794384681.403007: nl80211: Driver-advertised extended capabilities mask (default) - hexdump(len=8): 04 00 40 00 00 00 00 40
+1794384681.403008: nl80211: Supported vendor command: vendor_id=0x1374 subcmd=1
+1794384681.403008: nl80211: Supported vendor event: vendor_id=0x1374 subcmd=1
+1794384681.403008: nl80211: Driver-advertised extended capabilities for interface type AP
+1794384681.403008: nl80211: Extended capabilities - hexdump(len=10): 04 00 40 00 00 00 00 c0 01 40
+1794384681.403009: nl80211: Extended capabilities mask - hexdump(len=10): 04 00 40 00 00 00 00 c0 01 40
+1794384681.403009: nl80211: EML Capability: 0x81 MLD Capability: 0x2e
+1794384681.403009: nl80211: Driver-advertised extended capabilities for interface type STATION
+1794384681.403009: nl80211: Extended capabilities - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794384681.403010: nl80211: Extended capabilities mask - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794384681.403010: nl80211: EML Capability: 0x0 MLD Capability: 0x0
+1794384681.403010: nl80211: Driver-advertised extended capabilities for interface type P2P_CLIENT
+1794384681.403010: nl80211: Extended capabilities - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794384681.403011: nl80211: Extended capabilities mask - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794384681.403011: nl80211: EML Capability: 0x0 MLD Capability: 0x0
+1794384681.403011: nl80211: Driver-advertised extended capabilities for interface type P2P_GO
+1794384681.403011: nl80211: Extended capabilities - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794384681.403012: nl80211: Extended capabilities mask - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794384681.403012: nl80211: EML Capability: 0x0 MLD Capability: 0x0
+1794384681.403012: nl80211: NAN supported bands 0x0
+1794384681.403012: mbssid: max interfaces 8, max profile periodicity 3
+1794384681.403013: nl80211: Parsing NAN capabilities
+1794384681.403013: nl80211: Use separate P2P group interface (driver advertised support)
+1794384681.403013: nl80211: key_mgmt=0x737ff2f enc=0xfef auth=0x7 flags=0xe5000d31db5bfbe0 flags2=0xe0f00c103 rrm_flags=0x10 probe_resp_offloads=0x0 max_stations=0 max_remain_on_chan=1000 max_scan_ssids=255
+1794384681.403013: nl80211: interface wlan8 in phy phy8
+1794384681.403014: nl80211: Set mode ifindex 13 iftype 2 (STATION)
+1794384681.403014: nl80211: Subscribe to mgmt frames with non-AP handle 0x5500004ec420
+1794384681.403014: nl80211: Register frame type=0xb0 (WLAN_FC_STYPE_AUTH) nl_handle=0x5500004ec420 match=0700 multicast=0
+1794384681.403014: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0104 multicast=0
+1794384681.403015: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=040a multicast=0
+1794384681.403015: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=040b multicast=0
+1794384681.403015: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=040c multicast=0
+1794384681.403015: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=040d multicast=0
+1794384681.403016: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=090a multicast=0
+1794384681.403016: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=090b multicast=0
+1794384681.403016: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=090c multicast=0
+1794384681.403016: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=090d multicast=0
+1794384681.403017: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0409506f9a09 multicast=0
+1794384681.403017: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=7f506f9a09 multicast=0
+1794384681.403017: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0409506f9a13 multicast=1
+1794384681.403018: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0409506f9a1a multicast=0
+1794384681.403018: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0800 multicast=0
+1794384681.403018: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0801 multicast=0
+1794384681.403018: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=040e multicast=0
+1794384681.403019: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=12 multicast=0
+1794384681.403019: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=06 multicast=0
+1794384681.403019: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0a07 multicast=0
+1794384681.403019: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0a11 multicast=0
+1794384681.403020: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0a0b multicast=0
+1794384681.403020: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0a1a multicast=0
+1794384681.403020: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=1101 multicast=0
+1794384681.403020: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=1102 multicast=0
+1794384681.403021: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0505 multicast=0
+1794384681.403021: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=0500 multicast=0
+1794384681.403021: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=1301 multicast=0
+1794384681.403021: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=1305 multicast=0
+1794384681.403022: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004ec420 match=7e506f9a1a multicast=0
+1794384681.403144: rfkill: initial event: idx=8 type=1 op=0 soft=0 hard=0
+1794384681.403144: netlink: Operstate: ifindex=13 linkmode=1 (userspace-control), operstate=5 (IF_OPER_DORMANT)
+1794384681.403144: nl80211: QCA vendor test command response received
+1794384681.403145: nl80211: Received QCA vendor test command response - hexdump(len=8): 08 00 08 00 7d 00 00 00
+1794384681.403145: nl80211: QCA vendor test command returned 0 (Success)
+1794384681.403145: Add interface wlan8 to a new radio phy8
+1794384681.403146: PTKSA: Initializing
+1794384681.403146: nl80211: No channel number found for frequency 5900 MHz
+1794384681.403146: nl80211: No channel number found for frequency 5905 MHz
+1794384681.403146: nl80211: No channel number found for frequency 5910 MHz
+1794384681.403147: nl80211: No channel number found for frequency 5915 MHz
+1794384681.403147: nl80211: No channel number found for frequency 5920 MHz
+1794384681.403147: nl80211: No channel number found for frequency 5925 MHz
+1794384681.403147: nl80211: No channel number found for frequency 902 MHz
+1794384681.403148: nl80211: No channel number found for frequency 903 MHz
+1794384681.403148: nl80211: No channel number found for frequency 904 MHz
+1794384681.403148: nl80211: No channel number found for frequency 905 MHz
+1794384681.403148: nl80211: No channel number found for frequency 906 MHz
+1794384681.403149: nl80211: No channel number found for frequency 907 MHz
+1794384681.403149: nl80211: No channel number found for frequency 908 MHz
+1794384681.403149: nl80211: No channel number found for frequency 909 MHz
+1794384681.403149: nl80211: No channel number found for frequency 910 MHz
+1794384681.403150: nl80211: No channel number found for frequency 911 MHz
+1794384681.403150: nl80211: No channel number found for frequency 912 MHz
+1794384681.403150: nl80211: No channel number found for frequency 913 MHz
+1794384681.403150: nl80211: No channel number found for frequency 914 MHz
+1794384681.403151: nl80211: No channel number found for frequency 915 MHz
+1794384681.403151: nl80211: No channel number found for frequency 916 MHz
+1794384681.403151: nl80211: No channel number found for frequency 917 MHz
+1794384681.403151: nl80211: No channel number found for frequency 918 MHz
+1794384681.403152: nl80211: No channel number found for frequency 919 MHz
+1794384681.403152: nl80211: No channel number found for frequency 920 MHz
+1794384681.403152: nl80211: No channel number found for frequency 921 MHz
+1794384681.403152: nl80211: No channel number found for frequency 922 MHz
+1794384681.403153: nl80211: No channel number found for frequency 923 MHz
+1794384681.403153: nl80211: No channel number found for frequency 924 MHz
+1794384681.403153: nl80211: No channel number found for frequency 925 MHz
+1794384681.403153: nl80211: No channel number found for frequency 926 MHz
+1794384681.403154: nl80211: No channel number found for frequency 927 MHz
+1794384681.403154: nl80211: Regulatory information - country=00
+1794384681.403154: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794384681.403154: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794384681.403155: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794384681.403155: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794384681.403155: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794384681.403155: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794384681.403156: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794384681.403156: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794384681.403156: nl80211: Remove unsupported mode
+1794384681.403157: nl80211: Added 802.11b mode based on 802.11g information
+1794384681.403157: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794384681.403157: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794384681.403157: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794384681.403158: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794384681.403158: Device country code set to '00' from hw feature data at init
+1794384681.403158: wlan8: Own MAC address: 02:00:00:00:08:00
+1794384681.403158: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=0 addr=(nil) key_idx=0 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.403159: nl80211: DEL_KEY
+1794384681.403159:    broadcast key
+1794384681.403159: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=0 addr=(nil) key_idx=1 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.403159: nl80211: DEL_KEY
+1794384681.403160:    broadcast key
+1794384681.403160: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=0 addr=(nil) key_idx=2 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.403160: nl80211: DEL_KEY
+1794384681.403160:    broadcast key
+1794384681.403161: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=0 addr=(nil) key_idx=3 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.403161: nl80211: DEL_KEY
+1794384681.403161:    broadcast key
+1794384681.403161: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=0 addr=(nil) key_idx=4 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.403162: nl80211: DEL_KEY
+1794384681.403162:    broadcast key
+1794384681.403162: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=0 addr=(nil) key_idx=5 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.403162: nl80211: DEL_KEY
+1794384681.403163:    broadcast key
+1794384681.403163: wlan8: RSN: flushing PMKID list in the driver
+1794384681.403163: nl80211: Flush PMKIDs
+1794384681.403163: wlan8: State: DISCONNECTED -> INACTIVE
+1794384681.403164: NAN: state change notif: n_active=0, p2p_in_progress=0
+1794384681.403164: TDLS: TDLS operation supported by driver
+1794384681.403164: TDLS: Driver uses external link setup
+1794384681.403164: TDLS: Driver does not support TDLS channel switching
+1794384681.403202: wlan8: WPS: UUID based on MAC address: 75a9ac25-8084-5995-9e1a-dd9a7395af8f
+1794384681.403215: PKCS11 provider not present
+1794384681.403215: EAPOL: SUPP_PAE entering state DISCONNECTED
+1794384681.403215: EAPOL: Supplicant port status: Unauthorized
+1794384681.403215: nl80211: Skip set_supp_port(unauthorized) while not associated
+1794384681.403216: EAPOL: KEY_RX entering state NO_KEY_RECEIVE
+1794384681.403216: EAPOL: SUPP_BE entering state INITIALIZE
+1794384681.403216: EAP: EAP entering state DISABLED
+1794384681.403257: Using existing control interface directory.
+1794384681.403258: ctrl_interface_group=0 (from group name 'adm')
+1794384681.403258: P2P: Add operating class 81
+1794384681.403259: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.403260: P2P: Own listen channel: 81:1
+1794384681.403261: P2P: Random operating channel: 81:1
+1794384681.403264: P2P: initialized
+1794384681.403264: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.403264: P2P: cli_channels:
+1794384681.403264: PR: Driver does not support Proximity Ranging - PR disabled
+1794384681.403265: MBO: Update non-preferred channels, non_pref_chan=N/A
+1794384681.403265: NAN: NAN is not supported
+1794384681.403265: wlan8: Added interface wlan8
+1794384681.403265: wlan8: State: INACTIVE -> DISCONNECTED
+1794384681.403266: nl80211: Set wlan8 operstate 0->0 (DORMANT)
+1794384681.403266: netlink: Operstate: ifindex=13 linkmode=-1 (no change), operstate=5 (IF_OPER_DORMANT)
+1794384681.403266: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.403266: wlan8: Shared frequencies (len=0): completed iteration
+1794384681.403267: P2P: Add operating class 81
+1794384681.403267: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.403267: P2P: Update channel list
+1794384681.403267: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.403268: P2P: cli_channels:
+1794384681.403268: NAN: state change notif: n_active=0, p2p_in_progress=0
+1794384681.403268: NAN: Configuring NAN DE: n=(0, 0), suspend=0, cycle=0
+1794384681.403269: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=3
+1794384681.403270: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=0 linkmode=0 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794384681.403270: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=0 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794384681.403270: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=1 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794384681.403272: nl80211: Event message available
+1794384681.403272: nl80211: Drv Event 103 (NL80211_CMD_VENDOR) received for wlan8
+1794384681.403273: nl80211: Vendor event: wiphy=8 vendor_id=0x1374 subcmd=1
+1794384681.403273: nl80211: Vendor data - hexdump(len=8): 08 00 08 00 7c 00 00 00
+1794384681.403273: nl80211: QCA test event - hexdump(len=8): 08 00 08 00 7c 00 00 00
+1794384681.403275: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-23\x00
+1794384681.403275: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.403279: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=1129
+1794384681.403282: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403282: wlan8: Control interface command 'GET_CAPABILITY auth_alg'
+1794384681.403283: CTRL_IFACE: GET_CAPABILITY 'auth_alg'
+1794384681.403283: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=68
+1794384681.403329: nl80211: Event message available
+1794384681.403329: nl80211: Ignored event 6 (NL80211_CMD_SET_INTERFACE) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.403469: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=0 linkmode=0 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794384681.403470: nl80211: Event message available
+1794384681.403470: nl80211: Ignored event 103 (NL80211_CMD_VENDOR) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.403520: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=6 linkmode=0 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794384681.403520: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=6 linkmode=0 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794384681.403522: nl80211: Event message available
+1794384681.403522: nl80211: Ignored event 15 (NL80211_CMD_START_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.403523: nl80211: Event message available
+1794384681.403524: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.403673: nl80211: Event message available
+1794384681.403673: nl80211: Ignored event 15 (NL80211_CMD_START_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.403675: nl80211: Event message available
+1794384681.403675: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.403762: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403762: wlan8: Control interface command 'ADD_NETWORK'
+1794384681.403762: CTRL_IFACE: ADD_NETWORK
+1794384681.403762: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=0 send_len=26
+1794384681.403763: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.403763: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=26
+1794384681.403763: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.403763: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=960 send_len=2
+1794384681.403767: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403767: wlan8: Control interface command 'SET_NETWORK 0 ssid "explorer_mld"'
+1794384681.403768: CTRL_IFACE: SET_NETWORK id=0 name='ssid'
+1794384681.403768: CTRL_IFACE: value - hexdump_ascii(len=14):
+     22 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 22         "explorer_mld"  
+1794384681.403768: ssid - hexdump_ascii(len=12):
+     65 78 70 6c 6f 72 65 72 5f 6d 6c 64               explorer_mld    
+1794384681.403768: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=960 send_len=3
+1794384681.403772: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403772: wlan8: Control interface command 'SET_NETWORK 0 sae_password "qwertyuiop"'
+1794384681.403772: CTRL_IFACE: SET_NETWORK id=0 name='sae_password'
+1794384681.403773: CTRL_IFACE: value - hexdump_ascii(len=12):
+     22 71 77 65 72 74 79 75 69 6f 70 22               "qwertyuiop"    
+1794384681.403773: sae_password - hexdump_ascii(len=10):
+     71 77 65 72 74 79 75 69 6f 70                     qwertyuiop      
+1794384681.403773: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=960 send_len=3
+1794384681.403777: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403777: wlan8: Control interface command 'SET_NETWORK 0 key_mgmt SAE-EXT-KEY'
+1794384681.403777: CTRL_IFACE: SET_NETWORK id=0 name='key_mgmt'
+1794384681.403778: CTRL_IFACE: value - hexdump_ascii(len=11):
+     53 41 45 2d 45 58 54 2d 4b 45 59                  SAE-EXT-KEY     
+1794384681.403778: key_mgmt: 0x4000000
+1794384681.403778: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=960 send_len=3
+1794384681.403782: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403782: wlan8: Control interface command 'SET_NETWORK 0 ieee80211w 2'
+1794384681.403782: CTRL_IFACE: SET_NETWORK id=0 name='ieee80211w'
+1794384681.403782: CTRL_IFACE: value - hexdump_ascii(len=1):
+     32                                                2               
+1794384681.403783: ieee80211w=2 (0x2)
+1794384681.403783: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=960 send_len=3
+1794384681.403787: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403787: wlan8: Control interface command 'SET_NETWORK 0 scan_freq 2412 2437'
+1794384681.403787: CTRL_IFACE: SET_NETWORK id=0 name='scan_freq'
+1794384681.403787: CTRL_IFACE: value - hexdump_ascii(len=9):
+     32 34 31 32 20 32 34 33 37                        2412 2437       
+1794384681.403788: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=960 send_len=3
+1794384681.403791: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403791: wlan8: Control interface command 'SET_NETWORK 0 beacon_prot 1'
+1794384681.403792: CTRL_IFACE: SET_NETWORK id=0 name='beacon_prot'
+1794384681.403792: CTRL_IFACE: value - hexdump_ascii(len=1):
+     31                                                1               
+1794384681.403792: beacon_prot=1 (0x1)
+1794384681.403792: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=960 send_len=3
+1794384681.403799: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.403799: wlan8: Control interface command 'SELECT_NETWORK 0'
+1794384681.403800: CTRL_IFACE: SELECT_NETWORK id=0
+1794384681.403800: SAE: Derive PT - group 19
+1794384681.403800: SAE: SSID - hexdump_ascii(len=12):
+     65 78 70 6c 6f 72 65 72 5f 6d 6c 64               explorer_mld    
+1794384681.403800: SAE: password - hexdump_ascii(len=10):
+     71 77 65 72 74 79 75 69 6f 70                     qwertyuiop      
+1794384681.403801: SAE: pwd-seed - hexdump(len=32): 8f 2b f5 c2 c7 06 46 b7 11 4f ce 2c c6 62 d2 9f a1 6b 16 3c 59 3d 56 60 80 3b 1c dd 26 e8 74 0a
+1794384681.403801: SAE: pwd-value (u1 P1) - hexdump(len=48): bc 2b cc 23 d3 98 e5 20 11 b1 2b dd e2 f1 80 42 a1 4d dd ab da 54 06 23 f8 7a c8 4d b9 65 35 06 71 fc 47 19 fe d2 de 30 01 a3 8f f6 bc 4f 2f 76
+1794384681.403801: SAE: u1 - hexdump(len=32): f4 7a ac a8 e5 b1 5a 04 68 b6 17 09 d4 1b 24 09 f5 b1 33 43 8e 97 8f 73 e6 ed a0 f3 f4 c6 0f 71
+1794384681.403801: SSWU: m - hexdump(len=32): 5d 8c 77 3f c9 ba 1e 6c e5 55 91 87 98 ba cd 8b 90 3d 1c f1 08 4b a5 f2 4f ce df 9a c9 13 79 fd
+1794384681.403802: SSWU: t - hexdump(len=32): f4 53 a0 33 c5 65 27 1c f6 17 b3 a3 4d 1c ed 26 7d ee a6 fa c0 63 52 8e 21 05 23 7f be 42 83 ac
+1794384681.403802: SSWU: x1a = b / (z * a) - hexdump(len=32): a5 28 bd 86 96 bd af 99 6c 65 b9 82 d9 49 59 d3 14 6f e6 a0 20 69 30 90 bd ba 13 13 23 75 f2 24
+1794384681.403802: SSWU: x1b = (-b/a) * (1 + t) - hexdump(len=32): 1d a1 95 86 5b 08 61 79 7e 2c 4f ba 5b 5f ca 18 fc 3a 20 bc 6a 2f c2 e9 08 e2 0e 15 ee 2e 66 8e
+1794384681.403802: SSWU: x1 = CSEL(l, x1a, x1b) - hexdump(len=32): 1d a1 95 86 5b 08 61 79 7e 2c 4f ba 5b 5f ca 18 fc 3a 20 bc 6a 2f c2 e9 08 e2 0e 15 ee 2e 66 8e
+1794384681.403803: SSWU: gx1 = x1^3 + a * x1 + b - hexdump(len=32): cc 92 1a 42 de 2d 49 c4 8f e3 9a 15 ee 5e 93 4d 2b 59 44 98 8f 38 04 34 22 e4 48 16 cc e1 38 d3
+1794384681.403803: SSWU: x2 = z * u^2 * x1 - hexdump(len=32): 1f 4a ef 21 5f 34 ab 15 69 ca 90 19 6e f6 d7 3c 25 ca a1 7b 04 26 60 b9 2b 1e 21 b5 59 c3 30 50
+1794384681.403803: SSWU: gx2 = x2^3 + a * x2 + b - hexdump(len=32): a1 8c 9d dd a6 af e6 9e 48 7b bf 97 7e 0f a0 e8 d0 c8 51 7e 8a 97 14 00 30 2e ad 40 2f 4b aa 59
+1794384681.403803: SSWU: gx1^((p-1)/2) modulo p - hexdump(len=32): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
+1794384681.403804: SSWU: v = CSEL(l, gx1, gx2) - hexdump(len=32): cc 92 1a 42 de 2d 49 c4 8f e3 9a 15 ee 5e 93 4d 2b 59 44 98 8f 38 04 34 22 e4 48 16 cc e1 38 d3
+1794384681.403804: SSWU: x = CSEL(l, x1, x2) - hexdump(len=32): 1d a1 95 86 5b 08 61 79 7e 2c 4f ba 5b 5f ca 18 fc 3a 20 bc 6a 2f c2 e9 08 e2 0e 15 ee 2e 66 8e
+1794384681.403804: SSWU: y = sqrt(v) - hexdump(len=32): 55 3e 03 c5 d2 9b 04 22 76 59 3d f8 9c 2f b2 5d ec 8c 22 6f d6 e1 d3 22 7a 5f 91 a7 d4 bb 6d 91
+1794384681.403804: SSWU: p - y - hexdump(len=32): aa c1 fc 39 2d 64 fb de 89 a6 c2 07 63 d0 4d a2 13 73 dd 91 29 1e 2c dd 85 a0 6e 58 2b 44 92 6e
+1794384681.403805: SSWU: P.x - hexdump(len=32): 1d a1 95 86 5b 08 61 79 7e 2c 4f ba 5b 5f ca 18 fc 3a 20 bc 6a 2f c2 e9 08 e2 0e 15 ee 2e 66 8e
+1794384681.403805: SSWU: P.y - hexdump(len=32): 55 3e 03 c5 d2 9b 04 22 76 59 3d f8 9c 2f b2 5d ec 8c 22 6f d6 e1 d3 22 7a 5f 91 a7 d4 bb 6d 91
+1794384681.403805: SAE: pwd-value (u2 P2) - hexdump(len=48): a4 b6 3b ee 3e e1 b9 53 e9 8a 5f 02 72 ea be 6d 8f 9c 63 45 61 bc ad bb d8 af 0c 7f 47 a7 d4 37 77 e4 f5 2a b0 53 a5 13 42 b6 99 da 8b f3 f0 0c
+1794384681.403805: SAE: u2 - hexdump(len=32): 1e ef 2c 70 05 47 90 4b f5 17 17 3d 1f 3b bb e2 64 dc 4f 98 93 eb 9a 55 6b 22 b2 30 43 b2 d1 8d
+1794384681.403806: SSWU: m - hexdump(len=32): 8b 4c 94 f4 a7 2b f1 06 e1 27 dd 57 b8 14 0a 24 90 61 ef 85 4b 6b e3 70 87 53 bd 60 6b 7d a2 8e
+1794384681.403806: SSWU: t - hexdump(len=32): cd 05 d3 b6 f9 50 91 2f e8 9b 02 06 ea 9b 5f d1 3f 5f e5 a3 c6 cd dc a4 40 c0 1d c2 b8 6f a6 d6
+1794384681.403806: SSWU: x1a = b / (z * a) - hexdump(len=32): a5 28 bd 86 96 bd af 99 6c 65 b9 82 d9 49 59 d3 14 6f e6 a0 20 69 30 90 bd ba 13 13 23 75 f2 24
+1794384681.403806: SSWU: x1b = (-b/a) * (1 + t) - hexdump(len=32): 01 3a e5 c3 dd 9e c4 9c 39 80 e8 6d 79 f4 89 b4 a7 49 83 a8 24 85 13 ea ff 51 36 22 7c b5 79 66
+1794384681.403807: SSWU: x1 = CSEL(l, x1a, x1b) - hexdump(len=32): 01 3a e5 c3 dd 9e c4 9c 39 80 e8 6d 79 f4 89 b4 a7 49 83 a8 24 85 13 ea ff 51 36 22 7c b5 79 66
+1794384681.403807: SSWU: gx1 = x1^3 + a * x1 + b - hexdump(len=32): 3c 3e d5 eb 4d e3 48 79 fe 24 f8 55 36 af 37 0d df ea c5 ae a5 f5 f7 01 33 75 06 bc d0 ba a1 ec
+1794384681.403807: SSWU: x2 = z * u^2 * x1 - hexdump(len=32): 8f 3b b7 2d e1 09 c2 55 60 26 c2 26 79 b4 05 65 71 dd 33 d7 01 5b 36 29 b9 58 05 0f c7 dd 2f cb
+1794384681.403808: SSWU: gx2 = x2^3 + a * x2 + b - hexdump(len=32): 3b ff 5c 6c 82 08 87 47 51 05 d9 dc 3b 1c 5e 40 dc 13 5b 2b a2 4c 39 d5 41 1a a8 7d 1b c2 b9 44
+1794384681.403808: SSWU: gx1^((p-1)/2) modulo p - hexdump(len=32): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
+1794384681.403808: SSWU: v = CSEL(l, gx1, gx2) - hexdump(len=32): 3c 3e d5 eb 4d e3 48 79 fe 24 f8 55 36 af 37 0d df ea c5 ae a5 f5 f7 01 33 75 06 bc d0 ba a1 ec
+1794384681.403808: SSWU: x = CSEL(l, x1, x2) - hexdump(len=32): 01 3a e5 c3 dd 9e c4 9c 39 80 e8 6d 79 f4 89 b4 a7 49 83 a8 24 85 13 ea ff 51 36 22 7c b5 79 66
+1794384681.403809: SSWU: y = sqrt(v) - hexdump(len=32): 44 59 e1 88 7d 10 1d 58 e7 bb 1d fc ea 37 c5 52 06 98 5b 8d 23 ba d9 b0 fb df 13 22 24 23 27 14
+1794384681.403809: SSWU: p - y - hexdump(len=32): bb a6 1e 76 82 ef e2 a8 18 44 e2 03 15 c8 3a ad f9 67 a4 73 dc 45 26 4f 04 20 ec dd db dc d8 eb
+1794384681.403809: SSWU: P.x - hexdump(len=32): 01 3a e5 c3 dd 9e c4 9c 39 80 e8 6d 79 f4 89 b4 a7 49 83 a8 24 85 13 ea ff 51 36 22 7c b5 79 66
+1794384681.403809: SSWU: P.y - hexdump(len=32): bb a6 1e 76 82 ef e2 a8 18 44 e2 03 15 c8 3a ad f9 67 a4 73 dc 45 26 4f 04 20 ec dd db dc d8 eb
+1794384681.403810: SAE: Derive PT - group 20
+1794384681.403810: SAE: SSID - hexdump_ascii(len=12):
+     65 78 70 6c 6f 72 65 72 5f 6d 6c 64               explorer_mld    
+1794384681.403810: SAE: password - hexdump_ascii(len=10):
+     71 77 65 72 74 79 75 69 6f 70                     qwertyuiop      
+1794384681.403810: SAE: pwd-seed - hexdump(len=48): 6f 02 ed 2b ec cf 33 a4 b6 ff 04 30 97 4f 01 05 86 a8 f6 76 45 88 e8 95 0e 46 f4 c4 e4 40 ae 55 85 1b 9f 41 46 81 b0 6b 0f c0 4b 11 a4 2c 48 c0
+1794384681.403811: SAE: pwd-value (u1 P1) - hexdump(len=72): 6f cc 45 a2 93 49 5e 6a a6 0c 32 0c a1 57 5c ce 81 dd 67 e5 9e b7 2c 93 ae 88 d4 93 b8 52 07 02 ed 9f 64 5a bd 69 b8 ea 79 d7 f5 95 6f a0 db 2c 7b 72 1f 0e 1a 2b 17 87 a6 7a 4e d0 af c7 fd 10 2d dc 1c 58 62 09 e0 46
+1794384681.403811: SAE: u1 - hexdump(len=48): ae 88 d4 93 b8 52 07 03 5d 6b a9 fd c0 7f 5c f7 b3 2d 86 0c 47 38 24 65 7b 29 ca fa 27 fc d8 5e 49 e6 50 a1 cf 41 f1 f9 11 02 57 ab 00 c1 0c d9
+1794384681.403811: SSWU: m - hexdump(len=48): 10 92 cd ab c0 65 de 2a 96 9d a7 ad c6 3c 8d 4c fa 97 f0 54 fa 1f 54 60 3c de 54 a2 90 34 4a db 6f 19 92 b5 35 c4 44 6b 99 b9 fb 6e 4c 59 5b b3
+1794384681.403811: SSWU: t - hexdump(len=48): 4b 59 d7 1b 3e c8 c2 92 e5 47 85 ab 6c a1 c6 d8 f1 d9 46 f1 43 c0 73 7c 30 03 18 75 50 fd 69 04 8c 88 e4 23 c3 15 c7 2f 66 2d 0f f5 bc 75 9d e3
+1794384681.403812: SSWU: x1a = b / (z * a) - hexdump(len=48): 53 33 24 e1 1b 9e 31 1b ae e7 80 26 8d 71 8f 79 96 00 d2 91 4e 2e 41 ce b8 f9 72 03 fb 1c fc a5 c5 82 65 27 2e 81 4c ef 08 4a d3 ce 05 e3 01 31
+1794384681.403812: SSWU: x1b = (-b/a) * (1 + t) - hexdump(len=48): 85 04 08 c8 9d 23 91 a9 e7 39 bd 13 51 3f e1 ea 51 82 db 8d 42 8c 0d 5b 07 7b a1 d2 c4 c7 45 36 d2 c1 c2 5c 1c 5a c5 1a 5f ff 7c 1f 9b 57 1c 0c
+1794384681.403812: SSWU: x1 = CSEL(l, x1a, x1b) - hexdump(len=48): 85 04 08 c8 9d 23 91 a9 e7 39 bd 13 51 3f e1 ea 51 82 db 8d 42 8c 0d 5b 07 7b a1 d2 c4 c7 45 36 d2 c1 c2 5c 1c 5a c5 1a 5f ff 7c 1f 9b 57 1c 0c
+1794384681.403812: SSWU: gx1 = x1^3 + a * x1 + b - hexdump(len=48): 02 b5 dc 5e bb 95 e4 12 fe 8b fe e3 6c b5 60 7c 17 d2 91 15 e4 33 e8 2a 5d 45 d7 d2 ca 2c b0 4a f2 11 e3 89 ad c0 60 8d 52 c5 01 c5 c9 e6 76 a3
+1794384681.403813: SSWU: x2 = z * u^2 * x1 - hexdump(len=48): f0 33 f5 be 3c 1b 76 ae 16 aa 33 d0 61 88 6c 93 77 4e f1 13 d7 25 08 9e a5 e5 0e 10 7b a4 99 41 5a 7e 2c 5f 5d df a2 43 fe 2a b6 f3 a9 bb 1e bc
+1794384681.403813: SSWU: gx2 = x2^3 + a * x2 + b - hexdump(len=48): df 87 57 6d 8d 71 45 63 70 ee 49 af 2b 31 99 87 7b 5f 99 32 41 ab 1d 8d b3 82 aa fc 4c f6 be 62 ea a1 e5 b3 f6 ba 9c 11 8b 21 a6 58 a4 0b 7d 46
+1794384681.403813: SSWU: gx1^((p-1)/2) modulo p - hexdump(len=48): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
+1794384681.403813: SSWU: v = CSEL(l, gx1, gx2) - hexdump(len=48): 02 b5 dc 5e bb 95 e4 12 fe 8b fe e3 6c b5 60 7c 17 d2 91 15 e4 33 e8 2a 5d 45 d7 d2 ca 2c b0 4a f2 11 e3 89 ad c0 60 8d 52 c5 01 c5 c9 e6 76 a3
+1794384681.403814: SSWU: x = CSEL(l, x1, x2) - hexdump(len=48): 85 04 08 c8 9d 23 91 a9 e7 39 bd 13 51 3f e1 ea 51 82 db 8d 42 8c 0d 5b 07 7b a1 d2 c4 c7 45 36 d2 c1 c2 5c 1c 5a c5 1a 5f ff 7c 1f 9b 57 1c 0c
+1794384681.403814: SSWU: y = sqrt(v) - hexdump(len=48): 6d 90 01 75 42 7a 74 f6 54 01 23 f6 41 e3 df 95 40 74 6e 6d 8b 6f 93 d6 b0 5d 9a 61 cc 79 57 6f 2c a8 bb d2 f8 6b 3c 70 8c 1a 14 1b 8e 97 af 8a
+1794384681.403814: SSWU: p - y - hexdump(len=48): 92 6f fe 8a bd 85 8b 09 ab fe dc 09 be 1c 20 6a bf 8b 91 92 74 90 6c 29 4f a2 65 9e 33 86 a8 8f d3 57 44 2c 07 94 c3 8f 73 e5 eb e5 71 68 50 75
+1794384681.403814: SSWU: P.x - hexdump(len=48): 85 04 08 c8 9d 23 91 a9 e7 39 bd 13 51 3f e1 ea 51 82 db 8d 42 8c 0d 5b 07 7b a1 d2 c4 c7 45 36 d2 c1 c2 5c 1c 5a c5 1a 5f ff 7c 1f 9b 57 1c 0c
+1794384681.403815: SSWU: P.y - hexdump(len=48): 92 6f fe 8a bd 85 8b 09 ab fe dc 09 be 1c 20 6a bf 8b 91 92 74 90 6c 29 4f a2 65 9e 33 86 a8 8f d3 57 44 2c 07 94 c3 8f 73 e5 eb e5 71 68 50 75
+1794384681.403815: SAE: pwd-value (u2 P2) - hexdump(len=72): 98 85 fc b6 ee fb b8 5e 34 e0 a1 dc ca dd 36 50 a3 5a ba a3 ad 6c 27 0e 34 eb a8 cc 02 f0 5d f8 90 1b c8 47 0c 38 2f 78 93 16 fb b3 79 a7 9d 2d 98 0b 98 68 c9 4c e5 16 5f 7a c3 09 90 7b 75 43 63 0b ab 9e e2 c0 04 29
+1794384681.403815: SAE: u2 - hexdump(len=48): 34 eb a8 cc 02 f0 5d f9 28 a1 c4 fe 93 b9 e4 8d b6 f3 55 ed e0 df 78 a4 af cd cd b5 d4 2e dd 49 76 ea 55 a3 b7 fd f0 f0 58 fa 3f 34 90 2c 2b 37
+1794384681.403815: SSWU: m - hexdump(len=48): 1d 9f 79 78 a3 27 06 b6 ab b1 3d 00 62 30 89 69 6e 86 da 31 27 f0 33 26 b5 61 ab 3e 6a 60 92 bd 2c 0d e8 f0 90 f7 d7 71 6d 12 17 94 c2 f2 d3 32
+1794384681.403816: SSWU: t - hexdump(len=48): b5 1b 45 63 80 a7 20 12 3f 82 85 ec ff 4b d6 31 50 9a 55 e7 45 28 46 c0 ea c2 a2 e4 d6 72 bb 90 0d e9 8a 9e b1 37 a9 84 0b 63 4e 1d e3 aa 41 30
+1794384681.403816: SSWU: x1a = b / (z * a) - hexdump(len=48): 53 33 24 e1 1b 9e 31 1b ae e7 80 26 8d 71 8f 79 96 00 d2 91 4e 2e 41 ce b8 f9 72 03 fb 1c fc a5 c5 82 65 27 2e 81 4c ef 08 4a d3 ce 05 e3 01 31
+1794384681.403816: SSWU: x1b = (-b/a) * (1 + t) - hexdump(len=48): 0f 2a 92 36 4d b6 3b 38 1a 14 cc da 42 b1 ca fe 93 6e f8 1c c3 1c bf 33 60 85 1a 66 8e 8c 9a ad 96 b9 23 12 28 10 47 c2 17 a9 83 f3 3a 71 60 4d
+1794384681.403816: SSWU: x1 = CSEL(l, x1a, x1b) - hexdump(len=48): 0f 2a 92 36 4d b6 3b 38 1a 14 cc da 42 b1 ca fe 93 6e f8 1c c3 1c bf 33 60 85 1a 66 8e 8c 9a ad 96 b9 23 12 28 10 47 c2 17 a9 83 f3 3a 71 60 4d
+1794384681.403817: SSWU: gx1 = x1^3 + a * x1 + b - hexdump(len=48): 68 54 79 2a 68 6d ac a3 2f 58 a1 10 d2 41 40 ea 29 a1 cc 37 c6 1c c7 8b 62 a2 2e 89 34 34 28 ed 19 3d a7 c6 de b2 ea d9 9b 8c c3 ff 09 6e c7 12
+1794384681.403817: SSWU: x2 = z * u^2 * x1 - hexdump(len=48): e3 dc 99 76 62 44 60 3b d5 41 73 78 59 25 ed 7f 30 e9 1c 3f cb b5 08 e1 e7 2a 1c f6 29 7f a2 20 ea 3a f2 08 77 ff cf 2f a9 29 c8 8a 52 9d b1 9c
+1794384681.403817: SSWU: gx2 = x2^3 + a * x2 + b - hexdump(len=48): ef c7 c0 3f 30 81 fb ad ed 45 4f 50 0d b1 ef 65 0e 19 39 d1 66 d8 5a b5 fc f4 55 ef 04 9e f6 2d 40 23 d4 23 eb 59 4a cc 31 c4 42 6b b8 dc 07 a5
+1794384681.403818: SSWU: gx1^((p-1)/2) modulo p - hexdump(len=48): ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff fe ff ff ff ff 00 00 00 00 00 00 00 00 ff ff ff fe
+1794384681.403818: SSWU: v = CSEL(l, gx1, gx2) - hexdump(len=48): ef c7 c0 3f 30 81 fb ad ed 45 4f 50 0d b1 ef 65 0e 19 39 d1 66 d8 5a b5 fc f4 55 ef 04 9e f6 2d 40 23 d4 23 eb 59 4a cc 31 c4 42 6b b8 dc 07 a5
+1794384681.403818: SSWU: x = CSEL(l, x1, x2) - hexdump(len=48): e3 dc 99 76 62 44 60 3b d5 41 73 78 59 25 ed 7f 30 e9 1c 3f cb b5 08 e1 e7 2a 1c f6 29 7f a2 20 ea 3a f2 08 77 ff cf 2f a9 29 c8 8a 52 9d b1 9c
+1794384681.403818: SSWU: y = sqrt(v) - hexdump(len=48): 06 e6 41 00 c8 6d 5f e1 50 e5 37 1d d9 87 1e b5 6e c8 1e a6 e4 8e b7 ef c2 3b 91 c1 28 b5 e8 d7 eb cd 13 41 d1 d7 c9 8c 5e fa dd 6c b3 5e 90 b2
+1794384681.403819: SSWU: p - y - hexdump(len=48): f9 19 be ff 37 92 a0 1e af 1a c8 e2 26 78 e1 4a 91 37 e1 59 1b 71 48 10 3d c4 6e 3e d7 4a 17 27 14 32 ec bd 2e 28 36 73 a1 05 22 94 4c a1 6f 4d
+1794384681.403819: SSWU: P.x - hexdump(len=48): e3 dc 99 76 62 44 60 3b d5 41 73 78 59 25 ed 7f 30 e9 1c 3f cb b5 08 e1 e7 2a 1c f6 29 7f a2 20 ea 3a f2 08 77 ff cf 2f a9 29 c8 8a 52 9d b1 9c
+1794384681.403819: SSWU: P.y - hexdump(len=48): f9 19 be ff 37 92 a0 1e af 1a c8 e2 26 78 e1 4a 91 37 e1 59 1b 71 48 10 3d c4 6e 3e d7 4a 17 27 14 32 ec bd 2e 28 36 73 a1 05 22 94 4c a1 6f 4d
+1794384681.403819: SAE: Derive PT - group 21
+1794384681.403820: SAE: SSID - hexdump_ascii(len=12):
+     65 78 70 6c 6f 72 65 72 5f 6d 6c 64               explorer_mld    
+1794384681.403820: SAE: password - hexdump_ascii(len=10):
+     71 77 65 72 74 79 75 69 6f 70                     qwertyuiop      
+1794384681.403820: SAE: pwd-seed - hexdump(len=64): 48 01 28 ab 1a 75 41 b3 1e 9f 42 76 e9 96 6d 4c 24 c7 fa 4d 57 7a ba c1 27 f4 67 38 9d 39 21 a9 72 20 fd ca 74 d8 fb 18 24 fc 1f 1a c8 92 bd ad 91 51 b1 6a 4c 23 8c ed 3c 21 89 58 94 26 67 36
+1794384681.403820: SAE: pwd-value (u1 P1) - hexdump(len=99): f2 df 7f c5 77 01 99 a4 6c c9 2f 0b 97 68 6e 11 d2 f5 c9 fe 95 4c 84 b3 25 e1 e2 53 4d de 3e a6 6b a5 dc 17 49 2c 3d da b8 0d 5d ed 64 73 43 5b 9a 0f fa ff 60 94 4e 2b 1a 5b ed 1b 7b 59 72 03 c7 4c 33 48 3f d1 9a ae 64 aa 87 f6 ff 50 92 ae 7e 17 e3 95 15 0d 6a 5a b2 05 95 0e df a9 11 21 6d 0c 8d
+1794384681.403821: SAE: u1 - hexdump(len=66): 01 dc 17 49 2c 3d da b8 0d 5d ed 64 73 43 5b 9a 0f fa ff 60 94 4e 2b 1a 5b ed 1b 7b 59 72 03 c7 c5 a3 08 22 8d 1b 7b 36 e0 ec 8e 85 1c 46 e5 87 01 5e 7a 14 58 10 9d 0b 98 86 00 09 50 00 40 c0 42 5f
+1794384681.403821: SSWU: m - hexdump(len=66): 01 81 ac d7 cc 9a b1 0d 69 3b 21 b7 96 ec 91 92 a6 33 2a 96 c4 8b 7b 28 92 27 ab 9b 45 a0 a7 7a 9f e3 e7 b3 f5 09 3d 16 37 ab 53 58 90 9f c3 29 ee 6a 21 37 ab 76 2c 51 17 87 73 fc d0 82 01 96 6a 34
+1794384681.403821: SSWU: t - hexdump(len=66): 01 c0 fd 04 e6 0d 37 05 87 03 e7 7d be 74 90 cf 72 86 93 73 24 bd 35 37 6d 45 32 7e c1 14 d7 22 82 dd 74 15 61 32 ed c2 2a 84 c9 76 7c 15 0b d8 9e ce c1 ab 6c 4e 91 48 ac bd f2 5e b2 9e 1c 2e a2 d5
+1794384681.403821: SSWU: x1a = b / (z * a) - hexdump(len=66): 00 b1 77 1a 8f 72 cb d7 b7 82 a1 8c d8 22 b9 e0 70 13 e2 e7 89 87 a2 24 41 d4 4f 64 60 cc 21 3e c0 d2 c7 2c c4 c6 d3 b5 36 f4 ec 86 e5 65 1a 4e cf eb 44 74 52 a0 af c3 af 14 29 45 c2 a7 08 f1 5a 95
+1794384681.403822: SSWU: x1b = (-b/a) * (1 + t) - hexdump(len=66): 01 c2 ba 9b a1 48 51 e3 e3 00 a5 f2 df db 19 d1 b6 db 11 0b 52 52 58 1d 4f d6 b8 f9 db 9c 76 5d 20 81 0f 75 dd a4 70 e4 fa 05 d5 33 5c 87 54 04 bc 6b 53 f1 59 7f 51 0c 05 e4 ef ba 28 54 73 e5 72 26
+1794384681.403822: SSWU: x1 = CSEL(l, x1a, x1b) - hexdump(len=66): 01 c2 ba 9b a1 48 51 e3 e3 00 a5 f2 df db 19 d1 b6 db 11 0b 52 52 58 1d 4f d6 b8 f9 db 9c 76 5d 20 81 0f 75 dd a4 70 e4 fa 05 d5 33 5c 87 54 04 bc 6b 53 f1 59 7f 51 0c 05 e4 ef ba 28 54 73 e5 72 26
+1794384681.403822: SSWU: gx1 = x1^3 + a * x1 + b - hexdump(len=66): 00 54 e3 33 ab b4 a7 d3 f7 43 ff f8 34 14 d6 8b 29 81 ee 1a 76 b3 9d d3 4e f1 18 ca 1c 0d 73 b7 43 ad 63 3e 3a 18 98 05 da 9d ed db e5 f5 01 31 b0 5e c4 35 26 90 ab 4e 83 59 25 9c 8c ac 2d db 57 8f
+1794384681.403822: SSWU: x2 = z * u^2 * x1 - hexdump(len=66): 01 9c 73 a2 73 ae fc 63 46 64 cb 48 1a 36 7c 2c 40 d9 63 6a 20 0b aa 00 90 78 b2 33 06 a3 fb 36 b0 1b 1b 40 85 a1 15 cd 50 6f b0 3b f7 7f 68 ec 42 9c e7 3a cf ee cd ca 23 bd 02 c8 aa 2f 67 87 95 e3
+1794384681.403823: SSWU: gx2 = x2^3 + a * x2 + b - hexdump(len=66): 00 40 69 ee f4 d1 6e cb 09 03 17 58 9e 3c b0 7f 39 09 7f 07 69 32 f0 5b 1a 09 d2 cc ca a1 58 63 bf 3e 7a 26 c2 90 3d a4 c8 34 62 f5 d1 40 77 21 60 e6 12 e4 24 f4 90 68 07 f6 f6 77 ec f0 26 13 ab ed
+1794384681.403823: SSWU: gx1^((p-1)/2) modulo p - hexdump(len=66): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
+1794384681.403823: SSWU: v = CSEL(l, gx1, gx2) - hexdump(len=66): 00 54 e3 33 ab b4 a7 d3 f7 43 ff f8 34 14 d6 8b 29 81 ee 1a 76 b3 9d d3 4e f1 18 ca 1c 0d 73 b7 43 ad 63 3e 3a 18 98 05 da 9d ed db e5 f5 01 31 b0 5e c4 35 26 90 ab 4e 83 59 25 9c 8c ac 2d db 57 8f
+1794384681.403823: SSWU: x = CSEL(l, x1, x2) - hexdump(len=66): 01 c2 ba 9b a1 48 51 e3 e3 00 a5 f2 df db 19 d1 b6 db 11 0b 52 52 58 1d 4f d6 b8 f9 db 9c 76 5d 20 81 0f 75 dd a4 70 e4 fa 05 d5 33 5c 87 54 04 bc 6b 53 f1 59 7f 51 0c 05 e4 ef ba 28 54 73 e5 72 26
+1794384681.403824: SSWU: y = sqrt(v) - hexdump(len=66): 00 f3 3b b8 52 b5 1a 3f a9 93 25 b4 b4 c5 d7 e0 eb 94 4d 66 0f fd 45 b2 4f a2 72 ee 38 ea be 1c 0a 33 90 30 5e 5a e8 52 30 fe db 2f 2f 1c fc c4 5f be f6 f7 29 f8 a4 cf e1 54 4e 3d 75 78 ce c5 02 c2
+1794384681.403824: SSWU: p - y - hexdump(len=66): 01 0c c4 47 ad 4a e5 c0 56 6c da 4b 4b 3a 28 1f 14 6b b2 99 f0 02 ba 4d b0 5d 8d 11 c7 15 41 e3 f5 cc 6f cf a1 a5 17 ad cf 01 24 d0 d0 e3 03 3b a0 41 09 08 d6 07 5b 30 1e ab b1 c2 8a 87 31 3a fd 3d
+1794384681.403824: SSWU: P.x - hexdump(len=66): 01 c2 ba 9b a1 48 51 e3 e3 00 a5 f2 df db 19 d1 b6 db 11 0b 52 52 58 1d 4f d6 b8 f9 db 9c 76 5d 20 81 0f 75 dd a4 70 e4 fa 05 d5 33 5c 87 54 04 bc 6b 53 f1 59 7f 51 0c 05 e4 ef ba 28 54 73 e5 72 26
+1794384681.403824: SSWU: P.y - hexdump(len=66): 01 0c c4 47 ad 4a e5 c0 56 6c da 4b 4b 3a 28 1f 14 6b b2 99 f0 02 ba 4d b0 5d 8d 11 c7 15 41 e3 f5 cc 6f cf a1 a5 17 ad cf 01 24 d0 d0 e3 03 3b a0 41 09 08 d6 07 5b 30 1e ab b1 c2 8a 87 31 3a fd 3d
+1794384681.403825: SAE: pwd-value (u2 P2) - hexdump(len=99): 90 b6 42 30 19 a8 8a cf 0c 3a 9e a9 55 10 f7 93 53 26 1c 6f e4 36 67 2f c3 f7 5c 85 85 84 21 04 6c 82 4e cf ce bc 79 7b c4 18 e3 e6 bd f7 7a d6 1f b8 9c 44 7b 63 2a 13 d0 21 b7 ec 13 ba 5f 1e 8a 39 e8 dc 82 27 71 00 ea 93 aa bd ec e5 8b 6f 0a 35 83 26 c1 44 95 7c c9 e0 d2 b9 96 cd b4 cf 1e 3f 11
+1794384681.403825: SAE: u2 - hexdump(len=66): 00 4e cf ce bc 79 7b c4 18 e3 e6 bd f7 7a d6 1f b8 9c 44 7b 63 2a 13 d0 21 b7 ec 13 ba 5f 1e 8a 82 43 fd 9a 34 45 46 52 19 c8 0d 41 90 13 ea d3 df 16 34 f9 36 b0 b0 61 c2 ce 67 d9 90 76 df a0 75 52
+1794384681.403825: SSWU: m - hexdump(len=66): 01 1a 72 2c 5e ef 02 15 ca c6 72 ac 65 3b 5f 0f b1 a1 92 61 e8 0c 4d 2d bf 13 85 1c 82 c8 38 64 a0 51 7b b4 2c 2b 53 44 36 36 20 ba 4d cb d2 43 af 81 2e de c0 f2 57 50 74 59 f2 ec a7 d5 3b 02 b0 ba
+1794384681.403825: SSWU: t - hexdump(len=66): 01 88 d3 28 8f 4f df 58 9a be 2c aa 26 b5 88 ff c2 49 e3 f4 49 e0 57 17 e2 4f 5b d1 43 d5 28 08 64 ad d4 1a 15 8d b1 6c 54 1f ca 69 0a 56 e5 5f 5e 11 07 3a 0a e6 f2 7e e6 bd 92 df c4 8b 42 43 e7 2c
+1794384681.403826: SSWU: x1a = b / (z * a) - hexdump(len=66): 00 b1 77 1a 8f 72 cb d7 b7 82 a1 8c d8 22 b9 e0 70 13 e2 e7 89 87 a2 24 41 d4 4f 64 60 cc 21 3e c0 d2 c7 2c c4 c6 d3 b5 36 f4 ec 86 e5 65 1a 4e cf eb 44 74 52 a0 af c3 af 14 29 45 c2 a7 08 f1 5a 95
+1794384681.403826: SSWU: x1b = (-b/a) * (1 + t) - hexdump(len=66): 00 ec a9 0b 02 54 28 50 4b 52 1a fd a8 46 8d c5 f5 66 93 b0 29 5d 63 24 da 13 20 c9 46 9f d3 a5 a0 bb 90 36 ce dc 61 f0 25 85 2f bf 84 b0 f3 65 41 2a 59 3d 48 dd 64 10 53 78 33 99 db 6b ad cd a4 6b
+1794384681.403826: SSWU: x1 = CSEL(l, x1a, x1b) - hexdump(len=66): 00 ec a9 0b 02 54 28 50 4b 52 1a fd a8 46 8d c5 f5 66 93 b0 29 5d 63 24 da 13 20 c9 46 9f d3 a5 a0 bb 90 36 ce dc 61 f0 25 85 2f bf 84 b0 f3 65 41 2a 59 3d 48 dd 64 10 53 78 33 99 db 6b ad cd a4 6b
+1794384681.403826: SSWU: gx1 = x1^3 + a * x1 + b - hexdump(len=66): 01 15 d6 c0 d2 b4 37 43 ce eb 33 2f 3a c3 a8 84 04 83 de ec a6 1a 07 b7 a1 57 0d 36 d1 01 91 39 96 4a 71 ae 05 32 ef 1a 52 df e9 5d 13 80 d2 65 59 b8 c4 fb dc 7e b4 9a 2c a8 13 c9 4a df 38 01 8c 5c
+1794384681.403827: SSWU: x2 = z * u^2 * x1 - hexdump(len=66): 00 33 a5 5c a6 72 0f 98 44 33 c8 31 5b 6f 39 3b 57 8a 13 65 ad b6 dd 31 b0 aa 1a c8 0a 76 ad 45 87 bf 35 b1 b6 0f 84 5f e0 64 44 53 8a 6b 78 97 0b 2a de 50 d6 85 08 53 f3 fb 9a bb ad f1 f8 35 c4 dc
+1794384681.403827: SSWU: gx2 = x2^3 + a * x2 + b - hexdump(len=66): 00 e2 48 e1 02 ca 20 73 ba 23 ab cd 0e e7 77 a2 c2 30 22 f4 27 d2 d1 19 89 7f b7 16 e8 41 29 b0 ff e9 49 3d c8 13 25 6f 0f 20 29 98 7d 04 5c dc 46 91 7b 6e ff 62 85 35 74 a5 ba d4 81 c5 af 03 9a b2
+1794384681.403827: SSWU: gx1^((p-1)/2) modulo p - hexdump(len=66): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
+1794384681.403827: SSWU: v = CSEL(l, gx1, gx2) - hexdump(len=66): 01 15 d6 c0 d2 b4 37 43 ce eb 33 2f 3a c3 a8 84 04 83 de ec a6 1a 07 b7 a1 57 0d 36 d1 01 91 39 96 4a 71 ae 05 32 ef 1a 52 df e9 5d 13 80 d2 65 59 b8 c4 fb dc 7e b4 9a 2c a8 13 c9 4a df 38 01 8c 5c
+1794384681.403828: SSWU: x = CSEL(l, x1, x2) - hexdump(len=66): 00 ec a9 0b 02 54 28 50 4b 52 1a fd a8 46 8d c5 f5 66 93 b0 29 5d 63 24 da 13 20 c9 46 9f d3 a5 a0 bb 90 36 ce dc 61 f0 25 85 2f bf 84 b0 f3 65 41 2a 59 3d 48 dd 64 10 53 78 33 99 db 6b ad cd a4 6b
+1794384681.403828: SSWU: y = sqrt(v) - hexdump(len=66): 00 8d f7 34 83 0e 5d ff 03 80 03 a0 0b 26 0e 31 d2 a8 24 2e 19 95 3f 8d 55 6a 9f 87 96 31 b4 25 b4 e0 9e 7f 8f 74 33 55 d2 e1 b0 ca 33 60 5a de 01 88 2f be cc 36 65 ee f4 a4 73 70 d6 e3 dc 9b 30 aa
+1794384681.403828: SSWU: p - y - hexdump(len=66): 01 72 08 cb 7c f1 a2 00 fc 7f fc 5f f4 d9 f1 ce 2d 57 db d1 e6 6a c0 72 aa 95 60 78 69 ce 4b da 4b 1f 61 80 70 8b cc aa 2d 1e 4f 35 cc 9f a5 21 fe 77 d0 41 33 c9 9a 11 0b 5b 8c 8f 29 1c 23 64 cf 55
+1794384681.403829: SSWU: P.x - hexdump(len=66): 00 ec a9 0b 02 54 28 50 4b 52 1a fd a8 46 8d c5 f5 66 93 b0 29 5d 63 24 da 13 20 c9 46 9f d3 a5 a0 bb 90 36 ce dc 61 f0 25 85 2f bf 84 b0 f3 65 41 2a 59 3d 48 dd 64 10 53 78 33 99 db 6b ad cd a4 6b
+1794384681.403829: SSWU: P.y - hexdump(len=66): 00 8d f7 34 83 0e 5d ff 03 80 03 a0 0b 26 0e 31 d2 a8 24 2e 19 95 3f 8d 55 6a 9f 87 96 31 b4 25 b4 e0 9e 7f 8f 74 33 55 d2 e1 b0 ca 33 60 5a de 01 88 2f be cc 36 65 ee f4 a4 73 70 d6 e3 dc 9b 30 aa
+1794384681.403829: wlan8: Setting scan request: 0.000000 sec
+1794384681.403830: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.403830: wlan8: State: DISCONNECTED -> SCANNING
+1794384681.403831: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.403831: wlan8: Shared frequencies (len=0): completed iteration
+1794384681.403831: P2P: Add operating class 81
+1794384681.403831: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.403832: P2P: Update channel list
+1794384681.403832: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.403832: P2P: cli_channels:
+1794384681.403832: NAN: state change notif: n_active=0, p2p_in_progress=0
+1794384681.403833: NAN: Configuring NAN DE: n=(0, 0), suspend=0, cycle=0
+1794384681.403833: wlan8: Starting AP scan for wildcard SSID
+1794384681.403833: WPS: Building WPS IE for Probe Request
+1794384681.403834: WPS:  * Version (hardcoded 0x10)
+1794384681.403834: WPS:  * Request Type
+1794384681.403834: WPS:  * Config Methods (3148)
+1794384681.403834: WPS:  * UUID-E
+1794384681.403835: WPS:  * Primary Device Type
+1794384681.403835: WPS:  * RF Bands (3)
+1794384681.403835: WPS:  * Association State
+1794384681.403835: WPS:  * Configuration Error (0)
+1794384681.403836: WPS:  * Device Password ID (0)
+1794384681.403836: WPS:  * Manufacturer
+1794384681.403836: WPS:  * Model Name
+1794384681.403836: WPS:  * Model Number
+1794384681.403837: WPS:  * Device Name
+1794384681.403837: WPS:  * Version2 (0x20)
+1794384681.403837: P2P: * P2P IE header
+1794384681.403837: P2P: * Capability dev=25 group=00
+1794384681.403838: P2P: * Listen Channel: Regulatory Class 81 Channel 1
+1794384681.403838: wlan8: Add radio work 'scan'@0x55000055fb80
+1794384681.403838: wlan8: First radio work item in the queue - schedule start immediately
+1794384681.403841: wlan8: Starting radio work 'scan'@0x55000055fb80 after 0.000002 second wait
+1794384681.403841: wlan8: nl80211: scan request
+1794384681.403841: nl80211: Scan SSID 
+1794384681.403841: nl80211: Scan co-located APs on 6 GHz
+1794384681.403842: nl80211: Scan extra IEs - hexdump(len=150): 7f 0b 04 00 4a 02 01 40 40 c0 01 01 20 dd 69 00 50 f2 04 10 4a 00 01 10 10 3a 00 01 00 10 08 00 02 31 48 10 47 00 10 75 a9 ac 25 80 84 59 95 9e 1a dd 9a 73 95 af 8f 10 54 00 08 00 00 00 00 00 00 00 00 10 3c 00 01 03 10 02 00 02 00 00 10 09 00 02 00 00 10 12 00 02 00 00 10 21 00 01 20 10 23 00 01 20 10 24 00 01 20 10 11 00 01 20 10 49 00 06 00 37 2a 00 01 20 dd 11 50 6f 9a 09 02 02 00 25 00 06 05 00 58 58 04 51 01 72 00 dd 07 50 6f 9a 16 03 01 03
+1794384681.403842: nl80211: Scan frequency 2412 MHz
+1794384681.403842: nl80211: Scan frequency 2437 MHz
+1794384681.403842: Scan requested (ret=0) - scan timeout 20 seconds
+1794384681.403844: nl80211: Event message available
+1794384681.403845: nl80211: Drv Event 33 (NL80211_CMD_TRIGGER_SCAN) received for wlan8
+1794384681.403845: wlan8: nl80211: Scan trigger
+1794384681.403845: wlan8: Event SCAN_STARTED (47) received
+1794384681.403846: wlan8: Own scan request started a scan in 0.000003 seconds
+1794384681.403846: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=0 send_len=24
+1794384681.403846: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.403846: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=960 send_len=24
+1794384681.403847: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477264: RTM_NEWLINK: ifi_index=13 ifname=wlan8 wext ifi_family=0 ifi_flags=0x1003 ([UP])
+1794384681.477274: nl80211: Event message available
+1794384681.477275: nl80211: Drv Event 34 (NL80211_CMD_NEW_SCAN_RESULTS) received for wlan8
+1794384681.477275: wlan8: nl80211: New scan results available
+1794384681.477275: nl80211: Scan probed for SSID ''
+1794384681.477275: nl80211: Scan included frequencies: 2412 2437
+1794384681.477276: wlan8: Event SCAN_RESULTS (3) received
+1794384681.477276: wlan8: Scan completed in 0.073430 seconds
+1794384681.477277: nl80211: Received scan results (2 BSSes)
+1794384681.477277: wlan8: BSS: Start scan result update 1
+1794384681.477278: IEEE 802.11 element parse ignored unknown element (id=201 elen=20)
+1794384681.477278: MLD: mld ID=0, link ID=1
+1794384681.477278: MLD: valid_links=0x0003
+1794384681.477278: MLD: link=0, bssid=02:00:00:c2:e0:2e
+1794384681.477279: MLD: link=1, bssid=02:00:00:1f:03:20
+1794384681.477279: wlan8: BSS: Add new id 0 BSSID 02:00:00:c2:e0:2e SSID 'explorer_mld' freq 2412 MLD ADDR 02:00:00:00:07:00
+1794384681.477279: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=960 send_len=40
+1794384681.477280: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477280: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=40
+1794384681.477280: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477280: IEEE 802.11 element parse ignored unknown element (id=201 elen=20)
+1794384681.477281: MLD: mld ID=0, link ID=0
+1794384681.477281: MLD: valid_links=0x0003
+1794384681.477281: MLD: link=0, bssid=02:00:00:c2:e0:2e
+1794384681.477281: MLD: link=1, bssid=02:00:00:1f:03:20
+1794384681.477282: wlan8: BSS: Add new id 1 BSSID 02:00:00:1f:03:20 SSID 'explorer_mld' freq 2437 MLD ADDR 02:00:00:00:07:00
+1794384681.477282: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=1920 send_len=40
+1794384681.477282: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477282: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=960 send_len=40
+1794384681.477283: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477283: BSS: last_scan_res_used=2/32
+1794384681.477283: wlan8: New scan results available (own=1 ext=0)
+1794384681.477284: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=2880 send_len=24
+1794384681.477284: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477284: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=1920 send_len=24
+1794384681.477284: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477285: wlan8: Radio work 'scan'@0x55000055fb80 done in 0.073444 seconds
+1794384681.477285: wlan8: radio_work_free('scan'@0x55000055fb80): num_active_works --> 0
+1794384681.477285: wlan8: Scan results matching the currently selected network
+1794384681.477286: SAE-PK: Not a valid password (length)
+1794384681.477286: IEEE 802.11 element parse ignored unknown element (id=201 elen=20)
+1794384681.477286: wlan8: 0: 02:00:00:c2:e0:2e freq=2412 level=-50 snr=42 est_throughput=344206
+1794384681.477287: SAE-PK: Not a valid password (length)
+1794384681.477287: IEEE 802.11 element parse ignored unknown element (id=201 elen=20)
+1794384681.477287: wlan8: 1: 02:00:00:1f:03:20 freq=2437 level=-50 snr=42 est_throughput=344206
+1794384681.477287: wlan8: Selecting BSS from priority group 0
+1794384681.477288: wlan8: 0: 02:00:00:c2:e0:2e ssid='explorer_mld' wpa_ie_len=0 rsn_ie_len=20 caps=0x411 level=-50 freq=2412 
+1794384681.477288: wlan8:    selected based on RSN IE
+1794384681.477288: SAE-PK: Not a valid password (length)
+1794384681.477289: IEEE 802.11 element parse ignored unknown element (id=201 elen=20)
+1794384681.477289: wlan8:    selected BSS 02:00:00:c2:e0:2e ssid='explorer_mld'
+1794384681.477289: wlan8: Considering connect request: reassociate: 1  selected: 02:00:00:c2:e0:2e  bssid: 00:00:00:00:00:00  pending: 00:00:00:00:00:00  wpa_state: SCANNING  ssid=0x550000560580  current_ssid=0x550000560580
+1794384681.477290: wlan8: MLD: key_mgmt=0x4000000
+1794384681.477290: wlan8: MLD: key_mgmt=0x4000000
+1794384681.477291: SAE-PK: Not a valid password (length)
+1794384681.477291: wlan8: Request association with 02:00:00:c2:e0:2e
+1794384681.477291: TDLS: TDLS is allowed in the target BSS
+1794384681.477292: TDLS: TDLS channel switch allowed in the target BSS
+1794384681.477292: wlan8: No ongoing scan/p2p-scan found to abort
+1794384681.477292: wlan8: Add radio work 'sme-connect'@0x55000055fb80
+1794384681.477293: wlan8: First radio work item in the queue - schedule start immediately
+1794384681.477294: wlan8: Starting radio work 'sme-connect'@0x55000055fb80 after 0.000001 second wait
+1794384681.477294: wlan8: WPA: clearing own WPA/RSN IE
+1794384681.477295: wlan8: RSN: clearing own RSNXE
+1794384681.477295: wlan8: MLD: key_mgmt=0x4000000
+1794384681.477295: wlan8: MLD: key_mgmt=0x4000000
+1794384681.477296: SAE-PK: Not a valid password (length)
+1794384681.477296: MLD: In authentication
+1794384681.477297: MLD: valid_links=3, band_pref=0, bssid_pref=00:00:00:00:00:00
+1794384681.477297: IEEE 802.11 element parse ignored unknown element (id=201 elen=20)
+1794384681.477297: wlan8: Automatic auth_alg selection: 0x1
+1794384681.477297: wlan8: Using SAE auth_alg
+1794384681.477298: RSN: PMKSA cache search - network_ctx=0x550000560580 try_opportunistic=0 akmp=0x0
+1794384681.477298: RSN: Search for BSSID 02:00:00:00:07:00
+1794384681.477298: RSN: No PMKSA cache entry found
+1794384681.477298: wlan8: RSN: using IEEE 802.11i/D9.0
+1794384681.477299: wlan8: WPA: Selected cipher suites: group 16 pairwise 16 key_mgmt 67108864 proto 2
+1794384681.477299: wlan8: WPA: Selected mgmt group cipher 32
+1794384681.477299: wlan8: WPA: clearing AP WPA IE
+1794384681.477299: WPA: set AP RSN IE - hexdump(len=22): 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00
+1794384681.477300: WPA: set AP RSNXE - hexdump(len=3): f4 01 20
+1794384681.477300: wlan8: RSN: Clearing AP RSNE Override element
+1794384681.477300: wlan8: RSN: Clearing AP RSNE Override 2 element
+1794384681.477301: wlan8: RSN: Clearing AP RSNXE Override element
+1794384681.477301: wlan8: RSN: Clearing AP Security Profile element
+1794384681.477301: wlan8: WPA: AP group 0x10 network profile group 0x18; available group 0x10
+1794384681.477301: wlan8: WPA: using GTK CCMP
+1794384681.477302: wlan8: WPA: AP pairwise 0x10 network profile pairwise 0x18; available pairwise 0x10
+1794384681.477302: wlan8: WPA: using PTK CCMP
+1794384681.477302: wlan8: WPA: AP key_mgmt 0x4000000 network profile key_mgmt 0x4000000; available key_mgmt 0x4000000
+1794384681.477302: wlan8: RSN: using KEY_MGMT SAE (ext key)
+1794384681.477303: wlan8: WPA: AP mgmt_group_cipher 0x20 network profile mgmt_group_cipher 0x0; available mgmt_group_cipher 0x20
+1794384681.477303: wlan8: WPA: using MGMT group cipher AES-128-CMAC
+1794384681.477303: SAE-PK: Not a valid password (length)
+1794384681.477303: WPA: Set own WPA IE default - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1794384681.477304: RSN: Set own RSNXE default - hexdump(len=3): f4 01 20
+1794384681.477304: wlan8: SME: Selected AP supports MFP: require MFP
+1794384681.477304: RRM: Determining whether RRM can be used - device support: 0x10
+1794384681.477304: RRM: No RRM in network
+1794384681.477305: IEEE 802.11 element parse ignored unknown element (id=201 elen=20)
+1794384681.477305: Added supported operating classes IE - hexdump(len=25): 3b 17 51 51 52 53 54 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f 80 81 00 82 80
+1794384681.477305: RSN: PMKSA cache search - network_ctx=0x550000560580 try_opportunistic=0 akmp=0x4000000
+1794384681.477305: RSN: Search for BSSID 02:00:00:00:07:00
+1794384681.477306: RSN: No PMKSA cache entry found
+1794384681.477306: SAE: Selecting supported ECC group 19
+1794384681.477306: wlan8: SME: Selected SAE group 19
+1794384681.477306: SAE: Derive PWE from PT
+1794384681.477307: SAE: PT.x - hexdump(len=32): eb 35 1b 35 47 b6 6a 9a 92 e8 c9 1f 93 31 27 23 29 3e 7e 9b f5 20 c8 8a 5c 6a 24 ff 8b c4 b6 63
+1794384681.477307: SAE: PT.y - hexdump(len=32): 38 a7 b2 61 d0 6c 0d d0 ee b9 85 c1 0a f4 01 aa 3e 5b bc 87 72 c4 2a 2c eb d3 68 56 4b bd 15 52
+1794384681.477307: SAE: val = H(0^n, MAX(addrs) || MIN(addrs))
+1794384681.477307: SAE: val - hexdump(len=32): 00 cc 5a 73 49 d0 16 f9 10 44 1f 40 ff 71 a2 fd 4c 11 e5 48 e8 04 ac 23 12 11 b9 e8 b4 62 51 bb
+1794384681.477308: SAE: val(reduced to 1..q-1) - hexdump(len=32): 00 cc 5a 73 49 d0 16 f9 10 44 1f 40 ff 71 a2 fd 4c 11 e5 48 e8 04 ac 23 12 11 b9 e8 b4 62 51 bc
+1794384681.477308: SAE: PWE.x - hexdump(len=32): 89 fd 7c b4 45 af 34 31 20 33 d4 22 d0 d0 29 ee f2 5d de e3 49 81 61 92 4b f7 02 05 8f 34 fa c8
+1794384681.477308: SAE: PWE.y - hexdump(len=32): 1e d2 5d a5 ce 49 5a 0a 11 19 06 5c 0b c3 2d 34 07 54 6a 16 49 22 63 48 84 c6 5f e3 5c 41 dd 60
+1794384681.477308: SAE-PK: Not a valid password (length)
+1794384681.477309: SAE: own commit-scalar - hexdump(len=32): 75 91 fe 39 22 c1 fa 72 d5 2e 4a b3 ff bf 04 f3 57 b2 33 38 ab 3b 13 7c 26 3a 73 9c 16 5c 2f ee
+1794384681.477309: SAE: own commit-element(x) - hexdump(len=32): 0f 24 5e 1d 18 75 f8 e3 12 b8 87 10 98 54 a0 d5 1c fc f3 1e 19 39 cf a6 e3 c4 ab 2f 1e b1 9e b2
+1794384681.477309: SAE: own commit-element(y) - hexdump(len=32): 1b f2 1d 73 cd d3 67 d2 ef fb 63 77 7a f7 e9 76 a1 01 13 91 61 c0 11 98 ba 09 be 98 26 0c 4c 2c
+1794384681.477309: SAE: AKM Suite Selector: 000fac18
+1794384681.477310: EAPOL: External notification - EAP success=0
+1794384681.477310: EAPOL: External notification - EAP fail=0
+1794384681.477310: EAPOL: External notification - portControl=Auto
+1794384681.477310: wlan8: Cancelling scan request
+1794384681.477311: wlan8: SME: Trying to authenticate with 02:00:00:c2:e0:2e (SSID='explorer_mld' freq=2412 MHz)
+1794384681.477311: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=3840 send_len=86
+1794384681.477311: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477312: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=2880 send_len=86
+1794384681.477312: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477312: EAPOL: External notification - portValid=0
+1794384681.477312: wlan8: State: SCANNING -> AUTHENTICATING
+1794384681.477313: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.477313: wlan8: Failed to get MLO link info
+1794384681.477313: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=4800 send_len=27
+1794384681.477313: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477314: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=3840 send_len=27
+1794384681.477314: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477314: wlan8: Shared frequencies (len=0): completed iteration
+1794384681.477314: P2P: Add operating class 81
+1794384681.477315: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.477315: P2P: Update channel list
+1794384681.477315: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.477315: P2P: cli_channels:
+1794384681.477316: NAN: state change notif: n_active=1, p2p_in_progress=0
+1794384681.477316: NAN: Configuring NAN DE: n=(1, 3), suspend=300, cycle=500
+1794384681.477316: nl80211: Data frame filter flags=0x4
+1794384681.477317: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.477317: wlan8: Failed to get MLO link info
+1794384681.477317: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=5760 send_len=27
+1794384681.477317: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477318: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=4800 send_len=27
+1794384681.477318: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477318: wlan8: Shared frequencies (len=0): completed iteration
+1794384681.477318: nl80211: Authenticate (ifindex=13)
+1794384681.477319:   * bssid=02:00:00:c2:e0:2e
+1794384681.477319:   * freq=2412
+1794384681.477319:   * SSID=explorer_mld
+1794384681.477319:   * IEs - hexdump(len=0): [NULL]
+1794384681.477320:   * auth_data - hexdump(len=109): 01 00 7e 00 13 00 75 91 fe 39 22 c1 fa 72 d5 2e 4a b3 ff bf 04 f3 57 b2 33 38 ab 3b 13 7c 26 3a 73 9c 16 5c 2f ee 0f 24 5e 1d 18 75 f8 e3 12 b8 87 10 98 54 a0 d5 1c fc f3 1e 19 39 cf a6 e3 c4 ab 2f 1e b1 9e b2 1b f2 1d 73 cd d3 67 d2 ef fb 63 77 7a f7 e9 76 a1 01 13 91 61 c0 11 98 ba 09 be 98 26 0c 4c 2c ff 05 72 00 0f ac 18
+1794384681.477320:   * Auth Type 4
+1794384681.477320:   * MLD: link_id=0, MLD addr=02:00:00:00:07:00
+1794384681.477320: nl80211: Authentication request sent successfully
+1794384681.477322: NAN: Suspend USD for 300 ms (passed=500 ms)
+1794384681.477322: NAN: diff_ms=300 ms
+1794384681.477323: nl80211: Event message available
+1794384681.477323: nl80211: Drv Event 19 (NL80211_CMD_NEW_STATION) received for wlan8
+1794384681.477323: nl80211: New station 02:00:00:00:07:00
+1794384681.477377: nl80211: Event message available
+1794384681.477377: nl80211: Ignored event 19 (NL80211_CMD_NEW_STATION) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.477378: nl80211: Event message available
+1794384681.477379: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.477380: nl80211: Event message available
+1794384681.477380: nl80211: Drv Event 37 (NL80211_CMD_AUTHENTICATE) received for wlan8
+1794384681.477381: nl80211: MLME event 37 (NL80211_CMD_AUTHENTICATE) on wlan8(02:00:00:00:08:00) A1=02:00:00:00:08:00 A2=02:00:00:00:07:00 on link_id=-1
+1794384681.477381: nl80211: MLME event frame - hexdump(len=147): b0 00 00 00 02 00 00 00 08 00 02 00 00 00 07 00 02 00 00 00 07 00 20 00 03 00 01 00 7e 00 13 00 31 3e 54 90 51 b5 f6 05 7d 77 ef fc 0f e4 53 be be f0 27 d8 c5 23 8c b7 09 eb 94 6d 52 e1 96 c3 bd ac 19 ef 9f 6b 10 78 d2 79 4e 2d 0c ec 68 92 5d 47 6f 0a 57 e8 b8 5f 82 80 7e f5 d7 5b 09 2a 96 05 67 01 2a 37 ca 40 b1 8c f9 da 4e 20 22 0d 61 47 cd 34 2f 6f fa 84 b7 9f 56 c0 59 8e 2e 64 ff 05 72 00 0f ac 18 ff 0a 6b 00 00 07 02 00 00 00 07 00
+1794384681.477381: nl80211: Authenticate event
+1794384681.477381: wlan8: Event AUTH (10) received
+1794384681.477382: wlan8: SME: Authentication response: peer=02:00:00:00:07:00 auth_type=3 auth_transaction=1 status_code=126
+1794384681.477382: SME: Authentication response IEs - hexdump(len=117): 13 00 31 3e 54 90 51 b5 f6 05 7d 77 ef fc 0f e4 53 be be f0 27 d8 c5 23 8c b7 09 eb 94 6d 52 e1 96 c3 bd ac 19 ef 9f 6b 10 78 d2 79 4e 2d 0c ec 68 92 5d 47 6f 0a 57 e8 b8 5f 82 80 7e f5 d7 5b 09 2a 96 05 67 01 2a 37 ca 40 b1 8c f9 da 4e 20 22 0d 61 47 cd 34 2f 6f fa 84 b7 9f 56 c0 59 8e 2e 64 ff 05 72 00 0f ac 18 ff 0a 6b 00 00 07 02 00 00 00 07 00
+1794384681.477382: wlan8: SME: SAE authentication transaction 1 status code 126
+1794384681.477382: wlan8: SME SAE commit
+1794384681.477383: SAE: Peer commit-scalar - hexdump(len=32): 31 3e 54 90 51 b5 f6 05 7d 77 ef fc 0f e4 53 be be f0 27 d8 c5 23 8c b7 09 eb 94 6d 52 e1 96 c3
+1794384681.477383: SAE: Peer commit-element(x) - hexdump(len=32): bd ac 19 ef 9f 6b 10 78 d2 79 4e 2d 0c ec 68 92 5d 47 6f 0a 57 e8 b8 5f 82 80 7e f5 d7 5b 09 2a
+1794384681.477383: SAE: Peer commit-element(y) - hexdump(len=32): 96 05 67 01 2a 37 ca 40 b1 8c f9 da 4e 20 22 0d 61 47 cd 34 2f 6f fa 84 b7 9f 56 c0 59 8e 2e 64
+1794384681.477383: SAE: Possible elements at the end of the frame - hexdump(len=19): ff 05 72 00 0f ac 18 ff 0a 6b 00 00 07 02 00 00 00 07 00
+1794384681.477384: SAE: Received AKM Suite Selector: 000fac18
+1794384681.477384: SAE: k - hexdump(len=32): 54 92 44 4b cb 68 cf f6 3c ae 91 5d 12 55 2b 05 d5 26 ff e6 6c 12 60 bb 82 8d 64 01 82 d5 0c 16
+1794384681.477384: SAE: Derive keys - H2E=1 AKMP=0x4000000 = 000fac18 (SAE-EXT-KEY)
+1794384681.477384: SAE: salt for keyseed derivation - hexdump(len=32): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794384681.477385: SAE: keyseed - hexdump(len=32): 5d 80 6d e8 e9 ec 7a 87 e8 bc 6b 0d 98 1f 9a dc af cc c2 54 32 27 f4 b4 9a b8 0b 59 54 e1 a6 e0
+1794384681.477385: SAE: PMKID - hexdump(len=16): a6 d0 52 c9 74 77 f0 78 52 a6 3a b0 0f a3 58 b2
+1794384681.477385: SAE: KCK - hexdump(len=32): 3c 37 95 bd 2b d4 0f 07 b0 e4 e8 0f 75 cc 6b c4 44 9d 05 ac b1 9b 5e 7e 6a 57 cd cb 0e ba 11 fc
+1794384681.477386: SAE: PMK - hexdump(len=32): 99 0c be 57 fd 22 0d a6 1c f9 6e 7f f4 25 04 b5 af 7b 72 31 a4 20 c5 89 f8 a7 18 df 5a c1 38 cf
+1794384681.477386: wlan8: MLD: key_mgmt=0x4000000
+1794384681.477386: wlan8: MLD: key_mgmt=0x4000000
+1794384681.477387: SAE-PK: Not a valid password (length)
+1794384681.477387: MLD: In authentication
+1794384681.477388: MLD: valid_links=3, band_pref=0, bssid_pref=00:00:00:00:00:00
+1794384681.477388: IEEE 802.11 element parse ignored unknown element (id=201 elen=20)
+1794384681.477388: wlan8: Automatic auth_alg selection: 0x1
+1794384681.477388: wlan8: Using SAE auth_alg
+1794384681.477389: RSN: PMKSA cache search - network_ctx=0x550000560580 try_opportunistic=0 akmp=0x4000000
+1794384681.477389: RSN: Search for BSSID 02:00:00:00:07:00
+1794384681.477389: RSN: No PMKSA cache entry found
+1794384681.477389: EAPOL: External notification - EAP success=0
+1794384681.477390: EAPOL: External notification - EAP fail=0
+1794384681.477390: EAPOL: External notification - portControl=Auto
+1794384681.477390: wlan8: Cancelling scan request
+1794384681.477390: wlan8: SME: Trying to authenticate with 02:00:00:c2:e0:2e (SSID='explorer_mld' freq=2412 MHz)
+1794384681.477391: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=6720 send_len=86
+1794384681.477391: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477391: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=86
+1794384681.477391: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477392: EAPOL: External notification - portValid=0
+1794384681.477392: wlan8: State: AUTHENTICATING -> AUTHENTICATING
+1794384681.477392: NAN: state change notif: n_active=1, p2p_in_progress=0
+1794384681.477392: nl80211: Data frame filter flags=0x4
+1794384681.477393: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.477393: wlan8: Failed to get MLO link info
+1794384681.477393: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=7680 send_len=27
+1794384681.477393: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477394: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=960 send_len=27
+1794384681.477394: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477394: wlan8: Shared frequencies (len=0): completed iteration
+1794384681.477394: nl80211: Authenticate (ifindex=13)
+1794384681.477395:   * bssid=02:00:00:c2:e0:2e
+1794384681.477395:   * freq=2412
+1794384681.477395:   * SSID=explorer_mld
+1794384681.477395:   * IEs - hexdump(len=0): [NULL]
+1794384681.477396:   * auth_data - hexdump(len=38): 02 00 00 00 01 00 17 98 e3 56 de d8 5c 70 05 a9 6f 16 49 79 27 99 95 f6 8c 90 34 9a f4 d5 84 fc 76 be 47 71 c5 e6
+1794384681.477396:   * Auth Type 4
+1794384681.477396:   * MLD: link_id=0, MLD addr=02:00:00:00:07:00
+1794384681.477397: nl80211: Authentication request sent successfully
+1794384681.477427: nl80211: Event message available
+1794384681.477427: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.477429: nl80211: Event message available
+1794384681.477429: nl80211: Drv Event 37 (NL80211_CMD_AUTHENTICATE) received for wlan8
+1794384681.477429: nl80211: MLME event 37 (NL80211_CMD_AUTHENTICATE) on wlan8(02:00:00:00:08:00) A1=02:00:00:00:08:00 A2=02:00:00:00:07:00 on link_id=-1
+1794384681.477429: nl80211: MLME event frame - hexdump(len=76): b0 00 00 00 02 00 00 00 08 00 02 00 00 00 07 00 02 00 00 00 07 00 30 00 03 00 02 00 00 00 01 00 b0 3d 73 c0 bc ee 61 8e f9 55 9e d6 e7 7b c0 92 2d 04 d6 86 8d ff e9 ff 25 03 a1 2a 2a b6 06 e7 ff 0a 6b 00 00 07 02 00 00 00 07 00
+1794384681.477430: nl80211: Authenticate event
+1794384681.477430: wlan8: Event AUTH (10) received
+1794384681.477430: wlan8: SME: Authentication response: peer=02:00:00:00:07:00 auth_type=3 auth_transaction=2 status_code=0
+1794384681.477430: SME: Authentication response IEs - hexdump(len=46): 01 00 b0 3d 73 c0 bc ee 61 8e f9 55 9e d6 e7 7b c0 92 2d 04 d6 86 8d ff e9 ff 25 03 a1 2a 2a b6 06 e7 ff 0a 6b 00 00 07 02 00 00 00 07 00
+1794384681.477431: wlan8: SME: SAE authentication transaction 2 status code 0
+1794384681.477431: wlan8: SME SAE confirm
+1794384681.477431: SAE: peer-send-confirm 1
+1794384681.477431: SME: SAE completed - setting PMK for 4-way handshake
+1794384681.477432: WPA: Set PMK based on external data - hexdump(len=32): 99 0c be 57 fd 22 0d a6 1c f9 6e 7f f4 25 04 b5 af 7b 72 31 a4 20 c5 89 f8 a7 18 df 5a c1 38 cf
+1794384681.477433: RSN: Added PMKSA cache entry for 02:00:00:00:07:00 spa=02:00:00:00:08:00 network_ctx=0x550000560580 akmp=0x4000000
+1794384681.477433: wlan8: PMKSA-CACHE-ADDED 02:00:00:00:07:00 0
+1794384681.477433: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=8640 send_len=37
+1794384681.477434: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477434: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=37
+1794384681.477434: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477434: nl80211: Add PMKID for 02:00:00:00:07:00
+1794384681.477435: nl80211: NL80211_CMD_SET_PMKSA with skip_pmk=false pmk_len=32
+1794384681.477435: nl80211: NL80211_CMD_SET_PMKSA failed: -95 (Operation not supported)
+1794384681.477435: MLD: MLD MAC address=02:00:00:00:07:00
+1794384681.477435: SME: Association Request IEs - hexdump(len=68): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06 7f 0a 04 00 4a 02 01 40 00 c0 01 01 3b 17 51 51 52 53 54 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f 80 81 00 82 80 f4 01 20
+1794384681.477436: wlan8: Trying to associate with 02:00:00:00:07:00 (SSID='explorer_mld' freq=2412 MHz)
+1794384681.477436: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=9600 send_len=78
+1794384681.477436: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477436: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=960 send_len=78
+1794384681.477437: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477437: wlan8: State: AUTHENTICATING -> ASSOCIATING
+1794384681.477437: nl80211: Set wlan8 operstate 0->0 (DORMANT)
+1794384681.477437: netlink: Operstate: ifindex=13 linkmode=-1 (no change), operstate=5 (IF_OPER_DORMANT)
+1794384681.477438: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.477438: wlan8: Failed to get MLO link info
+1794384681.477438: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=10560 send_len=27
+1794384681.477438: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.477439: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=1920 send_len=27
+1794384681.477439: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.477439: wlan8: Shared frequencies (len=0): completed iteration
+1794384681.477440: P2P: Add operating class 81
+1794384681.477440: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.477440: P2P: Update channel list
+1794384681.477440: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.477441: P2P: cli_channels:
+1794384681.477441: NAN: state change notif: n_active=1, p2p_in_progress=0
+1794384681.477441: WPA: set own WPA/RSN IE - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1794384681.477441: RSN: set own RSNXE - hexdump(len=3): f4 01 20
+1794384681.477442: MLD: In association. assoc_link_id=0, valid_links=0x3
+1794384681.477442: MLD: id=0, freq=2412, disabled=0, ies_len=0, 02:00:00:c2:e0:2e
+1794384681.477442: MLD: id=1, freq=2437, disabled=0, ies_len=0, 02:00:00:1f:03:20
+1794384681.477442: nl80211: Associate (ifindex=13)
+1794384681.477443:   * MLD: MLD addr=02:00:00:00:07:00
+1794384681.477443:   * SSID=explorer_mld
+1794384681.477443:   * IEs - hexdump(len=68): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06 7f 0a 04 00 4a 02 01 40 00 c0 01 01 3b 17 51 51 52 53 54 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f 80 81 00 82 80 f4 01 20
+1794384681.477443:   * WPA Versions 0x4
+1794384681.477444:   * pairwise=0xfac04
+1794384681.477444:   * group=0xfac04
+1794384681.477444:   * akm[0]=0xfac18
+1794384681.477444:   * htcaps - hexdump(len=26): 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794384681.477445:   * htcaps_mask - hexdump(len=26): 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794384681.477445:   * vhtcaps - hexdump(len=12): 00 00 00 00 00 00 00 00 00 00 00 00
+1794384681.477445:   * vhtcaps_mask - hexdump(len=12): 00 00 00 00 00 00 00 00 00 00 00 00
+1794384681.477445: nl80211: Association request sent successfully
+1794384681.487296: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=1 ifi_family=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+1794384681.487318: nl80211: Event message available
+1794384681.487318: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.487320: nl80211: Event message available
+1794384681.487320: nl80211: Drv Event 38 (NL80211_CMD_ASSOCIATE) received for wlan8
+1794384681.487320: nl80211: MLME event 38 (NL80211_CMD_ASSOCIATE) on wlan8(02:00:00:00:08:00) A1=02:00:00:00:08:00 A2=02:00:00:00:07:00 on link_id=-1
+1794384681.487320: nl80211: MLME event frame - hexdump(len=418): 10 00 00 00 02 00 00 00 08 00 02 00 00 00 07 00 02 00 00 00 07 00 40 00 11 04 00 00 01 c0 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 bc fc ff 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 5a 03 24 01 00 f4 01 20 ff d3 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 01 20 00 c1 f1 09 14 02 00 00 1f 03 20 64 00 00 00 00 00 00 00 00 00 00 02 01 11 04 00 00 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9e fc ff ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794384681.487321: nl80211: Associate event
+1794384681.487321: nl80211: MLO link 0 associated on 2412 MHz
+1794384681.487321: nl80211: Associated on 2412 MHz
+1794384681.487321: nl80211: MLO link 0 associated with 02:00:00:c2:e0:2e
+1794384681.487322: nl80211: Associated with 02:00:00:c2:e0:2e
+1794384681.487322: nl80211: MLO link 1 associated on 2437 MHz
+1794384681.487322: nl80211: Associated on 2437 MHz
+1794384681.487322: nl80211: MLO link 1 associated with 02:00:00:1f:03:20
+1794384681.487323: nl80211: Associated with 02:00:00:1f:03:20
+1794384681.487323: nl80211: Set drv->ssid based on scan res info to 'explorer_mld'
+1794384681.487323: wlan8: Event ASSOC (0) received
+1794384681.487323: wlan8: Association info event
+1794384681.487324: req_ies - hexdump(len=292): 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 7f 0a 04 00 4a 02 01 40 00 c0 01 01 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 70 6b 00 01 09 02 00 00 00 08 00 00 00 00 62 31 00 07 b2 6a 0b 17 21 18 30 04 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 11 6c 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00 ff 11 6c 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00 3b 17 51 51 52 53 54 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f 80 81 00 82 80 f4 01 20 dd 07 00 50 f2 02 00 01 00
+1794384681.487324: resp_ies - hexdump(len=388): 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 bc fc ff 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 5a 03 24 01 00 f4 01 20 ff d3 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 01 20 00 c1 f1 09 14 02 00 00 1f 03 20 64 00 00 00 00 00 00 00 00 00 00 02 01 11 04 00 00 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9e fc ff ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794384681.487324: WNM: BSS Max Idle Period: 292 (* 1000 TU)
+1794384681.487325: wlan8: freq=2412 MHz
+1794384681.487325: MLD: sub element: len=100, sub_elem_len=98, Fragment subelems=0
+1794384681.487325: MLD: sub element: len=100, sub_elem_len=98, Fragment subelems=0
+1794384681.487325: MLD: link: sub_elem_len=87
+1794384681.487326: MLD: sub element: len=195, sub_elem_len=193, Fragment subelems=0
+1794384681.487326: MLD: link: sub_elem_len=167
+1794384681.487326: WPA: set own WPA/RSN IE - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1794384681.487326: wlan8: RSN: PMKID from assoc IE not found from PMKSA cache
+1794384681.487327: RSN: set own RSNXE - hexdump(len=3): f4 01 20
+1794384681.487327: wlan8: State: ASSOCIATING -> ASSOCIATED
+1794384681.487327: nl80211: Set wlan8 operstate 0->0 (DORMANT)
+1794384681.487328: netlink: Operstate: ifindex=13 linkmode=-1 (no change), operstate=5 (IF_OPER_DORMANT)
+1794384681.487328: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.487328: wlan8: Shared frequencies (len=1): completed iteration
+1794384681.487328: wlan8: freq[0]: 2412, flags=0x1
+1794384681.487329: P2P: Add operating class 81
+1794384681.487329: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.487329: P2P: Update channel list
+1794384681.487329: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.487330: P2P: cli_channels:
+1794384681.487330: NAN: state change notif: n_active=1, p2p_in_progress=0
+1794384681.487330: wlan8: Associated to a new BSS: BSSID=02:00:00:00:07:00
+1794384681.487331: nl80211: Received scan results (0 BSSes)
+1794384681.487331: wlan8: BSS: Start scan result update 2
+1794384681.487332: wlan8: Associated with 02:00:00:00:07:00
+1794384681.487332: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=11520 send_len=33
+1794384681.487332: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.487332: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=33
+1794384681.487333: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.487333: wlan8: WPA: Association event - clear replay counter
+1794384681.487333: wlan8: WPA: Clear old PTK
+1794384681.487333: TDLS: Remove peers on association
+1794384681.487334: MLO link[0]: RSN: Set AP RSNE - hexdump(len=22): 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00
+1794384681.487334: MLO link[0]: RSN: Set AP RSNXE - hexdump(len=3): f4 01 20
+1794384681.487334: MLO link[1]: RSN: Set AP RSNE - hexdump(len=22): 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00
+1794384681.487334: MLO link[1]: RSN: Set AP RSNXE - hexdump(len=3): f4 01 20
+1794384681.487335: EAPOL: External notification - portEnabled=0
+1794384681.487335: EAPOL: External notification - portValid=0
+1794384681.487335: EAPOL: External notification - EAP success=0
+1794384681.487335: EAPOL: External notification - portEnabled=1
+1794384681.487336: EAPOL: SUPP_PAE entering state CONNECTING
+1794384681.487336: EAPOL: SUPP_BE entering state IDLE
+1794384681.487336: wlan8: Setting authentication timeout: 10 sec 0 usec
+1794384681.487337: wlan8: Cancelling scan request
+1794384681.487337: WMM AC: AC mandatory: AC_BE=0 AC_BK=0 AC_VI=0 AC_VO=0
+1794384681.487337: WMM AC: U-APSD queues=0x0
+1794384681.487338: WMM AC: Valid WMM association, WMM AC is enabled
+1794384681.487338: wlan8: CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+1794384681.487338: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=12480 send_len=40
+1794384681.487338: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.487339: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=960 send_len=40
+1794384681.487339: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.487340: nl80211: Event message available
+1794384681.487341: nl80211: Drv Event 46 (NL80211_CMD_CONNECT) received for wlan8
+1794384681.487341: nl80211: Ignore connect event (cmd=46) when using userspace SME
+1794384681.487387: nl80211: Event message available
+1794384681.487387: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.487387: nl80211: Event message available
+1794384681.487388: nl80211: BSS Event 129 (NL80211_CMD_CONTROL_PORT_FRAME) received for wlan8
+1794384681.487388: wlan8: Event EAPOL_RX (23) received
+1794384681.487388: wlan8: RX EAPOL from 02:00:00:00:07:00 (encrypted=0)
+1794384681.487388: RX EAPOL - hexdump(len=133): 02 03 00 81 02 00 88 00 10 00 00 00 00 00 00 00 01 dd 55 38 59 42 8e 38 cc 6e de 19 ae f2 93 90 72 70 cd eb be a0 95 56 65 1e 09 a1 56 c0 1b da 99 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 22 dd 14 00 0f ac 04 a6 d0 52 c9 74 77 f0 78 52 a6 3a b0 0f a3 58 b2 dd 0a 00 0f ac 03 02 00 00 00 07 00
+1794384681.487389: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=13440 send_len=30
+1794384681.487389: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.487389: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=30
+1794384681.487389: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.487390: wlan8: Setting authentication timeout: 10 sec 0 usec
+1794384681.487390: wlan8: IEEE 802.1X RX: version=2 type=3 length=129
+1794384681.487390: WPA: RX EAPOL-Key - hexdump(len=133): 02 03 00 81 02 00 88 00 10 00 00 00 00 00 00 00 01 dd 55 38 59 42 8e 38 cc 6e de 19 ae f2 93 90 72 70 cd eb be a0 95 56 65 1e 09 a1 56 c0 1b da 99 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 22 dd 14 00 0f ac 04 a6 d0 52 c9 74 77 f0 78 52 a6 3a b0 0f a3 58 b2 dd 0a 00 0f ac 03 02 00 00 00 07 00
+1794384681.487391: wlan8:   EAPOL-Key type=2
+1794384681.487391: wlan8:   key_info 0x88 (ver=0 keyidx=0 rsvd=0 Pairwise Ack)
+1794384681.487391: wlan8:   key_length=16 key_data_length=34
+1794384681.487392:   replay_counter - hexdump(len=8): 00 00 00 00 00 00 00 01
+1794384681.487392:   key_nonce - hexdump(len=32): dd 55 38 59 42 8e 38 cc 6e de 19 ae f2 93 90 72 70 cd eb be a0 95 56 65 1e 09 a1 56 c0 1b da 99
+1794384681.487392:   key_iv - hexdump(len=16): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794384681.487392:   key_rsc - hexdump(len=8): 00 00 00 00 00 00 00 00
+1794384681.487393:   key_id (reserved) - hexdump(len=8): 00 00 00 00 00 00 00 00
+1794384681.487393:   key_mic - hexdump(len=16): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794384681.487393: wlan8: WPA: RX message 1 of 4-Way Handshake from 02:00:00:00:07:00 (ver=0)
+1794384681.487393: RSN: msg 1/4 key data - hexdump(len=34): dd 14 00 0f ac 04 a6 d0 52 c9 74 77 f0 78 52 a6 3a b0 0f a3 58 b2 dd 0a 00 0f ac 03 02 00 00 00 07 00
+1794384681.487394: WPA: PMKID in EAPOL-Key - hexdump(len=22): dd 14 00 0f ac 04 a6 d0 52 c9 74 77 f0 78 52 a6 3a b0 0f a3 58 b2
+1794384681.487394: WPA: MAC Address in EAPOL-Key: 02:00:00:00:07:00
+1794384681.487394: RSN: PMKID from Authenticator - hexdump(len=16): a6 d0 52 c9 74 77 f0 78 52 a6 3a b0 0f a3 58 b2
+1794384681.487394: RSN: matched PMKID - hexdump(len=16): a6 d0 52 c9 74 77 f0 78 52 a6 3a b0 0f a3 58 b2
+1794384681.487395: WPA: Set PMK based on current PMKSA - hexdump(len=32): 99 0c be 57 fd 22 0d a6 1c f9 6e 7f f4 25 04 b5 af 7b 72 31 a4 20 c5 89 f8 a7 18 df 5a c1 38 cf
+1794384681.487395: RSN: PMK from PMKSA cache - hexdump(len=32): 99 0c be 57 fd 22 0d a6 1c f9 6e 7f f4 25 04 b5 af 7b 72 31 a4 20 c5 89 f8 a7 18 df 5a c1 38 cf
+1794384681.487395: EAPOL: PMKSA caching was used - skip EAPOL
+1794384681.487395: EAPOL: SUPP_PAE entering state AUTHENTICATING
+1794384681.487396: EAPOL: SUPP_BE entering state SUCCESS
+1794384681.487396: EAP: EAP entering state DISABLED
+1794384681.487396: EAPOL: SUPP_BE entering state IDLE
+1794384681.487396: wlan8: State: ASSOCIATED -> 4WAY_HANDSHAKE
+1794384681.487397: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.487397: wlan8: Shared frequencies (len=1): completed iteration
+1794384681.487397: wlan8: freq[0]: 2412, flags=0x1
+1794384681.487397: P2P: Add operating class 81
+1794384681.487398: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.487398: P2P: Update channel list
+1794384681.487398: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.487398: P2P: cli_channels:
+1794384681.487399: NAN: state change notif: n_active=1, p2p_in_progress=0
+1794384681.487400: WPA: Renewed SNonce - hexdump(len=32): 14 57 29 0b 50 ae b1 8b 4d 08 fe b3 7a 76 b6 fd 23 3d 54 13 70 01 42 e9 ba 3f e5 3d f6 9e 8c 18
+1794384681.487400: SAE: PTK derivation using PRF(SHA256)
+1794384681.487400: WPA: PTK derivation - A1=02:00:00:00:08:00 A2=02:00:00:00:07:00
+1794384681.487401: WPA: Nonce1 - hexdump(len=32): 14 57 29 0b 50 ae b1 8b 4d 08 fe b3 7a 76 b6 fd 23 3d 54 13 70 01 42 e9 ba 3f e5 3d f6 9e 8c 18
+1794384681.487401: WPA: Nonce2 - hexdump(len=32): dd 55 38 59 42 8e 38 cc 6e de 19 ae f2 93 90 72 70 cd eb be a0 95 56 65 1e 09 a1 56 c0 1b da 99
+1794384681.487401: WPA: PMK - hexdump(len=32): 99 0c be 57 fd 22 0d a6 1c f9 6e 7f f4 25 04 b5 af 7b 72 31 a4 20 c5 89 f8 a7 18 df 5a c1 38 cf
+1794384681.487402: WPA: PTK - hexdump(len=48): 34 10 56 29 69 b3 88 d0 d5 f3 82 4b 7b 69 22 70 49 8d c1 41 77 dc b1 a0 63 19 cd fc c6 5a 06 4a cd 67 29 fb 7b 47 16 20 97 af 66 4e 51 3a ed a5
+1794384681.487402: WPA: KCK - hexdump(len=16): 34 10 56 29 69 b3 88 d0 d5 f3 82 4b 7b 69 22 70
+1794384681.487402: WPA: KEK - hexdump(len=16): 49 8d c1 41 77 dc b1 a0 63 19 cd fc c6 5a 06 4a
+1794384681.487402: WPA: TK - hexdump(len=16): cd 67 29 fb 7b 47 16 20 97 af 66 4e 51 3a ed a5
+1794384681.487403: MLO: Add MAC KDE into EAPOL-Key 2/4
+1794384681.487403: Add MLO Link KDE(s) into EAPOL-Key 2/4
+1794384681.487403: MLO: Add MLO Link 1 KDE in EAPOL-Key 2/4
+1794384681.487403: WPA: WPA IE for msg 2/4 - hexdump(len=56): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06 f4 01 20 dd 0a 00 0f ac 03 02 00 00 00 08 00 dd 0b 00 0f ac 13 01 b2 6a 0b 17 21 18
+1794384681.487404: WPA: Replay Counter - hexdump(len=8): 00 00 00 00 00 00 00 01
+1794384681.487404: wlan8: WPA: Sending EAPOL-Key 2/4
+1794384681.487404: WPA: Send EAPOL-Key frame to 02:00:00:00:07:00 ver=0 mic_len=16 key_mgmt=0x4000000
+1794384681.487404: RSN: EAPOL-Key MIC using HMAC-SHA256 (AKM-defined - SAE-EXT-KEY)
+1794384681.487405: RSN: KCK - hexdump(len=16): 34 10 56 29 69 b3 88 d0 d5 f3 82 4b 7b 69 22 70
+1794384681.487405: RSN: EAPOL-Key MIC - hexdump(len=16): 6d 71 a6 5d 00 12 7b 40 b4 82 6a 9b d2 b7 2c ce
+1794384681.487405: WPA: KCK - hexdump(len=16): 34 10 56 29 69 b3 88 d0 d5 f3 82 4b 7b 69 22 70
+1794384681.487405: WPA: Derived Key MIC - hexdump(len=16): 6d 71 a6 5d 00 12 7b 40 b4 82 6a 9b d2 b7 2c ce
+1794384681.487406: WPA: TX EAPOL-Key - hexdump(len=155): 01 03 00 97 02 01 08 00 00 00 00 00 00 00 00 00 01 14 57 29 0b 50 ae b1 8b 4d 08 fe b3 7a 76 b6 fd 23 3d 54 13 70 01 42 e9 ba 3f e5 3d f6 9e 8c 18 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 6d 71 a6 5d 00 12 7b 40 b4 82 6a 9b d2 b7 2c ce 00 38 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06 f4 01 20 dd 0a 00 0f ac 03 02 00 00 00 08 00 dd 0b 00 0f ac 13 01 b2 6a 0b 17 21 18
+1794384681.487406: nl80211: Send over control port dest=02:00:00:00:07:00 proto=0x888e len=155 no_encrypt=1
+1794384681.487406: nl80211: tx_control_port cookie=0x1
+1794384681.487408: nl80211: Event message available
+1794384681.487408: nl80211: Drv Event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) received for wlan8
+1794384681.487408: nl80211: Control port TX status (ack=1), cookie=1
+1794384681.487408: wlan8: Event EAPOL_TX_STATUS (37) received
+1794384681.487457: nl80211: Event message available
+1794384681.487457: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.487458: nl80211: Event message available
+1794384681.487458: nl80211: BSS Event 129 (NL80211_CMD_CONTROL_PORT_FRAME) received for wlan8
+1794384681.487458: wlan8: Event EAPOL_RX (23) received
+1794384681.487458: wlan8: RX EAPOL from 02:00:00:00:07:00 (encrypted=0)
+1794384681.487459: RX EAPOL - hexdump(len=379): 02 03 01 77 02 13 c8 00 10 00 00 00 00 00 00 00 02 dd 55 38 59 42 8e 38 cc 6e de 19 ae f2 93 90 72 70 cd eb be a0 95 56 65 1e 09 a1 56 c0 1b da 99 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 bb 5b 79 d7 f9 43 1d 49 8e 04 99 74 72 73 9a 22 01 18 6b d2 7f 11 46 b3 af b3 ef 77 ef 26 1b 97 07 9e 51 8c b9 a7 a2 7c 5d d8 7c 58 ac 49 53 4f a1 33 eb 7f a5 5b 23 81 93 c5 e7 67 ad 79 eb c2 ff 9d 10 aa f7 bb 18 e2 4b af 64 e5 55 19 b7 c5 ac 75 a0 54 b7 37 c0 b6 ed bc e3 15 23 dd 6b 73 4a 7f 44 72 8a d5 43 87 90 72 31 dc a8 87 21 57 58 0d 58 e2 1e fe 22 7e f3 90 b8 06 fb d0 87 05 55 51 c5 57 24 be d5 88 77 ed 00 58 a5 cc 82 76 76 7f 30 aa a6 c0 96 55 1a f1 81 5b 72 5f fa f1 b4 85 6b 51 5e 45 6a 39 a2 c6 83 b5 dc ac ef c5 ff a7 c7 d5 93 aa 99 54 2d 70 47 2c fc 06 20 b5 c3 13 5c 71 5a 57 f2 33 c0 4e 56 34 33 85 12 68 ea 64 1a a2 11 9f ce a9 62 8b 68 50 de 35 63 45 6d 34 39 2d aa 0c 26 a2 4a 81 c7 96 a1 da 3e a9 a8 64 3c 80 a9 de 51 6a 1c 87 2c 00 fa 2f 12 48 18 40 5e 1d 22 86 77 fd b3 3b 6f 19 ab 99 99 26 4a 2f 02 83 04 f9 4b b9 2b 43 0f a6 ea ab 04 9e 53 34 9e c7 d9 b6 bc 19 a1 2d
+1794384681.487459: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=14400 send_len=30
+1794384681.487459: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.487459: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=30
+1794384681.487460: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.487460: wlan8: IEEE 802.1X RX: version=2 type=3 length=375
+1794384681.487460: WPA: RX EAPOL-Key - hexdump(len=379): 02 03 01 77 02 13 c8 00 10 00 00 00 00 00 00 00 02 dd 55 38 59 42 8e 38 cc 6e de 19 ae f2 93 90 72 70 cd eb be a0 95 56 65 1e 09 a1 56 c0 1b da 99 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 bb 5b 79 d7 f9 43 1d 49 8e 04 99 74 72 73 9a 22 01 18 6b d2 7f 11 46 b3 af b3 ef 77 ef 26 1b 97 07 9e 51 8c b9 a7 a2 7c 5d d8 7c 58 ac 49 53 4f a1 33 eb 7f a5 5b 23 81 93 c5 e7 67 ad 79 eb c2 ff 9d 10 aa f7 bb 18 e2 4b af 64 e5 55 19 b7 c5 ac 75 a0 54 b7 37 c0 b6 ed bc e3 15 23 dd 6b 73 4a 7f 44 72 8a d5 43 87 90 72 31 dc a8 87 21 57 58 0d 58 e2 1e fe 22 7e f3 90 b8 06 fb d0 87 05 55 51 c5 57 24 be d5 88 77 ed 00 58 a5 cc 82 76 76 7f 30 aa a6 c0 96 55 1a f1 81 5b 72 5f fa f1 b4 85 6b 51 5e 45 6a 39 a2 c6 83 b5 dc ac ef c5 ff a7 c7 d5 93 aa 99 54 2d 70 47 2c fc 06 20 b5 c3 13 5c 71 5a 57 f2 33 c0 4e 56 34 33 85 12 68 ea 64 1a a2 11 9f ce a9 62 8b 68 50 de 35 63 45 6d 34 39 2d aa 0c 26 a2 4a 81 c7 96 a1 da 3e a9 a8 64 3c 80 a9 de 51 6a 1c 87 2c 00 fa 2f 12 48 18 40 5e 1d 22 86 77 fd b3 3b 6f 19 ab 99 99 26 4a 2f 02 83 04 f9 4b b9 2b 43 0f a6 ea ab 04 9e 53 34 9e c7 d9 b6 bc 19 a1 2d
+1794384681.487460: wlan8:   EAPOL-Key type=2
+1794384681.487461: wlan8:   key_info 0x13c8 (ver=0 keyidx=0 rsvd=0 Pairwise Install Ack MIC Secure Encr)
+1794384681.487461: wlan8:   key_length=16 key_data_length=280
+1794384681.487461:   replay_counter - hexdump(len=8): 00 00 00 00 00 00 00 02
+1794384681.487461:   key_nonce - hexdump(len=32): dd 55 38 59 42 8e 38 cc 6e de 19 ae f2 93 90 72 70 cd eb be a0 95 56 65 1e 09 a1 56 c0 1b da 99
+1794384681.487462:   key_iv - hexdump(len=16): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794384681.487462:   key_rsc - hexdump(len=8): 00 00 00 00 00 00 00 00
+1794384681.487462:   key_id (reserved) - hexdump(len=8): 00 00 00 00 00 00 00 00
+1794384681.487462:   key_mic - hexdump(len=16): bb 5b 79 d7 f9 43 1d 49 8e 04 99 74 72 73 9a 22
+1794384681.487463: RSN: EAPOL-Key MIC using HMAC-SHA256 (AKM-defined - SAE-EXT-KEY)
+1794384681.487463: RSN: KCK - hexdump(len=16): 34 10 56 29 69 b3 88 d0 d5 f3 82 4b 7b 69 22 70
+1794384681.487463: RSN: EAPOL-Key MIC - hexdump(len=16): bb 5b 79 d7 f9 43 1d 49 8e 04 99 74 72 73 9a 22
+1794384681.487463: RSN: encrypted key data - hexdump(len=280): 6b d2 7f 11 46 b3 af b3 ef 77 ef 26 1b 97 07 9e 51 8c b9 a7 a2 7c 5d d8 7c 58 ac 49 53 4f a1 33 eb 7f a5 5b 23 81 93 c5 e7 67 ad 79 eb c2 ff 9d 10 aa f7 bb 18 e2 4b af 64 e5 55 19 b7 c5 ac 75 a0 54 b7 37 c0 b6 ed bc e3 15 23 dd 6b 73 4a 7f 44 72 8a d5 43 87 90 72 31 dc a8 87 21 57 58 0d 58 e2 1e fe 22 7e f3 90 b8 06 fb d0 87 05 55 51 c5 57 24 be d5 88 77 ed 00 58 a5 cc 82 76 76 7f 30 aa a6 c0 96 55 1a f1 81 5b 72 5f fa f1 b4 85 6b 51 5e 45 6a 39 a2 c6 83 b5 dc ac ef c5 ff a7 c7 d5 93 aa 99 54 2d 70 47 2c fc 06 20 b5 c3 13 5c 71 5a 57 f2 33 c0 4e 56 34 33 85 12 68 ea 64 1a a2 11 9f ce a9 62 8b 68 50 de 35 63 45 6d 34 39 2d aa 0c 26 a2 4a 81 c7 96 a1 da 3e a9 a8 64 3c 80 a9 de 51 6a 1c 87 2c 00 fa 2f 12 48 18 40 5e 1d 22 86 77 fd b3 3b 6f 19 ab 99 99 26 4a 2f 02 83 04 f9 4b b9 2b 43 0f a6 ea ab 04 9e 53 34 9e c7 d9 b6 bc 19 a1 2d
+1794384681.487464: WPA: Decrypt Key Data using AES-UNWRAP (KEK length 16)
+1794384681.487464: WPA: decrypted EAPOL-Key key data - hexdump(len=272): dd 0a 00 0f ac 03 02 00 00 00 07 00 dd 24 00 0f ac 13 30 02 00 00 c2 e0 2e 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 f4 01 20 dd 24 00 0f ac 13 31 02 00 00 1f 03 20 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 f4 01 20 dd 1b 00 0f ac 10 02 00 00 00 00 00 00 37 84 56 8e d2 f3 4c b8 fa 57 2d c5 a4 12 c4 c8 dd 1b 00 0f ac 10 12 00 00 00 00 00 00 ad df d4 6c 02 a9 f2 33 a3 d9 80 4d 12 57 50 33 dd 1d 00 0f ac 11 05 00 00 00 00 00 00 00 00 c1 74 c9 4f 56 d6 28 3e 4b 97 a5 ac 05 f9 88 41 dd 1d 00 0f ac 11 05 00 00 00 00 00 00 00 10 2d 34 ac 87 c9 ee 4f f8 c8 46 b4 b7 86 98 6b 8c dd 1d 00 0f ac 12 07 00 00 00 00 00 00 00 00 28 17 8a b7 f0 6d f5 15 b7 98 c9 5e b3 f5 3c d2 dd 1d 00 0f ac 12 07 00 00 00 00 00 00 00 10 fd 99 bb ba 0a 32 a3 bb 2f ce 53 1c 50 aa 5b 63 dd 00
+1794384681.487464: wlan8: State: 4WAY_HANDSHAKE -> 4WAY_HANDSHAKE
+1794384681.487464: NAN: state change notif: n_active=1, p2p_in_progress=0
+1794384681.487465: wlan8: RSN: RX message 3 of 4-Way Handshake from 02:00:00:00:07:00 (ver=0) (MLO)
+1794384681.487465: WPA: IE KeyData - hexdump(len=272): dd 0a 00 0f ac 03 02 00 00 00 07 00 dd 24 00 0f ac 13 30 02 00 00 c2 e0 2e 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 f4 01 20 dd 24 00 0f ac 13 31 02 00 00 1f 03 20 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 f4 01 20 dd 1b 00 0f ac 10 02 00 00 00 00 00 00 37 84 56 8e d2 f3 4c b8 fa 57 2d c5 a4 12 c4 c8 dd 1b 00 0f ac 10 12 00 00 00 00 00 00 ad df d4 6c 02 a9 f2 33 a3 d9 80 4d 12 57 50 33 dd 1d 00 0f ac 11 05 00 00 00 00 00 00 00 00 c1 74 c9 4f 56 d6 28 3e 4b 97 a5 ac 05 f9 88 41 dd 1d 00 0f ac 11 05 00 00 00 00 00 00 00 10 2d 34 ac 87 c9 ee 4f f8 c8 46 b4 b7 86 98 6b 8c dd 1d 00 0f ac 12 07 00 00 00 00 00 00 00 00 28 17 8a b7 f0 6d f5 15 b7 98 c9 5e b3 f5 3c d2 dd 1d 00 0f ac 12 07 00 00 00 00 00 00 00 10 fd 99 bb ba 0a 32 a3 bb 2f ce 53 1c 50 aa 5b 63 dd 00
+1794384681.487465: WPA: MAC Address in EAPOL-Key: 02:00:00:00:07:00
+1794384681.487466: RSN: Link ID 0 - MLO Link KDE in EAPOL-Key - hexdump(len=38): dd 24 00 0f ac 13 30 02 00 00 c2 e0 2e 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 f4 01 20
+1794384681.487466: RSN: Link ID 1 - MLO Link KDE in EAPOL-Key - hexdump(len=38): dd 24 00 0f ac 13 31 02 00 00 1f 03 20 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 f4 01 20
+1794384681.487466: RSN: Link ID 0 - MLO GTK KDE in EAPOL-Key - hexdump(len=29): dd 1b 00 0f ac 10 02 00 00 00 00 00 00 37 84 56 8e d2 f3 4c b8 fa 57 2d c5 a4 12 c4 c8
+1794384681.487466: RSN: Link ID 1 - MLO GTK KDE in EAPOL-Key - hexdump(len=29): dd 1b 00 0f ac 10 12 00 00 00 00 00 00 ad df d4 6c 02 a9 f2 33 a3 d9 80 4d 12 57 50 33
+1794384681.487467: RSN: Link ID 0 - MLO IGTK KDE in EAPOL-Key - hexdump(len=31): dd 1d 00 0f ac 11 05 00 00 00 00 00 00 00 00 c1 74 c9 4f 56 d6 28 3e 4b 97 a5 ac 05 f9 88 41
+1794384681.487467: RSN: Link ID 1 - MLO IGTK KDE in EAPOL-Key - hexdump(len=31): dd 1d 00 0f ac 11 05 00 00 00 00 00 00 00 10 2d 34 ac 87 c9 ee 4f f8 c8 46 b4 b7 86 98 6b 8c
+1794384681.487467: RSN: Link ID 0 - MLO BIGTK KDE in EAPOL-Key - hexdump(len=31): dd 1d 00 0f ac 12 07 00 00 00 00 00 00 00 00 28 17 8a b7 f0 6d f5 15 b7 98 c9 5e b3 f5 3c d2
+1794384681.487467: RSN: Link ID 1 - MLO BIGTK KDE in EAPOL-Key - hexdump(len=31): dd 1d 00 0f ac 12 07 00 00 00 00 00 00 00 10 fd 99 bb ba 0a 32 a3 bb 2f ce 53 1c 50 aa 5b 63
+1794384681.487468: wlan8: WPA: Installing next TK to the driver
+1794384681.487468: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=3 addr=0x5500004ed220 key_idx=0 set_tx=1 seq_len=6 key_len=16 key_flag=0xa4 link_id=-1
+1794384681.487468: nl80211: set_key for the next TK for RX-only - ignored
+1794384681.487468: MLO: Add MAC KDE into EAPOL-Key 4/4
+1794384681.487469: wlan8: WPA: Sending EAPOL-Key 4/4
+1794384681.487469: WPA: Send EAPOL-Key frame to 02:00:00:00:07:00 ver=0 mic_len=16 key_mgmt=0x4000000
+1794384681.487469: RSN: EAPOL-Key MIC using HMAC-SHA256 (AKM-defined - SAE-EXT-KEY)
+1794384681.487469: RSN: KCK - hexdump(len=16): 34 10 56 29 69 b3 88 d0 d5 f3 82 4b 7b 69 22 70
+1794384681.487470: RSN: EAPOL-Key MIC - hexdump(len=16): dd f8 62 a8 d7 e2 b1 89 2e 21 12 60 dc 70 64 d8
+1794384681.487470: WPA: KCK - hexdump(len=16): 34 10 56 29 69 b3 88 d0 d5 f3 82 4b 7b 69 22 70
+1794384681.487470: WPA: Derived Key MIC - hexdump(len=16): dd f8 62 a8 d7 e2 b1 89 2e 21 12 60 dc 70 64 d8
+1794384681.487470: WPA: TX EAPOL-Key - hexdump(len=111): 01 03 00 6b 02 03 08 00 00 00 00 00 00 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 dd f8 62 a8 d7 e2 b1 89 2e 21 12 60 dc 70 64 d8 00 0c dd 0a 00 0f ac 03 02 00 00 00 08 00
+1794384681.487471: nl80211: Send over control port dest=02:00:00:00:07:00 proto=0x888e len=111 no_encrypt=1
+1794384681.487471: nl80211: tx_control_port cookie=0x2
+1794384681.487471: wlan8: WPA: Installing TK to the driver
+1794384681.487471: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=3 addr=0x5500004ed220 key_idx=0 set_tx=1 seq_len=6 key_len=16 key_flag=0x2c link_id=-1
+1794384681.487472: nl80211: NEW_KEY
+1794384681.487472: nl80211: KEY_DATA - hexdump(len=16): cd 67 29 fb 7b 47 16 20 97 af 66 4e 51 3a ed a5
+1794384681.487472: nl80211: KEY_SEQ - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487472:    addr=02:00:00:00:07:00
+1794384681.487473:    pairwise key
+1794384681.487473: Added PTKSA cache entry addr=02:00:00:00:07:00 cipher=16
+1794384681.487474: EAPOL: External notification - portValid=1
+1794384681.487474: EAPOL: SUPP_PAE entering state AUTHENTICATED
+1794384681.487474: EAPOL: Supplicant port status: Authorized
+1794384681.487475: nl80211: Set supplicant port authorized for 02:00:00:00:07:00
+1794384681.487475: EAPOL authentication completed - result=SUCCESS
+1794384681.487475: wlan8: State: 4WAY_HANDSHAKE -> GROUP_HANDSHAKE
+1794384681.487475: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.487476: wlan8: Shared frequencies (len=1): completed iteration
+1794384681.487476: wlan8: freq[0]: 2412, flags=0x1
+1794384681.487476: P2P: Add operating class 81
+1794384681.487477: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.487477: P2P: Update channel list
+1794384681.487477: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.487477: P2P: cli_channels:
+1794384681.487478: NAN: state change notif: n_active=1, p2p_in_progress=0
+1794384681.487478: MLO link[0]: RSN: received GTK in pairwise handshake - hexdump(len=23): 02 00 00 00 00 00 00 37 84 56 8e d2 f3 4c b8 fa 57 2d c5 a4 12 c4 c8
+1794384681.487478: MLO link[0]: RSN: Group Key - hexdump(len=16): 37 84 56 8e d2 f3 4c b8 fa 57 2d c5 a4 12 c4 c8
+1794384681.487478: wlan8: RSN: Installing GTK to the driver (link_id=0 keyidx=2 tx=0 len=16)
+1794384681.487479: MLO link[0]: RSN: RSC - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487479: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=3 addr=0x55000034423c key_idx=2 set_tx=0 seq_len=6 key_len=16 key_flag=0x14 link_id=0
+1794384681.487479: nl80211: NEW_KEY
+1794384681.487479: nl80211: KEY_DATA - hexdump(len=16): 37 84 56 8e d2 f3 4c b8 fa 57 2d c5 a4 12 c4 c8
+1794384681.487480: nl80211: KEY_SEQ - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487480:    broadcast key
+1794384681.487480: nl80211: Link ID 0
+1794384681.487480: MLO link[1]: RSN: received GTK in pairwise handshake - hexdump(len=23): 12 00 00 00 00 00 00 ad df d4 6c 02 a9 f2 33 a3 d9 80 4d 12 57 50 33
+1794384681.487481: MLO link[1]: RSN: Group Key - hexdump(len=16): ad df d4 6c 02 a9 f2 33 a3 d9 80 4d 12 57 50 33
+1794384681.487481: wlan8: RSN: Installing GTK to the driver (link_id=1 keyidx=2 tx=0 len=16)
+1794384681.487481: MLO link[1]: RSN: RSC - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487481: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=3 addr=0x55000034423c key_idx=2 set_tx=0 seq_len=6 key_len=16 key_flag=0x14 link_id=1
+1794384681.487482: nl80211: NEW_KEY
+1794384681.487482: nl80211: KEY_DATA - hexdump(len=16): ad df d4 6c 02 a9 f2 33 a3 d9 80 4d 12 57 50 33
+1794384681.487482: nl80211: KEY_SEQ - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487482:    broadcast key
+1794384681.487483: nl80211: Link ID 1
+1794384681.487483: wlan8: RSN: MLO Link 0 IGTK keyid 5 pn 000000000000
+1794384681.487483: MLO link[0]: RSN: IGTK - hexdump(len=16): c1 74 c9 4f 56 d6 28 3e 4b 97 a5 ac 05 f9 88 41
+1794384681.487483: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=4 addr=0x55000034423c key_idx=5 set_tx=0 seq_len=6 key_len=16 key_flag=0x14 link_id=0
+1794384681.487484: nl80211: NEW_KEY
+1794384681.487484: nl80211: KEY_DATA - hexdump(len=16): c1 74 c9 4f 56 d6 28 3e 4b 97 a5 ac 05 f9 88 41
+1794384681.487484: nl80211: KEY_SEQ - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487484:    broadcast key
+1794384681.487485: nl80211: Link ID 0
+1794384681.487485: wlan8: RSN: MLO Link 0 BIGTK keyid 7 pn 000000000000
+1794384681.487485: MLO link[0]: RSN: BIGTK - hexdump(len=16): 28 17 8a b7 f0 6d f5 15 b7 98 c9 5e b3 f5 3c d2
+1794384681.487485: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=4 addr=0x55000034423c key_idx=7 set_tx=0 seq_len=6 key_len=16 key_flag=0x14 link_id=0
+1794384681.487486: nl80211: NEW_KEY
+1794384681.487486: nl80211: KEY_DATA - hexdump(len=16): 28 17 8a b7 f0 6d f5 15 b7 98 c9 5e b3 f5 3c d2
+1794384681.487486: nl80211: KEY_SEQ - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487486:    broadcast key
+1794384681.487487: nl80211: Link ID 0
+1794384681.487487: wlan8: RSN: MLO Link 1 IGTK keyid 5 pn 000000000000
+1794384681.487487: MLO link[1]: RSN: IGTK - hexdump(len=16): 2d 34 ac 87 c9 ee 4f f8 c8 46 b4 b7 86 98 6b 8c
+1794384681.487488: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=4 addr=0x55000034423c key_idx=5 set_tx=0 seq_len=6 key_len=16 key_flag=0x14 link_id=1
+1794384681.487488: nl80211: NEW_KEY
+1794384681.487488: nl80211: KEY_DATA - hexdump(len=16): 2d 34 ac 87 c9 ee 4f f8 c8 46 b4 b7 86 98 6b 8c
+1794384681.487488: nl80211: KEY_SEQ - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487489:    broadcast key
+1794384681.487489: nl80211: Link ID 1
+1794384681.487489: wlan8: RSN: MLO Link 1 BIGTK keyid 7 pn 000000000000
+1794384681.487489: MLO link[1]: RSN: BIGTK - hexdump(len=16): fd 99 bb ba 0a 32 a3 bb 2f ce 53 1c 50 aa 5b 63
+1794384681.487490: wpa_driver_nl80211_set_key: ifindex=13 (wlan8) alg=4 addr=0x55000034423c key_idx=7 set_tx=0 seq_len=6 key_len=16 key_flag=0x14 link_id=1
+1794384681.487490: nl80211: NEW_KEY
+1794384681.487490: nl80211: KEY_DATA - hexdump(len=16): fd 99 bb ba 0a 32 a3 bb 2f ce 53 1c 50 aa 5b 63
+1794384681.487490: nl80211: KEY_SEQ - hexdump(len=6): 00 00 00 00 00 00
+1794384681.487491:    broadcast key
+1794384681.487491: nl80211: Link ID 1
+1794384681.487491: wlan8: WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=CCMP GTK=CCMP]
+1794384681.487491: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=15360 send_len=73
+1794384681.487492: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.487492: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=960 send_len=73
+1794384681.487492: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.487492: wlan8: Cancelling authentication timeout
+1794384681.487493: wlan8: State: GROUP_HANDSHAKE -> COMPLETED
+1794384681.487493: wlan8: Radio work 'sme-connect'@0x55000055fb80 done in 0.010199 seconds
+1794384681.487493: wlan8: radio_work_free('sme-connect'@0x55000055fb80): num_active_works --> 0
+1794384681.487494: wlan8: CTRL-EVENT-CONNECTED - Connection to 02:00:00:00:07:00 completed [id=0 id_str=] ap_mld_addr=02:00:00:00:07:00
+1794384681.487494: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=16320 send_len=109
+1794384681.487494: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.487494: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=1920 send_len=109
+1794384681.487495: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.487495: nl80211: Set wlan8 operstate 0->1 (UP)
+1794384681.487495: netlink: Operstate: ifindex=13 linkmode=-1 (no change), operstate=6 (IF_OPER_UP)
+1794384681.487495: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.487496: wlan8: Shared frequencies (len=1): completed iteration
+1794384681.487496: wlan8: freq[0]: 2412, flags=0x1
+1794384681.487496: P2P: Add operating class 81
+1794384681.487496: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.487497: P2P: Update channel list
+1794384681.487497: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.487497: P2P: cli_channels:
+1794384681.487498: NAN: state change notif: n_active=1, p2p_in_progress=0
+1794384681.487498: EAPOL: External notification - portValid=1
+1794384681.487498: EAPOL: External notification - EAP success=1
+1794384681.487498: EAP: EAP entering state DISABLED
+1794384681.487499: nl80211: Set rekey offload
+1794384681.487499: nl80211: Driver does not support rekey offload
+1794384681.487500: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=6 linkmode=1 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794384681.487534: nl80211: Event message available
+1794384681.487535: nl80211: Drv Event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) received for wlan8
+1794384681.487535: nl80211: Control port TX status (ack=1), cookie=2
+1794384681.487535: wlan8: Event EAPOL_TX_STATUS (37) received
+1794384681.587585: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=1436
+1794384681.587645: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=1436
+1794384681.587706: EAPOL: EAP Session-Id not available
+1794384681.587706: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587712: EAPOL: EAP Session-Id not available
+1794384681.587712: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587716: EAPOL: EAP Session-Id not available
+1794384681.587717: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587750: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.587750: wlan8: Control interface command 'DATA_TEST_CONFIG 1'
+1794384681.587751: wlan8: test data: Enabled
+1794384681.587751: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.587762: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.587762: wlan8: Control interface command 'DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0'
+1794384681.587762: wlan8: test data: TX dst=02:00:00:00:07:00 src=02:00:00:00:08:00 tos=0x0
+1794384681.587763: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.587772: EAPOL: EAP Session-Id not available
+1794384681.587773: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587777: EAPOL: EAP Session-Id not available
+1794384681.587778: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587781: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.587781: wlan8: Control interface command 'DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0'
+1794384681.587782: wlan8: test data: TX dst=ff:ff:ff:ff:ff:ff src=02:00:00:00:08:00 tos=0x0
+1794384681.587782: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.587792: l2_packet_receive: src=02:00:00:00:07:00 len=1500
+1794384681.587792: wlan8: DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+1794384681.587793: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=0 send_len=48
+1794384681.587793: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.587793: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=48
+1794384681.587793: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.587799: EAPOL: EAP Session-Id not available
+1794384681.587800: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587804: EAPOL: EAP Session-Id not available
+1794384681.587804: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587810: l2_packet_receive: src=02:00:00:00:07:00 len=1500
+1794384681.587810: wlan8: DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+1794384681.587811: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=960 send_len=48
+1794384681.587811: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.587811: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=48
+1794384681.587811: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.587816: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.587816: wlan8: Control interface command 'DATA_TEST_CONFIG 0'
+1794384681.587817: wlan8: test data: Disabled
+1794384681.587817: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.587825: EAPOL: EAP Session-Id not available
+1794384681.587826: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587830: EAPOL: EAP Session-Id not available
+1794384681.587831: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587842: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.587843: wlan8: Control interface command 'DATA_TEST_CONFIG 1'
+1794384681.587843: wlan8: test data: Enabled
+1794384681.587843: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.587854: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.587854: wlan8: Control interface command 'DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0'
+1794384681.587855: wlan8: test data: TX dst=02:00:00:00:07:00 src=02:00:00:00:08:00 tos=0x0
+1794384681.587855: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.587865: EAPOL: EAP Session-Id not available
+1794384681.587865: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587869: EAPOL: EAP Session-Id not available
+1794384681.587870: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587873: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.587874: wlan8: Control interface command 'DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0'
+1794384681.587874: wlan8: test data: TX dst=ff:ff:ff:ff:ff:ff src=02:00:00:00:08:00 tos=0x0
+1794384681.587874: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.587884: l2_packet_receive: src=02:00:00:00:07:00 len=1500
+1794384681.587885: wlan8: DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+1794384681.587885: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=0 send_len=48
+1794384681.587885: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.587885: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=48
+1794384681.587886: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.587891: EAPOL: EAP Session-Id not available
+1794384681.587892: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587896: EAPOL: EAP Session-Id not available
+1794384681.587897: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=523
+1794384681.587902: l2_packet_receive: src=02:00:00:00:07:00 len=1500
+1794384681.587903: wlan8: DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+1794384681.587903: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=960 send_len=48
+1794384681.587903: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.587904: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=48
+1794384681.587904: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.587909: Control interface recv command from: /tmp/wpa_ctrl_459-22\x00
+1794384681.587909: wlan8: Control interface command 'DATA_TEST_CONFIG 0'
+1794384681.587909: wlan8: test data: Disabled
+1794384681.587909: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.587924: RTM_NEWLINK: ifi_index=13 ifname=wlan8 wext ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794384681.587926: nl80211: Interface wlan8 does not exist - ignore RTM_NEWLINK
+1794384681.587926: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=2 linkmode=1 ifi_family=0 ifi_flags=0x1002 ()
+1794384681.587954: nl80211: Interface down (/wlan8)
+1794384681.587954: wlan8: Event INTERFACE_DISABLED (26) received
+1794384681.587954: wlan8: Interface was disabled
+1794384681.587954: wlan8: CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1
+1794384681.587955: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=1920 send_len=76
+1794384681.587955: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.587955: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=76
+1794384681.587955: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.588136: nl80211: Data frame filter flags=0x0
+1794384681.588242: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588305: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588373: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_gratuitous_arp: No such file or directory
+1794384681.588400: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unsolicited_na: No such file or directory
+1794384681.588401: wlan8: State: COMPLETED -> DISCONNECTED
+1794384681.588401: nl80211: Set wlan8 operstate 1->0 (DORMANT)
+1794384681.588401: netlink: Operstate: ifindex=13 linkmode=-1 (no change), operstate=5 (IF_OPER_DORMANT)
+1794384681.588402: WMM AC: WMM AC is disabled
+1794384681.588402: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.588402: wlan8: Failed to get MLO link info
+1794384681.588402: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=2880 send_len=27
+1794384681.588403: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-21\x00
+1794384681.588403: CTRL-DEBUG: ctrl_sock-sendmsg: sock=14 sndbuf=212992 outq=0 send_len=27
+1794384681.588403: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-23\x00
+1794384681.588403: wlan8: Shared frequencies (len=0): completed iteration
+1794384681.588404: P2P: Add operating class 81
+1794384681.588404: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.588404: P2P: Update channel list
+1794384681.588405: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.588405: P2P: cli_channels:
+1794384681.588405: NAN: state change notif: n_active=0, p2p_in_progress=0
+1794384681.588405: NAN: Configuring NAN DE: n=(0, 0), suspend=0, cycle=0
+1794384681.588407: wpa_driver_nl80211_set_key: ifindex=0 (wlan8) alg=0 addr=(nil) key_idx=0 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.588407: nl80211: DEL_KEY
+1794384681.588407:    broadcast key
+1794384681.588408: nl80211: set_key failed; err=-19 No such device
+1794384681.588432: wpa_driver_nl80211_set_key: ifindex=0 (wlan8) alg=0 addr=(nil) key_idx=1 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.588432: nl80211: DEL_KEY
+1794384681.588432:    broadcast key
+1794384681.588433: nl80211: set_key failed; err=-19 No such device
+1794384681.588453: wpa_driver_nl80211_set_key: ifindex=0 (wlan8) alg=0 addr=(nil) key_idx=2 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.588453: nl80211: DEL_KEY
+1794384681.588454:    broadcast key
+1794384681.588454: nl80211: set_key failed; err=-19 No such device
+1794384681.588461: wpa_driver_nl80211_set_key: ifindex=0 (wlan8) alg=0 addr=(nil) key_idx=3 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.588461: nl80211: DEL_KEY
+1794384681.588462:    broadcast key
+1794384681.588462: nl80211: set_key failed; err=-19 No such device
+1794384681.588469: wpa_driver_nl80211_set_key: ifindex=0 (wlan8) alg=0 addr=(nil) key_idx=4 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.588469: nl80211: DEL_KEY
+1794384681.588470:    broadcast key
+1794384681.588470: nl80211: set_key failed; err=-19 No such device
+1794384681.588486: wpa_driver_nl80211_set_key: ifindex=0 (wlan8) alg=0 addr=(nil) key_idx=5 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794384681.588486: nl80211: DEL_KEY
+1794384681.588487:    broadcast key
+1794384681.588487: nl80211: set_key failed; err=-19 No such device
+1794384681.588490: wpa_driver_nl80211_set_key: ifindex=0 (wlan8) alg=0 addr=0x5500004e2c38 key_idx=0 set_tx=0 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794384681.588491: nl80211: DEL_KEY
+1794384681.588491:    addr=02:00:00:00:07:00
+1794384681.588491:    pairwise key
+1794384681.588491: nl80211: set_key failed; err=-19 No such device
+1794384681.588499: wpa_driver_nl80211_set_key: ifindex=0 (wlan8) alg=0 addr=0x5500004e2c38 key_idx=1 set_tx=0 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794384681.588499: nl80211: DEL_KEY
+1794384681.588499:    addr=02:00:00:00:07:00
+1794384681.588500:    pairwise key
+1794384681.588500: nl80211: set_key failed; err=-19 No such device
+1794384681.588500: Flush PTKSA cache entry for 02:00:00:00:07:00
+1794384681.588501: EAPOL: External notification - portEnabled=0
+1794384681.588501: EAPOL: SUPP_PAE entering state DISCONNECTED
+1794384681.588501: EAPOL: Supplicant port status: Unauthorized
+1794384681.588501: nl80211: Set supplicant port unauthorized for 02:00:00:00:07:00
+1794384681.588502: nl80211: Failed to set STA flag: -19 (No such device)
+1794384681.588502: EAPOL: SUPP_BE entering state INITIALIZE
+1794384681.588502: EAPOL: External notification - portValid=0
+1794384681.588502: EAPOL: External notification - EAP success=0
+1794384681.588503: wlan8: State: DISCONNECTED -> INTERFACE_DISABLED
+1794384681.588503: wlan8: Determining shared radio frequencies (max len 1)
+1794384681.588504: wlan8: Shared frequencies (len=0): completed iteration
+1794384681.588504: P2P: Add operating class 81
+1794384681.588504: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794384681.588504: P2P: Update channel list
+1794384681.588505: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794384681.588505: P2P: cli_channels:
+1794384681.588505: NAN: state change notif: n_active=0, p2p_in_progress=0
+1794384681.588505: NAN: Configuring NAN DE: n=(0, 0), suspend=0, cycle=0
+1794384681.588507: nl80211: Interface wlan8 does not exist - ignore RTM_NEWLINK
+1794384681.588507: RTM_DELLINK: ifi_index=13 ifname=wlan8 operstate=2 linkmode=1 ifi_family=0 ifi_flags=0x1002 ()
+1794384681.588507: RTM_DELLINK: Interface 'wlan8' removed - mark if_removed=1
+1794384681.588508: wlan8: Event INTERFACE_STATUS (5) received
+1794384681.588508: wlan8: Configured interface was removed
+1794384681.588508: nl80211: Data frame filter flags=0x0
+1794384681.588509: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588511: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588512: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_gratuitous_arp: No such file or directory
+1794384681.588513: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unsolicited_na: No such file or directory
+1794384681.588513: wlan8: State: INTERFACE_DISABLED -> INTERFACE_DISABLED
+1794384681.588514: NAN: state change notif: n_active=0, p2p_in_progress=0
+1794384681.588514: NAN: Configuring NAN DE: n=(0, 0), suspend=0, cycle=0
+1794384681.588514: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794384681.588515: RTM_DELLINK: ifi_index=12 ifname=wlan7 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794384681.588515: RTM_DELLINK: Interface 'wlan7' removed
+1794384681.588516: nl80211: Event message available
+1794384681.588516: nl80211: Drv Event 20 (NL80211_CMD_DEL_STATION) received for wlan8
+1794384681.588517: nl80211: Delete station 02:00:00:00:07:00
+1794384681.588518: l2_packet_receive - recvfrom: Network is down
+1794384681.588519: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-21\x00
+1794384681.588519: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=3
+1794384681.588519: nl80211: Event message available
+1794384681.588520: nl80211: Drv Event 39 (NL80211_CMD_DEAUTHENTICATE) received for wlan8
+1794384681.588520: nl80211: MLME event 39 (NL80211_CMD_DEAUTHENTICATE) on wlan8(02:00:00:00:08:00) A1=02:00:00:00:07:00 A2=02:00:00:00:08:00 on link_id=-1
+1794384681.588520: nl80211: MLME event frame - hexdump(len=26): c0 00 00 00 02 00 00 00 07 00 02 00 00 00 08 00 02 00 00 00 07 00 00 00 03 00
+1794384681.588520: nl80211: Deauthenticate event
+1794384681.588521: wlan8: Ignore event DEAUTH (11) while interface is disabled
+1794384681.588521: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-23\x00
+1794384681.588521: CTRL-DEBUG: ctrl_sock-sendto: sock=14 sndbuf=212992 outq=0 send_len=3
+1794384681.588524: wlan8: ctrl_iface sendto failed: 2 - No such file or directory
+1794384681.588526: nl80211: Event message available
+1794384681.588526: nl80211: Drv Event 48 (NL80211_CMD_DISCONNECT) received for wlan8
+1794384681.588526: nl80211: Ignore disconnect event when using userspace SME
+1794384681.588528: nl80211: Event message available
+1794384681.588528: nl80211: Drv Event 8 (NL80211_CMD_DEL_INTERFACE) received for wlan8
+1794384681.588530: nl80211: Event message available
+1794384681.588530: nl80211: Ignored event 20 (NL80211_CMD_DEL_STATION) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.588531: nl80211: Event message available
+1794384681.588532: nl80211: Ignored event 4 (NL80211_CMD_DEL_WIPHY) for foreign interface (ifindex -1 wdev 0x0 wiphy 8)
+1794384681.588533: nl80211: Event message available
+1794384681.588534: nl80211: Ignored event 16 (NL80211_CMD_STOP_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.588535: nl80211: Event message available
+1794384681.588535: nl80211: Ignored event 16 (NL80211_CMD_STOP_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.588537: nl80211: Event message available
+1794384681.588537: nl80211: Ignored event 8 (NL80211_CMD_DEL_INTERFACE) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794384681.588539: nl80211: Event message available
+1794384681.588539: nl80211: Ignored event 36 (NL80211_CMD_REG_CHANGE) for foreign interface (ifindex -1 wdev 0x0 wiphy 0)
+1794384681.588540: nl80211: Event message available
+1794384681.588541: nl80211: Ignored event 36 (NL80211_CMD_REG_CHANGE) for foreign interface (ifindex -1 wdev 0x0 wiphy 0)
+1794384681.588542: nl80211: Event message available
+1794384681.588542: nl80211: Ignored event 4 (NL80211_CMD_DEL_WIPHY) for foreign interface (ifindex -1 wdev 0x0 wiphy 7)
+1794384681.588751: RX global ctrl_iface - hexdump_ascii(len=10):
+     49 4e 54 45 52 46 41 43 45 53                     INTERFACES      
+1794384681.588752: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=6
+1794384681.588755: RX global ctrl_iface - hexdump_ascii(len=22):
+     49 4e 54 45 52 46 41 43 45 5f 52 45 4d 4f 56 45   INTERFACE_REMOVE
+     20 77 6c 61 6e 38                                  wlan8          
+1794384681.588755: CTRL_IFACE GLOBAL INTERFACE_REMOVE 'wlan8'
+1794384681.588756: wlan8: Removing interface wlan8
+1794384681.588756: nl80211: Getting wowlan status
+1794384681.588756: nl80211: Getting wowlan status failed
+1794384681.588757: wlan8: Request to deauthenticate - bssid=00:00:00:00:00:00 pending_bssid=00:00:00:00:00:00 reason=3 (DEAUTH_LEAVING) state=INTERFACE_DISABLED valid_links=0x0 ap_mld_addr=00:00:00:00:00:00
+1794384681.588757: TDLS: Tear down peers
+1794384681.588757: nl80211: Data frame filter flags=0x0
+1794384681.588758: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588760: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588761: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_gratuitous_arp: No such file or directory
+1794384681.588762: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unsolicited_na: No such file or directory
+1794384681.588762: QM: Clear all active DSCP policies
+1794384681.588763: wlan8: CTRL-EVENT-DSCP-POLICY clear_all
+1794384681.588763: RSN: Flush PMKSA cache entry for 02:00:00:00:07:00
+1794384681.588763: wlan8: PMKSA-CACHE-REMOVED 02:00:00:00:07:00 0
+1794384681.588763: nl80211: Delete PMKID for 02:00:00:00:07:00
+1794384681.588764: nl80211: NL80211_CMD_DEL_PMKSA failed: -19 (No such device)
+1794384681.588764: wlan8: RSN: PMKSA cache entry free_cb: 02:00:00:00:07:00 reason=0
+1794384681.588764: wlan8: RSN: removed current PMKSA entry
+1794384681.588764: RSN: Clear current PMKSA entry selection
+1794384681.588765: wlan8: Request to deauthenticate - bssid=00:00:00:00:00:00 pending_bssid=00:00:00:00:00:00 reason=1 (UNSPECIFIED) state=INTERFACE_DISABLED valid_links=0x0 ap_mld_addr=00:00:00:00:00:00
+1794384681.588765: TDLS: Tear down peers
+1794384681.588765: nl80211: Data frame filter flags=0x0
+1794384681.588766: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588768: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588769: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_gratuitous_arp: No such file or directory
+1794384681.588770: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unsolicited_na: No such file or directory
+1794384681.588770: QM: Clear all active DSCP policies
+1794384681.588771: wlan8: CTRL-EVENT-DSCP-POLICY clear_all
+1794384681.588771: wlan8: Setting scan request: 5.000000 sec
+1794384681.588771: PTKSA: Deinit. n_ptksa=0
+1794384681.588772: wlan8: WPA: Clear old PMK and PTK
+1794384681.588772: wlan8: BSS: Remove id 0 BSSID 02:00:00:c2:e0:2e SSID 'explorer_mld' due to wpa_bss_flush
+1794384681.588772: wlan8: BSS: Remove id 1 BSSID 02:00:00:1f:03:20 SSID 'explorer_mld' due to wpa_bss_flush
+1794384681.588772: wlan8: Cancelling scan request
+1794384681.588773: wlan8: Cancelling authentication timeout
+1794384681.588773: Off-channel: Clear pending Action frame TX (pending_action_tx=(nil)
+1794384681.588773: nl80211: Data frame filter flags=0x0
+1794384681.588774: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588776: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unicast_in_l2_multicast: No such file or directory
+1794384681.588777: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan8/drop_gratuitous_arp: No such file or directory
+1794384681.588778: nl80211: Failed to open /proc/sys/net/ipv6/conf/wlan8/drop_unsolicited_na: No such file or directory
+1794384681.588779: Off-channel: Action frame sequence done notification: pending_action_tx=(nil) drv_offchan_tx=1 action_tx_wait_time=0 off_channel_freq=0 roc_waiting_drv_freq=0
+1794384681.588779: Off-channel: Action frame sequence done notification: pending_action_tx=(nil) drv_offchan_tx=1 action_tx_wait_time=0 off_channel_freq=0 roc_waiting_drv_freq=0
+1794384681.588779: QM: Clear all active DSCP policies
+1794384681.588779: wlan8: CTRL-EVENT-DSCP-POLICY clear_all
+1794384681.588780: wlan8: P2P: Disable P2P since removing the management interface is being removed
+1794384681.588780: P2P: All ASP advertisements flushed
+1794384681.588780: P2P: Disabling Extended Listen Timing
+1794384681.588780: P2P: Stopping find
+1794384681.588781: P2P: Clear timeout (state=IDLE)
+1794384681.588781: P2P: State IDLE -> IDLE
+1794384681.588781: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794384681.588781: P2P: All ASP advertisements flushed
+1794384681.588782: Remove interface wlan8 from radio phy8
+1794384681.588782: Remove radio phy8
+1794384681.588782: nl80211: deinit ifname=wlan8 disabled_11b_rates=0
+1794384681.588782: netlink: Operstate: ifindex=13 linkmode=0 (kernel-control), operstate=6 (IF_OPER_UP)
+1794384681.588784: Could not read interface wlan8 flags: No such device
+1794384681.588784: nl80211: Set mode ifindex 13 iftype 2 (STATION)
+1794384681.588784: nl80211: Failed to set interface 13 to mode 2: -19 (No such device)
+1794384681.588784: nl80211: Unsubscribe mgmt frames handle 0x8888dd8888c64ca9 (deinit)
+1794384681.588786: Control interface directory not empty - leaving it behind
+1794384681.588786: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=3
+1794384681.588855: RX global ctrl_iface - hexdump_ascii(len=5):
+     52 45 4c 4f 47                                    RELOG           

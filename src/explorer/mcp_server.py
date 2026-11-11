@@ -387,8 +387,9 @@ def run_candidate(candidate: dict[str, Any], negative_experiment: bool = False) 
 
     The candidate is validated first. Unless it passes the modeled rules, it's refused,
     or run only with negative_experiment=true and labeled as such. Settings and actions
-    the adapter can't express yet (GCMP-256; actions other than associate, link_remove,
-    rekey_gtk_now and sta_disconnect_reconnect) are refused before anything boots.
+    the adapter can't express yet (actions other than associate, link_remove,
+    rekey_gtk_now, sta_disconnect_reconnect and disable_enable_mld) are refused before
+    anything boots.
 
     The adapter observes the same way after every action (links, station status,
     traffic on each active link) and after interval rekeys, so its record can differ
