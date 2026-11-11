@@ -7,7 +7,8 @@
 #
 # Outcomes, read back by the host from this test's log:
 # - an action that hostapd/wpa_supplicant refuses, or a setup that doesn't come up,
-#   logs "EXPLORER-REJECTED ..." and fails the test (P3 REJECTED);
+#   logs "EXPLORER-REJECTED ..." and fails the test (P3 REJECTED); when the adapter
+#   itself refuses (e.g. removing a link twice), the reason starts with "adapter:";
 # - traffic, link and rekey results are observations, logged through the same helpers
 #   hostap's EHT tests use, so explorer.signatures reads them; they never fail the test.
 #
@@ -50,24 +51,45 @@ class _Run:
 
     # --- observations (never fail the test) -----------------------------------
 
+    def links(self):
+        """Same reads as _eht_verify_links() (test_eht.py:58-65), without asserting values;
+        they log "valid_links=..." / "active_links=...". Returns the active-links bitmap.
+        _eht_get_links_bitmap() calls an undefined logger_info when the debugfs file is
+        missing (test_eht.py:39), so a failed read is logged, never raised."""
+        active = 0
+        for name, read in (("valid_links", _eht._eht_valid_links),
+                           ("active_links", _eht._eht_active_links)):
+            try:
+                value = read(self.wpas)
+            except Exception as e:
+                logger.info("EXPLORER-LINKS-UNREADABLE %s: %s" % (name, e))
+                value = 0
+            if name == "active_links":
+                active = value
+        return active
+
     def observe(self, after):
-        logger.info("EXPLORER-OBSERVE after %s" % after)
-        if not self.associated:
-            return
-        # Same reads as _eht_verify_links() (test_eht.py:58-65), without asserting values;
-        # they log "valid_links=..." / "active_links=...".
+        logger.info("EXPLORER-OBSERVE after %s (%s)" %
+                    (after, "associated" if self.associated else "not associated"))
         time.sleep(0.1)
-        _eht._eht_valid_links(self.wpas)
-        active = _eht._eht_active_links(self.wpas)
-        # Same line as eht_verify_wifi_version() (test_eht.py:25-27), without asserting.
+        active = self.links()
+        # Same line as eht_verify_wifi_version() (test_eht.py:25-27), without asserting;
+        # logged when not associated too, so the record ends with the final state.
         logger.info("station status: " + str(self.wpas.get_status()))
         for link_id in sorted(self.hapds):
-            if link_id in self.removed or not active & (1 << link_id):
-                continue
+            if self.associated:
+                if link_id in self.removed or not active & (1 << link_id):
+                    continue
+                expected = True
+            else:
+                # After a disconnect or the last link's removal, traffic should fail, as
+                # hostap's test checks after removing the last link (test_eht.py:1424-1425).
+                expected = False
             try:
-                _eht.traffic_test(self.wpas, self.hapds[link_id])
+                _eht.traffic_test(self.wpas, self.hapds[link_id], success=expected)
             except Exception as e:
-                logger.info("EXPLORER-TRAFFIC-FAILED link %d: %s" % (link_id, e))
+                logger.info("EXPLORER-TRAFFIC-%s link %d: %s" %
+                            ("FAILED" if expected else "UNEXPECTED", link_id, e))
 
     def wait_event(self, events, timeout, what):
         ev = self.wpas.wait_event(events, timeout=timeout)
@@ -90,7 +112,7 @@ class _Run:
     def link_remove(self, index, step):
         link_id = step["link_id"]
         if link_id in self.removed:
-            _reject("actions[%d] link_remove" % index, "link %d already removed" % link_id)
+            _reject("actions[%d] link_remove" % index, "adapter: link %d already removed" % link_id)
         try:
             self.hapds[link_id].link_remove(step["count"])   # hostapd.py:296-298
         except Exception as e:
@@ -107,7 +129,7 @@ class _Run:
     def rekey_gtk_now(self, index, step):
         remaining = [link for link in sorted(self.hapds) if link not in self.removed]
         if not remaining:
-            _reject("actions[%d] rekey_gtk_now" % index, "no AP link left")
+            _reject("actions[%d] rekey_gtk_now" % index, "adapter: no AP link left")
         # hostap's test sends REKEY_GTK to link 0's AP (test_eht.py:1406-1411).
         if "OK" not in self.hapds[remaining[0]].request("REKEY_GTK"):
             _reject("actions[%d] rekey_gtk_now" % index, "REKEY_GTK failed")

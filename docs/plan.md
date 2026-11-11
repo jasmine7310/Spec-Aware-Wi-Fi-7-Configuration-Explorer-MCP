@@ -110,8 +110,12 @@ first filled in.
 - **Candidate adapter** (#79, 2026-11-10; **the team should confirm**): any candidate runs
   through one hwsim test (`docker/test_explorer_candidate.py`) that uses hostap's own
   helpers. It observes the same way after every action (links, station status, traffic on
-  each active link) and after interval rekeys (one PTK rekey, two GTK rekeys, as hostap's
-  rekey tests wait for). A setup step or action that hostapd/wpa_supplicant refuses is P3
+  each active link; after a disconnect or the last link's removal, that traffic fails) and
+  after interval rekeys (one PTK rekey, two GTK rekeys, as hostap's rekey tests wait for).
+  Rekey intervals whose waits exceed 610 s of guest time are refused (a 300 s GTK interval
+  took 194 s of wall time). Each run folder's `explorer_plan.json` and manifest record the
+  candidate, its validation (status, rule IDs, P2) and `negative_experiment`, and the model's
+  schema version. A setup step or action that hostapd/wpa_supplicant refuses is P3
   `REJECTED`; traffic, link and rekey results are observations, never a rejection. Because
   each hostap test chooses what to observe, an adapter run is compared with that test's
   runs only on facts both observed (`adapter.compare_signatures`). Not supported yet, and
@@ -177,7 +181,7 @@ as decided.
 | Issue | Area | Status |
 |---|---|---|
 | #81 False "image not found" | Simulation | ✅ Done (PR #85). Docker Desktop's Resource Saver answers `docker image inspect` from a cache while its VM sleeps; `check_environment` re-checks with a filtered `docker image ls`, which wakes the VM |
-| #79 Run any candidate (adapter) | Simulation | ✅ Done. `adapter.build_plan` / `run_candidate`, `docker/test_explorer_candidate.py`, MCP `run_candidate`. All 6 rule-passing scenarios run `ACCEPTED` through it (`scripts/reproduce-scenarios.py`, trial runs 1794346507–1794346856). Three match their committed runs on every fact both observed; the OWE differences come from hostap's legacy client `dev[0]` (not modeled), and link removal's from when each side reads the links. A candidate no hostap test covers (associate, then a GTK rekey on its own) runs `ACCEPTED` over MCP |
+| #79 Run any candidate (adapter) | Simulation | ✅ Done. `adapter.build_plan` / `run_candidate`, `docker/test_explorer_candidate.py`, MCP `run_candidate`. All 6 rule-passing scenarios run `ACCEPTED` through it (`scripts/reproduce-scenarios.py`, trial runs 1794367274–1794367744). Three match their committed runs on every fact both observed. The other three differ because hostap's legacy client `dev[0]` isn't modeled (OWE: an extra handshake and disconnect) and because the record keeps each fact's last value: the adapter's last look is after the final DISCONNECT or link removal (links `0x0`, not associated), hostap's tests last look while associated. Reviewed and tested on Windows/WSL by a teammate. Follow-up: the record can't show per-step state (e.g. traffic lost after an action); needs a signature issue before Week 4 contrasts. A candidate no hostap test covers (associate, then a GTK rekey on its own) runs `ACCEPTED` over MCP |
 
 ## Checkpoint 1
 

@@ -32,7 +32,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
-from explorer.model import PMF_TO_IEEE80211W, SAE_PWE_TO_HOSTAPD, Candidate
+from explorer.model import PMF_TO_IEEE80211W, SAE_PWE_TO_HOSTAPD, SCHEMA_VERSION, Candidate
 from explorer.runner import DEFAULT_IMAGE, DEFAULT_LOG_DIR, DEFAULT_TIMEOUT_S, run_test
 from explorer.signatures import BehaviorRecord
 
@@ -49,6 +49,25 @@ _PSK = {"WPA-PSK", "WPA-PSK-SHA256"}
 P3Status = Literal["ACCEPTED", "REJECTED", "SETUP_FAIL", "TIMEOUT"]
 _REJECTED = re.compile(r"EXPLORER-REJECTED (?P<reason>.+)$", re.MULTILINE)
 
+# The adapter's settle step waits (in guest time) up to PTK interval + 5 s for one PTK
+# rekey and 2 x (GTK interval + 5 s) for two GTK rekeys (docker/test_explorer_candidate.py).
+# UML's time-travel mode makes guest waits faster than real time, but not free: a 300 s
+# GTK interval (610 s of guest waiting) took 194 s of wall time and passed (trial run
+# 1794366750, Intel Mac, 2026-11-10). Longer waits are refused until a run shows they
+# fit the runner's timeout.
+MAX_SETTLE_WAIT_S = 610
+
+
+def settle_wait_s(candidate: Candidate) -> int:
+    """Longest guest time the settle step can wait for interval-driven rekeys."""
+    ap = candidate.config.ap
+    wait = 0
+    if ap.ptk_rekey_interval_s is not None:
+        wait += ap.ptk_rekey_interval_s + 5
+    if ap.gtk_rekey_interval_s is not None:
+        wait += 2 * (ap.gtk_rekey_interval_s + 5)
+    return wait
+
 
 class UnsupportedCandidate(ValueError):
     """The adapter can't express this candidate yet; nothing was run."""
@@ -57,6 +76,10 @@ class UnsupportedCandidate(ValueError):
 def unsupported(candidate: Candidate) -> list[str]:
     """Why the adapter can't run this candidate yet (empty if it can)."""
     reasons = []
+    if (wait := settle_wait_s(candidate)) > MAX_SETTLE_WAIT_S:
+        reasons.append(f"rekey intervals need up to {wait} s of waiting for rekeys; the "
+                       f"longest shown to fit the run timeout is {MAX_SETTLE_WAIT_S} s "
+                       "(e.g. a GTK interval of 300 s)")
     for link in candidate.config.ap.links:
         if link.pairwise_cipher != "CCMP":
             reasons.append(f"AP link {link.link_id}: pairwise cipher {link.pairwise_cipher} "
@@ -179,13 +202,32 @@ def compare_signatures(adapter_signature: dict, test_signature: dict) -> dict:
             and adapter_signature[fact] != value}
 
 
+def run_metadata(candidate: Candidate) -> dict:
+    """What a run folder records about the candidate besides the plan: the candidate
+    itself, the model's schema version, validate_candidate's verdict (status, rule IDs,
+    P2 status) and whether running it is a negative experiment."""
+    from explorer.validate import validate_candidate  # validate imports support -> scenarios
+    data = candidate.model_dump(mode="json")
+    result = validate_candidate(data)
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "candidate": data,
+        "validation": {"status": result.status,
+                       "rule_ids": [f.rule_id for f in result.findings],
+                       "p2": result.p2.status if result.p2 else None},
+        "negative_experiment": result.status != "PASSES_MODELED_RULES",
+    }
+
+
 def run_candidate(candidate: Candidate, *,
                   log_dir: Path | str = DEFAULT_LOG_DIR,
                   image: str = DEFAULT_IMAGE,
                   timeout_s: float = DEFAULT_TIMEOUT_S) -> CandidateRun:
-    """Run one candidate in a fresh guest. Doesn't check the modeled rules: callers
-    validate first (the MCP tool does)."""
-    plan = build_plan(candidate)
+    """Run one candidate in a fresh guest. It runs whatever the modeled rules say (the
+    MCP tool refuses rule-breaking candidates unless asked), but the run folder's
+    ``explorer_plan.json`` and manifest record the verdict and label a rule-breaking run
+    as a negative experiment (``run_metadata``)."""
+    plan = {**build_plan(candidate), "explorer": run_metadata(candidate)}
     with tempfile.TemporaryDirectory() as tmp:
         plan_file = Path(tmp) / "explorer_plan.json"
         plan_file.write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n")

@@ -35,7 +35,7 @@ from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test
 from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import UNKNOWN, BehaviorRecord
-from explorer.support import EVIDENCE_DIRS
+from explorer.support import EVIDENCE_DIRS, SupportResult
 from explorer.validate import P0_ERRORS, ValidationResult, find_undetermined, run_p1_checks
 
 DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
@@ -364,6 +364,10 @@ class CandidateRunReport(BaseModel):
     findings: list[validate.ExplainedFinding]
     negative_experiment: bool
     """True when the candidate doesn't pass the modeled rules and was run on request anyway."""
+    p2: SupportResult | None
+    """validate_candidate's P2 result: SUPPORTED means a tested hostap scenario does exactly
+    this; UNRESOLVED means this run is a support probe. None when the modeled rules
+    didn't pass the candidate."""
     p3_status: adapter.P3Status
     """ACCEPTED (every action carried out), REJECTED (hostapd/wpa_supplicant refused a
     setup step or action; see reason), SETUP_FAIL or TIMEOUT (nothing said about the
@@ -411,7 +415,7 @@ def run_candidate(candidate: dict[str, Any], negative_experiment: bool = False) 
                       if run.run_dir.is_relative_to(REPO_ROOT) else str(run.run_dir))
     return CandidateRunReport(
         status=result.status, findings=result.findings,
-        negative_experiment=result.status != "PASSES_MODELED_RULES",
+        negative_experiment=result.status != "PASSES_MODELED_RULES", p2=result.p2,
         p3_status=run.status, reason=run.reason, run_id=run.run_id, record=run.record,
         run_folder=run_folder)
 

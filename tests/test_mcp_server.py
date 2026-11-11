@@ -406,6 +406,8 @@ def test_run_candidate_runs_a_legal_candidate(monkeypatch):
     assert [s.action for s in seen[0].actions] == ["associate", "rekey_gtk_now"]
     assert (report["status"], report["negative_experiment"]) == ("PASSES_MODELED_RULES", False)
     assert report["p3_status"] == "ACCEPTED" and report["run_id"] == "1793897820"
+    # No hostap test does associate + rekey_gtk_now alone, so this run is a support probe.
+    assert report["p2"]["status"] == "UNRESOLVED"
     assert report["run_folder"] == "runs/smoke/1793897820"
 
 
@@ -445,7 +447,7 @@ def test_run_candidate_negative_experiment_is_labeled(monkeypatch):
 
     report = result.structured_content
     assert report["negative_experiment"] is True
-    assert report["status"] == "SPEC_RULE_VIOLATION"
+    assert report["status"] == "SPEC_RULE_VIOLATION" and report["p2"] is None
     assert (report["p3_status"], report["reason"]) == ("REJECTED", "actions[0] associate: timed out")
 
 

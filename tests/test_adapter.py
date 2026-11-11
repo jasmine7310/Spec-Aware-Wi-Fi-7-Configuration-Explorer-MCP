@@ -110,6 +110,22 @@ def test_gcmp_and_unsupported_actions_are_refused():
         build_plan(candidate)
 
 
+def _with_intervals(ptk=None, gtk=None):
+    config = TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump()
+    config["ap"].update(ptk_rekey_interval_s=ptk, gtk_rekey_interval_s=gtk)
+    return Candidate.model_validate({"config": config, "actions": [ASSOC]})
+
+
+def test_rekey_waits_must_fit_what_has_been_shown_to_run():
+    assert adapter.settle_wait_s(_with_intervals(gtk=300)) == 610
+    assert unsupported(_with_intervals(gtk=300)) == []          # ran: 194 s wall
+    assert unsupported(_with_intervals(ptk=5, gtk=5)) == []
+    assert unsupported(_with_intervals(ptk=600)) == []          # 605 s of waiting
+    too_long = unsupported(_with_intervals(gtk=301))
+    assert too_long and "612 s" in too_long[0]
+    assert unsupported(_with_intervals(ptk=300, gtk=300))       # 305 + 610 s
+
+
 # --- P3 status from the run and the adapter's log markers ------------------
 
 def _record(result):
@@ -136,6 +152,39 @@ def test_comparable_signature_drops_the_test_name(tmp_path):
     run = Path(__file__).resolve().parent.parent / "runs" / "anchors" / "1793897968"
     signature = comparable_signature(extract_record(run))
     assert "test" not in signature and signature["valid_links"] == "0x3"
+
+
+# --- What a run records about its candidate --------------------------------
+
+def test_run_records_candidate_validation_and_schema(monkeypatch, tmp_path):
+    import json
+    from explorer.runner import RunResult
+    written = {}
+
+    def fake_run_test(test, *, plan_file, **kwargs):
+        written.update(json.loads(open(plan_file).read()))
+        return RunResult(test=test, status="SETUP_FAIL", run_dir=None, record=None,
+                         manifest=None, exit_code=1, output_tail="")
+    monkeypatch.setattr(adapter, "run_test", fake_run_test)
+
+    run = adapter.run_candidate(_candidate("eht_mld_sae_ext_two_links_client_bp"),
+                                log_dir=tmp_path)
+
+    meta = written["explorer"]
+    assert meta["schema_version"] == adapter.SCHEMA_VERSION
+    assert meta["candidate"]["config"]["sta"]["akms"] == ["SAE-EXT-KEY"]
+    assert meta["validation"] == {"status": "PASSES_MODELED_RULES", "rule_ids": [],
+                                  "p2": "SUPPORTED"}
+    assert meta["negative_experiment"] is False
+    assert run.status == "SETUP_FAIL" and run.plan["explorer"] == meta
+
+
+def test_rule_breaking_run_is_labeled_a_negative_experiment():
+    meta = adapter.run_metadata(TEST_CANDIDATES["eht_mld_sae_two_links"])  # plain SAE
+    assert meta["validation"]["status"] == "SPEC_RULE_VIOLATION"
+    assert meta["validation"]["rule_ids"] == ["SEC.EHT_SAE_AKM"]
+    assert meta["validation"]["p2"] is None
+    assert meta["negative_experiment"] is True
 
 
 # --- Real run (opt-in) -----------------------------------------------------
