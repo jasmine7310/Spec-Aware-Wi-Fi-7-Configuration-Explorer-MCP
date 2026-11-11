@@ -4,8 +4,9 @@ import pytest
 
 from explorer.model import Candidate
 from explorer.scenarios import TEST_CANDIDATES, TEST_CONFIGS
-from explorer.support import (EVIDENCE_DIRS, action_key, check_support, passing_runs,
-                              setting_values, smoke_evidence, rule_passing_tests)
+from explorer.support import (EVIDENCE_DIRS, action_key, adapter_runs, check_support,
+                              passing_runs, rule_passing_tests, setting_values,
+                              smoke_evidence)
 
 ASSOC = {"action": "associate"}
 CLIENT_BP_TESTS = sorted(name for name in TEST_CANDIDATES if name.endswith("_client_bp"))
@@ -66,13 +67,15 @@ def test_value_without_a_smoke_run_is_named():
 
 
 def test_action_never_run_has_no_evidence():
+    # No legal committed run sends DISASSOCIATE (hostap's eht_mld_disassociate isn't a
+    # runnable scenario, and no adapter run has it).
     result = check_support(_candidate("eht_mld_owe_two_links_client_bp", [
         ASSOC, {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"},
-        {"action": "sta_disconnect_reconnect", "command": "RECONNECT"}]))
+        {"action": "ap_disassociate"}]))
     evidence = {(v.candidate, v.value): v.run_ids for v in result.values}
     assert evidence[("sta_disconnect_reconnect", "DISCONNECT")]   # the OWE tests do it
-    assert evidence[("sta_disconnect_reconnect", "RECONNECT")] == []
-    assert "sta_disconnect_reconnect=RECONNECT" in result.note
+    assert evidence[("ap_disassociate", "present")] == []
+    assert "ap_disassociate=present" in result.note
 
 
 def test_only_the_client_bp_tests_pass_the_modeled_rules():
@@ -84,6 +87,7 @@ def test_only_the_client_bp_tests_pass_the_modeled_rules():
 def test_rule_breaking_runs_never_count_as_action_evidence():
     runs = passing_runs()
     legal_runs = {run for test in rule_passing_tests() for run in runs.get(test, [])}
+    legal_runs |= set(adapter_runs())   # recorded as passing the modeled rules
     result = check_support(_candidate("eht_mld_sae_ext_two_links_client_bp", [
         ASSOC, {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"},
         {"action": "rekey_gtk_now"}, {"action": "bss_tm_link_removal_imminent"}]))
@@ -136,3 +140,93 @@ def test_trial_runs_never_count(tmp_path):
         {"run_id": "1", "results": [{"test": "eht_mld_sae_ext_two_links_client_bp", "result": "PASS"}]}))
     assert "1" not in passing_runs().get("eht_mld_sae_ext_two_links_client_bp", [])
     assert passing_runs([tmp_path / "hwsim-logs"]) == {"eht_mld_sae_ext_two_links_client_bp": ["1"]}
+
+
+# --- The dimensions admitted in #61 and adapter runs as evidence (#90) ------
+
+F02 = "eht_mld_sae_ext_two_links_client_bp"
+REJECTED_RUN = "1794384673"   # ap_sae_pwe=1, runs/rejected/
+DISABLE_ENABLE = [ASSOC,
+                  {"action": "disable_enable_mld", "command": "DISABLE_MLD"},
+                  {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"},
+                  {"action": "disable_enable_mld", "command": "ENABLE_MLD"},
+                  {"action": "sta_disconnect_reconnect", "command": "RECONNECT"}]
+
+
+def _f02(actions=(ASSOC,), cipher="CCMP", **ap):
+    config = TEST_CONFIGS[F02].model_dump()
+    config["ap"].update(ap)
+    for link in config["ap"]["links"]:
+        link["pairwise_cipher"] = cipher
+    return Candidate.model_validate({"config": config, "actions": list(actions)})
+
+
+def _evidence(candidate):
+    return {(v.candidate, v.value): v.run_ids for v in check_support(candidate).values}
+
+
+def test_gcmp_256_cites_its_smoke_run():
+    evidence = _evidence(_f02(cipher="GCMP-256"))
+    assert evidence[("ap_pairwise_cipher", "GCMP-256")] == ["1794384688"]
+
+
+def test_sae_pwe_values_use_the_csv_labels():
+    assert _evidence(_f02(sae_pwe="both"))[("ap_sae_pwe", "2")] == ["1794384680"]
+    # (plain F02 is SUPPORTED, with no per-value list, so use a recombined candidate)
+    assert _evidence(_f02(cipher="GCMP-256"))[("ap_sae_pwe", "unset")] == ["1794384666"]
+    result = check_support(_f02(sae_pwe="hash_to_element"))
+    assert {(v.candidate, v.value): v.run_ids for v in result.values}[("ap_sae_pwe", "1")] == []
+    assert "ap_sae_pwe=1" in result.note
+
+
+def test_new_actions_cite_the_adapter_runs():
+    assert _evidence(_f02([ASSOC, {"action": "rekey_gtk_now"}]))[
+        ("rekey_gtk_now", "present")] == ["1794384695"]
+    evidence = _evidence(_f02(DISABLE_ENABLE))
+    assert evidence[("disable_enable_mld", "present")] == ["1794384702"]
+    assert "1794384702" in evidence[("disable_enable_mld", "DISABLE_MLD")]
+    assert "1794384702" in evidence[("disable_enable_mld", "ENABLE_MLD")]
+    assert "1794384702" in evidence[("sta_disconnect_reconnect", "RECONNECT")]
+
+
+def test_presence_actions_are_listed_once():
+    keys = [(v.candidate, v.value) for v in check_support(
+        _f02([ASSOC, {"action": "rekey_gtk_now"}])).values]
+    assert keys.count(("rekey_gtk_now", "present")) == 1
+    assert ("disable_enable_mld", "absent") in keys and ("link_remove", "absent") in keys
+
+
+def test_rejected_and_rule_breaking_runs_are_never_cited():
+    runs = passing_runs()
+    rule_breaking = {run for test, ids in runs.items()
+                     if test in TEST_CANDIDATES and test not in rule_passing_tests()
+                     for run in ids}
+    for candidate in [_f02(cipher="GCMP-256"), _f02(sae_pwe="hash_to_element"),
+                      _f02(DISABLE_ENABLE), _f02([ASSOC, {"action": "rekey_gtk_now"}])]:
+        cited = {run for ids in _evidence(candidate).values() for run in ids}
+        assert REJECTED_RUN not in cited
+        assert not cited & rule_breaking, cited & rule_breaking
+    assert REJECTED_RUN not in adapter_runs()
+
+
+def _adapter_manifest(folder, run_id, result="PASS", status="PASSES_MODELED_RULES",
+                      negative=False, test="explorer_candidate"):
+    run = folder / run_id
+    run.mkdir(parents=True)
+    (run / "manifest.json").write_text(json.dumps({
+        "run_id": run_id, "results": [{"test": test, "result": result}],
+        "explorer_plan": {"explorer": {
+            "negative_experiment": negative,
+            "validation": {"status": status, "rule_ids": [], "p2": None},
+            "candidate": {"actions": [ASSOC, {"action": "rekey_gtk_now"}]}}}}))
+
+
+def test_adapter_runs_count_only_passing_rule_passing_runs(tmp_path):
+    _adapter_manifest(tmp_path, "1", )
+    _adapter_manifest(tmp_path, "2", result="FAIL")                         # REJECTED
+    _adapter_manifest(tmp_path, "3", status="SPEC_RULE_VIOLATION", negative=True)
+    _adapter_manifest(tmp_path, "4", test="eht_mld_sae_ext_two_links_client_bp")
+    (tmp_path / "5").mkdir()
+    (tmp_path / "5" / "manifest.json").write_text(json.dumps(
+        {"run_id": "5", "results": [{"test": "explorer_candidate", "result": "PASS"}]}))
+    assert adapter_runs([tmp_path]) == {"1": [ASSOC, {"action": "rekey_gtk_now"}]}

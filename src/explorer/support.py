@@ -6,13 +6,15 @@ Only committed evidence counts:
   ``_client_bp`` wrappers) sets up and does, configuration and actions alike, and that
   test has at least one passing committed run. ``run_hwsim_test`` can run it.
 - ``UNRESOLVED``: no test executes this exact candidate. The result lists the committed
-  runs that show each of its values executes, or none: for settings, the smoke-tested
-  dimensions in ``surface_candidates.csv``'s ``smoke_runs``; for each action (with its
-  command or operation), passing runs of the tests that perform it and pass the modeled
-  rules. Runs of tests that break a modeled rule (the plain-SAE baseline, hostap's
-  originals with the client's beacon protection off) are negative experiments and never
-  count as a value's evidence. Values that each ran somewhere don't prove their
-  combination runs.
+  runs that show each of its values executes, or none: for the admitted dimensions
+  (settings, and the actions in ``PRESENCE_ACTIONS`` as absent / present), the smoke runs
+  in ``surface_candidates.csv``'s ``smoke_runs``; for each action (with its command or
+  operation), committed adapter runs whose recorded candidate performs it, then passing
+  runs of the hostap tests that perform it. Only runs that pass the modeled rules count:
+  hostap tests that break one (the plain-SAE baseline, hostap's originals with the
+  client's beacon protection off) are negative experiments, and an adapter run counts only
+  if its recorded validation is PASSES_MODELED_RULES. Rejected runs (``runs/rejected/``)
+  are never read. Values that each ran somewhere don't prove their combination runs.
 - ``UNSUPPORTED_IMPLEMENTATION``: needs real evidence that the pinned versions can't do
   it, such as a run that failed to set up. We have none recorded, so nothing returns
   this yet; it is never inferred from missing evidence.
@@ -118,22 +120,65 @@ def _interval(seconds: int | None) -> str:
     return "unset" if seconds is None else str(seconds)
 
 
+# hostapd sae_pwe values, as surface_candidates.csv labels them.
+_SAE_PWE_LABEL = {None: "unset", "hash_to_element": "1", "both": "2"}
+
+# Actions admitted as absent / present dimensions (docs/dimensions.md); their smoke runs
+# are in surface_candidates.csv like a setting's.
+PRESENCE_ACTIONS = ("link_remove", "rekey_gtk_now", "disable_enable_mld")
+
+
 def setting_values(candidate: Candidate) -> list[tuple[str, str]]:
-    """The candidate's values for the smoke-tested settings, as (csv name, label) pairs
-    in surface_candidates.csv's terms. link_remove is there too, as absent / present."""
+    """The candidate's values for the smoke-tested dimensions, as (csv name, label) pairs
+    in surface_candidates.csv's terms: settings, plus the actions in PRESENCE_ACTIONS as
+    absent / present."""
     ap, sta = candidate.config.ap, candidate.config.sta
     values = []
     for akm in dict.fromkeys(akm for link in ap.links for akm in link.akms):
         values.append(("ap_akm", akm))
     for akm in sta.akms:
         values.append(("sta_akm", akm))
+    values.append(("ap_sae_pwe", _SAE_PWE_LABEL[ap.sae_pwe]))
+    for cipher in dict.fromkeys(link.pairwise_cipher for link in ap.links):
+        values.append(("ap_pairwise_cipher", cipher))
     values.append(("ap_ptk_rekey_interval", _interval(ap.ptk_rekey_interval_s)))
     values.append(("ap_gtk_rekey_interval", _interval(ap.gtk_rekey_interval_s)))
     for disabled in dict.fromkeys(link.indicate_disabled for link in ap.links):
         values.append(("ap_link_indicate_disabled", "1" if disabled else "0"))
-    present = any(step.action == "link_remove" for step in candidate.actions)
-    values.append(("link_remove", "present" if present else "absent"))
+    performed = {step.action for step in candidate.actions}
+    for action in PRESENCE_ACTIONS:
+        values.append((action, "present" if action in performed else "absent"))
     return values
+
+
+def adapter_runs(evidence_dirs=EVIDENCE_DIRS) -> dict[str, list[dict]]:
+    """Run ID -> the actions of the candidate a committed adapter run carried out.
+
+    Only runs of the adapter test (explorer.adapter) that passed and whose recorded
+    validation (``explorer_plan.explorer`` in the manifest) is PASSES_MODELED_RULES:
+    a negative experiment or a REJECTED run is never evidence that a value executes."""
+    from explorer.adapter import ADAPTER_TEST  # explorer.adapter imports explorer.validate
+    found: dict[str, list[dict]] = {}
+    for evidence_dir in evidence_dirs:
+        for manifest_path in sorted(Path(evidence_dir).glob("*/manifest.json")):
+            manifest = json.loads(manifest_path.read_text())
+            meta = manifest.get("explorer_plan", {}).get("explorer")
+            passed = any(r["test"] == ADAPTER_TEST and r["result"] == "PASS"
+                         for r in manifest["results"])
+            if (passed and meta and not meta["negative_experiment"]
+                    and meta["validation"]["status"] == "PASSES_MODELED_RULES"):
+                found[manifest["run_id"]] = meta["candidate"]["actions"]
+    return found
+
+
+@lru_cache(maxsize=1)
+def _cached_adapter_runs() -> dict[str, list[dict]]:
+    return adapter_runs()
+
+
+def _key(step: dict) -> tuple[str, str]:
+    """action_key() for an action recorded as JSON in a run's manifest."""
+    return step["action"], step.get("command") or step.get("operation") or "present"
 
 
 def action_key(step) -> tuple[str, str]:
@@ -158,14 +203,20 @@ def check_support(candidate: Candidate) -> SupportResult:
     values = [ValueEvidence(candidate=name, value=label,
                             run_ids=[smoke[name][label]] if label in smoke.get(name, {}) else [])
               for name, label in setting_values(candidate)]
+    adapter = _cached_adapter_runs()
     for name, label in dict.fromkeys(action_key(step) for step in candidate.actions):
-        if name == "link_remove":
-            continue  # covered by the smoke-tested link_remove dimension above
+        if name in PRESENCE_ACTIONS and label == "present":
+            continue  # already listed as that dimension's "present" value above
+        # Adapter runs first: each shows the action in a legal candidate of its own,
+        # where a hostap test's run shows it inside that test's scenario.
+        by_adapter = sorted(run for run, actions in adapter.items()
+                            if (name, label) in {_key(s) for s in actions})
         performed_by = [test for test, known in TEST_CANDIDATES.items()
                         if test in rule_passing_tests()
                         and (name, label) in {action_key(s) for s in known.actions}]
-        values.append(ValueEvidence(candidate=name, value=label, run_ids=sorted(
-            {run for test in performed_by for run in runs.get(test, [])})[:MAX_EXAMPLE_RUNS]))
+        by_tests = sorted({run for test in performed_by for run in runs.get(test, [])})
+        run_ids = list(dict.fromkeys(by_adapter + by_tests))[:MAX_EXAMPLE_RUNS]
+        values.append(ValueEvidence(candidate=name, value=label, run_ids=run_ids))
     closest = sorted(test for test, known in TEST_CANDIDATES.items()
                      if known.config == candidate.config and runs.get(test))
     missing = [f"{v.candidate}={v.value}" for v in values if not v.run_ids]

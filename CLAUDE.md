@@ -81,7 +81,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   test means rebuilding the image.
 - `explorer.support.check_support(candidate)`: the P2 check. `SUPPORTED` only for an exact
   match to a tested scenario with passing committed runs; otherwise `UNRESOLVED` with the
-  evidence per value. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
+  evidence per value (smoke runs per admitted dimension; legal adapter runs, via
+  `adapter_runs()`, and legal hostap scenarios per action). Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
 
 ## Rules for agents
 
