@@ -18,8 +18,9 @@ AP parameters as ``eht_mld_ap_wpa2_params()`` builds them (tests/hwsim/test_eht.
 ``hostapd.wpa2_params()`` at hostapd.py:841-852), the client's ``connect`` arguments as in
 test_eht.py:826-827 / 521-522.
 
-Not supported yet (refused before a guest boots, see ``unsupported()``): GCMP-256, and
-actions the six reproduced scenarios don't use.
+Not supported yet (refused before a guest boots, see ``unsupported()``): actions other
+than associate, link_remove, rekey_gtk_now, sta_disconnect_reconnect and
+disable_enable_mld (issue #61 added GCMP-256 and disable_enable_mld).
 """
 
 from __future__ import annotations
@@ -42,7 +43,8 @@ SSID = "explorer_mld"
 PASSPHRASE = "qwertyuiop"          # the passphrase hostap's SAE MLD tests use
 CHANNEL_FREQ = {1: 2412, 6: 2437}  # MHz
 
-SUPPORTED_ACTIONS = ("associate", "link_remove", "rekey_gtk_now", "sta_disconnect_reconnect")
+SUPPORTED_ACTIONS = ("associate", "link_remove", "rekey_gtk_now", "sta_disconnect_reconnect",
+                     "disable_enable_mld")
 _SAE = {"SAE", "SAE-EXT-KEY"}
 _PSK = {"WPA-PSK", "WPA-PSK-SHA256"}
 
@@ -80,10 +82,6 @@ def unsupported(candidate: Candidate) -> list[str]:
         reasons.append(f"rekey intervals need up to {wait} s of waiting for rekeys; the "
                        f"longest shown to fit the run timeout is {MAX_SETTLE_WAIT_S} s "
                        "(e.g. a GTK interval of 300 s)")
-    for link in candidate.config.ap.links:
-        if link.pairwise_cipher != "CCMP":
-            reasons.append(f"AP link {link.link_id}: pairwise cipher {link.pairwise_cipher} "
-                           "(the client's cipher settings for it aren't modeled yet)")
     for index, step in enumerate(candidate.actions):
         if step.action not in SUPPORTED_ACTIONS:
             reasons.append(f"actions[{index}] ({step.action}): not supported by the "
@@ -141,6 +139,14 @@ def build_plan(candidate: Candidate) -> dict:
         connect["psk"] = PASSPHRASE
     if sta.beacon_protection:
         connect["beacon_prot"] = "1"
+    if any(link.pairwise_cipher != "CCMP" for link in ap.links):
+        # The client's cipher lists aren't modeled. wpa_supplicant's defaults don't include
+        # GCMP-256 (wpa_supplicant/config_ssid.h:23-27), so when an AP link uses it the client allows both, as hostap's own MLD
+        # test does (test_eht.py:2751-2752); hostapd picks GCMP-256 as the group cipher when
+        # it is the only pairwise cipher (src/common/wpa_common.c:3823-3825, called from
+        # src/ap/ap_config.c:1727). With CCMP only, the client stays as before.
+        connect["pairwise"] = "CCMP GCMP-256"
+        connect["group"] = "CCMP GCMP-256"
 
     return {
         "ssid": SSID,

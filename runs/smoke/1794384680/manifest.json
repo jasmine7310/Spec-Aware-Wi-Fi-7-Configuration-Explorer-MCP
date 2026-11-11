@@ -1,0 +1,179 @@
+{
+  "run_id": "1794384680",
+  "tests_requested": [
+    "explorer_candidate"
+  ],
+  "overall": "PASS",
+  "results": [
+    {
+      "test": "explorer_candidate",
+      "result": "PASS",
+      "duration_s": 0.186697
+    }
+  ],
+  "started_at": "2026-11-11T08:11:20Z",
+  "finished_at": "2026-11-11T08:11:25Z",
+  "wall_seconds": 5,
+  "versions": {
+    "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",
+    "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda",
+    "image": "wifi7-env",
+    "image_id": "sha256:e61362e4bd00b8caf27e5d74da6a986a8cca91d6531382b9a329a83bc14808b9",
+    "repo_commit": "bc4ea891f94bb5bc8e0cb2dbb630b13a60d3bc4e",
+    "repo_docker_dir_modified": true
+  },
+  "environment": {
+    "host_os": "Ubuntu 26.04.1 LTS (WSL2)",
+    "host_kernel": "Linux 6.18.58.1-microsoft-standard-WSL2 x86_64",
+    "docker_server_version": "28.0.4",
+    "docker_vm_os": "Docker Desktop (containerized)",
+    "docker_vm_kernel": "6.18.58.1-microsoft-standard-WSL2",
+    "docker_vm_cpus": 20,
+    "docker_vm_memory_bytes": 8182935552
+  },
+  "docker_run_settings": [
+    "--cpuset-cpus=0",
+    "--tmpfs /umltmp:rw,exec,size=1g",
+    "-e TMPDIR=/umltmp",
+    "-e HWSIM_TEST_LOG_DIR=/tmp/hwsim-test-logs"
+  ],
+  "packet_captures": [
+    {
+      "file": "explorer_candidate.hwsim0.dec.pcapng",
+      "bytes": 58120
+    },
+    {
+      "file": "explorer_candidate.hwsim0.pcapng",
+      "bytes": 31640
+    },
+    {
+      "file": "hwsim0.pcapng",
+      "bytes": 48
+    }
+  ],
+  "explorer_plan": {
+    "actions": [
+      {
+        "action": "associate"
+      }
+    ],
+    "ap_links": [
+      {
+        "link_id": 0,
+        "params": {
+          "beacon_prot": "1",
+          "channel": "1",
+          "group_mgmt_cipher": "AES-128-CMAC",
+          "hw_mode": "g",
+          "ieee80211ax": "1",
+          "ieee80211be": "1",
+          "ieee80211n": "1",
+          "ieee80211w": "2",
+          "rsn_pairwise": "CCMP",
+          "sae_pwe": "2",
+          "ssid": "explorer_mld",
+          "wpa": "2",
+          "wpa_key_mgmt": "SAE-EXT-KEY",
+          "wpa_passphrase": "qwertyuiop"
+        }
+      },
+      {
+        "link_id": 1,
+        "params": {
+          "beacon_prot": "1",
+          "channel": "6",
+          "group_mgmt_cipher": "AES-128-CMAC",
+          "hw_mode": "g",
+          "ieee80211ax": "1",
+          "ieee80211be": "1",
+          "ieee80211n": "1",
+          "ieee80211w": "2",
+          "rsn_pairwise": "CCMP",
+          "sae_pwe": "2",
+          "ssid": "explorer_mld",
+          "wpa": "2",
+          "wpa_key_mgmt": "SAE-EXT-KEY",
+          "wpa_passphrase": "qwertyuiop"
+        }
+      }
+    ],
+    "ap_shared": {
+      "beacon_prot": "1",
+      "group_mgmt_cipher": "AES-128-CMAC",
+      "hw_mode": "g",
+      "ieee80211ax": "1",
+      "ieee80211be": "1",
+      "ieee80211n": "1",
+      "ieee80211w": "2",
+      "sae_pwe": "2",
+      "ssid": "explorer_mld",
+      "wpa": "2"
+    },
+    "explorer": {
+      "candidate": {
+        "actions": [
+          {
+            "action": "associate"
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": null,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": false,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": "both"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null
+          }
+        }
+      },
+      "negative_experiment": false,
+      "schema_version": 1,
+      "validation": {
+        "p2": "UNRESOLVED",
+        "rule_ids": [],
+        "status": "PASSES_MODELED_RULES"
+      }
+    },
+    "needs_owe": false,
+    "needs_sae": true,
+    "ssid": "explorer_mld",
+    "sta": {
+      "connect": {
+        "beacon_prot": "1",
+        "ieee80211w": "2",
+        "key_mgmt": "SAE-EXT-KEY",
+        "sae_password": "qwertyuiop",
+        "scan_freq": "2412 2437"
+      },
+      "sae_groups": ""
+    }
+  }
+}

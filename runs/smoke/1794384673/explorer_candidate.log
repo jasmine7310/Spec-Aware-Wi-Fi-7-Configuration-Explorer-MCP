@@ -1,0 +1,138 @@
+2026-11-11 08:11:14,302 INFO START explorer_candidate 1/1
+2026-11-11 08:11:14,302 INFO Test: Explorer candidate from explorer_plan.json (adapter, not a hostap test)
+2026-11-11 08:11:14,302 DEBUG wlan0: CTRL: PING
+2026-11-11 08:11:14,302 DEBUG wlan0: CTRL(global): PING
+2026-11-11 08:11:14,302 DEBUG wlan0: CTRL: NOTE TEST-START explorer_candidate
+2026-11-11 08:11:14,302 DEBUG wlan1: CTRL: PING
+2026-11-11 08:11:14,302 DEBUG wlan1: CTRL(global): PING
+2026-11-11 08:11:14,302 DEBUG wlan1: CTRL: NOTE TEST-START explorer_candidate
+2026-11-11 08:11:14,302 DEBUG wlan2: CTRL: PING
+2026-11-11 08:11:14,302 DEBUG wlan2: CTRL(global): PING
+2026-11-11 08:11:14,302 DEBUG wlan2: CTRL: NOTE TEST-START explorer_candidate
+2026-11-11 08:11:14,302 DEBUG /tmp/wpas-wlan5: CTRL(global): NOTE TEST-START explorer_candidate
+2026-11-11 08:11:14,302 DEBUG : CTRL(global): NOTE TEST-START explorer_candidate
+2026-11-11 08:11:14,302 INFO EXPLORER-PLAN {"actions": [{"action": "associate"}], "ap_links": [{"link_id": 0, "params": {"beacon_prot": "1", "channel": "1", "group_mgmt_cipher": "AES-128-CMAC", "hw_mode": "g", "ieee80211ax": "1", "ieee80211be": "1", "ieee80211n": "1", "ieee80211w": "2", "rsn_pairwise": "CCMP", "sae_pwe": "1", "ssid": "explorer_mld", "wpa": "2", "wpa_key_mgmt": "SAE-EXT-KEY", "wpa_passphrase": "qwertyuiop"}}, {"link_id": 1, "params": {"beacon_prot": "1", "channel": "6", "group_mgmt_cipher": "AES-128-CMAC", "hw_mode": "g", "ieee80211ax": "1", "ieee80211be": "1", "ieee80211n": "1", "ieee80211w": "2", "rsn_pairwise": "CCMP", "sae_pwe": "1", "ssid": "explorer_mld", "wpa": "2", "wpa_key_mgmt": "SAE-EXT-KEY", "wpa_passphrase": "qwertyuiop"}}], "ap_shared": {"beacon_prot": "1", "group_mgmt_cipher": "AES-128-CMAC", "hw_mode": "g", "ieee80211ax": "1", "ieee80211be": "1", "ieee80211n": "1", "ieee80211w": "2", "sae_pwe": "1", "ssid": "explorer_mld", "wpa": "2"}, "explorer": {"candidate": {"actions": [{"action": "associate"}], "config": {"ap": {"beacon_protection": true, "bss_transition": false, "gtk_rekey_interval_s": null, "links": [{"akms": ["SAE-EXT-KEY"], "channel": 1, "indicate_disabled": false, "link_id": 0, "pairwise_cipher": "CCMP"}, {"akms": ["SAE-EXT-KEY"], "channel": 6, "indicate_disabled": false, "link_id": 1, "pairwise_cipher": "CCMP"}], "pmf": "required", "ptk_rekey_interval_s": null, "sae_pwe": "hash_to_element"}, "sta": {"akms": ["SAE-EXT-KEY"], "beacon_protection": true, "sae_groups": null}}}, "negative_experiment": false, "schema_version": 1, "validation": {"p2": "UNRESOLVED", "rule_ids": [], "status": "PASSES_MODELED_RULES"}}, "needs_owe": false, "needs_sae": true, "ssid": "explorer_mld", "sta": {"connect": {"beacon_prot": "1", "ieee80211w": "2", "key_mgmt": "SAE-EXT-KEY", "sae_password": "qwertyuiop", "scan_freq": "2412 2437"}, "sae_groups": ""}}
+2026-11-11 08:11:14,302 DEBUG execute: ['id']
+2026-11-11 08:11:14,302 DEBUG status: 0
+2026-11-11 08:11:14,302 DEBUG buf: b'uid=0(root) gid=0(adm) groups=0(adm)\n'
+2026-11-11 08:11:14,302 DEBUG /tmp/wpas-wlan5: CTRL(global): INTERFACE_ADD wlan8		nl80211	DIR=/var/run/wpa_supplicant GROUP=adm
+2026-11-11 08:11:14,302 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-11 08:11:14,302 DEBUG wlan8: CTRL: GET_CAPABILITY auth_alg
+2026-11-11 08:11:14,302 INFO Adding link on: ifname=wlan7
+2026-11-11 08:11:14,302 DEBUG : CTRL(global): ADD wlan7 config=/tmp/link-0.conf-inz7m_sf
+2026-11-11 08:11:14,302 DEBUG wlan7_link0: CTRL: PING
+2026-11-11 08:11:14,302 DEBUG wlan7_link0: CTRL: ENABLE
+2026-11-11 08:11:14,303 DEBUG wlan7_link0: <3>AP-ENABLED 
+2026-11-11 08:11:14,303 INFO Adding link on: ifname=wlan7
+2026-11-11 08:11:14,303 DEBUG : CTRL(global): ADD wlan7 config=/tmp/link-1.conf-t4jg9mph
+2026-11-11 08:11:14,303 DEBUG wlan7_link1: CTRL: PING
+2026-11-11 08:11:14,303 DEBUG wlan7_link1: CTRL: ENABLE
+2026-11-11 08:11:14,303 DEBUG wlan7_link1: <3>AP-ENABLED 
+2026-11-11 08:11:14,303 INFO EXPLORER-ACTION 0 {"action": "associate"}
+2026-11-11 08:11:14,303 INFO Connect STA wlan8 to AP
+2026-11-11 08:11:14,303 DEBUG wlan8: CTRL: ADD_NETWORK
+2026-11-11 08:11:14,303 DEBUG wlan8: CTRL: SET_NETWORK 0 ssid "explorer_mld"
+2026-11-11 08:11:14,303 DEBUG wlan8: CTRL: SET_NETWORK 0 sae_password "qwertyuiop"
+2026-11-11 08:11:14,303 DEBUG wlan8: CTRL: SET_NETWORK 0 key_mgmt SAE-EXT-KEY
+2026-11-11 08:11:14,303 DEBUG wlan8: CTRL: SET_NETWORK 0 ieee80211w 2
+2026-11-11 08:11:14,303 DEBUG wlan8: CTRL: SET_NETWORK 0 scan_freq 2412 2437
+2026-11-11 08:11:14,303 DEBUG wlan8: CTRL: SET_NETWORK 0 beacon_prot 1
+2026-11-11 08:11:14,303 DEBUG wlan8: <3>CTRL-EVENT-NETWORK-ADDED 0
+2026-11-11 08:11:14,303 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-NETWORK-ADDED 0
+2026-11-11 08:11:14,303 DEBUG wlan8: CTRL: SELECT_NETWORK 0
+2026-11-11 08:11:14,303 DEBUG wlan8: <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-11 08:11:14,376 DEBUG wlan8: <3>CTRL-EVENT-BSS-ADDED 0 02:00:00:ca:50:a2
+2026-11-11 08:11:14,376 DEBUG wlan8: <3>CTRL-EVENT-BSS-ADDED 1 02:00:00:9a:29:e7
+2026-11-11 08:11:14,376 DEBUG wlan8: <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-11 08:11:14,376 DEBUG wlan8: <3>CTRL-EVENT-NETWORK-NOT-FOUND 
+2026-11-11 08:11:19,380 DEBUG wlan8: <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-11 08:11:19,456 DEBUG wlan8: <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-11 08:11:19,456 DEBUG wlan8: <3>CTRL-EVENT-NETWORK-NOT-FOUND 
+2026-11-11 08:11:24,457 DEBUG wlan8: <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-11 08:11:24,536 DEBUG wlan8: <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-11 08:11:24,536 DEBUG wlan8: <3>CTRL-EVENT-NETWORK-NOT-FOUND 
+2026-11-11 08:11:29,301 INFO EXPLORER-REJECTED actions[0] associate: Connection timed out
+2026-11-11 08:11:29,301 ERROR Exception during test execution: actions[0] associate: Connection timed out
+Traceback (most recent call last):
+  File "/opt/hostap/tests/hwsim/test_explorer_candidate.py", line 115, in associate
+    self.wpas.connect(self.plan["ssid"], **sta["connect"])
+  File "/opt/hostap/tests/hwsim/wpasupplicant.py", line 1189, in connect
+    self.connect_network(id, timeout=timeout)
+  File "/opt/hostap/tests/hwsim/wpasupplicant.py", line 527, in connect_network
+    self.wait_connected(timeout=timeout)
+  File "/opt/hostap/tests/hwsim/wpasupplicant.py", line 1471, in wait_connected
+    raise Exception(error)
+Exception: Connection timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/hostap/tests/hwsim/./run-tests.py", line 635, in main
+    t(dev, apdev)
+  File "/opt/hostap/tests/hwsim/test_explorer_candidate.py", line 229, in test_explorer_candidate
+    getattr(run, step["action"])(index, step)
+  File "/opt/hostap/tests/hwsim/test_explorer_candidate.py", line 117, in associate
+    _reject("actions[%d] associate" % index, e)
+  File "/opt/hostap/tests/hwsim/test_explorer_candidate.py", line 41, in _reject
+    raise Rejected("%s: %s" % (where, reason))
+test_explorer_candidate.Rejected: actions[0] associate: Connection timed out
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-BSS-ADDED 0 02:00:00:ca:50:a2
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-BSS-ADDED 1 02:00:00:9a:29:e7
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-NETWORK-NOT-FOUND 
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-NETWORK-NOT-FOUND 
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-11 08:11:29,302 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-NETWORK-NOT-FOUND 
+2026-11-11 08:11:29,302 DEBUG wlan0: <3>CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+2026-11-11 08:11:29,302 DEBUG wlan0(global): IFNAME=wlan0 <3>CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL: NOTE TEST-STOP explorer_candidate
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL: NOTE TEST-STOP explorer_candidate
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL: NOTE TEST-STOP explorer_candidate
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL: FLUSH
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL(global): REMOVE_NETWORK all
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL(global): SET p2p_no_group_iface 1
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL(global): P2P_FLUSH
+2026-11-11 08:11:29,302 DEBUG wlan0: <3>WPS-CANCEL 
+2026-11-11 08:11:29,302 DEBUG wlan0(global): IFNAME=wlan0 <3>WPS-CANCEL 
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL: STATUS-DRIVER
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL(global): IFNAME=p2p-dev-wlan0 STATUS-DRIVER
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL: PING
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL: FLUSH
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL(global): REMOVE_NETWORK all
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL(global): SET p2p_no_group_iface 1
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL(global): P2P_FLUSH
+2026-11-11 08:11:29,302 DEBUG wlan1: <3>WPS-CANCEL 
+2026-11-11 08:11:29,302 DEBUG wlan1(global): IFNAME=wlan1 <3>WPS-CANCEL 
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL: STATUS-DRIVER
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL(global): IFNAME=p2p-dev-wlan1 STATUS-DRIVER
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL: PING
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL: FLUSH
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL(global): REMOVE_NETWORK all
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL(global): SET p2p_no_group_iface 1
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL(global): P2P_FLUSH
+2026-11-11 08:11:29,302 DEBUG wlan2: <3>WPS-CANCEL 
+2026-11-11 08:11:29,302 DEBUG wlan2(global): IFNAME=wlan2 <3>WPS-CANCEL 
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL: STATUS-DRIVER
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL(global): IFNAME=p2p-dev-wlan2 STATUS-DRIVER
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL: PING
+2026-11-11 08:11:29,302 DEBUG /tmp/wpas-wlan5: CTRL(global): INTERFACES
+2026-11-11 08:11:29,302 DEBUG /tmp/wpas-wlan5: CTRL(global): INTERFACE_REMOVE wlan8
+2026-11-11 08:11:29,302 DEBUG /tmp/wpas-wlan6: CTRL(global): INTERFACES
+2026-11-11 08:11:29,302 DEBUG /tmp/wpas-wlan7: CTRL(global): INTERFACES
+2026-11-11 08:11:29,302 DEBUG : CTRL(global): FLUSH
+2026-11-11 08:11:29,302 DEBUG : CTRL(global): INTERFACES
+2026-11-11 08:11:29,302 DEBUG : CTRL(global): REMOVE wlan7
+2026-11-11 08:11:29,302 DEBUG : CTRL(global): REMOVE wlan7
+2026-11-11 08:11:29,302 DEBUG : CTRL(global): REMOVE as-erp
+2026-11-11 08:11:29,302 DEBUG /tmp/wpas-wlan5: CTRL(global): RELOG
+2026-11-11 08:11:29,302 DEBUG /tmp/wpas-wlan6: CTRL(global): RELOG
+2026-11-11 08:11:29,302 DEBUG /tmp/wpas-wlan7: CTRL(global): RELOG
+2026-11-11 08:11:29,302 DEBUG wlan0: CTRL(global): RELOG
+2026-11-11 08:11:29,302 DEBUG wlan1: CTRL(global): RELOG
+2026-11-11 08:11:29,302 DEBUG wlan2: CTRL(global): RELOG
+2026-11-11 08:11:29,302 DEBUG : CTRL(global): RELOG
+2026-11-11 08:11:29,302 INFO FAIL explorer_candidate 15.000694 2026-11-11 08:11:29.302896

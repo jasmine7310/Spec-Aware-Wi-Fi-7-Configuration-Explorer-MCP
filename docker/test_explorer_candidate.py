@@ -48,6 +48,8 @@ class _Run:
         self.hapds = hapds          # link_id -> hostapd for that affiliated AP
         self.removed = set()        # link IDs removed by link_remove
         self.associated = False
+        self.ap_enabled = True      # False between DISABLE_MLD and ENABLE_MLD
+        self.mld_restarted = False  # ENABLE_MLD ran since the last (re)connection
 
     # --- observations (never fail the test) -----------------------------------
 
@@ -76,6 +78,12 @@ class _Run:
         # Same line as eht_verify_wifi_version() (test_eht.py:25-27), without asserting;
         # logged when not associated too, so the record ends with the final state.
         logger.info("station status: " + str(self.wpas.get_status()))
+        if not self.ap_enabled:
+            # Whether the STA is still associated while the AP MLD is disabled is an open
+            # question (UND.STA_STATE_WHILE_MLD_DISABLED); hostap's test doesn't send
+            # traffic then either (test_eht.py:728-740), so neither do we.
+            logger.info("EXPLORER-OBSERVE AP MLD disabled: no traffic test")
+            return
         for link_id in sorted(self.hapds):
             if self.associated:
                 if link_id in self.removed or not active & (1 << link_id):
@@ -137,6 +145,14 @@ class _Run:
 
     def sta_disconnect_reconnect(self, index, step):
         command = step["command"]
+        if command == "RECONNECT" and self.mld_restarted:
+            # As hostap's test does after ENABLE_MLD (test_eht.py:752-759): without
+            # PMKSA_FLUSH the reconnection fails (its TODO), and BSS_FLUSH drops the old
+            # AP MLD's BSS entries. A harness step, recorded in the log.
+            logger.info("EXPLORER-HARNESS PMKSA_FLUSH and BSS_FLUSH 0 before RECONNECT")
+            self.wpas.request("PMKSA_FLUSH")
+            self.wpas.request("BSS_FLUSH 0")
+            self.mld_restarted = False
         if "OK" not in self.wpas.request(command):
             _reject("actions[%d] %s" % (index, command), "%s failed" % command)
         if command == "DISCONNECT":
@@ -146,6 +162,25 @@ class _Run:
         else:
             ev = self.wait_event(["CTRL-EVENT-CONNECTED"], 15, "reconnect")
             self.associated = ev is not None
+
+    def disable_enable_mld(self, index, step):
+        command = step["command"]
+        expected = "AP-DISABLED" if command == "DISABLE_MLD" else "AP-ENABLED"
+        remaining = [link for link in sorted(self.hapds) if link not in self.removed]
+        if not remaining:
+            _reject("actions[%d] %s" % (index, command), "adapter: no AP link left")
+        # hostap's test sends it to link 0's AP and waits for the event on every
+        # affiliated AP (test_eht.py:727-734 and 742-749).
+        if "OK" not in self.hapds[remaining[0]].request(command):
+            _reject("actions[%d] %s" % (index, command), "%s failed" % command)
+        for link_id in remaining:
+            ev = self.hapds[link_id].wait_event([expected], timeout=1)
+            if ev is None:
+                _reject("actions[%d] %s" % (index, command),
+                        "%s not received on link %d" % (expected, link_id))
+        self.ap_enabled = command == "ENABLE_MLD"
+        if command == "ENABLE_MLD":
+            self.mld_restarted = True
 
     def settle(self):
         """Interval-driven rekeys, observed as hostap's rekey tests do."""
