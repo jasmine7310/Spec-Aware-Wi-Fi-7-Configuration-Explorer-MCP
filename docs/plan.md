@@ -26,7 +26,7 @@ every rejection says which stage and which sourced rule rejected it:
 
 Weeks 1–2 covered P0, P1, basic P2/P3 and MCP (Checkpoint 1). Week 3 adds the admitted
 dimensions, `model.json`, P2 support probes, the candidate adapter and the campaign plan;
-the ConfigSpace encoding is done; running the campaign and the experiment cache are still
+the ConfigSpace encoding and the experiment cache are done; running the campaign is still
 open.
 P4 (contrasts and minimization) is Weeks 4–5.
 
@@ -34,7 +34,7 @@ P4 (contrasts and minimization) is Weeks 4–5.
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `config_space.py` (the static settings as a ConfigSpace space, each constraint tagged with its rule), `mcp_server.py` (MCP tools). `cache.py` (experiment cache) and `minimize.py` (Picire wrapper) are still placeholders |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `config_space.py` (the static settings as a ConfigSpace space, each constraint tagged with its rule), `cache.py` (experiment cache: key, SQLite store, `run_cached`), `mcp_server.py` (MCP tools). `minimize.py` (Picire wrapper) is still a placeholder |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
 | `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
@@ -51,6 +51,7 @@ P4 (contrasts and minimization) is Weeks 4–5.
 | `runs/anchors/` | Extra runs so each anchor family in `anchor_coverage.csv` has 3 independent passing runs (committed evidence) |
 | `runs/rejected/` | Runs of rule-passing candidates that hostapd / wpa_supplicant refused (P3 `REJECTED`), kept as labeled evidence of the refusal, never as smoke values (`runs/rejected/README.md`) |
 | `campaigns/` | Committed campaign runs (written by "Run ~20-candidate campaign"; none yet). Counted as P2 evidence |
+| `runs/cache.sqlite` | The experiment cache's index (git-ignored): run outcomes by cache key. The run folders are the evidence; `explorer.cache.Cache().rebuild()` re-indexes the committed ones |
 | `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
 | `docs/` | This plan; `references.md` (the standards, and the coverage matrix's legend); `research/` (the rule research `rules.yaml` is transcribed from); `dimensions.md` (below); Checkpoint 1's `demo.md` (script), `demo-transcript.md` and `demo-transcript-terminal.txt` (transcripts) and `checkpoint1-report.md` |
 | `surface_candidates.csv` | Candidate settings, actions and observations found in hostap's tests, each with source lines (`tests/test_surface_candidates.py` checks it; set `WIFI7_HOSTAP_SRC` to also check the lines exist) |
@@ -202,8 +203,19 @@ root (as in the spec's layout) when it is first filled in.
   same plan. Budget 20 (seed 0 needs 16). Coverage has two denominators (after P0/P1 and
   after P2), and a pair counts as covered only after a candidate with it runs `ACCEPTED`;
   planned pairs are reported apart. Running it ("Run ~20-candidate campaign"): each
-  candidate in a fresh guest through the adapter, `SETUP_FAIL` / `TIMEOUT` rerun once, runs
-  committed under `campaigns/`.
+  candidate in a fresh guest through the adapter and the experiment cache, `SETUP_FAIL` /
+  `TIMEOUT` rerun once, runs committed under `campaigns/`.
+- **Experiment cache** ("Experiment cache", 2026-11-13): the key is a SHA-256 over the
+  normalized candidate and the exact plan the guest runs, the pinned hostap and kernel
+  commits, an environment digest (the pinned base-image digest plus a hash of
+  `docker/Dockerfile`, never the local image ID, which changes on cache-only rebuilds), the
+  schema version and `model_digest`, and a harness hash (`docker/test_eht_client_bp.py`,
+  `docker/test_explorer_candidate.py`, `docker/run-test.sh`). Only `ACCEPTED` and `REJECTED`
+  outcomes are reused; `SETUP_FAIL` / `TIMEOUT` are recorded and rerun. A hit is not a new
+  independent run (`independent: false`): repeat counts use run IDs, and an independent
+  repeat runs with `force=True`. Each run records its key, context (campaign, seed) and
+  timeout in its manifest, so the SQLite index (`runs/cache.sqlite`, git-ignored) can be
+  rebuilt from committed runs on any machine.
 - **MCP SDK:** `mcp==2.3.0`. `FastMCP` was removed in v2; use
   `from mcp.server.mcpserver import MCPServer`. Most online examples are v1 and won't import.
 - **Dependencies:** pinned exactly in `pyproject.toml`. `setuptools==80.9.0` is pinned
@@ -277,7 +289,7 @@ on the board. Work lands on `week3-4` first; its issues close when it merges to 
 | Campaign planner (allpairspy) | Search | ✅ Done 2026-11-13. `explorer.planner` enumerates the candidate space (F02 with each of `model.json`'s 11 dimensions set: 4608 assignments) and checks every one with P0, P1 and P2 before any guest launches: 1152 pass the modeled rules (3456 pruned: assignments rejected by `SEC.SAE_PWE_NEEDS_SAE` 2560, `SEC.MLD_CLIENT_COMMON_AKM` 2304, `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` 128; an assignment can break several), none is `SPEC_UNDETERMINED` (the review queue is empty), and all 1152 are executable (9 `SUPPORTED`, 1143 support probes). allpairspy builds the design with an exact filter (a partial row is rejected only when no executable completion exists); it stops after 8 rows covering 209 of the 250 feasible pairs, so the planner checks coverage itself and tops it up greedily: seed 0 plans 16 candidates (8 + 8, all new probes) covering all 250, within the budget of 20 (the roadmap's ~20: the admitted model needs fewer). `pairwise_coverage.json`: 261 pairs, 11 infeasible (each with its rules), 250 feasible after P1 and after P2, 126 already covered by committed runs (0.504), 250 planned. `scripts/plan_campaign.py` writes both files; `tests/test_planner.py` (19 tests) covers the filter, reproducibility, P2 filtering, the review queue and coverage counting. ConfigSpace ("Model parameter dependencies in ConfigSpace") isn't used yet: the legal domain is the coded P1 rules over the enumerated space, exact at this size |
 | Model parameter dependencies in ConfigSpace | Model | ✅ Done 2026-11-13. `explorer.config_space`: a ConfigSpace space over the 8 setting dimensions plus AP/client beacon protection; `SEC.SAE_PWE_NEEDS_SAE` as conditions, `SEC.MLD_CLIENT_COMMON_AKM` / `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` / `SEC.EHT_BEACON_PROT` as forbidden clauses, each tagged with its rule ID; the other coded setting rules documented as predicate-only, with the reason (Decisions, "How dependencies are represented"). `tests/test_config_space.py` checks all 2304 combinations: ConfigSpace and P1 agree on the verdict (144 legal) and on the rule IDs, and samples from ConfigSpace pass P1; #76 reuses it. `model.json`'s `configspace` section records the encoding, and the planner's funnel shows ConfigSpace pruning the same 3456 assignments as P1 |
 | Audit rules against clause text | Rules | ⬜ Not started (unassigned) |
-| Experiment cache | Search | ⬜ Not started (unassigned). "Run ~20-candidate campaign" needs it |
+| Experiment cache | Search | ✅ Done 2026-11-13. `explorer.cache`: `key_parts` / `cache_key` (candidate and plan, pinned commits, environment digest, schema version and `model_digest`, harness hash; Decisions, "Experiment cache"), a SQLite store (`runs/cache.sqlite`, git-ignored) and `run_cached`, which reuses only `ACCEPTED` / `REJECTED` outcomes and marks hits not independent. `adapter.run_candidate` records the key, context and timeout in each run's manifest, and `Cache.rebuild()` re-indexes committed runs. `tests/test_cache.py` (16 tests): the key changes with the candidate, environment, harness and model; hit and miss; failures rerun; forced repeats; rebuild |
 | Run ~20-candidate campaign | Search | ⬜ Assigned to Jasmine, not started. The plan is ready (`campaign_plan.json`, seed 0: 16 candidates); it also writes `pruning_counts.json` and the rejected-cases table |
 | Expose campaign over MCP | MCP | ⬜ Not started (unassigned) |
 | Add the cipher to the behavior record | Simulation | ⬜ Not started (unassigned). Calibrate on `1794384666` (CCMP) / `1794384688` (GCMP-256), as `docs/dimensions.md` notes |

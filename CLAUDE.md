@@ -94,6 +94,11 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   coded setting rules left to P1, with the reason. `is_valid(values)` / `violations(values)`
   judge hyperparameter values; `tests/test_config_space.py` keeps it in agreement with P1, so
   a new setting rule needs a constraint or a `PREDICATE_ONLY` entry.
+- `explorer.cache`: the experiment cache (#67). `run_cached(candidate, Cache())` runs a
+  candidate unless an `ACCEPTED` / `REJECTED` outcome is stored for its key (candidate +
+  plan, pinned commits, environment digest, model version, harness hash); a hit has
+  `independent=False`, so never count it as a repeat. `runs/cache.sqlite` is git-ignored;
+  `Cache().rebuild()` re-indexes committed runs from the key each run records.
 - `explorer.planner`: the pairwise campaign planner (#66). `Space()` enumerates the candidate
   space from `model.json` and assesses each assignment with P0, P1 and P2; `plan(seed,
   budget)` builds the allpairspy design (exact legal-completion filter, then a coverage
@@ -129,5 +134,6 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `runs/anchors/` (extra runs so each anchor family has 3), `runs/rejected/` (runs of
   rule-passing candidates the implementation refused, kept as labeled refusals, never as
   smoke values), `campaigns/` (committed campaign runs, #68), `runs/hwsim-logs/`
-  (git-ignored trials). Never commit trials as evidence.
+  (git-ignored trials), `runs/cache.sqlite` (the cache's git-ignored
+  index). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

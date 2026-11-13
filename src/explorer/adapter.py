@@ -236,12 +236,15 @@ def run_metadata(candidate: Candidate) -> dict:
 def run_candidate(candidate: Candidate, *,
                   log_dir: Path | str = DEFAULT_LOG_DIR,
                   image: str = DEFAULT_IMAGE,
-                  timeout_s: float = DEFAULT_TIMEOUT_S) -> CandidateRun:
+                  timeout_s: float = DEFAULT_TIMEOUT_S,
+                  metadata: dict | None = None) -> CandidateRun:
     """Run one candidate in a fresh guest. It runs whatever the modeled rules say (the
     MCP tool refuses rule-breaking candidates unless asked), but the run folder's
     ``explorer_plan.json`` and manifest record the verdict and label a rule-breaking run
-    as a negative experiment (``run_metadata``)."""
-    plan = {**build_plan(candidate), "explorer": run_metadata(candidate)}
+    as a negative experiment (``run_metadata``). ``metadata`` (e.g. the cache key, the
+    campaign and its seed) is recorded there too, with the timeout."""
+    plan = {**build_plan(candidate),
+            "explorer": {**run_metadata(candidate), "timeout_s": timeout_s, **(metadata or {})}}
     with tempfile.TemporaryDirectory() as tmp:
         plan_file = Path(tmp) / "explorer_plan.json"
         plan_file.write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n")
