@@ -66,7 +66,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
-  ordered typed actions. `explorer.rules.load_rules()`: the P1 rule registry from
+  ordered typed actions; `model.SCHEMA_VERSION` goes up when the P0 schema changes.
+  `explorer.rules.load_rules()`: the P1 rule registry from
   `rules.yaml` (rules plus `UND.*` open questions). `explorer.validate`: `parse_candidate`
   (readable `P0.*` errors), `P1_CHECKS` / `run_p1_checks(config)` (coded rule checks by
   rule ID), `find_undetermined(config)`, `check_action_order(candidate)` (AO.* rules), all

@@ -154,7 +154,10 @@ def build_plan(candidate: Candidate) -> dict:
         "ap_shared": shared,
         "ap_links": links,
         "sta": {"connect": connect,
-                "sae_groups": " ".join(map(str, sta.sae_groups)) if sta.sae_groups else ""},
+                "sae_groups": " ".join(map(str, sta.sae_groups)) if sta.sae_groups else "",
+                # wpas.set("sae_pwe", ...) before connecting, as hostap's MLD tests do
+                # (test_eht.py:672, 707); "" leaves it unset.
+                "sae_pwe": str(SAE_PWE_TO_HOSTAPD[sta.sae_pwe]) if sta.sae_pwe else ""},
         "needs_sae": bool(set(sta.akms) & _SAE),
         "needs_owe": "OWE" in sta.akms,
         "actions": [step.model_dump(mode="json") for step in candidate.actions],

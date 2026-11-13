@@ -5,15 +5,16 @@ from explorer.rules import load_rules
 from explorer.scenarios import CLIENT_BP_SUFFIX, TEST_CONFIGS
 from explorer.validate import (CONFIG_QUESTIONS, P1_CHECKS, Finding, check_eht_beacon_prot,
                                check_eht_sae_akm, check_eht_sae_h2e, check_mld_client_common_akm,
-                               check_mld_common_suites, check_sae_pwe_needs_sae,
-                               find_undetermined, p1_status, run_p1_checks)
+                               check_mld_common_suites, check_sae_h2e_only_needs_sta_h2e,
+                               check_sae_pwe_needs_sae, find_undetermined, p1_status,
+                               run_p1_checks, validate_candidate)
 
 
-def _config(link0, link1, sta_akms, **ap):
+def _config(link0, link1, sta_akms, sta=None, **ap):
     return Config.model_validate({
         "ap": {"links": [{"link_id": 0, "channel": 1, **link0},
                          {"link_id": 1, "channel": 6, **link1}], **ap},
-        "sta": {"akms": sta_akms},
+        "sta": {"akms": sta_akms, **(sta or {})},
     })
 
 
@@ -181,10 +182,21 @@ def test_h2e_in_effect_passes(name):
 
 
 def test_plain_sae_with_unset_pwe_is_rejected():
+    # Neither side sets sae_pwe: both would use hunting-and-pecking.
     config = _config({"akms": ["SAE"]}, {"akms": ["SAE"]}, ["SAE"])
     findings = check_eht_sae_h2e(config)
-    assert [f.rule_id for f in findings] == ["SEC.EHT_SAE_H2E"]
+    assert [f.rule_id for f in findings] == ["SEC.EHT_SAE_H2E"] * 2
+    assert "AP's sae_pwe" in findings[0].reason and "client's sae_pwe" in findings[1].reason
     assert "hunting-and-pecking" in findings[0].reason
+
+
+def test_plain_sae_client_with_unset_pwe_is_rejected():
+    # The AP enables H2E, but a client with sae_pwe unset uses hunting-and-pecking with
+    # plain SAE (wpa_supplicant.conf:501-509), so SAE between them doesn't use H2E.
+    config = _config({"akms": ["SAE"]}, {"akms": ["SAE"]}, ["SAE"], sae_pwe="both")
+    findings = check_eht_sae_h2e(config)
+    assert [f.rule_id for f in findings] == ["SEC.EHT_SAE_H2E"]
+    assert "client's sae_pwe" in findings[0].reason
 
 
 def test_sae_ext_key_preferred_so_unset_pwe_is_fine():
@@ -204,6 +216,80 @@ def test_sae_pwe_with_owe_is_rejected():
     findings = check_sae_pwe_needs_sae(config)
     assert [f.rule_id for f in findings] == ["SEC.SAE_PWE_NEEDS_SAE"]
     assert "no effect" in findings[0].reason
+
+
+def test_client_sae_pwe_without_an_sae_akm_is_rejected():
+    config = _config({"akms": ["OWE"]}, {"akms": ["OWE"]}, ["OWE"],
+                     sta={"sae_pwe": "both"})
+    findings = check_sae_pwe_needs_sae(config)
+    assert [f.rule_id for f in findings] == ["SEC.SAE_PWE_NEEDS_SAE"]
+    assert "client's sae_pwe" in findings[0].reason
+
+
+def test_client_sae_pwe_with_sae_ext_key_passes():
+    config = _config({"akms": ["SAE-EXT-KEY"]}, {"akms": ["SAE-EXT-KEY"]}, ["SAE-EXT-KEY"],
+                     sta={"sae_pwe": "hash_to_element"})
+    assert check_sae_pwe_needs_sae(config) == []
+
+
+# --- SEC.SAE_H2E_ONLY_NEEDS_STA_H2E (setting dependency, issue #88) ---
+
+_SAE_EXT = {"akms": ["SAE-EXT-KEY"]}
+
+
+def test_h2e_only_ap_with_unset_client_is_rejected():
+    # The run that found it: AP sae_pwe=1 on F02, client sae_pwe unset (REJECTED).
+    config = _config(_SAE_EXT, _SAE_EXT, ["SAE-EXT-KEY"], sae_pwe="hash_to_element")
+    findings = check_sae_h2e_only_needs_sta_h2e(config)
+    assert [f.rule_id for f in findings] == ["SEC.SAE_H2E_ONLY_NEEDS_STA_H2E"]
+    assert "[0, 1]" in findings[0].reason
+
+
+@pytest.mark.parametrize("sta_pwe", ["hash_to_element", "both"])
+def test_h2e_only_ap_with_client_h2e_passes(sta_pwe):
+    config = _config(_SAE_EXT, _SAE_EXT, ["SAE-EXT-KEY"], sta={"sae_pwe": sta_pwe},
+                     sae_pwe="hash_to_element")
+    assert check_sae_h2e_only_needs_sta_h2e(config) == []
+    assert run_p1_checks(config) == []
+
+
+@pytest.mark.parametrize("ap", [{}, {"sae_pwe": "both"}], ids=["ap_unset", "ap_both"])
+def test_no_h2e_only_selector_no_requirement(ap):
+    # Without sae_pwe=1 the AP doesn't advertise the selector (ieee802_11.c:166-170).
+    config = _config(_SAE_EXT, _SAE_EXT, ["SAE-EXT-KEY"], **ap)
+    assert check_sae_h2e_only_needs_sta_h2e(config) == []
+
+
+def test_a_non_sae_akm_on_every_link_means_no_selector():
+    # wpa_key_mgmt_only_sae (defs.h:133-140) is false with OWE in the list.
+    link = {"akms": ["SAE-EXT-KEY", "OWE"]}
+    config = _config(link, link, ["SAE-EXT-KEY"], sae_pwe="hash_to_element")
+    assert check_sae_h2e_only_needs_sta_h2e(config) == []
+
+
+def test_one_sae_only_link_is_enough():
+    config = _config(_SAE_EXT, {"akms": ["SAE-EXT-KEY", "OWE"]}, ["SAE-EXT-KEY"],
+                     sae_pwe="hash_to_element")
+    findings = check_sae_h2e_only_needs_sta_h2e(config)
+    assert len(findings) == 1 and "[0]" in findings[0].reason
+
+
+def test_client_without_an_sae_akm_isnt_checked():
+    config = _config(_SAE_EXT, _SAE_EXT, ["OWE"], sae_pwe="hash_to_element")
+    assert check_sae_h2e_only_needs_sta_h2e(config) == []
+
+
+def test_recorded_refusal_is_what_the_rule_predicts():
+    # runs/rejected/1794384673 ran this candidate when it still passed the modeled rules;
+    # since issue #88 P1 rejects it, for the reason the run showed.
+    import json
+    from pathlib import Path
+    manifest = (Path(__file__).resolve().parents[1] / "runs" / "rejected" / "1794384673"
+                / "manifest.json")
+    candidate = json.loads(manifest.read_text())["explorer_plan"]["explorer"]["candidate"]
+    result = validate_candidate(candidate)
+    assert result.status == "SPEC_RULE_VIOLATION"
+    assert [f.rule_id for f in result.findings] == ["SEC.SAE_H2E_ONLY_NEEDS_STA_H2E"]
 
 
 # --- SPEC_UNDETERMINED (configuration questions) ---

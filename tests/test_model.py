@@ -92,7 +92,21 @@ def test_defaults():
     assert config.ap.links[0].pairwise_cipher == "CCMP"
     assert config.ap.links[0].indicate_disabled is False
     assert config.sta.sae_groups is None
+    assert config.sta.sae_pwe is None
     assert config.sta.beacon_protection is True
+
+
+@pytest.mark.parametrize("value", ["hash_to_element", "both"])
+def test_client_sae_pwe_values(value):
+    # The values hostap's MLD tests give the client (test_eht.py:707 and 1282).
+    config = Config.model_validate({**BASE, "sta": {**BASE["sta"], "sae_pwe": value}})
+    assert config.sta.sae_pwe == value
+
+
+@pytest.mark.parametrize("value", [0, 1, "1", "hunting_and_pecking"])
+def test_client_sae_pwe_rejects_raw_or_unknown_values(value):
+    with pytest.raises(ValidationError):
+        Config.model_validate({**BASE, "sta": {**BASE["sta"], "sae_pwe": value}})
 
 
 def test_accepts_json_input():

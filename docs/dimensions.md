@@ -4,7 +4,7 @@ The executable dimensions of the candidate space (issue #61; roadmap Week 3 asks
 across security, key and link lifecycles). A dimension is a setting or action with **≥2
 admissible values**, each of which passes the coded P1 rules and has a committed passing
 run in `runs/smoke/` (listed in `surface_candidates.csv`'s `smoke_runs`). A field with one
-workable value (e.g. client PMF, client `sae_pwe`) is a fixed setting, not a dimension.
+workable value (e.g. client PMF) is a fixed setting, not a dimension.
 
 "Passes modeled rules" is all a value's legality claim means here, never full 802.11be
 compliance. Spec citations below are the ones already checked in `rules.yaml`; anything not
@@ -22,10 +22,16 @@ Versions for every row: hostap `43ee60e1`, wireless-next `21b4248b` (`baseline/R
 | 4 | `ap_gtk_rekey_interval` | key | unset, 5 s | ✅ `1793897820`, `1793897930` |
 | 5 | `ap_link_indicate_disabled` | link | 0, 1 | ✅ `1793897854`, `1793897892` |
 | 6 | `link_remove` | link | absent, present | ✅ `1793897854`, `1793897945` |
-| 7 | `ap_sae_pwe` (conditional) | security | unset, 2 (1 REJECTED, see below) | ✅ `1794384666`, `1794384680` |
+| 7 | `ap_sae_pwe` (conditional) | security | unset, 1 (with the client's `sae_pwe` set), 2 | ✅ `1794384666`, `1794548583`, `1794384680` |
 | 8 | `ap_pairwise_cipher` | security | CCMP, GCMP-256 | ✅ `1794384666`, `1794384688` |
 | 9 | `rekey_gtk_now` | key | absent, present | ✅ `1794384666`, `1794384695` |
 | 10 | `disable_enable_mld` | link | absent, present | ✅ `1794384666`, `1794384702` |
+| 11 | `sta_sae_pwe` (conditional) | security | unset, 1, 2 | ✅ `1794384666`, `1794548609`, `1794548623` |
+
+Row 11 and the value 1 of row 7 were added for issue #88, which modeled the client's
+`sae_pwe` (`StaConfig.sae_pwe`) and the dependency between the two
+(`SEC.SAE_H2E_ONLY_NEEDS_STA_H2E`, draft). Their runs are in `runs/smoke/README.md`
+("Client SAE PWE").
 
 Rows 7–10 were added for issue #61. They run through the candidate adapter
 (`explorer.adapter`, issue #79), since no hostap test sets them up on the legal F02
@@ -114,13 +120,19 @@ summarized here so the record is in one place.
   P1 dependency rule, both to research first); until then it isn't offered as a smoke value.
   This is a configuration mismatch we can explain, not evidence that hostap doesn't support
   the value, so it isn't `UNSUPPORTED_IMPLEMENTATION`.
+  **Issue #88 did that:** the client's `sae_pwe` is row 11, and
+  `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` (dependency, draft) rejects `ap_sae_pwe=1` with only SAE
+  AKMs and the client's left unset, so the rejected run is now a P1 rejection. With the
+  client's set to 1 (`1794548583`, as hostap's tests pair them) or 2 (`1794548598`) it runs
+  `ACCEPTED`, with the same signature as the base run.
 - **Tested alternatives:** hostap's tests use 1 with plain SAE (`eht_mld_sae_two_links`,
   negative experiment) and with SAE-EXT-KEY on one link of `eht_mld_invalid_link_akm`
   (rule-breaking); 2 with plain SAE (`eht_mld_sae_single_link`) and with
   `SAE SAE-EXT-KEY` (`eht_mld_legacy_stas`, non-MLD clients). None on a legal F02 config.
-- **Prerequisites:** SAE AKM on the AP. Client `sae_pwe` stays unset (a fixed setting).
+- **Prerequisites:** SAE AKM on the AP. For 1, the client's `sae_pwe` set (row 11).
 - **Observed as:** `station_status.sae_h2e` (already in the record).
-- **Smoke runs:** unset `1794384666`, 2 `1794384680`; rejected 1 `1794384673`.
+- **Smoke runs:** unset `1794384666`, 1 `1794548583` (client 1; also `1794548598` with
+  client 2), 2 `1794384680`; rejected 1 with the client's unset `1794384673`.
 
 ### 8. `ap_pairwise_cipher`
 
@@ -181,6 +193,28 @@ summarized here so the record is in one place.
 - **Smoke runs:** absent `1794384666`; present `1794384702` (a second 4-way handshake and a
   second locally generated disconnect, reason 3; traffic on links 0 and 1 after RECONNECT;
   the log records the harness flush).
+
+### 11. `sta_sae_pwe` (conditional on an SAE AKM)
+
+- **Typed values:** `StaConfig.sae_pwe` = `None` (unset) / `"hash_to_element"` (1) /
+  `"both"` (2), the numbers wpa_supplicant uses (`wpa_supplicant/wpa_supplicant.conf:501-509`).
+  Set with `wpas.set("sae_pwe", …)` before connecting, as hostap's MLD tests do (1 at
+  test_eht.py:672, 707 and others; 2 at 1282), and reset to 0 afterwards.
+- **Condition:** only with an SAE-family AKM on the client (`SEC.SAE_PWE_NEEDS_SAE`). With
+  plain SAE, unset breaks `SEC.EHT_SAE_H2E` (now checked on the client too). With an AP set
+  to H2E only and only SAE AKMs, unset breaks `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E`.
+- **Spec-rule status:** the new rule is a dependency, drafted from 802.11-2024 Table 9-131
+  (value 123, PDF p. 937) and §11.1.4.6 (PDF pp. 2463–2464), the WFA guide's Table 3 (p. 10)
+  and the hostap lines; **draft until a person checks the PDF citations**
+  (`docs/research/security-guidance.md`). Which value to prefer is WFA guidance, not coded:
+  Table 8 (p. 18) marks Enabled (2) MAND for an EHT STA and H2E Only (1) DISALLOW except
+  where all devices are known to support EHT, as in our testbed.
+- **Tested alternatives:** hostap's MLD tests use 1 throughout and 2 only in
+  `eht_assoc_failure`, a deliberate failure test.
+- **Observed as:** nothing new in the record. With SAE-EXT-KEY the handshake uses H2E
+  whatever the setting (`wpa_supplicant/sme.c:364-366`), so the three values have identical
+  signatures (`sae_h2e=1`); the setting matters at BSS selection, against an H2E-only AP.
+- **Smoke runs:** unset `1794384666`, 1 `1794548609`, 2 `1794548623` (AP's `sae_pwe` unset).
 
 ## Running the smoke candidates
 

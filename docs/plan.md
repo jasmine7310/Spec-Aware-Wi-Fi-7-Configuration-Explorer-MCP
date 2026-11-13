@@ -4,8 +4,8 @@ Shared context for the team and for coding agents. The GitHub issue board tracks
 individual tasks and their status; this file holds the big picture and the decisions
 behind it. Issues are referred to by name, not number.
 
-_Status last updated 2026-11-05 from what is committed on `main` and the `week2-jas`
-branch (Week 2 work lands on `week2-jas` first). Work that exists only on someone's
+_Status last updated 2026-11-12 from what is committed on `main` and the `week3-4`
+branch (Week 3 work lands on `week3-4` first). Work that exists only on someone's
 laptop or on the board isn't reflected here._
 
 ## What we're building
@@ -181,20 +181,16 @@ as decided.
 
 ## Week 3 status
 
-| Issue | Area | Status |
-|---|---|---|
-| #81 False "image not found" | Simulation | ✅ Done (PR #85). Docker Desktop's Resource Saver answers `docker image inspect` from a cache while its VM sleeps; `check_environment` re-checks with a filtered `docker image ls`, which wakes the VM |
-| #79 Run any candidate (adapter) | Simulation | ✅ Done. `adapter.build_plan` / `run_candidate`, `docker/test_explorer_candidate.py`, MCP `run_candidate`. All 6 rule-passing scenarios run `ACCEPTED` through it (`scripts/reproduce-scenarios.py`, trial runs 1794367274–1794367744). Three match their committed runs on every fact both observed. The other three differ because hostap's legacy client `dev[0]` isn't modeled (OWE: an extra handshake and disconnect) and because the record keeps each fact's last value: the adapter's last look is after the final DISCONNECT or link removal (links `0x0`, not associated), hostap's tests last look while associated. Reviewed and tested on Windows/WSL by a teammate. Follow-up: the record can't show per-step state (e.g. traffic lost after an action); needs a signature issue before Week 4 contrasts. A candidate no hostap test covers (associate, then a GTK rekey on its own) runs `ACCEPTED` over MCP |
-
-## Week 3 status
-
 Parent issue "Week 3: Admit ≥8 dimensions and run staged constrained search"; sub-issues
 on the board. Rows are added as work lands.
 
-| Issue | Status |
-|---|---|
-| Admit ≥8 executable dimensions | ✅ 10 dimensions admitted (`docs/dimensions.md`): the 6 from Week 2 plus `ap_sae_pwe` (conditional on SAE; unset / 2), `ap_pairwise_cipher` (CCMP / GCMP-256 on every link), `rekey_gtk_now` and `disable_enable_mld` (hostap's order: the STA is disconnected while the AP MLD is disabled). The adapter now runs GCMP-256 and DISABLE/ENABLE_MLD; the runs went through it on 2026-11-11 (WSL2) and are in `runs/smoke/`; `tests/test_surface_candidates.py` requires ≥8. Finding: `ap_sae_pwe=1` is **REJECTED** (`1794384673`): the AP then advertises the SAE H2E-only selector and a client with `sae_pwe` unset skips it, even with SAE-EXT-KEY (hostap lines checked), so admitting 1 needs the client's `sae_pwe` modeled. Still open: the WFA cipher rows for GCMP-256 (PDF), and adding the cipher to the behavior record. `ap_mld_link_count` stays out (P0 ≤2 links) |
-| Spec coverage matrix | ✅ `spec_coverage.csv`, 36 rows checked by `tests/test_spec_coverage.py`. Coverage: **20 RULE, 1 UND, 6 OUT_OF_SCOPE, 9 TODO** (802.11be: 9 / 0 / 4 / 4; 802.11-2024: 3 / 0 / 0 / 3; WFA: 8 / 1 / 2 / 2). Rows reuse the citations already checked in the PDFs; the 9 TODO rows (802.11-2024 rekey / PMF clauses, the rest of 802.11be §12.6, §35.3.6, §35.3.7, §35.3.5.2, WFA §3.2 and Table 4) need someone with the PDFs to find the clause and page |
+| Issue | Area | Status |
+|---|---|---|
+| Fix the false "image not found" | Simulation | ✅ Done (PR #85). Docker Desktop's Resource Saver answers `docker image inspect` from a cache while its VM sleeps; `check_environment` re-checks with a filtered `docker image ls`, which wakes the VM |
+| Run any candidate in a fresh guest (adapter) | Simulation | ✅ Done. `adapter.build_plan` / `run_candidate`, `docker/test_explorer_candidate.py`, MCP `run_candidate`. All 6 rule-passing scenarios run `ACCEPTED` through it (`scripts/reproduce-scenarios.py`, trial runs 1794367274–1794367744). Three match their committed runs on every fact both observed. The other three differ because hostap's legacy client `dev[0]` isn't modeled (OWE: an extra handshake and disconnect) and because the record keeps each fact's last value: the adapter's last look is after the final DISCONNECT or link removal (links `0x0`, not associated), hostap's tests last look while associated. Reviewed and tested on Windows/WSL by a teammate. Follow-up: the record can't show per-step state (e.g. traffic lost after an action); needs a signature issue before Week 4 contrasts. A candidate no hostap test covers (associate, then a GTK rekey on its own) runs `ACCEPTED` over MCP |
+| Admit ≥8 executable dimensions | Model | ✅ 10 dimensions admitted (`docs/dimensions.md`): the 6 from Week 2 plus `ap_sae_pwe` (conditional on SAE; unset / 2), `ap_pairwise_cipher` (CCMP / GCMP-256 on every link), `rekey_gtk_now` and `disable_enable_mld` (hostap's order: the STA is disconnected while the AP MLD is disabled). The adapter now runs GCMP-256 and DISABLE/ENABLE_MLD; the runs went through it on 2026-11-11 (WSL2) and are in `runs/smoke/`; `tests/test_surface_candidates.py` requires ≥8. Finding: `ap_sae_pwe=1` is **REJECTED** (`1794384673`): the AP then advertises the SAE H2E-only selector and a client with `sae_pwe` unset skips it, even with SAE-EXT-KEY (hostap lines checked), so admitting 1 needed the client's `sae_pwe` modeled (done: see "Model the client's `sae_pwe`"). Still open: the WFA cipher rows for GCMP-256 (PDF), and adding the cipher to the behavior record. `ap_mld_link_count` stays out (P0 ≤2 links) |
+| Spec coverage matrix | Rules | ✅ `spec_coverage.csv`, 38 rows checked by `tests/test_spec_coverage.py`. Coverage: **22 RULE, 1 UND, 6 OUT_OF_SCOPE, 9 TODO** (802.11be: 9 / 0 / 4 / 4; 802.11-2024: 5 / 0 / 0 / 3; WFA: 8 / 1 / 2 / 2). Rows reuse the citations already checked in the PDFs, except the two 802.11-2024 rows added for the client's `sae_pwe` (Table 9-131, §11.1.4.6), read by Claude and still to be checked by a person; the 9 TODO rows (802.11-2024 rekey / PMF clauses, the rest of 802.11be §12.6, §35.3.6, §35.3.7, §35.3.5.2, WFA §3.2 and Table 4) need someone with the PDFs to find the clause and page |
+| Model the client's `sae_pwe` | Model, Rules | ✅ Done 2026-11-12, **rule needs a person's check**. `StaConfig.sae_pwe` (unset / `hash_to_element` / `both`, P0 schema version 2), passed to the guest with `wpas.set("sae_pwe")` and reset afterwards. New P1 dependency rule `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` (**draft**): an AP with `sae_pwe=1` and only SAE AKMs advertises the SAE H2E-only BSS membership selector (802.11-2024 Table 9-131, value 123), so the client needs `sae_pwe` 1 or 2; drafted from the PDF text (802.11-2024 Table 9-131 and §11.1.4.6, WFA Table 3) and the hostap lines, research in `docs/research/security-guidance.md`. `SEC.EHT_SAE_H2E` and `SEC.SAE_PWE_NEEDS_SAE` now also check the client's side. Smoke runs (all `ACCEPTED`, same signature as the base): `ap_sae_pwe=1` with the client's 1 (`1794548583`) or 2 (`1794548598`), and the client's 1 (`1794548609`) and 2 (`1794548623`) alone. So `ap_sae_pwe` gains the value 1 and `sta_sae_pwe` is an 11th dimension; the rejected run `1794384673` is now a P1 rejection. WFA guidance (not coded): for an EHT STA, Table 8 marks H2E Enabled (2) MAND and H2E Only (1) DISALLOW except in all-EHT networks |
 
 ## Checkpoint 1
 

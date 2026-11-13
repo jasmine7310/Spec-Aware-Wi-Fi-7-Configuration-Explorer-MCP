@@ -1,5 +1,5 @@
-"""Smoke-run the values of the dimensions admitted in issue #61 through the candidate
-adapter (explorer.adapter.run_candidate), one fresh UML guest each.
+"""Smoke-run the values of the dimensions admitted in issues #61 and #88 through the
+candidate adapter (explorer.adapter.run_candidate), one fresh UML guest each.
 
 Every candidate is the legal F02 configuration (SAE-EXT-KEY on both links, client beacon
 protection on, as eht_mld_sae_ext_two_links_client_bp) with one dimension changed, so a
@@ -29,9 +29,10 @@ BASE_TEST = "eht_mld_sae_ext_two_links_client_bp"
 ASSOC = {"action": "associate"}
 
 
-def _candidate(actions=(ASSOC,), cipher="CCMP", **ap) -> dict:
+def _candidate(actions=(ASSOC,), cipher="CCMP", sta=None, **ap) -> dict:
     config = TEST_CONFIGS[BASE_TEST].model_dump(mode="json")
     config["ap"].update(ap)
+    config["sta"].update(sta or {})
     for link in config["ap"]["links"]:
         link["pairwise_cipher"] = cipher
     return {"config": config, "actions": list(actions)}
@@ -39,10 +40,19 @@ def _candidate(actions=(ASSOC,), cipher="CCMP", **ap) -> dict:
 
 # name -> (dimension=value it shows, candidate)
 CANDIDATES = {
-    "base": ("ap_sae_pwe=unset; ap_pairwise_cipher=CCMP; rekey_gtk_now=absent; "
-             "disable_enable_mld=absent", _candidate()),
-    "sae_pwe_h2e": ("ap_sae_pwe=1", _candidate(sae_pwe="hash_to_element")),
+    "base": ("ap_sae_pwe=unset; sta_sae_pwe=unset; ap_pairwise_cipher=CCMP; "
+             "rekey_gtk_now=absent; disable_enable_mld=absent", _candidate()),
+    # ap_sae_pwe=1 advertises the SAE H2E-only selector, so the client needs H2E enabled
+    # (SEC.SAE_H2E_ONLY_NEEDS_STA_H2E, issue #88); with it unset the run is REJECTED
+    # (runs/rejected/1794384673). Shown with each client value that allows it.
+    "sae_pwe_h2e": ("ap_sae_pwe=1 (with sta_sae_pwe=1)",
+                    _candidate(sae_pwe="hash_to_element", sta={"sae_pwe": "hash_to_element"})),
+    "sae_pwe_h2e_sta_both": ("ap_sae_pwe=1 (with sta_sae_pwe=2)",
+                             _candidate(sae_pwe="hash_to_element", sta={"sae_pwe": "both"})),
     "sae_pwe_both": ("ap_sae_pwe=2", _candidate(sae_pwe="both")),
+    # The client's own value, on F02 with the AP's sae_pwe unset (issue #88).
+    "sta_sae_pwe_h2e": ("sta_sae_pwe=1", _candidate(sta={"sae_pwe": "hash_to_element"})),
+    "sta_sae_pwe_both": ("sta_sae_pwe=2", _candidate(sta={"sae_pwe": "both"})),
     "gcmp_256": ("ap_pairwise_cipher=GCMP-256", _candidate(cipher="GCMP-256")),
     "rekey_gtk_now": ("rekey_gtk_now=present",
                       _candidate([ASSOC, {"action": "rekey_gtk_now"}])),

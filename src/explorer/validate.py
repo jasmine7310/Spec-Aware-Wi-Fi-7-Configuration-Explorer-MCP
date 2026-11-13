@@ -236,28 +236,63 @@ def check_eht_sae_h2e(config: Config) -> list[Finding]:
     SAE-EXT-KEY, H2E is used even if sae_pwe is unset (src/ap/wpa_auth_ie.c:553-557,
     src/ap/ieee802_11.c:2006-2009, wpa_supplicant/sme.c:364-366); with plain SAE an
     unset sae_pwe means hunting-and-pecking only (hostapd/hostapd.conf:2292-2294) on
-    the 2.4 GHz channels the model allows. A conforming client prefers SAE-EXT-KEY over
-    plain SAE (§12.12.9). Fires only when plain SAE is the one usable AKM; with another
-    family usable too, the negotiated AKM is unknown (UND.AKM_PREFERENCE).
+    the 2.4 GHz channels the model allows. Both sides count: the client's sae_pwe is
+    modeled since issue #88, and wpa_supplicant treats unset the same way
+    (wpa_supplicant/wpa_supplicant.conf:501-509). A conforming client prefers SAE-EXT-KEY
+    over plain SAE (§12.12.9). Fires only when plain SAE is the one usable AKM; with
+    another family usable too, the negotiated AKM is unknown (UND.AKM_PREFERENCE).
     """
-    if _usable_akms(config) != ["SAE"] or config.ap.sae_pwe is not None:
+    if _usable_akms(config) != ["SAE"]:
         return []
     return [Finding(
         rule_id="SEC.EHT_SAE_H2E",
-        reason=("plain SAE with sae_pwe unset uses hunting-and-pecking, not hash-to-element; "
-                "set sae_pwe to hash_to_element or both"))]
+        reason=(f"plain SAE with the {side}'s sae_pwe unset uses hunting-and-pecking, not "
+                f"hash-to-element; set it to hash_to_element or both"))
+        for side, pwe in (("AP", config.ap.sae_pwe), ("client", config.sta.sae_pwe))
+        if pwe is None]
 
 
 def check_sae_pwe_needs_sae(config: Config) -> list[Finding]:
-    """SEC.SAE_PWE_NEEDS_SAE (setting dependency): sae_pwe only has an effect when an AP
-    link offers an SAE-family AKM; otherwise the setting is meaningless."""
-    if config.ap.sae_pwe is None or any(
+    """SEC.SAE_PWE_NEEDS_SAE (setting dependency): sae_pwe only has an effect with an
+    SAE-family AKM: on the AP, when a link offers one; on the client, when it allows one."""
+    findings = []
+    if config.ap.sae_pwe is not None and not any(
             akm in _SAE_FAMILY for link in config.ap.links for akm in link.akms):
+        findings.append(Finding(
+            rule_id="SEC.SAE_PWE_NEEDS_SAE",
+            reason=(f"the AP's sae_pwe={config.ap.sae_pwe} is set but no AP link offers SAE "
+                    f"or SAE-EXT-KEY, so it has no effect")))
+    if config.sta.sae_pwe is not None and not any(
+            akm in _SAE_FAMILY for akm in config.sta.akms):
+        findings.append(Finding(
+            rule_id="SEC.SAE_PWE_NEEDS_SAE",
+            reason=(f"the client's sae_pwe={config.sta.sae_pwe} is set but it allows neither "
+                    f"SAE nor SAE-EXT-KEY, so it has no effect")))
+    return findings
+
+
+def check_sae_h2e_only_needs_sta_h2e(config: Config) -> list[Finding]:
+    """SEC.SAE_H2E_ONLY_NEEDS_STA_H2E (setting dependency, issue #88): an AP link with
+    sae_pwe=1 (hash-to-element only) whose AKMs are all SAE-family advertises the "SAE Hash
+    to Element Only" BSS membership selector (802.11-2024 Table 9-131, value 123;
+    hostap src/ap/ieee802_11.c:166-170). Joining it needs hash-to-element support, and
+    wpa_supplicant with its sae_pwe unset skips such a BSS for any SAE AKM, SAE-EXT-KEY
+    included (wpa_supplicant/events.c:1250-1259). So a client that allows an SAE AKM needs
+    sae_pwe set (1 or 2). Not checked when the client allows no SAE AKM: then the
+    selector check doesn't apply, and SEC.MLD_CLIENT_COMMON_AKM decides."""
+    if config.ap.sae_pwe != "hash_to_element" or config.sta.sae_pwe is not None:
+        return []
+    if not any(akm in _SAE_FAMILY for akm in config.sta.akms):
+        return []
+    h2e_only = [link.link_id for link in config.ap.links
+                if all(akm in _SAE_FAMILY for akm in link.akms)]
+    if not h2e_only:
         return []
     return [Finding(
-        rule_id="SEC.SAE_PWE_NEEDS_SAE",
-        reason=(f"sae_pwe={config.ap.sae_pwe} is set but no AP link offers SAE or "
-                f"SAE-EXT-KEY, so it has no effect"))]
+        rule_id="SEC.SAE_H2E_ONLY_NEEDS_STA_H2E",
+        reason=(f"AP link(s) {h2e_only} advertise SAE hash-to-element only (sae_pwe="
+                f"hash_to_element with only SAE AKMs), but the client's sae_pwe is unset, so "
+                f"it skips that AP MLD; set the client's sae_pwe to hash_to_element or both"))]
 
 
 P1_CHECKS: dict[str, Callable[[Config], list[Finding]]] = {
@@ -267,6 +302,7 @@ P1_CHECKS: dict[str, Callable[[Config], list[Finding]]] = {
     "SEC.EHT_BEACON_PROT": check_eht_beacon_prot,
     "SEC.EHT_SAE_H2E": check_eht_sae_h2e,
     "SEC.SAE_PWE_NEEDS_SAE": check_sae_pwe_needs_sae,
+    "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E": check_sae_h2e_only_needs_sta_h2e,
 }
 
 
