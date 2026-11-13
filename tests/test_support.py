@@ -4,9 +4,10 @@ import pytest
 
 from explorer.model import Candidate
 from explorer.scenarios import TEST_CANDIDATES, TEST_CONFIGS
+from explorer import support
 from explorer.support import (EVIDENCE_DIRS, action_key, adapter_runs, check_support,
-                              passing_runs, rule_passing_tests, setting_values,
-                              smoke_evidence)
+                              fixed_values, passing_runs, rejected_runs, rule_passing_tests,
+                              setting_values, smoke_evidence)
 
 ASSOC = {"action": "associate"}
 CLIENT_BP_TESTS = sorted(name for name in TEST_CANDIDATES if name.endswith("_client_bp"))
@@ -165,24 +166,29 @@ def _evidence(candidate):
     return {(v.candidate, v.value): v.run_ids for v in check_support(candidate).values}
 
 
+# The #61 smoke candidates are now SUPPORTED by their own adapter runs (#80), so these use
+# combinations no run has done yet: support probes.
+
 def test_gcmp_256_cites_its_smoke_run():
-    evidence = _evidence(_f02(cipher="GCMP-256"))
+    evidence = _evidence(_f02(cipher="GCMP-256", sae_pwe="both"))
     assert evidence[("ap_pairwise_cipher", "GCMP-256")] == ["1794384688"]
 
 
 def test_sae_pwe_values_use_the_csv_labels():
-    assert _evidence(_f02(sae_pwe="both"))[("ap_sae_pwe", "2")] == ["1794384680"]
+    assert _evidence(_f02(sae_pwe="both", cipher="GCMP-256"))[("ap_sae_pwe", "2")] == [
+        "1794384680"]
     # (plain F02 is SUPPORTED, with no per-value list, so use a recombined candidate)
-    assert _evidence(_f02(cipher="GCMP-256"))[("ap_sae_pwe", "unset")] == ["1794384666"]
+    probe = _f02([ASSOC, {"action": "rekey_gtk_now"}], cipher="GCMP-256")
+    assert _evidence(probe)[("ap_sae_pwe", "unset")] == ["1794384666"]
     result = check_support(_f02(sae_pwe="hash_to_element"))
     assert {(v.candidate, v.value): v.run_ids for v in result.values}[("ap_sae_pwe", "1")] == []
     assert "ap_sae_pwe=1" in result.note
 
 
 def test_new_actions_cite_the_adapter_runs():
-    assert _evidence(_f02([ASSOC, {"action": "rekey_gtk_now"}]))[
+    assert _evidence(_f02([ASSOC, {"action": "rekey_gtk_now"}], cipher="GCMP-256"))[
         ("rekey_gtk_now", "present")] == ["1794384695"]
-    evidence = _evidence(_f02(DISABLE_ENABLE))
+    evidence = _evidence(_f02(DISABLE_ENABLE, cipher="GCMP-256"))
     assert evidence[("disable_enable_mld", "present")] == ["1794384702"]
     assert "1794384702" in evidence[("disable_enable_mld", "DISABLE_MLD")]
     assert "1794384702" in evidence[("disable_enable_mld", "ENABLE_MLD")]
@@ -191,7 +197,7 @@ def test_new_actions_cite_the_adapter_runs():
 
 def test_presence_actions_are_listed_once():
     keys = [(v.candidate, v.value) for v in check_support(
-        _f02([ASSOC, {"action": "rekey_gtk_now"}])).values]
+        _f02([ASSOC, {"action": "rekey_gtk_now"}], cipher="GCMP-256")).values]
     assert keys.count(("rekey_gtk_now", "present")) == 1
     assert ("disable_enable_mld", "absent") in keys and ("link_remove", "absent") in keys
 
@@ -229,4 +235,66 @@ def test_adapter_runs_count_only_passing_rule_passing_runs(tmp_path):
     (tmp_path / "5").mkdir()
     (tmp_path / "5" / "manifest.json").write_text(json.dumps(
         {"run_id": "5", "results": [{"test": "explorer_candidate", "result": "PASS"}]}))
-    assert adapter_runs([tmp_path]) == {"1": [ASSOC, {"action": "rekey_gtk_now"}]}
+    found = adapter_runs([tmp_path])
+    assert list(found) == ["1"]
+    assert found["1"].candidate["actions"] == [ASSOC, {"action": "rekey_gtk_now"}]
+
+
+# --- #80: what P2 says about untested combinations ----------------------------
+
+def test_exact_match_with_a_committed_adapter_run_is_supported():
+    result = check_support(_f02(cipher="GCMP-256"))
+    assert (result.status, result.test, result.run_ids) == (
+        "SUPPORTED", "explorer_candidate", ["1794384688"])
+    assert result.all_values_evidenced and "run_candidate" in result.note
+
+
+def test_hostap_scenario_wins_over_an_adapter_run_of_the_same_candidate():
+    # F02 is both a hostap scenario and the #61 base adapter run (1794384666).
+    result = check_support(_f02())
+    assert result.test == F02 and "1794384666" not in result.run_ids
+
+
+def test_adapter_run_on_other_versions_or_schema_isnt_supported(monkeypatch):
+    monkeypatch.setattr(support, "pinned_commits",
+                        lambda: {"hostap_commit": "other", "kernel_commit": "other"})
+    assert check_support(_f02(cipher="GCMP-256")).status == "UNRESOLVED"
+    monkeypatch.undo()
+    monkeypatch.setattr(support, "SCHEMA_VERSION", support.SCHEMA_VERSION + 1)
+    assert check_support(_f02(cipher="GCMP-256")).status == "UNRESOLVED"
+
+
+def test_untested_combination_of_evidenced_values_is_a_probe():
+    result = check_support(_f02([ASSOC, {"action": "rekey_gtk_now"}], cipher="GCMP-256"))
+    assert (result.status, result.all_values_evidenced) == ("UNRESOLVED", True)
+    assert "support probe" in result.note and result.recorded_refusals == []
+
+
+def test_value_without_evidence_isnt_a_probe_and_cites_the_refusal():
+    result = check_support(_f02(sae_pwe="hash_to_element"))
+    assert (result.status, result.all_values_evidenced) == ("UNRESOLVED", False)
+    assert [(r.candidate, r.value, r.run_ids) for r in result.recorded_refusals] == [
+        ("ap_sae_pwe", "1", [REJECTED_RUN])]
+    assert "runs/rejected/" in result.note and REJECTED_RUN in result.note
+
+
+def test_fixed_settings_need_a_legal_run_with_the_same_value():
+    # No legal committed run turned bss_transition on (only hostap's rule-breaking
+    # BSS TM test does), so it's not evidenced; optional PMF is (the PTK rekey scenario).
+    on = check_support(_f02(bss_transition=True))
+    assert not on.all_values_evidenced and "ap_bss_transition=1" in on.note
+    optional = _evidence(_f02(pmf="optional", cipher="GCMP-256"))
+    assert optional[("ap_pmf", "optional")]
+    assert ("ap_link_layout", "link0:ch1 link1:ch6") in fixed_values(_f02())
+
+
+def test_campaign_runs_count_and_may_be_nested(tmp_path):
+    assert support.REPO_ROOT / "campaigns" in EVIDENCE_DIRS
+    _adapter_manifest(tmp_path / "campaign-1", "7")
+    assert list(adapter_runs([tmp_path])) == ["7"]
+    assert passing_runs([tmp_path]) == {"explorer_candidate": ["7"]}
+
+
+def test_rejected_runs_are_read_only_for_refusals():
+    assert list(rejected_runs()) == [REJECTED_RUN]
+    assert all(REJECTED_RUN not in ids for ids in passing_runs().values())

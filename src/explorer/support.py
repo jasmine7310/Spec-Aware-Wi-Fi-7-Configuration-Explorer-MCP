@@ -1,12 +1,18 @@
 """P2 support check: can the pinned environment execute this candidate?
 
-Only committed evidence counts:
+Only committed evidence counts. The rules below were decided in issue #80
+(docs/plan.md, Decisions):
 
 - ``SUPPORTED``: the candidate is exactly what a hostap test (or one of our
   ``_client_bp`` wrappers) sets up and does, configuration and actions alike, and that
-  test has at least one passing committed run. ``run_hwsim_test`` can run it.
-- ``UNRESOLVED``: no test executes this exact candidate. The result lists the committed
-  runs that show each of its values executes, or none: for the admitted dimensions
+  test has at least one passing committed run (``run_hwsim_test`` can run it); or it is
+  exactly the candidate of a committed adapter run that passed the modeled rules and was
+  ACCEPTED on the pinned hostap and kernel commits with the current model schema
+  (``run_candidate`` can run it again). One such run is enough for P2; anchors and
+  contrasts need 3/3. The local image ID isn't compared: it changes on every rebuild,
+  even from cache.
+- ``UNRESOLVED``: no test or adapter run executes this exact candidate. The result lists
+  the committed runs that show each of its values executes, or none: for the admitted dimensions
   (settings, and the actions in ``PRESENCE_ACTIONS`` as absent / present), the smoke runs
   in ``surface_candidates.csv``'s ``smoke_runs``; for each action (with its command or
   operation), committed adapter runs whose recorded candidate performs it, then passing
@@ -14,10 +20,18 @@ Only committed evidence counts:
   hostap tests that break one (the plain-SAE baseline, hostap's originals with the
   client's beacon protection off) are negative experiments, and an adapter run counts only
   if its recorded validation is PASSES_MODELED_RULES. Rejected runs (``runs/rejected/``)
-  are never read. Values that each ran somewhere don't prove their combination runs.
+  are never evidence. Settings that aren't admitted dimensions (``fixed_values``: AP PMF
+  and beacon protection, bss_transition, the client's beacon protection and SAE groups,
+  the link layout) count only with a legal committed run that used the same value.
+  Values that each ran somewhere don't prove their combination runs.
+  ``all_values_evidenced`` says whether every value has such a run: the campaign may run
+  those candidates as labeled support probes, and only those. When a value has no run but
+  a committed rejected run (``runs/rejected/``) involves it, ``recorded_refusals`` cites it.
 - ``UNSUPPORTED_IMPLEMENTATION``: needs real evidence that the pinned versions can't do
   it, such as a run that failed to set up. We have none recorded, so nothing returns
-  this yet; it is never inferred from missing evidence.
+  this yet; it is never inferred from missing evidence. A refusal caused by a gap in our
+  model (e.g. ``ap_sae_pwe=1``, which needs the client's ``sae_pwe``, #88) isn't one: such
+  values are left out of the admitted values instead.
 
 Runs in ``runs/hwsim-logs/`` are trials and never count.
 """
@@ -26,19 +40,26 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
-from explorer.model import Candidate
+from explorer.model import SCHEMA_VERSION, Candidate
 from explorer.scenarios import TEST_CANDIDATES
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 # Committed run evidence; runs/hwsim-logs/ holds git-ignored trial runs and is skipped.
+# campaigns/ holds committed campaign runs (#68), possibly one folder per campaign, so run
+# folders are found at any depth.
 EVIDENCE_DIRS = (REPO_ROOT / "runs" / "baseline", REPO_ROOT / "runs" / "calibration",
-                 REPO_ROOT / "runs" / "smoke", REPO_ROOT / "runs" / "anchors")
+                 REPO_ROOT / "runs" / "smoke", REPO_ROOT / "runs" / "anchors",
+                 REPO_ROOT / "campaigns")
+# Committed runs of rule-passing candidates the implementation refused; never evidence.
+REJECTED_DIR = REPO_ROOT / "runs" / "rejected"
+DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
 CANDIDATES_CSV = REPO_ROOT / "surface_candidates.csv"
 
 P2Status = Literal["SUPPORTED", "UNRESOLVED", "UNSUPPORTED_IMPLEMENTATION"]
@@ -67,19 +88,38 @@ class SupportResult(BaseModel):
     """Per-value run evidence (UNRESOLVED only)."""
     closest_tests: list[str]
     """Tests with this exact configuration but different actions (UNRESOLVED only)."""
+    all_values_evidenced: bool
+    """True when every value has a passing committed run under the modeled rules (always
+    for SUPPORTED). An UNRESOLVED candidate with True is a support probe the campaign may
+    run; one with False isn't in the default campaign."""
+    recorded_refusals: list[ValueEvidence]
+    """Values without a passing run that a committed rejected run (runs/rejected/) involves,
+    with those runs. Information only: a refusal never makes a candidate unsupported."""
     note: str
+
+
+def _manifests(evidence_dirs):
+    """Every run manifest under the given folders, at any depth (campaigns/ may nest)."""
+    for evidence_dir in evidence_dirs:
+        yield from (json.loads(path.read_text())
+                    for path in sorted(Path(evidence_dir).rglob("manifest.json")))
 
 
 def passing_runs(evidence_dirs=EVIDENCE_DIRS) -> dict[str, list[str]]:
     """Test name -> IDs of its passing committed runs, from each run's manifest.json."""
     runs: dict[str, list[str]] = {}
-    for evidence_dir in evidence_dirs:
-        for manifest_path in sorted(Path(evidence_dir).glob("*/manifest.json")):
-            manifest = json.loads(manifest_path.read_text())
-            for result in manifest["results"]:
-                if result["result"] == "PASS":
-                    runs.setdefault(result["test"], []).append(manifest["run_id"])
+    for manifest in _manifests(evidence_dirs):
+        for result in manifest["results"]:
+            if result["result"] == "PASS":
+                runs.setdefault(result["test"], []).append(manifest["run_id"])
     return runs
+
+
+@lru_cache(maxsize=1)
+def pinned_commits(dockerfile: Path = DOCKERFILE) -> dict[str, str]:
+    """The pinned hostap and kernel commits, from the Dockerfile's ARG lines."""
+    args = dict(re.findall(r"^ARG (\w+)=(\S+)$", Path(dockerfile).read_text(), re.MULTILINE))
+    return {"hostap_commit": args["HOSTAP_COMMIT"], "kernel_commit": args["KERNEL_COMMIT"]}
 
 
 @lru_cache(maxsize=1)
@@ -151,29 +191,110 @@ def setting_values(candidate: Candidate) -> list[tuple[str, str]]:
     return values
 
 
-def adapter_runs(evidence_dirs=EVIDENCE_DIRS) -> dict[str, list[dict]]:
-    """Run ID -> the actions of the candidate a committed adapter run carried out.
+class RecordedRun(BaseModel):
+    """What a committed adapter run's manifest records about its candidate."""
+    candidate: dict
+    """The candidate as JSON (``explorer_plan.explorer.candidate``)."""
+    hostap_commit: str | None
+    kernel_commit: str | None
+    schema_version: int | None
+
+
+def _recorded(manifest: dict) -> RecordedRun | None:
+    meta = manifest.get("explorer_plan", {}).get("explorer")
+    if not meta:
+        return None
+    versions = manifest.get("versions", {})
+    return RecordedRun(candidate=meta["candidate"],
+                       hostap_commit=versions.get("hostap_commit"),
+                       kernel_commit=versions.get("kernel_commit"),
+                       schema_version=meta.get("schema_version"))
+
+
+def fixed_values(candidate: Candidate) -> list[tuple[str, str]]:
+    """The candidate's values for settings that aren't admitted dimensions (fixed
+    settings, docs/dimensions.md), as (name, label) pairs. A candidate that changes one
+    has no smoke run for it; only a legal committed run with the same value counts."""
+    ap, sta = candidate.config.ap, candidate.config.sta
+    return [
+        ("ap_pmf", ap.pmf),
+        ("ap_beacon_protection", "1" if ap.beacon_protection else "0"),
+        ("ap_bss_transition", "1" if ap.bss_transition else "0"),
+        ("sta_beacon_protection", "1" if sta.beacon_protection else "unset"),
+        ("sta_sae_groups", " ".join(map(str, sta.sae_groups)) if sta.sae_groups else "default"),
+        ("ap_link_layout", " ".join(f"link{link.link_id}:ch{link.channel}" for link in ap.links)),
+    ]
+
+
+def adapter_runs(evidence_dirs=EVIDENCE_DIRS) -> dict[str, RecordedRun]:
+    """Run ID -> what a committed adapter run recorded, for runs that count as evidence.
 
     Only runs of the adapter test (explorer.adapter) that passed and whose recorded
     validation (``explorer_plan.explorer`` in the manifest) is PASSES_MODELED_RULES:
     a negative experiment or a REJECTED run is never evidence that a value executes."""
     from explorer.adapter import ADAPTER_TEST  # explorer.adapter imports explorer.validate
-    found: dict[str, list[dict]] = {}
-    for evidence_dir in evidence_dirs:
-        for manifest_path in sorted(Path(evidence_dir).glob("*/manifest.json")):
-            manifest = json.loads(manifest_path.read_text())
-            meta = manifest.get("explorer_plan", {}).get("explorer")
-            passed = any(r["test"] == ADAPTER_TEST and r["result"] == "PASS"
-                         for r in manifest["results"])
-            if (passed and meta and not meta["negative_experiment"]
-                    and meta["validation"]["status"] == "PASSES_MODELED_RULES"):
-                found[manifest["run_id"]] = meta["candidate"]["actions"]
+    found: dict[str, RecordedRun] = {}
+    for manifest in _manifests(evidence_dirs):
+        meta = manifest.get("explorer_plan", {}).get("explorer")
+        passed = any(r["test"] == ADAPTER_TEST and r["result"] == "PASS"
+                     for r in manifest["results"])
+        if (passed and meta and not meta["negative_experiment"]
+                and meta["validation"]["status"] == "PASSES_MODELED_RULES"):
+            found[manifest["run_id"]] = _recorded(manifest)
     return found
 
 
 @lru_cache(maxsize=1)
-def _cached_adapter_runs() -> dict[str, list[dict]]:
+def _cached_adapter_runs() -> dict[str, RecordedRun]:
     return adapter_runs()
+
+
+def fixed_evidence() -> dict[tuple[str, str], list[str]]:
+    """(fixed setting, label) -> legal committed runs that used that value: runs of the
+    rule-passing hostap scenarios and counted adapter runs (adapter runs first)."""
+    runs = _cached_passing_runs()
+    by_adapter: dict[tuple[str, str], list[str]] = {}
+    for run, recorded in sorted(_cached_adapter_runs().items()):
+        if (parsed := _parse(recorded)) is not None:
+            for key in fixed_values(parsed):
+                by_adapter.setdefault(key, []).append(run)
+    by_tests: dict[tuple[str, str], list[str]] = {}
+    for test in sorted(rule_passing_tests()):
+        for key in fixed_values(TEST_CANDIDATES[test]):
+            by_tests.setdefault(key, []).extend(runs.get(test, []))
+    return {key: list(dict.fromkeys(by_adapter.get(key, []) + sorted(by_tests.get(key, []))))
+            for key in by_adapter.keys() | by_tests.keys()}
+
+
+@lru_cache(maxsize=1)
+def _cached_fixed_evidence() -> dict[tuple[str, str], list[str]]:
+    return fixed_evidence()
+
+
+def rejected_runs(rejected_dir: Path = REJECTED_DIR) -> dict[str, RecordedRun]:
+    """Run ID -> what a committed rejected run recorded (runs/rejected/). Never evidence;
+    P2 only cites them as recorded refusals."""
+    return {manifest["run_id"]: recorded for manifest in _manifests([rejected_dir])
+            if (recorded := _recorded(manifest)) is not None}
+
+
+@lru_cache(maxsize=1)
+def _cached_rejected_runs() -> dict[str, RecordedRun]:
+    return rejected_runs()
+
+
+def _parse(recorded: RecordedRun) -> Candidate | None:
+    try:
+        return Candidate.model_validate(recorded.candidate)
+    except ValidationError:
+        return None  # recorded under an older model
+
+
+def _on_pinned_versions(recorded: RecordedRun) -> bool:
+    pinned = pinned_commits()
+    return (recorded.hostap_commit == pinned["hostap_commit"]
+            and recorded.kernel_commit == pinned["kernel_commit"]
+            and recorded.schema_version == SCHEMA_VERSION)
 
 
 def _key(step: dict) -> tuple[str, str]:
@@ -184,7 +305,8 @@ def _key(step: dict) -> tuple[str, str]:
 def action_key(step) -> tuple[str, str]:
     """(action name, its command or operation), e.g. ('sta_disconnect_reconnect',
     'DISCONNECT'); actions without one use 'present'."""
-    return step.action, getattr(step, "command", None) or getattr(step, "operation", None) or "present"
+    label = getattr(step, "command", None) or getattr(step, "operation", None) or "present"
+    return step.action, label
 
 
 def check_support(candidate: Candidate) -> SupportResult:
@@ -196,21 +318,36 @@ def check_support(candidate: Candidate) -> SupportResult:
         test, run_ids = max(supported, key=lambda pair: len(pair[1]))
         return SupportResult(
             status="SUPPORTED", test=test, run_ids=run_ids, values=[], closest_tests=[],
+            all_values_evidenced=True, recorded_refusals=[],
             note=(f"Executed exactly by hostap test {test}, with {len(run_ids)} passing "
                   f"committed run(s); run it with run_hwsim_test."))
+    exact = sorted(run for run, recorded in _cached_adapter_runs().items()
+                   if _on_pinned_versions(recorded) and _parse(recorded) == candidate)
+    if exact:
+        from explorer.adapter import ADAPTER_TEST
+        return SupportResult(
+            status="SUPPORTED", test=ADAPTER_TEST, run_ids=exact, values=[], closest_tests=[],
+            all_values_evidenced=True, recorded_refusals=[],
+            note=(f"Executed exactly by {len(exact)} committed adapter run(s) "
+                  f"({', '.join(exact)}) on the pinned versions; run it again with "
+                  "run_candidate."))
 
     smoke = _cached_smoke_evidence()
     values = [ValueEvidence(candidate=name, value=label,
                             run_ids=[smoke[name][label]] if label in smoke.get(name, {}) else [])
               for name, label in setting_values(candidate)]
     adapter = _cached_adapter_runs()
+    fixed_evidence = _cached_fixed_evidence()
+    values += [ValueEvidence(candidate=name, value=label,
+                             run_ids=fixed_evidence.get((name, label), [])[:MAX_EXAMPLE_RUNS])
+               for name, label in fixed_values(candidate)]
     for name, label in dict.fromkeys(action_key(step) for step in candidate.actions):
         if name in PRESENCE_ACTIONS and label == "present":
             continue  # already listed as that dimension's "present" value above
         # Adapter runs first: each shows the action in a legal candidate of its own,
         # where a hostap test's run shows it inside that test's scenario.
-        by_adapter = sorted(run for run, actions in adapter.items()
-                            if (name, label) in {_key(s) for s in actions})
+        by_adapter = sorted(run for run, recorded in adapter.items() if (name, label)
+                            in {_key(s) for s in recorded.candidate["actions"]})
         performed_by = [test for test, known in TEST_CANDIDATES.items()
                         if test in rule_passing_tests()
                         and (name, label) in {action_key(s) for s in known.actions}]
@@ -219,13 +356,36 @@ def check_support(candidate: Candidate) -> SupportResult:
         values.append(ValueEvidence(candidate=name, value=label, run_ids=run_ids))
     closest = sorted(test for test, known in TEST_CANDIDATES.items()
                      if known.config == candidate.config and runs.get(test))
+    refusals = recorded_refusals(candidate, values)
     missing = [f"{v.candidate}={v.value}" for v in values if not v.run_ids]
-    note = "No tested hostap scenario executes this exact candidate."
+    note = ("No tested hostap scenario or committed adapter run executes this exact "
+            "candidate.")
     if closest:
         note += f" {', '.join(closest)} set up this configuration with other actions."
     note += (f" No passing run under the modeled rules for: {', '.join(missing)}."
              if missing else
              " Each listed value has a passing run under the modeled rules, but not in "
-             "this combination.")
+             "this combination: a support probe.")
+    if refusals:
+        note += " Recorded refusal(s) in runs/rejected/: " + "; ".join(
+            f"{r.candidate}={r.value} ({', '.join(r.run_ids)})" for r in refusals) + "."
     return SupportResult(status="UNRESOLVED", test=None, run_ids=[], values=values,
-                         closest_tests=closest, note=note)
+                         closest_tests=closest, all_values_evidenced=not missing,
+                         recorded_refusals=refusals, note=note)
+
+
+def recorded_refusals(candidate: Candidate,
+                      values: list[ValueEvidence]) -> list[ValueEvidence]:
+    """The values without a passing run that a committed rejected run also had."""
+    missing = [(v.candidate, v.value) for v in values if not v.run_ids]
+    refused: dict[tuple[str, str], list[str]] = {}
+    for run, recorded in sorted(_cached_rejected_runs().items()):
+        if (rejected := _parse(recorded)) is None:
+            continue
+        involved = (set(setting_values(rejected)) | set(fixed_values(rejected))
+                    | {action_key(s) for s in rejected.actions})
+        for key in missing:
+            if key in involved:
+                refused.setdefault(key, []).append(run)
+    return [ValueEvidence(candidate=name, value=value, run_ids=runs)
+            for (name, value), runs in refused.items()]

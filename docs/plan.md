@@ -18,7 +18,7 @@ every rejection says which stage and which sourced rule rejected it:
 |---|---|---|---|
 | P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | ✅ Settings model (`model.Config`), action model (`model.Candidate`: config + ordered actions) and readable `P0.*` errors (`validate.parse_candidate`) |
 | P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | ✅ Rule registry (`rules.yaml` + `rules.load_rules()`); 6 security/setting rules coded (`validate.run_p1_checks`, applied to hostap tests by `run_hwsim_test`), all 9 action-order rules (`validate.check_action_order`) and 3 open questions that give `SPEC_UNDETERMINED`, chained by `validate.validate_candidate` |
-| P2 | Support checker | Does our pinned hostap/kernel version actually support it? | 🟡 Basic (`support.check_support`): `SUPPORTED` only for an exact match to a tested scenario with passing committed runs, otherwise `UNRESOLVED` with per-value run evidence: smoke runs of the admitted dimensions, and runs of legal hostap scenarios or committed adapter runs for each action |
+| P2 | Support checker | Does our pinned hostap/kernel version actually support it? | 🟡 `support.check_support`: `SUPPORTED` for an exact match to a tested scenario or to a committed legal adapter run on the pinned commits; otherwise `UNRESOLVED` with per-value run evidence and `all_values_evidenced` (a support probe), plus recorded refusals (#80) |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()`; any candidate the adapter supports runs through `adapter.run_candidate()` (ACCEPTED / REJECTED / SETUP_FAIL / TIMEOUT) |
 | P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
 | – | MCP server | Lets the agent use all of the above in plain English | 🟡 `get_model`, `validate_candidate` (P0 + P1 + basic P2, no guest), `explain_rule` (full registry entry behind any finding) `run_hwsim_test` (runs an approved hostap test; one that breaks a modeled rule only as a labeled negative experiment) and `run_candidate` (runs any candidate the adapter supports, after validating it, with the same negative-experiment rule). Campaign and contrast tools come with P4 |
@@ -110,6 +110,27 @@ first filled in.
   hostap's own test with `beacon_prot="1"` on the MLD client. The originals are violations
   of `SEC.EHT_BEACON_PROT`, so they only run as negative experiments. After pulling, rebuild
   the image (`scripts/build-env.sh`).
+- **P2 for untested combinations** (#80, 2026-11-13; proposed by Michelle, agreed by
+  Jasmine on the issue):
+  - P2 keeps the roadmap's statuses. An `UNRESOLVED` candidate whose every value has a
+    passing, committed, rule-passing run (no trials, no negative experiments) gets
+    `all_values_evidenced: true`; that covers the admitted dimensions, the fixed settings
+    (a legal run with the same value) and each action. Only those run in the campaign, as
+    labeled **support probes**; `pruning_counts.json` splits P2 into supported / probe /
+    not run (#66).
+  - An exact match (config and ordered actions) with a committed adapter run that passed
+    the modeled rules, on the pinned hostap and kernel commits and the current schema
+    version, is `SUPPORTED`. The image ID isn't compared (it changes on every rebuild).
+    One ACCEPTED run is enough for P2; anchors and contrasts need 3/3. A cache hit isn't a
+    new run. `campaigns/` counts as committed evidence.
+  - A refusal caused by our model (`ap_sae_pwe=1`, which needs the client's `sae_pwe`,
+    #88) isn't `UNSUPPORTED_IMPLEMENTATION`: the value stays out of the admitted values,
+    and P2 only cites the run in `recorded_refusals`. `UNSUPPORTED_IMPLEMENTATION` needs
+    a REJECTED run showing the pinned versions really can't do something.
+  - A probe that comes back REJECTED, SETUP_FAIL or TIMEOUT is counted at P3, never
+    dropped. SETUP_FAIL / TIMEOUT say nothing about the candidate: rerun once, never file
+    under `runs/rejected/` or use as evidence (#68). Probe pairs count as executed
+    coverage only after an ACCEPTED run.
 - **Candidate adapter** (#79, 2026-11-10; **the team should confirm**): any candidate runs
   through one hwsim test (`docker/test_explorer_candidate.py`) that uses hostap's own
   helpers. It observes the same way after every action (links, station status, traffic on
@@ -190,7 +211,8 @@ sub-issues on the board. Rows are added as work lands.
 | #79 Run any candidate (adapter) | Simulation | ✅ Done. `adapter.build_plan` / `run_candidate`, `docker/test_explorer_candidate.py`, MCP `run_candidate`. All 6 rule-passing scenarios run `ACCEPTED` through it (`scripts/reproduce-scenarios.py`, trial runs 1794367274–1794367744). Three match their committed runs on every fact both observed. The other three differ because hostap's legacy client `dev[0]` isn't modeled (OWE: an extra handshake and disconnect) and because the record keeps each fact's last value: the adapter's last look is after the final DISCONNECT or link removal (links `0x0`, not associated), hostap's tests last look while associated. Reviewed and tested on Windows/WSL by a teammate. Follow-up: the record can't show per-step state (e.g. traffic lost after an action); needs a signature issue before Week 4 contrasts. A candidate no hostap test covers (associate, then a GTK rekey on its own) runs `ACCEPTED` over MCP |
 | #61 Admit ≥8 executable dimensions | Dimensions | ✅ 10 dimensions admitted (`docs/dimensions.md`): the 6 from Week 2 plus `ap_sae_pwe` (conditional on SAE; unset / 2), `ap_pairwise_cipher` (CCMP / GCMP-256 on every link), `rekey_gtk_now` and `disable_enable_mld` (hostap's order: the STA is disconnected while the AP MLD is disabled). The adapter now runs GCMP-256 and DISABLE/ENABLE_MLD; the runs went through it on 2026-11-11 (WSL2) and are in `runs/smoke/`; `tests/test_surface_candidates.py` requires ≥8. Finding: `ap_sae_pwe=1` is **REJECTED** (`1794384673`): the AP then advertises the SAE H2E-only selector and a client with `sae_pwe` unset skips it, even with SAE-EXT-KEY (hostap lines checked), so admitting 1 needs the client's `sae_pwe` modeled. Still open: the WFA cipher rows for GCMP-256 (PDF), and adding the cipher to the behavior record. `ap_mld_link_count` stays out (P0 ≤2 links) |
 | #62 Spec coverage matrix | Research | ✅ `spec_coverage.csv`, 36 rows checked by `tests/test_spec_coverage.py`. Coverage: **20 RULE, 1 UND, 6 OUT_OF_SCOPE, 9 TODO** (802.11be: 9 / 0 / 4 / 4; 802.11-2024: 3 / 0 / 0 / 3; WFA: 8 / 1 / 2 / 2). Rows reuse the citations already checked in the PDFs; the 9 TODO rows (802.11-2024 rekey / PMF clauses, the rest of 802.11be §12.6, §35.3.6, §35.3.7, §35.3.5.2, WFA §3.2 and Table 4) need someone with the PDFs to find the clause and page |
-| #90 P2 sees the new dimensions | Simulation | ✅ Done. `support.setting_values` now covers `ap_sae_pwe` and `ap_pairwise_cipher`, and `rekey_gtk_now` / `disable_enable_mld` as absent / present like `link_remove`, so their smoke runs are cited. Committed adapter runs count as action evidence (`support.adapter_runs`: passing runs whose recorded validation is `PASSES_MODELED_RULES`), listed before hostap-test runs. A GCMP-256 candidate cites `1794384688`, DISABLE/ENABLE_MLD `1794384702`, `rekey_gtk_now` `1794384695`; `ap_sae_pwe=1` has none (its REJECTED run in `runs/rejected/` is never cited). How P2 labels untested combinations and recorded refusals is #80 |
+| #90 P2 sees the new dimensions | Simulation | ✅ Done. `support.setting_values` now covers `ap_sae_pwe` and `ap_pairwise_cipher`, and `rekey_gtk_now` / `disable_enable_mld` as absent / present like `link_remove`, so their smoke runs are cited. Committed adapter runs count as action evidence (`support.adapter_runs`: passing runs whose recorded validation is `PASSES_MODELED_RULES`), listed before hostap-test runs. A GCMP-256 candidate cites `1794384688`, DISABLE/ENABLE_MLD `1794384702`, `rekey_gtk_now` `1794384695`; `ap_sae_pwe=1` has none (its REJECTED run in `runs/rejected/` is never cited). |
+| #80 P2 for untested combinations | Simulation | ✅ Decided and built (Decisions). `all_values_evidenced` marks support probes, now also requiring a legal run for each fixed setting (e.g. `bss_transition` on has none); an exact match with a committed legal adapter run on the pinned commits is `SUPPORTED` (the #61 smoke candidates now are, e.g. F02 + GCMP-256 by `1794384688`); `recorded_refusals` cites `runs/rejected/`; `campaigns/` is in `EVIDENCE_DIRS` |
 
 ## Checkpoint 1
 
