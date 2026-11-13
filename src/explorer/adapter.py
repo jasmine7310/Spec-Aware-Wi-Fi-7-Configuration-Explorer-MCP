@@ -215,13 +215,16 @@ def compare_signatures(adapter_signature: dict, test_signature: dict) -> dict:
 
 def run_metadata(candidate: Candidate) -> dict:
     """What a run folder records about the candidate besides the plan: the candidate
-    itself, the model's schema version, validate_candidate's verdict (status, rule IDs,
-    P2 status) and whether running it is a negative experiment."""
+    itself, the model's schema version and model.json digest (issue #65),
+    validate_candidate's verdict (status, rule IDs, P2 status) and whether running it is
+    a negative experiment."""
+    from explorer.model_json import build  # model_json imports adapter
     from explorer.validate import validate_candidate  # validate imports support -> scenarios
     data = candidate.model_dump(mode="json")
     result = validate_candidate(data)
     return {
         "schema_version": SCHEMA_VERSION,
+        "model_digest": build()["model_digest"],
         "candidate": data,
         "validation": {"status": result.status,
                        "rule_ids": [f.rule_id for f in result.findings],

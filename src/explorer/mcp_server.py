@@ -30,7 +30,7 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from pydantic import BaseModel
 
-from explorer import adapter, validate
+from explorer import adapter, model_json, validate
 from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test
 from explorer.scenarios import TEST_CONFIGS
@@ -102,8 +102,29 @@ class RuleSummary(BaseModel):
     title: str
 
 
+class DimensionSummary(BaseModel):
+    name: str
+    category: str
+    """security, key or link."""
+    path: str
+    """Where it sits in a candidate, e.g. config.ap.sae_pwe, or actions."""
+    values: list[str]
+    """Its smoke-tested values as model.json labels; model.json gives the typed values."""
+
+
+class ModelVersion(BaseModel):
+    file: str
+    schema_version: int
+    rules_version: int
+    model_digest: str
+    """Changes when the schema, a dimension's values, a rule or a pinned version does."""
+    dimensions: list[DimensionSummary]
+
+
 class ModelInfo(BaseModel):
     status: str
+    model: ModelVersion
+    """model.json: the candidate space's versions and admitted dimensions."""
     pinned_versions: PinnedVersions
     stages: list[StageStatus]
     observable_facts: list[ObservableFact]
@@ -236,17 +257,34 @@ def rule_summaries() -> list[RuleSummary]:
             for entry in [*registry.rules, *registry.undetermined]]
 
 
+def model_version() -> ModelVersion:
+    """model.json's versions and admitted dimensions (built from the same sources the
+    file is; tests/test_model_json.py keeps the file in step)."""
+    built = model_json.build()
+    return ModelVersion(
+        file=model_json.MODEL_JSON.name,
+        schema_version=built["schema_version"],
+        rules_version=built["rules_version"],
+        model_digest=built["model_digest"],
+        dimensions=[DimensionSummary(name=d["name"], category=d["category"], path=d["path"],
+                                     values=[v["label"] for v in d["values"]])
+                    for d in built["dimensions"]])
+
+
 @server.tool()
 def get_model() -> ModelInfo:
-    """Describe the explorer's current scope: pinned hostap/kernel versions, which
+    """Describe the explorer's current scope: model.json's versions and the admitted
+    dimensions with their smoke-tested values, pinned hostap/kernel versions, which
     pipeline stages (P0-P4) are implemented, which behavior facts runs can report,
     which hostap tests have recorded runs in the repo, which tests run_hwsim_test
     accepts (with what the coded P1 rules say about each), and every modeled rule and
     open question by ID."""
     return ModelInfo(
         status=("Candidates can be validated through P0, P1 and a basic P2 support check "
-                "(validate_candidate), and approved hostap tests run in fresh guests "
-                "(run_hwsim_test). Campaigns and contrasts aren't built yet."),
+                "(validate_candidate), and approved hostap tests or any candidate the "
+                "adapter supports run in fresh guests (run_hwsim_test, run_candidate). "
+                "Campaigns and contrasts aren't built yet."),
+        model=model_version(),
         pinned_versions=pinned_versions(),
         stages=STAGES,
         observable_facts=observable_facts(),

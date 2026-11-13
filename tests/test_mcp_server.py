@@ -60,6 +60,19 @@ def test_get_model_lists_every_rule_and_question():
     assert len(rules) == 17 + 3   # rules.yaml: 17 rules + 3 open questions
 
 
+def test_get_model_matches_model_json():
+    import json
+    from explorer.model_json import MODEL_JSON
+    on_disk = json.loads(MODEL_JSON.read_text())
+    model = _get_model()["model"]
+    assert model["file"] == "model.json"
+    assert model["model_digest"] == on_disk["model_digest"]
+    assert (model["schema_version"], model["rules_version"]) == (
+        on_disk["schema_version"], on_disk["rules_version"])
+    assert {d["name"]: d["values"] for d in model["dimensions"]} == {
+        d["name"]: [v["label"] for v in d["values"]] for d in on_disk["dimensions"]}
+
+
 def test_uncalibrated_facts_are_flagged():
     facts = {f["name"]: f["calibrated"] for f in _get_model()["observable_facts"]}
     assert facts["ml_probe_handled"] is False

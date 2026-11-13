@@ -55,6 +55,9 @@ Not admitted:
 - `ap_beacon_protection`, `sta_beacon_protection`: off breaks `SEC.EHT_BEACON_PROT`, so there
   is one legal value.
 
+The machine-readable form of this list, with each value's typed value for a candidate, is
+`model.json` (issue #65, `scripts/build_model_json.py`).
+
 ## Per-dimension record
 
 Rows 1–6 are recorded in `runs/smoke/README.md` ("What each smoke-tested value rests on");

@@ -80,6 +80,12 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   guest, P3 status `ACCEPTED` / `REJECTED` / `SETUP_FAIL` / `TIMEOUT`), `unsupported()`,
   `compare_signatures()`. MCP tool `run_candidate` validates first. Changing the adapter
   test means rebuilding the image.
+- `model.json` (repo root): the machine-readable candidate space (P0 schema, admitted
+  dimensions with typed values and smoke runs, constraints by rule ID, actions, pinned
+  versions, `model_digest`), built by `explorer.model_json.build()`. Regenerate it with
+  `.venv/bin/python scripts/build_model_json.py` after changing the model, `rules.yaml`,
+  `surface_candidates.csv`'s `smoke_runs` or the adapter's actions; a test fails until you
+  do. `model_json.apply({dimension: label})` turns choices into a candidate.
 - `explorer.support.check_support(candidate)`: the P2 check. `SUPPORTED` only for an exact
   match to a tested scenario with passing committed runs; otherwise `UNRESOLVED` with the
   evidence per value. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.

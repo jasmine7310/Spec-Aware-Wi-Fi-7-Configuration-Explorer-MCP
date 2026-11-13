@@ -1,0 +1,1309 @@
+{
+  "actions": [
+    {
+      "action": "ap_deauthenticate",
+      "adapter_supported": false,
+      "fields": {},
+      "source": "AP sends DEAUTHENTICATE <sta addr> (2039, 2045)."
+    },
+    {
+      "action": "ap_disassociate",
+      "adapter_supported": false,
+      "fields": {},
+      "source": "AP sends DISASSOCIATE <sta addr> (2039, 2045)."
+    },
+    {
+      "action": "associate",
+      "adapter_supported": true,
+      "fields": {},
+      "source": "STA connects to the AP MLD on all its advertised links (wpas.connect, e.g. 714)."
+    },
+    {
+      "action": "bss_tm_link_removal_imminent",
+      "adapter_supported": false,
+      "fields": {},
+      "source": "AP sends BSS_TM_REQ with link_removal_imminent=1 (1457-1471)."
+    },
+    {
+      "action": "disable_enable_mld",
+      "adapter_supported": true,
+      "fields": {
+        "command": {
+          "enum": [
+            "DISABLE_MLD",
+            "ENABLE_MLD"
+          ],
+          "title": "Command",
+          "type": "string"
+        }
+      },
+      "source": "AP MLD DISABLE_MLD (728) or ENABLE_MLD (743)."
+    },
+    {
+      "action": "link_remove",
+      "adapter_supported": true,
+      "fields": {
+        "count": {
+          "description": "Beacons until removal (LINK_REMOVE <count>). Tests use 4 and 20.",
+          "minimum": 1,
+          "title": "Count",
+          "type": "integer"
+        },
+        "link_id": {
+          "description": "AP MLD link ID (0..14).",
+          "maximum": 14,
+          "minimum": 0,
+          "title": "Link Id",
+          "type": "integer"
+        }
+      },
+      "source": "AP MLD removes one affiliated AP: LINK_REMOVE <count> on that link's AP\n(hostapd.py:296; test_eht.py 1400 with count 4, 1416 with count 20)."
+    },
+    {
+      "action": "ml_probe_req",
+      "adapter_supported": false,
+      "fields": {
+        "link_id": {
+          "default": -1,
+          "description": "Requested AP link; -1 requests all links (the helper's default).",
+          "maximum": 14,
+          "minimum": -1,
+          "title": "Link Id",
+          "type": "integer"
+        }
+      },
+      "source": "STA sends an ML probe request (ML_PROBE_REQ, 422 / 439 / 446)."
+    },
+    {
+      "action": "rekey_gtk_now",
+      "adapter_supported": true,
+      "fields": {},
+      "source": "AP sends REKEY_GTK (1406, to link 0's AP in eht_mld_link_removal)."
+    },
+    {
+      "action": "scan",
+      "adapter_supported": false,
+      "fields": {},
+      "source": "STA scans for the AP MLD (SCAN freq=..., 387-395); needed before an ML probe."
+    },
+    {
+      "action": "setup_link_reconfig",
+      "adapter_supported": false,
+      "fields": {
+        "link_id": {
+          "description": "AP MLD link ID (0..14).",
+          "maximum": 14,
+          "minimum": 0,
+          "title": "Link Id",
+          "type": "integer"
+        },
+        "operation": {
+          "enum": [
+            "delete",
+            "add"
+          ],
+          "title": "Operation",
+          "type": "string"
+        }
+      },
+      "source": "STA sends SETUP_LINK_RECONFIG delete=<link> (3024) or add=<link> (3044)."
+    },
+    {
+      "action": "sta_disconnect_reconnect",
+      "adapter_supported": true,
+      "fields": {
+        "command": {
+          "enum": [
+            "DISCONNECT",
+            "RECONNECT"
+          ],
+          "title": "Command",
+          "type": "string"
+        }
+      },
+      "source": "STA DISCONNECT (740) or RECONNECT (760)."
+    }
+  ],
+  "candidate_schema": {
+    "$defs": {
+      "ApConfig": {
+        "additionalProperties": false,
+        "description": "AP MLD configuration. Security settings shared by all links live here;\nper-link AKMs and ciphers live on each ``ApLink``.",
+        "properties": {
+          "beacon_protection": {
+            "default": true,
+            "description": "hostapd beacon_prot.",
+            "title": "Beacon Protection",
+            "type": "boolean"
+          },
+          "bss_transition": {
+            "default": false,
+            "description": "hostapd bss_transition.",
+            "title": "Bss Transition",
+            "type": "boolean"
+          },
+          "gtk_rekey_interval_s": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "hostapd wpa_group_rekey in seconds; None = hostapd default. Tests use 5.",
+            "title": "Gtk Rekey Interval S"
+          },
+          "links": {
+            "description": "One or two AP MLD links on different channels, the layouts we've run.",
+            "items": {
+              "$ref": "#/$defs/ApLink"
+            },
+            "maxItems": 2,
+            "minItems": 1,
+            "title": "Links",
+            "type": "array"
+          },
+          "pmf": {
+            "default": "required",
+            "description": "Management frame protection (hostapd ieee80211w: optional=1, required=2).",
+            "enum": [
+              "optional",
+              "required"
+            ],
+            "title": "Pmf",
+            "type": "string"
+          },
+          "ptk_rekey_interval_s": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "hostapd wpa_ptk_rekey in seconds; None = unset. Tests use 5.",
+            "title": "Ptk Rekey Interval S"
+          },
+          "sae_pwe": {
+            "anyOf": [
+              {
+                "enum": [
+                  "hash_to_element",
+                  "both"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "hostapd sae_pwe (hash_to_element=1, both=2); None leaves it unset.",
+            "title": "Sae Pwe"
+          }
+        },
+        "required": [
+          "links"
+        ],
+        "title": "ApConfig",
+        "type": "object"
+      },
+      "ApDeauthenticate": {
+        "additionalProperties": false,
+        "description": "AP sends DEAUTHENTICATE <sta addr> (2039, 2045).",
+        "properties": {
+          "action": {
+            "const": "ap_deauthenticate",
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "ApDeauthenticate",
+        "type": "object"
+      },
+      "ApDisassociate": {
+        "additionalProperties": false,
+        "description": "AP sends DISASSOCIATE <sta addr> (2039, 2045).",
+        "properties": {
+          "action": {
+            "const": "ap_disassociate",
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "ApDisassociate",
+        "type": "object"
+      },
+      "ApLink": {
+        "additionalProperties": false,
+        "description": "One affiliated AP of the AP MLD (one ``eht_mld_enable_ap()`` call).",
+        "properties": {
+          "akms": {
+            "description": "AKMs this link advertises (hostapd wpa_key_mgmt), in order.",
+            "items": {
+              "enum": [
+                "SAE",
+                "SAE-EXT-KEY",
+                "OWE",
+                "WPA-PSK",
+                "WPA-PSK-SHA256"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Akms",
+            "type": "array"
+          },
+          "channel": {
+            "description": "2.4 GHz channel: 1 (2412 MHz) or 6 (2437 MHz), as in the two-link tests.",
+            "title": "Channel",
+            "type": "integer"
+          },
+          "indicate_disabled": {
+            "default": false,
+            "description": "hostapd mld_indicate_disabled: advertise this link as disabled.",
+            "title": "Indicate Disabled",
+            "type": "boolean"
+          },
+          "link_id": {
+            "description": "AP MLD link ID (0..14).",
+            "maximum": 14,
+            "minimum": 0,
+            "title": "Link Id",
+            "type": "integer"
+          },
+          "pairwise_cipher": {
+            "default": "CCMP",
+            "description": "hostapd rsn_pairwise.",
+            "enum": [
+              "CCMP",
+              "GCMP-256"
+            ],
+            "title": "Pairwise Cipher",
+            "type": "string"
+          }
+        },
+        "required": [
+          "link_id",
+          "channel",
+          "akms"
+        ],
+        "title": "ApLink",
+        "type": "object"
+      },
+      "Associate": {
+        "additionalProperties": false,
+        "description": "STA connects to the AP MLD on all its advertised links (wpas.connect, e.g. 714).",
+        "properties": {
+          "action": {
+            "const": "associate",
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "Associate",
+        "type": "object"
+      },
+      "BssTmLinkRemovalImminent": {
+        "additionalProperties": false,
+        "description": "AP sends BSS_TM_REQ with link_removal_imminent=1 (1457-1471).",
+        "properties": {
+          "action": {
+            "const": "bss_tm_link_removal_imminent",
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "BssTmLinkRemovalImminent",
+        "type": "object"
+      },
+      "Config": {
+        "additionalProperties": false,
+        "description": "A candidate's full configuration: the AP MLD and the client.",
+        "properties": {
+          "ap": {
+            "$ref": "#/$defs/ApConfig"
+          },
+          "sta": {
+            "$ref": "#/$defs/StaConfig"
+          }
+        },
+        "required": [
+          "ap",
+          "sta"
+        ],
+        "title": "Config",
+        "type": "object"
+      },
+      "DisableEnableMld": {
+        "additionalProperties": false,
+        "description": "AP MLD DISABLE_MLD (728) or ENABLE_MLD (743).",
+        "properties": {
+          "action": {
+            "const": "disable_enable_mld",
+            "title": "Action",
+            "type": "string"
+          },
+          "command": {
+            "enum": [
+              "DISABLE_MLD",
+              "ENABLE_MLD"
+            ],
+            "title": "Command",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "command"
+        ],
+        "title": "DisableEnableMld",
+        "type": "object"
+      },
+      "LinkRemove": {
+        "additionalProperties": false,
+        "description": "AP MLD removes one affiliated AP: LINK_REMOVE <count> on that link's AP\n(hostapd.py:296; test_eht.py 1400 with count 4, 1416 with count 20).",
+        "properties": {
+          "action": {
+            "const": "link_remove",
+            "title": "Action",
+            "type": "string"
+          },
+          "count": {
+            "description": "Beacons until removal (LINK_REMOVE <count>). Tests use 4 and 20.",
+            "minimum": 1,
+            "title": "Count",
+            "type": "integer"
+          },
+          "link_id": {
+            "description": "AP MLD link ID (0..14).",
+            "maximum": 14,
+            "minimum": 0,
+            "title": "Link Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "action",
+          "link_id",
+          "count"
+        ],
+        "title": "LinkRemove",
+        "type": "object"
+      },
+      "MlProbeReq": {
+        "additionalProperties": false,
+        "description": "STA sends an ML probe request (ML_PROBE_REQ, 422 / 439 / 446).",
+        "properties": {
+          "action": {
+            "const": "ml_probe_req",
+            "title": "Action",
+            "type": "string"
+          },
+          "link_id": {
+            "default": -1,
+            "description": "Requested AP link; -1 requests all links (the helper's default).",
+            "maximum": 14,
+            "minimum": -1,
+            "title": "Link Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "MlProbeReq",
+        "type": "object"
+      },
+      "RekeyGtkNow": {
+        "additionalProperties": false,
+        "description": "AP sends REKEY_GTK (1406, to link 0's AP in eht_mld_link_removal).",
+        "properties": {
+          "action": {
+            "const": "rekey_gtk_now",
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "RekeyGtkNow",
+        "type": "object"
+      },
+      "Scan": {
+        "additionalProperties": false,
+        "description": "STA scans for the AP MLD (SCAN freq=..., 387-395); needed before an ML probe.",
+        "properties": {
+          "action": {
+            "const": "scan",
+            "title": "Action",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "Scan",
+        "type": "object"
+      },
+      "SetupLinkReconfig": {
+        "additionalProperties": false,
+        "description": "STA sends SETUP_LINK_RECONFIG delete=<link> (3024) or add=<link> (3044).",
+        "properties": {
+          "action": {
+            "const": "setup_link_reconfig",
+            "title": "Action",
+            "type": "string"
+          },
+          "link_id": {
+            "description": "AP MLD link ID (0..14).",
+            "maximum": 14,
+            "minimum": 0,
+            "title": "Link Id",
+            "type": "integer"
+          },
+          "operation": {
+            "enum": [
+              "delete",
+              "add"
+            ],
+            "title": "Operation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "operation",
+          "link_id"
+        ],
+        "title": "SetupLinkReconfig",
+        "type": "object"
+      },
+      "StaConfig": {
+        "additionalProperties": false,
+        "description": "Non-AP MLD (client) configuration.",
+        "properties": {
+          "akms": {
+            "description": "AKMs the client allows (wpa_supplicant key_mgmt), in order.",
+            "items": {
+              "enum": [
+                "SAE",
+                "SAE-EXT-KEY",
+                "OWE",
+                "WPA-PSK",
+                "WPA-PSK-SHA256"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Akms",
+            "type": "array"
+          },
+          "beacon_protection": {
+            "default": true,
+            "description": "wpa_supplicant beacon_prot; False leaves it unset, as most of hostap's MLD tests do.",
+            "title": "Beacon Protection",
+            "type": "boolean"
+          },
+          "sae_groups": {
+            "anyOf": [
+              {
+                "items": {
+                  "enum": [
+                    19,
+                    20,
+                    21
+                  ],
+                  "type": "integer"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "wpa_supplicant sae_groups, tried in order; None = default.",
+            "title": "Sae Groups"
+          },
+          "sae_pwe": {
+            "anyOf": [
+              {
+                "enum": [
+                  "hash_to_element",
+                  "both"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "wpa_supplicant sae_pwe (hash_to_element=1, both=2); None leaves it unset (0: hunting-and-pecking, though SAE-EXT-KEY still uses hash-to-element). Unset can't join an AP that advertises H2E only.",
+            "title": "Sae Pwe"
+          }
+        },
+        "required": [
+          "akms"
+        ],
+        "title": "StaConfig",
+        "type": "object"
+      },
+      "StaDisconnectReconnect": {
+        "additionalProperties": false,
+        "description": "STA DISCONNECT (740) or RECONNECT (760).",
+        "properties": {
+          "action": {
+            "const": "sta_disconnect_reconnect",
+            "title": "Action",
+            "type": "string"
+          },
+          "command": {
+            "enum": [
+              "DISCONNECT",
+              "RECONNECT"
+            ],
+            "title": "Command",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "command"
+        ],
+        "title": "StaDisconnectReconnect",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "description": "A candidate experiment: a configuration and the ordered actions to run on it.",
+    "properties": {
+      "actions": {
+        "default": [],
+        "items": {
+          "discriminator": {
+            "mapping": {
+              "ap_deauthenticate": "#/$defs/ApDeauthenticate",
+              "ap_disassociate": "#/$defs/ApDisassociate",
+              "associate": "#/$defs/Associate",
+              "bss_tm_link_removal_imminent": "#/$defs/BssTmLinkRemovalImminent",
+              "disable_enable_mld": "#/$defs/DisableEnableMld",
+              "link_remove": "#/$defs/LinkRemove",
+              "ml_probe_req": "#/$defs/MlProbeReq",
+              "rekey_gtk_now": "#/$defs/RekeyGtkNow",
+              "scan": "#/$defs/Scan",
+              "setup_link_reconfig": "#/$defs/SetupLinkReconfig",
+              "sta_disconnect_reconnect": "#/$defs/StaDisconnectReconnect"
+            },
+            "propertyName": "action"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Associate"
+            },
+            {
+              "$ref": "#/$defs/Scan"
+            },
+            {
+              "$ref": "#/$defs/RekeyGtkNow"
+            },
+            {
+              "$ref": "#/$defs/LinkRemove"
+            },
+            {
+              "$ref": "#/$defs/DisableEnableMld"
+            },
+            {
+              "$ref": "#/$defs/StaDisconnectReconnect"
+            },
+            {
+              "$ref": "#/$defs/ApDisassociate"
+            },
+            {
+              "$ref": "#/$defs/ApDeauthenticate"
+            },
+            {
+              "$ref": "#/$defs/MlProbeReq"
+            },
+            {
+              "$ref": "#/$defs/BssTmLinkRemovalImminent"
+            },
+            {
+              "$ref": "#/$defs/SetupLinkReconfig"
+            }
+          ]
+        },
+        "title": "Actions",
+        "type": "array"
+      },
+      "config": {
+        "$ref": "#/$defs/Config"
+      }
+    },
+    "required": [
+      "config"
+    ],
+    "title": "Candidate",
+    "type": "object"
+  },
+  "configspace": {
+    "issue": "#63: encode the static settings' conditions and forbidden clauses in ConfigSpace, tagged with these rule IDs",
+    "status": "not built yet"
+  },
+  "constraints": [
+    {
+      "applies_to": [
+        "ap_akm",
+        "link_akm_mismatch",
+        "ap_pairwise_cipher"
+      ],
+      "coded": true,
+      "id": "SEC.MLD_COMMON_SUITES",
+      "kind": "normative",
+      "predicate": "Every AP link has the same pairwise cipher, and the intersection of the links' AKM lists is non-empty.",
+      "role": "forbidden",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "sta_akm",
+        "ap_akm"
+      ],
+      "coded": true,
+      "id": "SEC.MLD_CLIENT_COMMON_AKM",
+      "kind": "normative",
+      "predicate": "If the links share at least one AKM, at least one of the client's allowed AKMs is among them.",
+      "role": "forbidden",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "ap_beacon_protection",
+        "sta_beacon_protection"
+      ],
+      "coded": true,
+      "id": "SEC.EHT_BEACON_PROT",
+      "kind": "normative",
+      "predicate": "ap.beacon_protection and sta.beacon_protection are both true whenever RSN is used.",
+      "role": "forbidden",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "ap_pmf",
+        "sta_pmf"
+      ],
+      "coded": false,
+      "id": "SEC.PMF",
+      "kind": "normative",
+      "predicate": "ap.pmf is not disabled (hostapd ieee80211w != 0).",
+      "role": "forbidden",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "ap_akm",
+        "sta_akm"
+      ],
+      "coded": true,
+      "id": "SEC.EHT_SAE_AKM",
+      "kind": "normative",
+      "predicate": "If the negotiated AKM is SAE-family, it is SAE-EXT-KEY, not SAE.",
+      "role": "forbidden",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "ap_sae_pwe",
+        "sta_sae_pwe",
+        "ap_akm"
+      ],
+      "coded": true,
+      "id": "SEC.EHT_SAE_H2E",
+      "kind": "normative",
+      "predicate": "With an SAE-family AKM, H2E is in effect: sae_pwe is 1 or 2, or sae_pwe is unset and the AKM is SAE-EXT-KEY. sae_pwe=0, or unset with plain SAE on 2.4 / 5 GHz, fails.",
+      "role": "forbidden",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "ap_sae_pwe",
+        "sta_sae_pwe",
+        "ap_akm"
+      ],
+      "coded": true,
+      "id": "SEC.SAE_PWE_NEEDS_SAE",
+      "kind": "dependency",
+      "predicate": "If the AP's sae_pwe is set, an AP link's AKM list includes SAE or SAE-EXT-KEY; if the client's sae_pwe is set, the client allows SAE or SAE-EXT-KEY.",
+      "role": "dependency",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "ap_sae_pwe",
+        "sta_sae_pwe",
+        "ap_akm",
+        "sta_akm"
+      ],
+      "coded": true,
+      "id": "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E",
+      "kind": "dependency",
+      "predicate": "If the AP's sae_pwe is 1 (hash_to_element) and some AP link offers only SAE-family AKMs, and the client allows an SAE-family AKM, then the client's sae_pwe is 1 or 2.",
+      "role": "dependency",
+      "status": "draft"
+    },
+    {
+      "applies_to": [
+        "rekey_gtk_now",
+        "link_remove",
+        "ap_disassociate",
+        "ap_deauthenticate",
+        "bss_tm_link_removal_imminent",
+        "setup_link_reconfig",
+        "sta_disconnect_reconnect",
+        "associate"
+      ],
+      "coded": true,
+      "id": "AO.ASSOC_REQUIRED",
+      "kind": "harness",
+      "predicate": "state.associated is true before the action, and false before associate.",
+      "role": "action_order",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "ml_probe_req"
+      ],
+      "coded": true,
+      "id": "AO.ML_PROBE_STATE",
+      "kind": "harness",
+      "predicate": "The AP was seen in a prior scan, and the STA is disconnected (not associated).",
+      "role": "action_order",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "link_remove"
+      ],
+      "coded": true,
+      "id": "AO.LINK_MUST_EXIST",
+      "kind": "harness",
+      "predicate": "link in state.ap_links; afterwards remove it from ap_links and from the STA's active links.",
+      "role": "action_order",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "link_remove",
+        "associate",
+        "setup_link_reconfig"
+      ],
+      "coded": true,
+      "id": "AO.NO_LINKS_LEFT",
+      "kind": "harness",
+      "predicate": "If state.active_links becomes empty, set state.associated to false. associate needs at least one AP link that isn't disabled.",
+      "role": "action_order",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "setup_link_reconfig"
+      ],
+      "coded": true,
+      "id": "AO.RECONFIG_DELETE_ACTIVE",
+      "kind": "harness",
+      "predicate": "link in state.active_links; afterwards remove it.",
+      "role": "action_order",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "setup_link_reconfig"
+      ],
+      "coded": true,
+      "id": "AO.RECONFIG_ADD_ABSENT",
+      "kind": "harness",
+      "predicate": "link in state.ap_links, not in state.active_links and not disabled; afterwards add it.",
+      "role": "action_order",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "sta_disconnect_reconnect"
+      ],
+      "coded": true,
+      "id": "AO.RECONNECT_AFTER_DISCONNECT",
+      "kind": "harness",
+      "predicate": "state.disconnected_by_command before RECONNECT; afterwards associated once the reconnect completes.",
+      "role": "action_order",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "disable_enable_mld"
+      ],
+      "coded": true,
+      "id": "AO.ENABLE_AFTER_DISABLE",
+      "kind": "harness",
+      "predicate": "state.ap_enabled is false before ENABLE_MLD, and true before DISABLE_MLD, associate and RECONNECT.",
+      "role": "action_order",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "bss_tm_link_removal_imminent",
+        "ap_bss_transition"
+      ],
+      "coded": true,
+      "id": "AO.BSS_TM_NEEDS_BSS_TRANSITION",
+      "kind": "harness",
+      "predicate": "ap.bss_transition is true before bss_tm_link_removal_imminent.",
+      "role": "action_order",
+      "status": "draft"
+    }
+  ],
+  "description": "The explorer's candidate space: P0 schema, admitted dimensions with typed values and smoke evidence, P1 constraints by rule ID, the action catalog and the pinned versions. Generated by scripts/build_model_json.py; don't edit by hand.",
+  "dimensions": [
+    {
+      "category": "security",
+      "kind": "config",
+      "name": "ap_akm",
+      "path": "config.ap.links[*].akms",
+      "rule_ids": [
+        "SEC.MLD_COMMON_SUITES",
+        "SEC.MLD_CLIENT_COMMON_AKM",
+        "SEC.EHT_SAE_AKM",
+        "SEC.EHT_SAE_H2E",
+        "SEC.SAE_PWE_NEEDS_SAE",
+        "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E",
+        "UND.AKM_PREFERENCE"
+      ],
+      "side": "ap",
+      "values": [
+        {
+          "label": "SAE-EXT-KEY",
+          "smoke_run": "1793897820",
+          "value": [
+            "SAE-EXT-KEY"
+          ]
+        },
+        {
+          "label": "OWE",
+          "smoke_run": "1793897854",
+          "value": [
+            "OWE"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "security",
+      "kind": "config",
+      "name": "sta_akm",
+      "path": "config.sta.akms",
+      "rule_ids": [
+        "SEC.MLD_CLIENT_COMMON_AKM",
+        "SEC.EHT_SAE_AKM",
+        "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E",
+        "UND.AKM_PREFERENCE"
+      ],
+      "side": "sta",
+      "values": [
+        {
+          "label": "SAE-EXT-KEY",
+          "smoke_run": "1793897820",
+          "value": [
+            "SAE-EXT-KEY"
+          ]
+        },
+        {
+          "label": "OWE",
+          "smoke_run": "1793897854",
+          "value": [
+            "OWE"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "security",
+      "kind": "config",
+      "name": "ap_sae_pwe",
+      "path": "config.ap.sae_pwe",
+      "rule_ids": [
+        "SEC.EHT_SAE_H2E",
+        "SEC.SAE_PWE_NEEDS_SAE",
+        "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E"
+      ],
+      "side": "ap",
+      "values": [
+        {
+          "label": "unset",
+          "smoke_run": "1794384666",
+          "value": null
+        },
+        {
+          "label": "1",
+          "smoke_run": "1794548583",
+          "value": "hash_to_element"
+        },
+        {
+          "label": "2",
+          "smoke_run": "1794384680",
+          "value": "both"
+        }
+      ]
+    },
+    {
+      "category": "security",
+      "kind": "config",
+      "name": "sta_sae_pwe",
+      "path": "config.sta.sae_pwe",
+      "rule_ids": [
+        "SEC.EHT_SAE_H2E",
+        "SEC.SAE_PWE_NEEDS_SAE",
+        "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E"
+      ],
+      "side": "sta",
+      "values": [
+        {
+          "label": "unset",
+          "smoke_run": "1794384666",
+          "value": null
+        },
+        {
+          "label": "1",
+          "smoke_run": "1794548609",
+          "value": "hash_to_element"
+        },
+        {
+          "label": "2",
+          "smoke_run": "1794548623",
+          "value": "both"
+        }
+      ]
+    },
+    {
+      "category": "security",
+      "kind": "config",
+      "name": "ap_pairwise_cipher",
+      "path": "config.ap.links[*].pairwise_cipher",
+      "rule_ids": [
+        "SEC.MLD_COMMON_SUITES"
+      ],
+      "side": "ap",
+      "values": [
+        {
+          "label": "CCMP",
+          "smoke_run": "1794384666",
+          "value": "CCMP"
+        },
+        {
+          "label": "GCMP-256",
+          "smoke_run": "1794384688",
+          "value": "GCMP-256"
+        }
+      ]
+    },
+    {
+      "category": "link",
+      "kind": "config",
+      "name": "ap_link_indicate_disabled",
+      "path": "config.ap.links[1].indicate_disabled",
+      "rule_ids": [],
+      "side": "ap",
+      "values": [
+        {
+          "label": "0",
+          "smoke_run": "1793897854",
+          "value": false
+        },
+        {
+          "label": "1",
+          "smoke_run": "1793897892",
+          "value": true
+        }
+      ]
+    },
+    {
+      "category": "key",
+      "kind": "config",
+      "name": "ap_ptk_rekey_interval",
+      "path": "config.ap.ptk_rekey_interval_s",
+      "rule_ids": [],
+      "side": "ap",
+      "values": [
+        {
+          "label": "unset",
+          "smoke_run": "1793897820",
+          "value": null
+        },
+        {
+          "label": "5",
+          "smoke_run": "1793897917",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "category": "key",
+      "kind": "config",
+      "name": "ap_gtk_rekey_interval",
+      "path": "config.ap.gtk_rekey_interval_s",
+      "rule_ids": [],
+      "side": "ap",
+      "values": [
+        {
+          "label": "unset",
+          "smoke_run": "1793897820",
+          "value": null
+        },
+        {
+          "label": "5",
+          "smoke_run": "1793897930",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "category": "key",
+      "kind": "action",
+      "name": "rekey_gtk_now",
+      "path": "actions",
+      "rule_ids": [
+        "AO.ASSOC_REQUIRED"
+      ],
+      "side": "ap",
+      "values": [
+        {
+          "label": "absent",
+          "smoke_run": "1794384666",
+          "value": []
+        },
+        {
+          "label": "present",
+          "smoke_run": "1794384695",
+          "value": [
+            {
+              "action": "rekey_gtk_now"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category": "link",
+      "kind": "action",
+      "name": "link_remove",
+      "path": "actions",
+      "rule_ids": [
+        "AO.ASSOC_REQUIRED",
+        "AO.LINK_MUST_EXIST",
+        "AO.NO_LINKS_LEFT",
+        "UND.ASSOC_WITHOUT_AP_LINKS"
+      ],
+      "side": "ap",
+      "values": [
+        {
+          "label": "absent",
+          "smoke_run": "1793897854",
+          "value": []
+        },
+        {
+          "label": "present",
+          "smoke_run": "1793897945",
+          "value": [
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category": "link",
+      "kind": "action",
+      "name": "disable_enable_mld",
+      "path": "actions",
+      "rule_ids": [
+        "AO.ENABLE_AFTER_DISABLE",
+        "UND.STA_STATE_WHILE_MLD_DISABLED"
+      ],
+      "side": "ap",
+      "values": [
+        {
+          "label": "absent",
+          "smoke_run": "1794384666",
+          "value": []
+        },
+        {
+          "label": "present",
+          "smoke_run": "1794384702",
+          "value": [
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "generated_by": "scripts/build_model_json.py",
+  "model_digest": "sha256:38243e11b5fa3873a394bf527a40e30f943776e540b77f25df68b8bd665d8e70",
+  "not_admitted": [
+    {
+      "kind": "config",
+      "name": "ap_pmf",
+      "values": "2|1"
+    },
+    {
+      "kind": "config",
+      "name": "sta_pmf",
+      "values": "2"
+    },
+    {
+      "kind": "config",
+      "name": "ap_beacon_protection",
+      "values": "1|0"
+    },
+    {
+      "kind": "config",
+      "name": "sta_beacon_protection",
+      "values": "1|unset"
+    },
+    {
+      "kind": "config",
+      "name": "sta_sae_groups",
+      "values": "20 19|19 20 21|(empty)"
+    },
+    {
+      "kind": "config",
+      "name": "link_akm_mismatch",
+      "values": "link0 WPA-PSK|link0 SAE-EXT-KEY|link0 SAE + link1 SAE-EXT-KEY"
+    },
+    {
+      "kind": "config",
+      "name": "ap_mld_link_count",
+      "values": "1..11 (2 in most tests)"
+    },
+    {
+      "kind": "config",
+      "name": "ap_link_channel",
+      "values": "1|6"
+    },
+    {
+      "kind": "config",
+      "name": "ap_bss_transition",
+      "values": "1"
+    },
+    {
+      "kind": "action",
+      "name": "associate",
+      "values": ""
+    },
+    {
+      "kind": "action",
+      "name": "sta_disconnect_reconnect",
+      "values": ""
+    },
+    {
+      "kind": "action",
+      "name": "ap_disassociate",
+      "values": ""
+    },
+    {
+      "kind": "action",
+      "name": "ap_deauthenticate",
+      "values": ""
+    },
+    {
+      "kind": "action",
+      "name": "scan",
+      "values": ""
+    },
+    {
+      "kind": "action",
+      "name": "ml_probe_req",
+      "values": "link_id -1|1|4"
+    },
+    {
+      "kind": "action",
+      "name": "bss_tm_link_removal_imminent",
+      "values": ""
+    },
+    {
+      "kind": "action",
+      "name": "setup_link_reconfig",
+      "values": "delete=<link_id>|add=<link_id>"
+    }
+  ],
+  "open_questions": [
+    {
+      "applies_to": [
+        "sta_akm",
+        "ap_akm"
+      ],
+      "id": "UND.AKM_PREFERENCE",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "disable_enable_mld"
+      ],
+      "id": "UND.STA_STATE_WHILE_MLD_DISABLED",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "associate",
+        "link_remove",
+        "sta_disconnect_reconnect"
+      ],
+      "id": "UND.ASSOC_WITHOUT_AP_LINKS",
+      "status": "reviewed"
+    }
+  ],
+  "pinned_versions": {
+    "base_image": "ubuntu:24.04@sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c",
+    "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",
+    "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda"
+  },
+  "rules_version": 1,
+  "schema_version": 2
+}
