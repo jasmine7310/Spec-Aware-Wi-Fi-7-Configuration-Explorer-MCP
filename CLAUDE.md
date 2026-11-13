@@ -86,6 +86,13 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `.venv/bin/python scripts/build_model_json.py` after changing the model, `rules.yaml`,
   `surface_candidates.csv`'s `smoke_runs` or the adapter's actions; a test fails until you
   do. `model_json.apply({dimension: label})` turns choices into a candidate.
+- `explorer.planner`: the pairwise campaign planner (#66). `Space()` enumerates the candidate
+  space from `model.json` and assesses each assignment with P0, P1 and P2; `plan(seed,
+  budget)` builds the allpairspy design (exact legal-completion filter, then a coverage
+  top-up) over executable candidates; `coverage(space, plan_rows, ran_rows)` counts pairs
+  with both denominators, covered only by real runs. `scripts/plan_campaign.py --seed N`
+  writes `campaign_plan.json` and `pairwise_coverage.json`; a test fails if the committed
+  plan no longer matches its seed and the current model.
 - `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
   `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
   on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
