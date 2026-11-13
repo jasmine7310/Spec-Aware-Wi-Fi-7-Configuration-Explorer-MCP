@@ -305,7 +305,7 @@ def test_value_without_evidence_isnt_a_probe_and_cites_the_refusal(tmp_path, mon
     assert (result.status, result.all_values_evidenced) == ("UNRESOLVED", False)
     assert [(r.candidate, r.value, r.run_ids) for r in result.recorded_refusals] == [
         ("ap_bss_transition", "1", ["9"])]
-    assert "runs/rejected/" in result.note and "(9)" in result.note
+    assert "Recorded refusal(s)" in result.note and "(9)" in result.note
 
 
 def test_a_refusal_a_rule_now_explains_isnt_cited(tmp_path, monkeypatch):
@@ -396,6 +396,49 @@ def test_campaign_runs_count_and_may_be_nested(tmp_path):
     assert passing_runs([tmp_path]) == {"explorer_candidate": ["7"]}
 
 
-def test_rejected_runs_are_read_only_for_refusals():
-    assert list(rejected_runs()) == [REJECTED_RUN]
-    assert all(REJECTED_RUN not in ids for ids in passing_runs().values())
+CAMPAIGN_REJECTED = ["1794557044", "1794557059", "1794557071", "1794557082"]
+
+
+def test_rejected_runs_include_the_campaigns_refusals_and_are_never_evidence():
+    found = rejected_runs()
+    assert sorted(found) == sorted([REJECTED_RUN, *CAMPAIGN_REJECTED])
+    assert all("DISABLE_MLD failed" in found[run].reason for run in CAMPAIGN_REJECTED)
+    cited = {run for ids in passing_runs().values() for run in ids}
+    assert not cited & set(found) - set(CAMPAIGN_REJECTED)   # failed runs aren't PASS
+    assert not set(adapter_runs()) & set(found)
+
+
+def test_only_rejected_campaign_runs_count_not_setup_failures(tmp_path):
+    # A campaign run without an EXPLORER-REJECTED line (e.g. SETUP_FAIL) isn't a refusal.
+    _rejected_manifest(tmp_path / "campaign", "8", _f02())
+    assert rejected_runs(tmp_path / "none", tmp_path / "campaign") == {}
+    (tmp_path / "campaign" / "8" / "explorer_candidate.log").write_text(
+        "x INFO EXPLORER-REJECTED actions[1] DISABLE_MLD: DISABLE_MLD failed\n")
+    assert rejected_runs(tmp_path / "none", tmp_path / "campaign")["8"].reason == \
+        "actions[1] DISABLE_MLD: DISABLE_MLD failed"
+
+
+def _remove_then_disable():
+    return [ASSOC, {"action": "link_remove", "link_id": 1, "count": 4},
+            *DISABLE_ENABLE[1:]]
+
+
+def test_disable_mld_after_link_remove_is_unsupported_with_its_runs():
+    # A variant no run has done (GCMP-256): P2 answers from the recorded refusals.
+    result = check_support(_f02(_remove_then_disable(), cipher="GCMP-256"))
+    assert (result.status, result.limit) == ("UNSUPPORTED_IMPLEMENTATION",
+                                             "P2.DISABLE_MLD_AFTER_LINK_REMOVE")
+    assert sorted(result.run_ids) == sorted(CAMPAIGN_REJECTED)
+    assert "hostapd/ctrl_iface.c:3670-3708" in result.note
+
+
+def test_the_other_order_isnt_covered_by_the_limit():
+    result = check_support(_f02([*DISABLE_ENABLE, {"action": "link_remove", "link_id": 1,
+                                                   "count": 4}], cipher="GCMP-256"))
+    assert result.status == "UNRESOLVED" and result.limit is None
+
+
+def test_a_limit_needs_a_recorded_refusal(monkeypatch):
+    # No refusal on record, no UNSUPPORTED_IMPLEMENTATION: never inferred.
+    monkeypatch.setattr(support, "_cached_rejected_runs", lambda: {})
+    assert check_support(_f02(_remove_then_disable(), cipher="GCMP-256")).status == "UNRESOLVED"

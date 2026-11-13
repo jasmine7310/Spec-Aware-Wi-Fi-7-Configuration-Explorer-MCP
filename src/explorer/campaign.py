@@ -102,8 +102,10 @@ def pruning_counts(plan: dict, results: dict) -> dict:
                "spec_undetermined_review_queue": funnel["p1"].get("SPEC_UNDETERMINED", 0),
                "rejections_by_rule": funnel["p1_rejections_by_rule"]},
         "P2": {"supported": funnel["p2"]["supported"], "probe": funnel["p2"]["probe"],
+               "unsupported_implementation": funnel["p2"].get("unsupported", 0),
                "unresolved_not_run": funnel["p2"]["not_run"], "executable": funnel["executable"]},
         "planned": {"candidates": funnel["planned"], "cut_by_budget": funnel["cut_by_budget"],
+                    "already_run_before": funnel.get("already_run", 0),
                     "by_role": dict(Counter(r["role"] for r in rows))},
         "not_run_at_launch": {"p1_today": statuses["NOT_RUN_P1"],
                               "adapter": statuses["NOT_RUN_ADAPTER"]},
@@ -141,6 +143,10 @@ def rejected_cases(plan: dict, results: dict, space) -> list[dict]:
 
 def write(campaign_dir: Path, plan: dict, results: dict, rejected: list[dict],
           counts: dict) -> None:
+    """The campaign's files: the plan it ran, results.json, rejected_cases.csv, and its
+    funnel (also as the repo root's pruning_counts.json, the latest campaign's)."""
+    (campaign_dir / "campaign_plan.json").write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n")
+    (campaign_dir / "pruning_counts.json").write_text(json.dumps(counts, indent=2, sort_keys=True) + "\n")
     (campaign_dir / "results.json").write_text(json.dumps(results, indent=2, sort_keys=True) + "\n")
     buf = io.StringIO()
     fields = ["stage", "outcome", "rule_ids", "count", "example", "run_id", "reason"]

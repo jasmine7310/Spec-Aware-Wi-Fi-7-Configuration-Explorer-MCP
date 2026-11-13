@@ -1,0 +1,818 @@
+1794611987.610396: wpa_supplicant v2.13-devel
+1794611987.610397: Global control interface '/tmp/wpas-wlan0'
+1794611987.610397: Using UNIX control socket '/tmp/wpas-wlan0'
+1794611987.610401: ctrl_interface_group=0 (from group name 'adm')
+1794611987.610989: dbus: Register D-Bus object '/fi/w1/wpa_supplicant1'
+1794611987.610993: Providing DBus service 'fi.w1.wpa_supplicant1'.
+1794611987.610994: Successfully initialized wpa_supplicant
+1794611987.610994: Initializing interface 'wlan0' conf '/tmp/logs/p2p0.conf' driver 'nl80211' ctrl_interface 'N/A' bridge 'N/A'
+1794611987.610994: Configuration file '/tmp/logs/p2p0.conf' -> '/tmp/logs/p2p0.conf'
+1794611987.610995: Reading configuration file '/tmp/logs/p2p0.conf'
+1794611987.610995: ctrl_interface='DIR=/var/run/wpa_supplicant GROUP=adm'
+1794611987.610995: device_name='Device A'
+1794611987.610995: p2p_no_group_iface=1
+1794611987.610996: nl80211: Kernel version: Linux 7.3.0-rc4 (#1 Tue Nov  3 07:16:20 UTC 2026; x86_64)
+1794611987.610996: nl80211: Maximum supported attribute ID: 370
+1794611987.610996: nl80211: Initialize interface wlan0 (driver: mac80211_hwsim)
+1794611987.610996: nl80211: wlan0 wdev_id=0x1
+1794611987.610997: nl80211: TDLS supported
+1794611987.610997: nl80211: TDLS external setup
+1794611987.610997: nl80211: Supported cipher 00-0f-ac:1
+1794611987.610997: nl80211: Supported cipher 00-0f-ac:5
+1794611987.610998: nl80211: Supported cipher 00-0f-ac:2
+1794611987.610998: nl80211: Supported cipher 00-0f-ac:4
+1794611987.610998: nl80211: Supported cipher 00-0f-ac:10
+1794611987.610998: nl80211: Supported cipher 00-0f-ac:8
+1794611987.610999: nl80211: Supported cipher 00-0f-ac:9
+1794611987.610999: nl80211: Supported cipher 00-0f-ac:6
+1794611987.610999: nl80211: Supported cipher 00-0f-ac:13
+1794611987.610999: nl80211: Supported cipher 00-0f-ac:11
+1794611987.611000: nl80211: Supported cipher 00-0f-ac:12
+1794611987.611000: nl80211: Using driver-based off-channel TX
+1794611987.611000: nl80211: Driver-advertised extended capabilities (default) - hexdump(len=8): 04 00 40 00 00 00 00 40
+1794611987.611000: nl80211: Driver-advertised extended capabilities mask (default) - hexdump(len=8): 04 00 40 00 00 00 00 40
+1794611987.611001: nl80211: Supported vendor command: vendor_id=0x1374 subcmd=1
+1794611987.611001: nl80211: Supported vendor event: vendor_id=0x1374 subcmd=1
+1794611987.611001: nl80211: NAN supported bands 0x0
+1794611987.611001: mbssid: max interfaces 8, max profile periodicity 3
+1794611987.611002: nl80211: Parsing NAN capabilities
+1794611987.611002: nl80211: Use separate P2P group interface (driver advertised support)
+1794611987.611002: nl80211: key_mgmt=0x737ff2f enc=0xfef auth=0x7 flags=0xe5000d31db5bfbe0 flags2=0xe0f008503 rrm_flags=0x10 probe_resp_offloads=0x0 max_stations=0 max_remain_on_chan=5000 max_scan_ssids=4
+1794611987.611002: nl80211: interface wlan0 in phy phy0
+1794611987.611003: nl80211: Set mode ifindex 3 iftype 2 (STATION)
+1794611987.611003: nl80211: Subscribe to mgmt frames with non-AP handle 0x5500004f38b0
+1794611987.611003: nl80211: Register frame type=0xb0 (WLAN_FC_STYPE_AUTH) nl_handle=0x5500004f38b0 match=0700 multicast=0
+1794611987.611004: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0104 multicast=0
+1794611987.611004: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=040a multicast=0
+1794611987.611004: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=040b multicast=0
+1794611987.611004: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=040c multicast=0
+1794611987.611005: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=040d multicast=0
+1794611987.611005: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=090a multicast=0
+1794611987.611005: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=090b multicast=0
+1794611987.611005: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=090c multicast=0
+1794611987.611006: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=090d multicast=0
+1794611987.611006: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0409506f9a09 multicast=0
+1794611987.611006: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=7f506f9a09 multicast=0
+1794611987.611006: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0409506f9a13 multicast=1
+1794611987.611007: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0409506f9a1a multicast=0
+1794611987.611007: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0800 multicast=0
+1794611987.611007: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0801 multicast=0
+1794611987.611007: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=040e multicast=0
+1794611987.611008: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=12 multicast=0
+1794611987.611008: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=06 multicast=0
+1794611987.611008: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0a07 multicast=0
+1794611987.611008: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0a11 multicast=0
+1794611987.611009: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0a0b multicast=0
+1794611987.611009: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0a1a multicast=0
+1794611987.611009: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=1101 multicast=0
+1794611987.611009: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=1102 multicast=0
+1794611987.611010: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0505 multicast=0
+1794611987.611010: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=0500 multicast=0
+1794611987.611010: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=1301 multicast=0
+1794611987.611010: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=1305 multicast=0
+1794611987.611011: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500004f38b0 match=7e506f9a1a multicast=0
+1794611987.611033: rfkill: initial event: idx=0 type=1 op=0 soft=0 hard=0
+1794611987.611033: netlink: Operstate: ifindex=3 linkmode=1 (userspace-control), operstate=5 (IF_OPER_DORMANT)
+1794611987.611034: nl80211: QCA vendor test command response received
+1794611987.611034: nl80211: Received QCA vendor test command response - hexdump(len=8): 08 00 08 00 7d 00 00 00
+1794611987.611034: nl80211: QCA vendor test command returned 0 (Success)
+1794611987.611034: Add interface wlan0 to a new radio phy0
+1794611987.611035: PTKSA: Initializing
+1794611987.611035: nl80211: No channel number found for frequency 5900 MHz
+1794611987.611035: nl80211: No channel number found for frequency 5905 MHz
+1794611987.611036: nl80211: No channel number found for frequency 5910 MHz
+1794611987.611036: nl80211: No channel number found for frequency 5915 MHz
+1794611987.611036: nl80211: No channel number found for frequency 5920 MHz
+1794611987.611036: nl80211: No channel number found for frequency 5925 MHz
+1794611987.611037: nl80211: No channel number found for frequency 902 MHz
+1794611987.611037: nl80211: No channel number found for frequency 903 MHz
+1794611987.611037: nl80211: No channel number found for frequency 904 MHz
+1794611987.611037: nl80211: No channel number found for frequency 905 MHz
+1794611987.611038: nl80211: No channel number found for frequency 906 MHz
+1794611987.611038: nl80211: No channel number found for frequency 907 MHz
+1794611987.611038: nl80211: No channel number found for frequency 908 MHz
+1794611987.611038: nl80211: No channel number found for frequency 909 MHz
+1794611987.611039: nl80211: No channel number found for frequency 910 MHz
+1794611987.611039: nl80211: No channel number found for frequency 911 MHz
+1794611987.611039: nl80211: No channel number found for frequency 912 MHz
+1794611987.611039: nl80211: No channel number found for frequency 913 MHz
+1794611987.611040: nl80211: No channel number found for frequency 914 MHz
+1794611987.611040: nl80211: No channel number found for frequency 915 MHz
+1794611987.611040: nl80211: No channel number found for frequency 916 MHz
+1794611987.611040: nl80211: No channel number found for frequency 917 MHz
+1794611987.611041: nl80211: No channel number found for frequency 918 MHz
+1794611987.611041: nl80211: No channel number found for frequency 919 MHz
+1794611987.611041: nl80211: No channel number found for frequency 920 MHz
+1794611987.611041: nl80211: No channel number found for frequency 921 MHz
+1794611987.611042: nl80211: No channel number found for frequency 922 MHz
+1794611987.611042: nl80211: No channel number found for frequency 923 MHz
+1794611987.611042: nl80211: No channel number found for frequency 924 MHz
+1794611987.611042: nl80211: No channel number found for frequency 925 MHz
+1794611987.611043: nl80211: No channel number found for frequency 926 MHz
+1794611987.611043: nl80211: No channel number found for frequency 927 MHz
+1794611987.611043: nl80211: Regulatory information - country=00
+1794611987.611043: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794611987.611044: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794611987.611044: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794611987.611044: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794611987.611044: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794611987.611045: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794611987.611045: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794611987.611045: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794611987.611045: nl80211: Remove unsupported mode
+1794611987.611046: nl80211: Added 802.11b mode based on 802.11g information
+1794611987.611046: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611987.611046: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794611987.611047: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794611987.611047: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611987.611047: Device country code set to '00' from hw feature data at init
+1794611987.611047: wlan0: Own MAC address: 02:00:00:00:00:00
+1794611987.611048: wpa_driver_nl80211_set_key: ifindex=3 (wlan0) alg=0 addr=(nil) key_idx=0 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794611987.611048: nl80211: DEL_KEY
+1794611987.611048:    broadcast key
+1794611987.611048: wpa_driver_nl80211_set_key: ifindex=3 (wlan0) alg=0 addr=(nil) key_idx=1 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794611987.611049: nl80211: DEL_KEY
+1794611987.611049:    broadcast key
+1794611987.611049: wpa_driver_nl80211_set_key: ifindex=3 (wlan0) alg=0 addr=(nil) key_idx=2 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794611987.611049: nl80211: DEL_KEY
+1794611987.611050:    broadcast key
+1794611987.611050: wpa_driver_nl80211_set_key: ifindex=3 (wlan0) alg=0 addr=(nil) key_idx=3 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794611987.611050: nl80211: DEL_KEY
+1794611987.611050:    broadcast key
+1794611987.611051: wpa_driver_nl80211_set_key: ifindex=3 (wlan0) alg=0 addr=(nil) key_idx=4 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794611987.611051: nl80211: DEL_KEY
+1794611987.611051:    broadcast key
+1794611987.611051: wpa_driver_nl80211_set_key: ifindex=3 (wlan0) alg=0 addr=(nil) key_idx=5 set_tx=0 seq_len=0 key_len=0 key_flag=0x10 link_id=-1
+1794611987.611052: nl80211: DEL_KEY
+1794611987.611052:    broadcast key
+1794611987.611052: wlan0: RSN: flushing PMKID list in the driver
+1794611987.611052: nl80211: Flush PMKIDs
+1794611987.611053: wlan0: State: DISCONNECTED -> INACTIVE
+1794611987.611053: NAN: state change notif: n_active=0, p2p_in_progress=0
+1794611987.611053: TDLS: TDLS operation supported by driver
+1794611987.611053: TDLS: Driver uses external link setup
+1794611987.611054: TDLS: Driver does not support TDLS channel switching
+1794611987.611056: wlan0: WPS: UUID based on MAC address: 362db47b-a53a-5191-88fb-5458b986b2e4
+1794611987.611057: PKCS11 provider not present
+1794611987.611057: EAPOL: SUPP_PAE entering state DISCONNECTED
+1794611987.611058: EAPOL: Supplicant port status: Unauthorized
+1794611987.611058: nl80211: Skip set_supp_port(unauthorized) while not associated
+1794611987.611058: EAPOL: KEY_RX entering state NO_KEY_RECEIVE
+1794611987.611058: EAPOL: SUPP_BE entering state INITIALIZE
+1794611987.611059: EAP: EAP entering state DISABLED
+1794611987.611060: Using existing control interface directory.
+1794611987.611061: ctrl_interface_group=0 (from group name 'adm')
+1794611987.611062: P2P: Add operating class 81
+1794611987.611062: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794611987.611063: P2P: Own listen channel: 81:1
+1794611987.611064: P2P: Random operating channel: 81:6
+1794611987.611067: P2P: initialized
+1794611987.611067: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794611987.611067: P2P: cli_channels:
+1794611987.611068: PR: Driver does not support Proximity Ranging - PR disabled
+1794611987.611068: MBO: Update non-preferred channels, non_pref_chan=N/A
+1794611987.611068: NAN: NAN is not supported
+1794611987.611068: dbus: Register interface object '/fi/w1/wpa_supplicant1/Interfaces/0'
+1794611987.611069: wlan0: Added interface wlan0
+1794611987.611069: wlan0: State: INACTIVE -> DISCONNECTED
+1794611987.611069: nl80211: Set wlan0 operstate 0->0 (DORMANT)
+1794611987.611069: netlink: Operstate: ifindex=3 linkmode=-1 (no change), operstate=5 (IF_OPER_DORMANT)
+1794611987.611070: wlan0: Determining shared radio frequencies (max len 1)
+1794611987.611070: wlan0: Shared frequencies (len=0): completed iteration
+1794611987.611070: P2P: Add operating class 81
+1794611987.611071: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794611987.611071: P2P: Update channel list
+1794611987.611071: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794611987.611071: P2P: cli_channels:
+1794611987.611072: NAN: state change notif: n_active=0, p2p_in_progress=0
+1794611987.611072: NAN: Configuring NAN DE: n=(0, 0), suspend=0, cycle=0
+1794611987.611073: RTM_NEWLINK: ifi_index=3 ifname=wlan0 operstate=0 linkmode=0 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794611987.611073: RTM_NEWLINK: ifi_index=3 ifname=wlan0 operstate=5 linkmode=0 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611987.611073: RTM_NEWLINK: ifi_index=3 ifname=wlan0 operstate=5 linkmode=1 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611987.611075: nl80211: Event message available
+1794611987.611075: nl80211: Drv Event 103 (NL80211_CMD_VENDOR) received for wlan0
+1794611987.611075: nl80211: Vendor event: wiphy=0 vendor_id=0x1374 subcmd=1
+1794611987.611075: nl80211: Vendor data - hexdump(len=8): 08 00 08 00 7c 00 00 00
+1794611987.611076: nl80211: QCA test event - hexdump(len=8): 08 00 08 00 7c 00 00 00
+1794611987.613192: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-1\x00
+1794611987.613192: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=3
+1794611987.613196: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=1115
+1794611987.613198: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-3\x00
+1794611987.613199: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=3
+1794611987.613225: EAPOL: EAP Session-Id not available
+1794611987.613225: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=128
+1794611987.613251: Control interface recv command from: /tmp/wpa_ctrl_459-0\x00
+1794611987.613251: wlan0: Control interface command 'FLUSH'
+1794611987.613252: wlan0: Flush all wpa_supplicant state
+1794611987.613252: wlan0: No ongoing scan/p2p-scan found to abort
+1794611987.613252: P2P: Request to cancel group formation
+1794611987.613252: P2P: Stopping find
+1794611987.613253: P2P: Clear timeout (state=IDLE)
+1794611987.613253: P2P: State IDLE -> IDLE
+1794611987.613253: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611987.613253: P2P: No ongoing group formation found
+1794611987.613254: P2P: Stopping find
+1794611987.613254: P2P: Clear timeout (state=IDLE)
+1794611987.613254: P2P: State IDLE -> IDLE
+1794611987.613255: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611987.613255: P2P: Disabling Extended Listen Timing
+1794611987.613255: P2P: Stopping find
+1794611987.613255: P2P: Clear timeout (state=IDLE)
+1794611987.613256: P2P: State IDLE -> IDLE
+1794611987.613256: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611987.613256: P2P: All ASP advertisements flushed
+1794611987.613256: WPS: Cancel operation - cancel scan
+1794611987.613257: wlan0: Cancelling scan request
+1794611987.613257: wlan0: WPS-CANCEL 
+1794611987.613257: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=0 send_len=11
+1794611987.613257: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-3\x00
+1794611987.613258: CTRL-DEBUG: ctrl_sock-sendmsg: sock=15 sndbuf=212992 outq=0 send_len=11
+1794611987.613258: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-1\x00
+1794611987.613258: Off-channel: Action frame sequence done notification: pending_action_tx=(nil) drv_offchan_tx=1 action_tx_wait_time=0 off_channel_freq=0 roc_waiting_drv_freq=0
+1794611987.613258: Off-channel: Action frame sequence done notification: pending_action_tx=(nil) drv_offchan_tx=1 action_tx_wait_time=0 off_channel_freq=0 roc_waiting_drv_freq=0
+1794611987.613259: TDLS: enabled
+1794611987.613259: CTRL_IFACE: REMOVE_NETWORK all
+1794611987.613259: CTRL_IFACE: REMOVE_CRED all
+1794611987.613259: TESTING: Set random PMKID injection count to 0
+1794611987.613260: wlan0: Updating hw mode
+1794611987.613260: nl80211: No channel number found for frequency 5900 MHz
+1794611987.613260: nl80211: No channel number found for frequency 5905 MHz
+1794611987.613260: nl80211: No channel number found for frequency 5910 MHz
+1794611987.613261: nl80211: No channel number found for frequency 5915 MHz
+1794611987.613261: nl80211: No channel number found for frequency 5920 MHz
+1794611987.613261: nl80211: No channel number found for frequency 5925 MHz
+1794611987.613261: nl80211: No channel number found for frequency 902 MHz
+1794611987.613262: nl80211: No channel number found for frequency 903 MHz
+1794611987.613262: nl80211: No channel number found for frequency 904 MHz
+1794611987.613262: nl80211: No channel number found for frequency 905 MHz
+1794611987.613262: nl80211: No channel number found for frequency 906 MHz
+1794611987.613263: nl80211: No channel number found for frequency 907 MHz
+1794611987.613263: nl80211: No channel number found for frequency 908 MHz
+1794611987.613263: nl80211: No channel number found for frequency 909 MHz
+1794611987.613263: nl80211: No channel number found for frequency 910 MHz
+1794611987.613264: nl80211: No channel number found for frequency 911 MHz
+1794611987.613264: nl80211: No channel number found for frequency 912 MHz
+1794611987.613264: nl80211: No channel number found for frequency 913 MHz
+1794611987.613265: nl80211: No channel number found for frequency 914 MHz
+1794611987.613265: nl80211: No channel number found for frequency 915 MHz
+1794611987.613265: nl80211: No channel number found for frequency 916 MHz
+1794611987.613265: nl80211: No channel number found for frequency 917 MHz
+1794611987.613266: nl80211: No channel number found for frequency 918 MHz
+1794611987.613266: nl80211: No channel number found for frequency 919 MHz
+1794611987.613266: nl80211: No channel number found for frequency 920 MHz
+1794611987.613266: nl80211: No channel number found for frequency 921 MHz
+1794611987.613267: nl80211: No channel number found for frequency 922 MHz
+1794611987.613267: nl80211: No channel number found for frequency 923 MHz
+1794611987.613267: nl80211: No channel number found for frequency 924 MHz
+1794611987.613267: nl80211: No channel number found for frequency 925 MHz
+1794611987.613268: nl80211: No channel number found for frequency 926 MHz
+1794611987.613268: nl80211: No channel number found for frequency 927 MHz
+1794611987.613268: nl80211: Regulatory information - country=00
+1794611987.613268: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794611987.613269: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794611987.613269: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794611987.613269: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794611987.613269: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794611987.613270: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794611987.613270: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794611987.613270: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794611987.613270: nl80211: Remove unsupported mode
+1794611987.613271: nl80211: Added 802.11b mode based on 802.11g information
+1794611987.613271: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611987.613271: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794611987.613271: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794611987.613272: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611987.613272: wlan0: Determining shared radio frequencies (max len 1)
+1794611987.613272: wlan0: Shared frequencies (len=0): completed iteration
+1794611987.613272: P2P: Add operating class 81
+1794611987.613273: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794611987.613273: P2P: Update channel list
+1794611987.613273: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794611987.613273: P2P: cli_channels:
+1794611987.613274: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=960 send_len=3
+1794611987.613277: wlan0: Control interface command 'REMOVE_NETWORK all'
+1794611987.613278: CTRL_IFACE: REMOVE_NETWORK all
+1794611987.613278: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=960 send_len=3
+1794611987.613281: RX global ctrl_iface - hexdump_ascii(len=24):
+     53 45 54 20 70 32 70 5f 6e 6f 5f 67 72 6f 75 70   SET p2p_no_group
+     5f 69 66 61 63 65 20 31                           _iface 1        
+1794611987.613282: GLOBAL_CTRL_IFACE SET 'p2p_no_group_iface'='1'
+1794611987.613282: wlan0: Control interface command 'SET p2p_no_group_iface 1'
+1794611987.613282: CTRL_IFACE SET 'p2p_no_group_iface'='1'
+1794611987.613282: p2p_no_group_iface=1
+1794611987.613283: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=960 send_len=3
+1794611987.613286: wlan0: Control interface command 'P2P_FLUSH'
+1794611987.613287: P2P: Stopping find
+1794611987.613287: P2P: Clear timeout (state=IDLE)
+1794611987.613287: P2P: State IDLE -> IDLE
+1794611987.613287: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611987.613288: P2P: Disabling Extended Listen Timing
+1794611987.613288: P2P: Stopping find
+1794611987.613288: P2P: Clear timeout (state=IDLE)
+1794611987.613288: P2P: State IDLE -> IDLE
+1794611987.613289: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611987.613289: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=960 send_len=3
+1794611987.613295: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=1115
+1794611987.613299: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=21
+1794611987.613472: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=1115
+1794611987.613483: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=1115
+1794611987.613511: Control interface recv command from: /tmp/wpa_ctrl_459-0\x00
+1794611987.613511: wlan0: Control interface command 'NOTE TEST-START explorer_candidate'
+1794611987.613511: NOTE: TEST-START explorer_candidate
+1794611987.613512: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=3
+1794611987.613837: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794611987.613837: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794611987.613838: nl80211: Event message available
+1794611987.613838: nl80211: Ignored event 3 (NL80211_CMD_NEW_WIPHY) for foreign interface (ifindex -1 wdev 0x0 wiphy 7)
+1794611987.613840: nl80211: Event message available
+1794611987.613840: nl80211: Ignored event 7 (NL80211_CMD_NEW_INTERFACE) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.613842: nl80211: Event message available
+1794611987.613842: nl80211: Ignored event 3 (NL80211_CMD_NEW_WIPHY) for foreign interface (ifindex -1 wdev 0x0 wiphy 8)
+1794611987.613844: nl80211: Event message available
+1794611987.613844: nl80211: Ignored event 7 (NL80211_CMD_NEW_INTERFACE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.614122: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=0 linkmode=0 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794611987.614122: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=0 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611987.614122: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=1 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611987.614124: nl80211: Event message available
+1794611987.614124: nl80211: Ignored event 103 (NL80211_CMD_VENDOR) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.614274: nl80211: Event message available
+1794611987.614275: nl80211: Ignored event 6 (NL80211_CMD_SET_INTERFACE) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.614415: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=0 linkmode=0 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794611987.614417: nl80211: Event message available
+1794611987.614417: nl80211: Ignored event 103 (NL80211_CMD_VENDOR) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.614469: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=6 linkmode=0 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794611987.614469: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=6 linkmode=0 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794611987.614470: nl80211: Event message available
+1794611987.614471: nl80211: Ignored event 15 (NL80211_CMD_START_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.614472: nl80211: Event message available
+1794611987.614472: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.614620: nl80211: Event message available
+1794611987.614621: nl80211: Ignored event 15 (NL80211_CMD_START_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.614622: nl80211: Event message available
+1794611987.614622: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.614805: nl80211: Event message available
+1794611987.614805: nl80211: Ignored event 33 (NL80211_CMD_TRIGGER_SCAN) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.616120: dbus: flush_object_timeout_handler: Timeout - sending changed properties of object /fi/w1/wpa_supplicant1/Interfaces/0
+1794611987.687889: RTM_NEWLINK: ifi_index=13 ifname=wlan8 wext ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611987.687891: nl80211: Event message available
+1794611987.687891: nl80211: Ignored event 34 (NL80211_CMD_NEW_SCAN_RESULTS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.687983: nl80211: Event message available
+1794611987.687983: nl80211: Ignored event 19 (NL80211_CMD_NEW_STATION) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.687985: nl80211: Event message available
+1794611987.687985: nl80211: Ignored event 19 (NL80211_CMD_NEW_STATION) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.687987: nl80211: Event message available
+1794611987.687987: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.688036: nl80211: Event message available
+1794611987.688036: nl80211: Ignored event 37 (NL80211_CMD_AUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.688037: nl80211: Event message available
+1794611987.688038: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.688074: nl80211: Event message available
+1794611987.688075: nl80211: Ignored event 37 (NL80211_CMD_AUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.697921: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=1 ifi_family=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+1794611987.697923: nl80211: Event message available
+1794611987.697923: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.697924: nl80211: Event message available
+1794611987.697925: nl80211: Ignored event 38 (NL80211_CMD_ASSOCIATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.697926: nl80211: Event message available
+1794611987.697927: nl80211: Ignored event 46 (NL80211_CMD_CONNECT) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.698035: nl80211: Event message available
+1794611987.698035: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.698037: nl80211: Event message available
+1794611987.698037: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.698127: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=6 linkmode=1 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794611987.698128: nl80211: Event message available
+1794611987.698129: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.698130: nl80211: Event message available
+1794611987.698130: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.798525: nl80211: Event message available
+1794611987.798525: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.798526: nl80211: Event message available
+1794611987.798527: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.898895: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794611987.898896: nl80211: Event message available
+1794611987.898897: nl80211: Ignored event 20 (NL80211_CMD_DEL_STATION) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.898898: nl80211: Event message available
+1794611987.898898: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.898900: nl80211: Event message available
+1794611987.898900: nl80211: Ignored event 70 (NL80211_CMD_UNPROT_DEAUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.898902: nl80211: Event message available
+1794611987.898902: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.898903: nl80211: Event message available
+1794611987.898904: nl80211: Ignored event 70 (NL80211_CMD_UNPROT_DEAUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.898905: nl80211: Event message available
+1794611987.898905: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.898907: nl80211: Event message available
+1794611987.898907: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.898909: nl80211: Event message available
+1794611987.898909: nl80211: Ignored event 6 (NL80211_CMD_SET_INTERFACE) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611987.999176: RTM_NEWLINK: ifi_index=13 ifname=wlan8 wext ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794611987.999176: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=1 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611987.999178: nl80211: Event message available
+1794611987.999178: nl80211: Ignored event 20 (NL80211_CMD_DEL_STATION) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.999179: nl80211: Event message available
+1794611987.999180: nl80211: Ignored event 39 (NL80211_CMD_DEAUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.999181: nl80211: Event message available
+1794611987.999181: nl80211: Ignored event 48 (NL80211_CMD_DISCONNECT) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611987.999212: nl80211: Event message available
+1794611987.999213: nl80211: Drv Event 36 (NL80211_CMD_REG_CHANGE) received for wlan0
+1794611987.999213: nl80211: Regulatory domain change
+1794611987.999213:  * initiator=0
+1794611987.999213:  * type=1
+1794611987.999214: wlan0: Event CHANNEL_LIST_CHANGED (27) received
+1794611987.999214: wlan0: CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+1794611987.999214: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=0 send_len=45
+1794611987.999214: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-3\x00
+1794611987.999215: CTRL-DEBUG: ctrl_sock-sendmsg: sock=15 sndbuf=212992 outq=0 send_len=45
+1794611987.999215: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-1\x00
+1794611987.999215: wlan0: Updating hw mode
+1794611987.999215: nl80211: No channel number found for frequency 5900 MHz
+1794611987.999216: nl80211: No channel number found for frequency 5905 MHz
+1794611987.999216: nl80211: No channel number found for frequency 5910 MHz
+1794611987.999216: nl80211: No channel number found for frequency 5915 MHz
+1794611987.999217: nl80211: No channel number found for frequency 5920 MHz
+1794611987.999217: nl80211: No channel number found for frequency 5925 MHz
+1794611987.999217: nl80211: No channel number found for frequency 902 MHz
+1794611987.999217: nl80211: No channel number found for frequency 903 MHz
+1794611987.999218: nl80211: No channel number found for frequency 904 MHz
+1794611987.999218: nl80211: No channel number found for frequency 905 MHz
+1794611987.999218: nl80211: No channel number found for frequency 906 MHz
+1794611987.999218: nl80211: No channel number found for frequency 907 MHz
+1794611987.999219: nl80211: No channel number found for frequency 908 MHz
+1794611987.999219: nl80211: No channel number found for frequency 909 MHz
+1794611987.999219: nl80211: No channel number found for frequency 910 MHz
+1794611987.999219: nl80211: No channel number found for frequency 911 MHz
+1794611987.999220: nl80211: No channel number found for frequency 912 MHz
+1794611987.999220: nl80211: No channel number found for frequency 913 MHz
+1794611987.999220: nl80211: No channel number found for frequency 914 MHz
+1794611987.999220: nl80211: No channel number found for frequency 915 MHz
+1794611987.999221: nl80211: No channel number found for frequency 916 MHz
+1794611987.999221: nl80211: No channel number found for frequency 917 MHz
+1794611987.999221: nl80211: No channel number found for frequency 918 MHz
+1794611987.999221: nl80211: No channel number found for frequency 919 MHz
+1794611987.999222: nl80211: No channel number found for frequency 920 MHz
+1794611987.999222: nl80211: No channel number found for frequency 921 MHz
+1794611987.999222: nl80211: No channel number found for frequency 922 MHz
+1794611987.999222: nl80211: No channel number found for frequency 923 MHz
+1794611987.999223: nl80211: No channel number found for frequency 924 MHz
+1794611987.999223: nl80211: No channel number found for frequency 925 MHz
+1794611987.999223: nl80211: No channel number found for frequency 926 MHz
+1794611987.999223: nl80211: No channel number found for frequency 927 MHz
+1794611987.999224: nl80211: Regulatory information - country=00
+1794611987.999224: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794611987.999224: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794611987.999224: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794611987.999225: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794611987.999225: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794611987.999225: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794611987.999225: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794611987.999226: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794611987.999226: nl80211: Remove unsupported mode
+1794611987.999226: nl80211: Added 802.11b mode based on 802.11g information
+1794611987.999226: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611987.999227: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794611987.999227: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794611987.999227: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611987.999228: wlan0: Determining shared radio frequencies (max len 1)
+1794611987.999228: wlan0: Shared frequencies (len=0): completed iteration
+1794611987.999228: P2P: Add operating class 81
+1794611987.999228: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794611987.999229: P2P: Update channel list
+1794611987.999229: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794611987.999229: P2P: cli_channels:
+1794611988.099410: nl80211: Event message available
+1794611988.099411: nl80211: Ignored event 6 (NL80211_CMD_SET_INTERFACE) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.099570: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=6 linkmode=0 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794611988.099571: nl80211: Event message available
+1794611988.099571: nl80211: Ignored event 103 (NL80211_CMD_VENDOR) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.099603: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=6 linkmode=0 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794611988.099605: nl80211: Event message available
+1794611988.099605: nl80211: Ignored event 15 (NL80211_CMD_START_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.099606: nl80211: Event message available
+1794611988.099607: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.099728: nl80211: Event message available
+1794611988.099728: nl80211: Ignored event 15 (NL80211_CMD_START_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.099730: nl80211: Event message available
+1794611988.099730: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.200030: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=2 linkmode=1 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611988.200121: nl80211: Event message available
+1794611988.200121: nl80211: Ignored event 33 (NL80211_CMD_TRIGGER_SCAN) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.277890: RTM_NEWLINK: ifi_index=13 ifname=wlan8 wext ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611988.277891: nl80211: Event message available
+1794611988.277891: nl80211: Ignored event 34 (NL80211_CMD_NEW_SCAN_RESULTS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.277982: nl80211: Event message available
+1794611988.277982: nl80211: Ignored event 19 (NL80211_CMD_NEW_STATION) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.277983: nl80211: Event message available
+1794611988.277984: nl80211: Ignored event 19 (NL80211_CMD_NEW_STATION) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.277985: nl80211: Event message available
+1794611988.277985: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.278034: nl80211: Event message available
+1794611988.278034: nl80211: Ignored event 37 (NL80211_CMD_AUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.278036: nl80211: Event message available
+1794611988.278036: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.278073: nl80211: Event message available
+1794611988.278073: nl80211: Ignored event 37 (NL80211_CMD_AUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.287921: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=1 ifi_family=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+1794611988.287922: nl80211: Event message available
+1794611988.287923: nl80211: Ignored event 60 (NL80211_CMD_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.287924: nl80211: Event message available
+1794611988.287924: nl80211: Ignored event 38 (NL80211_CMD_ASSOCIATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.287926: nl80211: Event message available
+1794611988.287926: nl80211: Ignored event 46 (NL80211_CMD_CONNECT) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.288033: nl80211: Event message available
+1794611988.288034: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.288035: nl80211: Event message available
+1794611988.288035: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.288125: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=6 linkmode=1 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794611988.288126: nl80211: Event message available
+1794611988.288127: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611988.288128: nl80211: Event message available
+1794611988.288128: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611988.611382: EAPOL: disable timer tick
+1794611988.617890: RTM_NEWLINK: ifi_index=3 ifname=wlan0 operstate=2 linkmode=1 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794611993.292849: nl80211: Event message available
+1794611993.292849: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611993.292851: nl80211: Event message available
+1794611993.292851: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611993.292916: nl80211: Event message available
+1794611993.292916: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611993.292917: nl80211: Event message available
+1794611993.292918: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611993.393228: RTM_NEWLINK: ifi_index=13 ifname=wlan8 wext ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794611993.393228: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=2 linkmode=1 ifi_family=0 ifi_flags=0x1002 ()
+1794611993.393229: nl80211: Event message available
+1794611993.393230: nl80211: Ignored event 20 (NL80211_CMD_DEL_STATION) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611993.393231: nl80211: Event message available
+1794611993.393231: nl80211: Ignored event 39 (NL80211_CMD_DEAUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611993.393233: nl80211: Event message available
+1794611993.393233: nl80211: Ignored event 48 (NL80211_CMD_DISCONNECT) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611993.393235: nl80211: Event message available
+1794611993.393235: nl80211: Ignored event 8 (NL80211_CMD_DEL_INTERFACE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794611993.393255: RTM_DELLINK: ifi_index=13 ifname=wlan8 operstate=2 linkmode=1 ifi_family=0 ifi_flags=0x1002 ()
+1794611993.393255: RTM_DELLINK: Interface 'wlan8' removed
+1794611993.393426: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794611993.393427: nl80211: Event message available
+1794611993.393738: nl80211: Ignored event 4 (NL80211_CMD_DEL_WIPHY) for foreign interface (ifindex -1 wdev 0x0 wiphy 8)
+1794611993.393740: RTM_DELLINK: ifi_index=12 ifname=wlan7 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794611993.393740: RTM_DELLINK: Interface 'wlan7' removed
+1794611993.393741: nl80211: Event message available
+1794611993.393741: nl80211: Ignored event 20 (NL80211_CMD_DEL_STATION) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611993.393743: nl80211: Event message available
+1794611993.393743: nl80211: Ignored event 16 (NL80211_CMD_STOP_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611993.393745: nl80211: Event message available
+1794611993.393745: nl80211: Ignored event 16 (NL80211_CMD_STOP_AP) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611993.393747: nl80211: Event message available
+1794611993.393747: nl80211: Ignored event 8 (NL80211_CMD_DEL_INTERFACE) for foreign interface (ifindex 12 wdev 0x0 wiphy -1)
+1794611993.393748: nl80211: Event message available
+1794611993.393749: nl80211: Ignored event 4 (NL80211_CMD_DEL_WIPHY) for foreign interface (ifindex -1 wdev 0x0 wiphy 7)
+1794611993.393750: nl80211: Event message available
+1794611993.393750: nl80211: Drv Event 36 (NL80211_CMD_REG_CHANGE) received for wlan0
+1794611993.393751: nl80211: Regulatory domain change
+1794611993.393751:  * initiator=0
+1794611993.393751:  * type=1
+1794611993.393751: wlan0: Event CHANNEL_LIST_CHANGED (27) received
+1794611993.393752: wlan0: CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+1794611993.393752: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=960 send_len=45
+1794611993.393752: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-3\x00
+1794611993.393752: CTRL-DEBUG: ctrl_sock-sendmsg: sock=15 sndbuf=212992 outq=960 send_len=45
+1794611993.393753: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-1\x00
+1794611993.393753: wlan0: Updating hw mode
+1794611993.393753: nl80211: No channel number found for frequency 5900 MHz
+1794611993.393753: nl80211: No channel number found for frequency 5905 MHz
+1794611993.393754: nl80211: No channel number found for frequency 5910 MHz
+1794611993.393754: nl80211: No channel number found for frequency 5915 MHz
+1794611993.393754: nl80211: No channel number found for frequency 5920 MHz
+1794611993.393754: nl80211: No channel number found for frequency 5925 MHz
+1794611993.393755: nl80211: No channel number found for frequency 902 MHz
+1794611993.393755: nl80211: No channel number found for frequency 903 MHz
+1794611993.393755: nl80211: No channel number found for frequency 904 MHz
+1794611993.393756: nl80211: No channel number found for frequency 905 MHz
+1794611993.393756: nl80211: No channel number found for frequency 906 MHz
+1794611993.393756: nl80211: No channel number found for frequency 907 MHz
+1794611993.393756: nl80211: No channel number found for frequency 908 MHz
+1794611993.393757: nl80211: No channel number found for frequency 909 MHz
+1794611993.393757: nl80211: No channel number found for frequency 910 MHz
+1794611993.393757: nl80211: No channel number found for frequency 911 MHz
+1794611993.393757: nl80211: No channel number found for frequency 912 MHz
+1794611993.393758: nl80211: No channel number found for frequency 913 MHz
+1794611993.393758: nl80211: No channel number found for frequency 914 MHz
+1794611993.393758: nl80211: No channel number found for frequency 915 MHz
+1794611993.393758: nl80211: No channel number found for frequency 916 MHz
+1794611993.393759: nl80211: No channel number found for frequency 917 MHz
+1794611993.393759: nl80211: No channel number found for frequency 918 MHz
+1794611993.393759: nl80211: No channel number found for frequency 919 MHz
+1794611993.393759: nl80211: No channel number found for frequency 920 MHz
+1794611993.393760: nl80211: No channel number found for frequency 921 MHz
+1794611993.393760: nl80211: No channel number found for frequency 922 MHz
+1794611993.393760: nl80211: No channel number found for frequency 923 MHz
+1794611993.393760: nl80211: No channel number found for frequency 924 MHz
+1794611993.393761: nl80211: No channel number found for frequency 925 MHz
+1794611993.393761: nl80211: No channel number found for frequency 926 MHz
+1794611993.393761: nl80211: No channel number found for frequency 927 MHz
+1794611993.393761: nl80211: Regulatory information - country=00
+1794611993.393762: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794611993.393762: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794611993.393762: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794611993.393762: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794611993.393763: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794611993.393763: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794611993.393763: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794611993.393763: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794611993.393764: nl80211: Remove unsupported mode
+1794611993.393764: nl80211: Added 802.11b mode based on 802.11g information
+1794611993.393764: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611993.393764: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794611993.393765: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794611993.393765: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611993.393765: wlan0: Determining shared radio frequencies (max len 1)
+1794611993.393765: wlan0: Shared frequencies (len=0): completed iteration
+1794611993.393766: P2P: Add operating class 81
+1794611993.393766: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794611993.393766: P2P: Update channel list
+1794611993.393767: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794611993.393767: P2P: cli_channels:
+1794611993.393768: nl80211: Event message available
+1794611993.393769: nl80211: Drv Event 36 (NL80211_CMD_REG_CHANGE) received for wlan0
+1794611993.393769: nl80211: Regulatory domain change
+1794611993.393769:  * initiator=0
+1794611993.393769:  * type=1
+1794611993.393770: wlan0: Event CHANNEL_LIST_CHANGED (27) received
+1794611993.393770: wlan0: CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+1794611993.393770: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=1920 send_len=45
+1794611993.393770: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-3\x00
+1794611993.393771: CTRL-DEBUG: ctrl_sock-sendmsg: sock=15 sndbuf=212992 outq=1920 send_len=45
+1794611993.393771: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-1\x00
+1794611993.393771: wlan0: Updating hw mode
+1794611993.393771: nl80211: No channel number found for frequency 5900 MHz
+1794611993.393772: nl80211: No channel number found for frequency 5905 MHz
+1794611993.393772: nl80211: No channel number found for frequency 5910 MHz
+1794611993.393772: nl80211: No channel number found for frequency 5915 MHz
+1794611993.393772: nl80211: No channel number found for frequency 5920 MHz
+1794611993.393773: nl80211: No channel number found for frequency 5925 MHz
+1794611993.393773: nl80211: No channel number found for frequency 902 MHz
+1794611993.393773: nl80211: No channel number found for frequency 903 MHz
+1794611993.393773: nl80211: No channel number found for frequency 904 MHz
+1794611993.393774: nl80211: No channel number found for frequency 905 MHz
+1794611993.393774: nl80211: No channel number found for frequency 906 MHz
+1794611993.393774: nl80211: No channel number found for frequency 907 MHz
+1794611993.393774: nl80211: No channel number found for frequency 908 MHz
+1794611993.393775: nl80211: No channel number found for frequency 909 MHz
+1794611993.393775: nl80211: No channel number found for frequency 910 MHz
+1794611993.393775: nl80211: No channel number found for frequency 911 MHz
+1794611993.393775: nl80211: No channel number found for frequency 912 MHz
+1794611993.393776: nl80211: No channel number found for frequency 913 MHz
+1794611993.393776: nl80211: No channel number found for frequency 914 MHz
+1794611993.393776: nl80211: No channel number found for frequency 915 MHz
+1794611993.393777: nl80211: No channel number found for frequency 916 MHz
+1794611993.393777: nl80211: No channel number found for frequency 917 MHz
+1794611993.393777: nl80211: No channel number found for frequency 918 MHz
+1794611993.393777: nl80211: No channel number found for frequency 919 MHz
+1794611993.393778: nl80211: No channel number found for frequency 920 MHz
+1794611993.393778: nl80211: No channel number found for frequency 921 MHz
+1794611993.393778: nl80211: No channel number found for frequency 922 MHz
+1794611993.393778: nl80211: No channel number found for frequency 923 MHz
+1794611993.393779: nl80211: No channel number found for frequency 924 MHz
+1794611993.393779: nl80211: No channel number found for frequency 925 MHz
+1794611993.393779: nl80211: No channel number found for frequency 926 MHz
+1794611993.393779: nl80211: No channel number found for frequency 927 MHz
+1794611993.393780: nl80211: Regulatory information - country=00
+1794611993.393780: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794611993.393780: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794611993.393780: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794611993.393781: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794611993.393781: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794611993.393781: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794611993.393781: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794611993.393782: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794611993.393782: nl80211: Remove unsupported mode
+1794611993.393782: nl80211: Added 802.11b mode based on 802.11g information
+1794611993.393782: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611993.393783: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794611993.393783: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794611993.393783: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611993.393783: wlan0: Determining shared radio frequencies (max len 1)
+1794611993.393784: wlan0: Shared frequencies (len=0): completed iteration
+1794611993.393784: P2P: Add operating class 81
+1794611993.393784: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794611993.393784: P2P: Update channel list
+1794611993.393785: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794611993.393785: P2P: cli_channels:
+1794611993.393850: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=2880 send_len=1115
+1794611993.393931: Control interface recv command from: /tmp/wpa_ctrl_459-0\x00
+1794611993.393931: wlan0: Control interface command 'NOTE TEST-STOP explorer_candidate'
+1794611993.393931: NOTE: TEST-STOP explorer_candidate
+1794611993.393932: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=3
+1794611993.393945: Control interface recv command from: /tmp/wpa_ctrl_459-0\x00
+1794611993.393946: wlan0: Control interface command 'FLUSH'
+1794611993.393946: wlan0: Flush all wpa_supplicant state
+1794611993.393946: wlan0: No ongoing scan/p2p-scan found to abort
+1794611993.393946: P2P: Request to cancel group formation
+1794611993.393947: P2P: Stopping find
+1794611993.393947: P2P: Clear timeout (state=IDLE)
+1794611993.393947: P2P: State IDLE -> IDLE
+1794611993.393948: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611993.393948: P2P: No ongoing group formation found
+1794611993.393948: P2P: Stopping find
+1794611993.393948: P2P: Clear timeout (state=IDLE)
+1794611993.393949: P2P: State IDLE -> IDLE
+1794611993.393949: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611993.393949: P2P: Disabling Extended Listen Timing
+1794611993.393949: P2P: Stopping find
+1794611993.393950: P2P: Clear timeout (state=IDLE)
+1794611993.393950: P2P: State IDLE -> IDLE
+1794611993.393950: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611993.393950: P2P: All ASP advertisements flushed
+1794611993.393951: WPS: Cancel operation - cancel scan
+1794611993.393951: wlan0: Cancelling scan request
+1794611993.393951: wlan0: WPS-CANCEL 
+1794611993.393951: CTRL-DEBUG: ctrl_sock-sendmsg: sock=4 sndbuf=212992 outq=0 send_len=11
+1794611993.393952: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-3\x00
+1794611993.393952: CTRL-DEBUG: ctrl_sock-sendmsg: sock=15 sndbuf=212992 outq=0 send_len=11
+1794611993.393952: CTRL_IFACE monitor sent successfully to /tmp/wpa_ctrl_459-1\x00
+1794611993.393952: Off-channel: Action frame sequence done notification: pending_action_tx=(nil) drv_offchan_tx=1 action_tx_wait_time=0 off_channel_freq=0 roc_waiting_drv_freq=0
+1794611993.393953: Off-channel: Action frame sequence done notification: pending_action_tx=(nil) drv_offchan_tx=1 action_tx_wait_time=0 off_channel_freq=0 roc_waiting_drv_freq=0
+1794611993.393953: TDLS: enabled
+1794611993.393953: CTRL_IFACE: REMOVE_NETWORK all
+1794611993.393953: CTRL_IFACE: REMOVE_CRED all
+1794611993.393954: TESTING: Set random PMKID injection count to 0
+1794611993.393954: wlan0: Updating hw mode
+1794611993.393954: nl80211: No channel number found for frequency 5900 MHz
+1794611993.393954: nl80211: No channel number found for frequency 5905 MHz
+1794611993.393955: nl80211: No channel number found for frequency 5910 MHz
+1794611993.393955: nl80211: No channel number found for frequency 5915 MHz
+1794611993.393955: nl80211: No channel number found for frequency 5920 MHz
+1794611993.393955: nl80211: No channel number found for frequency 5925 MHz
+1794611993.393956: nl80211: No channel number found for frequency 902 MHz
+1794611993.393956: nl80211: No channel number found for frequency 903 MHz
+1794611993.393956: nl80211: No channel number found for frequency 904 MHz
+1794611993.393956: nl80211: No channel number found for frequency 905 MHz
+1794611993.393957: nl80211: No channel number found for frequency 906 MHz
+1794611993.393957: nl80211: No channel number found for frequency 907 MHz
+1794611993.393957: nl80211: No channel number found for frequency 908 MHz
+1794611993.393957: nl80211: No channel number found for frequency 909 MHz
+1794611993.393958: nl80211: No channel number found for frequency 910 MHz
+1794611993.393958: nl80211: No channel number found for frequency 911 MHz
+1794611993.393958: nl80211: No channel number found for frequency 912 MHz
+1794611993.393959: nl80211: No channel number found for frequency 913 MHz
+1794611993.393959: nl80211: No channel number found for frequency 914 MHz
+1794611993.393959: nl80211: No channel number found for frequency 915 MHz
+1794611993.393959: nl80211: No channel number found for frequency 916 MHz
+1794611993.393960: nl80211: No channel number found for frequency 917 MHz
+1794611993.393960: nl80211: No channel number found for frequency 918 MHz
+1794611993.393960: nl80211: No channel number found for frequency 919 MHz
+1794611993.393960: nl80211: No channel number found for frequency 920 MHz
+1794611993.393961: nl80211: No channel number found for frequency 921 MHz
+1794611993.393961: nl80211: No channel number found for frequency 922 MHz
+1794611993.393961: nl80211: No channel number found for frequency 923 MHz
+1794611993.393961: nl80211: No channel number found for frequency 924 MHz
+1794611993.393962: nl80211: No channel number found for frequency 925 MHz
+1794611993.393962: nl80211: No channel number found for frequency 926 MHz
+1794611993.393962: nl80211: No channel number found for frequency 927 MHz
+1794611993.393962: nl80211: Regulatory information - country=00
+1794611993.393963: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794611993.393963: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794611993.393963: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794611993.393963: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794611993.393964: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794611993.393964: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794611993.393964: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794611993.393964: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794611993.393965: nl80211: Remove unsupported mode
+1794611993.393965: nl80211: Added 802.11b mode based on 802.11g information
+1794611993.393965: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611993.393965: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794611993.393966: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794611993.393966: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794611993.393966: wlan0: Determining shared radio frequencies (max len 1)
+1794611993.393966: wlan0: Shared frequencies (len=0): completed iteration
+1794611993.393967: P2P: Add operating class 81
+1794611993.393967: P2P: Channels - hexdump(len=11): 01 02 03 04 05 06 07 08 09 0a 0b
+1794611993.393967: P2P: Update channel list
+1794611993.393967: P2P: channels: 81:1,2,3,4,5,6,7,8,9,10,11
+1794611993.393968: P2P: cli_channels:
+1794611993.393968: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=960 send_len=3
+1794611993.393972: wlan0: Control interface command 'REMOVE_NETWORK all'
+1794611993.393972: CTRL_IFACE: REMOVE_NETWORK all
+1794611993.393972: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=960 send_len=3
+1794611993.393976: RX global ctrl_iface - hexdump_ascii(len=24):
+     53 45 54 20 70 32 70 5f 6e 6f 5f 67 72 6f 75 70   SET p2p_no_group
+     5f 69 66 61 63 65 20 31                           _iface 1        
+1794611993.393976: GLOBAL_CTRL_IFACE SET 'p2p_no_group_iface'='1'
+1794611993.393976: wlan0: Control interface command 'SET p2p_no_group_iface 1'
+1794611993.393976: CTRL_IFACE SET 'p2p_no_group_iface'='1'
+1794611993.393977: p2p_no_group_iface=1
+1794611993.393977: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=960 send_len=3
+1794611993.393981: wlan0: Control interface command 'P2P_FLUSH'
+1794611993.393981: P2P: Stopping find
+1794611993.393981: P2P: Clear timeout (state=IDLE)
+1794611993.393981: P2P: State IDLE -> IDLE
+1794611993.393982: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611993.393982: P2P: Disabling Extended Listen Timing
+1794611993.393982: P2P: Stopping find
+1794611993.393982: P2P: Clear timeout (state=IDLE)
+1794611993.393983: P2P: State IDLE -> IDLE
+1794611993.393983: P2P: p2p_stop_listen_for_freq(freq=0) pending_listen_freq=0 in_listen=0 drv_in_listen=0
+1794611993.393983: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=960 send_len=3
+1794611993.393990: CTRL-DEBUG: ctrl_sock-sendto: sock=15 sndbuf=212992 outq=0 send_len=1115
+1794611993.393993: CTRL-DEBUG: global_ctrl_sock-sendto: sock=4 sndbuf=212992 outq=0 send_len=21
+1794611993.394299: RX global ctrl_iface - hexdump_ascii(len=5):
+     52 45 4c 4f 47                                    RELOG           

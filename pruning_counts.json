@@ -14,18 +14,19 @@
     "spec_undetermined_review_queue": 0
   },
   "P2": {
-    "executable": 1152,
-    "probe": 1143,
-    "supported": 9,
-    "unresolved_not_run": 0
+    "executable": 864,
+    "probe": 843,
+    "supported": 21,
+    "unresolved_not_run": 0,
+    "unsupported_implementation": 288
   },
   "P3": {
-    "ACCEPTED": 12,
-    "REJECTED": 4,
+    "ACCEPTED": 4,
+    "REJECTED": 0,
     "SETUP_FAIL": 0,
     "TIMEOUT": 0
   },
-  "campaign": "seed0-2026-11-13",
+  "campaign": "seed0-topup-2026-11-13",
   "configspace": {
     "rejected": 3456,
     "rejections_by_rule": {
@@ -39,21 +40,22 @@
   "enumerated": 4608,
   "executed": {
     "cache_hits": 0,
-    "distinct_candidates_run": 16,
-    "guest_boots": 16,
+    "distinct_candidates_run": 4,
+    "guest_boots": 4,
     "retries": 0
   },
-  "guest_boots_avoided_by_pruning": 3456,
-  "model_digest": "sha256:698f8e8a6b393342af435515450d399dc02bc1cd9ffe473e2ebe78d06752f055",
+  "guest_boots_avoided_by_pruning": 3744,
+  "model_digest": "sha256:8f84a4c31085be04c4e33e41a3be0cebda198743851b85f1bc323d440ee1583b",
   "not_run_at_launch": {
     "adapter": 0,
     "p1_today": 0
   },
   "planned": {
+    "already_run_before": 21,
     "by_role": {
-      "probe": 16
+      "probe": 4
     },
-    "candidates": 16,
+    "candidates": 4,
     "cut_by_budget": 0
   },
   "seed": 0

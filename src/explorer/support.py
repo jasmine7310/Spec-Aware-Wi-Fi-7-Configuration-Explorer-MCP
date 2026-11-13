@@ -8,12 +8,13 @@ Only committed evidence counts. The rules below were decided in issue #80
   test has at least one passing committed run (``run_hwsim_test`` can run it); or it is
   exactly the candidate of a committed adapter run that passed the modeled rules and was
   ACCEPTED on the pinned hostap and kernel commits under a compatible model schema
-  (``model.COMPATIBLE_SCHEMA_VERSIONS``; ``run_candidate`` can run it again). One such run is enough for P2; anchors and
-  contrasts need 3/3. The local image ID isn't compared: it changes on every rebuild,
-  even from cache.
+  (``model.COMPATIBLE_SCHEMA_VERSIONS``; ``run_candidate`` can run it again). One such
+  run is enough for P2; anchors and contrasts need 3/3. The local image ID isn't
+  compared: it changes on every rebuild, even from cache.
 - ``UNRESOLVED``: no test or adapter run executes this exact candidate. The result lists
-  the committed runs that show each of its values executes, or none: for the admitted dimensions
-  (settings, and the actions in ``PRESENCE_ACTIONS`` as absent / present), the smoke runs
+  the committed runs that show each of its values executes, or none: for the admitted
+  dimensions (settings, and the actions in ``PRESENCE_ACTIONS`` as absent / present), the
+  smoke runs
   in ``surface_candidates.csv``'s ``smoke_runs``; for each action (with its command or
   operation), committed adapter runs whose recorded candidate performs it, then passing
   runs of the hostap tests that perform it. Only runs that pass the modeled rules count:
@@ -21,21 +22,27 @@ Only committed evidence counts. The rules below were decided in issue #80
   client's beacon protection off) are negative experiments, and an adapter run counts only
   if its recorded validation is PASSES_MODELED_RULES and its candidate still passes the
   modeled rules today (re-checked: a rule can be added after a run, as #88 did). Rejected
-  runs (``runs/rejected/``) are never evidence. Settings that aren't admitted dimensions (``fixed_values``: AP PMF
-  and beacon protection, bss_transition, the client's beacon protection and SAE groups,
-  the link layout) count only with a legal committed run that used the same value.
+  runs (``runs/rejected/`` and campaigns' REJECTED runs) are never evidence. Settings that
+  aren't admitted dimensions (``fixed_values``: AP PMF and beacon protection,
+  bss_transition, the client's beacon protection and SAE groups, the link layout) count
+  only with a legal committed run that used the same value.
   Values that each ran somewhere don't prove their combination runs.
   ``all_values_evidenced`` says whether every value has such a run: the campaign may run
   those candidates as labeled support probes, and only those. When a value has no run but
-  a committed rejected run (``runs/rejected/``) whose candidate still passes the modeled
-  rules involves it, ``recorded_refusals`` cites it. A rejected run that a rule now
-  explains isn't an implementation refusal, so it isn't cited.
-- ``UNSUPPORTED_IMPLEMENTATION``: needs real evidence that the pinned versions can't do
-  it, such as a run that failed to set up. We have none recorded, so nothing returns
-  this yet; it is never inferred from missing evidence. A refusal caused by a gap in our
-  model isn't one: the gap gets modeled instead. ``ap_sae_pwe=1`` with the client's
-  ``sae_pwe`` unset (``runs/rejected/1794384673``) was such a gap; since #88 the client's
-  ``sae_pwe`` is a dimension and ``SEC.SAE_H2E_ONLY_NEEDS_STA_H2E`` rejects that pairing at P1.
+  a committed rejected run (``rejected_runs``: ``runs/rejected/`` and the REJECTED runs in
+  ``campaigns/``) whose candidate still passes the modeled rules involves it,
+  ``recorded_refusals`` cites it. A rejected run that a rule now explains isn't an
+  implementation refusal, so it isn't cited.
+- ``UNSUPPORTED_IMPLEMENTATION``: only from recorded refusals, never inferred from missing
+  evidence. Each entry of ``IMPLEMENTATION_LIMITS`` names a sequence the pinned versions
+  refuse, the source lines that explain why, and the log marker of the refusal; a
+  candidate matching one gets this status when a committed rejected run of a rule-passing
+  candidate matches it too, and those runs are the evidence. Today: ``DISABLE_MLD`` after
+  a ``link_remove`` (campaign ``seed0-2026-11-13``, decided on PR #92). A refusal caused by a
+  gap in our model isn't one: the gap gets modeled instead. ``ap_sae_pwe=1`` with the
+  client's ``sae_pwe`` unset (``runs/rejected/1794384673``) was such a gap; since #88 the
+  client's ``sae_pwe`` is a dimension and ``SEC.SAE_H2E_ONLY_NEEDS_STA_H2E`` rejects that
+  pairing at P1.
 
 Runs in ``runs/hwsim-logs/`` are trials and never count.
 """
@@ -45,6 +52,8 @@ from __future__ import annotations
 import csv
 import json
 import re
+from collections.abc import Callable
+from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -63,6 +72,8 @@ EVIDENCE_DIRS = (REPO_ROOT / "runs" / "baseline", REPO_ROOT / "runs" / "calibrat
                  REPO_ROOT / "campaigns")
 # Committed runs of rule-passing candidates the implementation refused; never evidence.
 REJECTED_DIR = REPO_ROOT / "runs" / "rejected"
+# Campaign runs; their REJECTED runs are refusals too (rejected_runs).
+CAMPAIGNS_DIR = REPO_ROOT / "campaigns"
 DOCKERFILE = REPO_ROOT / "docker" / "Dockerfile"
 CANDIDATES_CSV = REPO_ROOT / "surface_candidates.csv"
 
@@ -97,9 +108,12 @@ class SupportResult(BaseModel):
     for SUPPORTED). An UNRESOLVED candidate with True is a support probe the campaign may
     run; one with False isn't in the default campaign."""
     recorded_refusals: list[ValueEvidence]
-    """Values without a passing run that a committed rejected run (runs/rejected/) involves,
-    with those runs. Information only: a refusal never makes a candidate unsupported."""
+    """Values without a passing run that a committed rejected run involves, with those
+    runs. Information only: on its own a refusal never makes a candidate unsupported."""
     note: str
+    limit: str | None = None
+    """The IMPLEMENTATION_LIMITS entry behind UNSUPPORTED_IMPLEMENTATION (None otherwise);
+    run_ids are its recorded refusals."""
 
 
 def _manifests(evidence_dirs):
@@ -204,6 +218,8 @@ class RecordedRun(BaseModel):
     hostap_commit: str | None
     kernel_commit: str | None
     schema_version: int | None
+    reason: str | None = None
+    """For a rejected run: the adapter's EXPLORER-REJECTED reason, from its log."""
 
 
 def _recorded(manifest: dict) -> RecordedRun | None:
@@ -281,11 +297,33 @@ def _cached_fixed_evidence() -> dict[tuple[str, str], list[str]]:
     return fixed_evidence()
 
 
-def rejected_runs(rejected_dir: Path = REJECTED_DIR) -> dict[str, RecordedRun]:
-    """Run ID -> what a committed rejected run recorded (runs/rejected/). Never evidence;
-    P2 only cites them as recorded refusals."""
-    return {manifest["run_id"]: recorded for manifest in _manifests([rejected_dir])
-            if (recorded := _recorded(manifest)) is not None}
+def _rejected_reason(run_dir: Path) -> str | None:
+    """The adapter's EXPLORER-REJECTED reason in a run's log, or None."""
+    from explorer.adapter import _REJECTED, ADAPTER_TEST
+    log = run_dir / f"{ADAPTER_TEST}.log"
+    if not log.exists():
+        return None
+    m = _REJECTED.search(log.read_text(errors="replace"))
+    return m["reason"].strip() if m else None
+
+
+def rejected_runs(rejected_dir: Path = REJECTED_DIR,
+                  campaigns_dir: Path = CAMPAIGNS_DIR) -> dict[str, RecordedRun]:
+    """Run ID -> what a committed rejected run recorded: every run in ``runs/rejected/``,
+    and the campaign runs the adapter logged as REJECTED (a SETUP_FAIL or TIMEOUT says
+    nothing about the candidate, so it isn't one). Never evidence; P2 cites them as
+    recorded refusals and as the evidence for IMPLEMENTATION_LIMITS."""
+    found = {}
+    for folder, only_rejected in ((Path(rejected_dir), False), (Path(campaigns_dir), True)):
+        for path in sorted(folder.rglob("manifest.json")):
+            manifest = json.loads(path.read_text())
+            if (recorded := _recorded(manifest)) is None:
+                continue
+            reason = _rejected_reason(path.parent)
+            if only_rejected and reason is None:
+                continue
+            found[manifest["run_id"]] = recorded.model_copy(update={"reason": reason})
+    return found
 
 
 @lru_cache(maxsize=1)
@@ -330,6 +368,52 @@ def action_key(step) -> tuple[str, str]:
     return step.action, label
 
 
+@dataclass(frozen=True)
+class ImplementationLimit:
+    """A sequence the pinned versions refuse, shown by recorded REJECTED runs."""
+    id: str
+    description: str
+    sources: tuple[str, ...]
+    reason_marker: str
+    """Text a REJECTED run's reason contains when this limit caused it."""
+    applies: Callable[[Candidate], bool]
+
+
+def _disable_mld_after_link_remove(candidate: Candidate) -> bool:
+    removed = False
+    for step in candidate.actions:
+        if step.action == "link_remove":
+            removed = True
+        elif removed and step.action == "disable_enable_mld" and step.command == "DISABLE_MLD":
+            return True
+    return False
+
+
+IMPLEMENTATION_LIMITS = (
+    ImplementationLimit(
+        id="P2.DISABLE_MLD_AFTER_LINK_REMOVE",
+        description=("hostapd's DISABLE_MLD disables every partner link of the AP MLD and "
+                     "fails on a link LINK_REMOVE already disabled ('Interface ... already "
+                     "disabled', 'Disabling AP MLD failed'), so the command answers FAIL. "
+                     "hostapd behavior at the pinned commit, not a Wi-Fi rule."),
+        sources=("hostapd/ctrl_iface.c:3670-3708", "src/ap/hostapd.c:3744-3757"),
+        reason_marker="DISABLE_MLD failed",
+        applies=_disable_mld_after_link_remove),
+)
+
+
+def limit_evidence(limit: ImplementationLimit) -> list[str]:
+    """Committed rejected runs of rule-passing candidates that match ``limit`` and whose
+    REJECTED reason shows it."""
+    runs = []
+    for run, recorded in sorted(_cached_rejected_runs().items()):
+        parsed = _parse(recorded)
+        if (parsed is not None and passes_current_rules(parsed) and limit.applies(parsed)
+                and limit.reason_marker in (recorded.reason or "")):
+            runs.append(run)
+    return runs
+
+
 def check_support(candidate: Candidate) -> SupportResult:
     """The P2 answer for one candidate (see the module docstring)."""
     runs = _cached_passing_runs()
@@ -352,6 +436,14 @@ def check_support(candidate: Candidate) -> SupportResult:
             note=(f"Executed exactly by {len(exact)} committed adapter run(s) "
                   f"({', '.join(exact)}) on the pinned versions; run it again with "
                   "run_candidate."))
+    for limit in IMPLEMENTATION_LIMITS:
+        if limit.applies(candidate) and (evidence := limit_evidence(limit)):
+            return SupportResult(
+                status="UNSUPPORTED_IMPLEMENTATION", test=None, run_ids=evidence, values=[],
+                closest_tests=[], all_values_evidenced=False, recorded_refusals=[],
+                limit=limit.id,
+                note=(f"{limit.id}: {limit.description} Recorded refusals: "
+                      f"{', '.join(evidence)} (sources: {', '.join(limit.sources)})."))
 
     smoke = _cached_smoke_evidence()
     values = [ValueEvidence(candidate=name, value=label,
@@ -388,7 +480,7 @@ def check_support(candidate: Candidate) -> SupportResult:
              " Each listed value has a passing run under the modeled rules, but not in "
              "this combination: a support probe.")
     if refusals:
-        note += " Recorded refusal(s) in runs/rejected/: " + "; ".join(
+        note += " Recorded refusal(s): " + "; ".join(
             f"{r.candidate}={r.value} ({', '.join(r.run_ids)})" for r in refusals) + "."
     return SupportResult(status="UNRESOLVED", test=None, run_ids=[], values=values,
                          closest_tests=closest, all_values_evidenced=not missing,

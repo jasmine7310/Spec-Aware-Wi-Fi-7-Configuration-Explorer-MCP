@@ -110,13 +110,16 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 - `explorer.campaign`: runs a plan (#68). `run(plan, id, cache=Cache())` re-checks each
   candidate, runs it through the cache (reruns once on `SETUP_FAIL` / `TIMEOUT`, never on
   `REJECTED`); `pruning_counts` / `rejected_cases` build the funnel and table.
-  `scripts/run_campaign.py` writes `campaigns/<id>/` and `pruning_counts.json`; then
-  regenerate the plan files so coverage counts the new runs.
+  `scripts/run_campaign.py --id <id>` writes `campaigns/<id>/` (with the plan it ran) and
+  `pruning_counts.json`; then regenerate the plan files: plans build on committed runs,
+  so the next plan covers only what's left.
 - `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
   `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
   on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
   admitted dimension, legal runs per fixed setting and per action) and
-  `all_values_evidenced` (a support probe). `recorded_refusals` cites `runs/rejected/`. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
+  `all_values_evidenced` (a support probe). `recorded_refusals` cites `runs/rejected/` and
+  campaigns' `REJECTED` runs. `UNSUPPORTED_IMPLEMENTATION` only for an entry of
+  `IMPLEMENTATION_LIMITS` with recorded refusals; never infer it from missing evidence.
 
 ## Rules for agents
 

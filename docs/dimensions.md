@@ -196,7 +196,8 @@ summarized here so the record is in one place.
 - **Campaign finding (2026-11-13):** after a `link_remove`, `DISABLE_MLD` is `REJECTED`: the
   pinned hostapd tries to disable every partner link, the removed one is already disabled,
   and the command fails (`campaigns/seed0-2026-11-13/README.md`, 4 runs). A recorded
-  refusal by the implementation, not a Wi-Fi rule.
+  refusal by the implementation, not a Wi-Fi rule; since PR #92, P2 answers
+  `UNSUPPORTED_IMPLEMENTATION` for that order (`P2.DISABLE_MLD_AFTER_LINK_REMOVE`).
 - **Smoke runs:** absent `1794384666`; present `1794384702` (a second 4-way handshake and a
   second locally generated disconnect, reason 3; traffic on links 0 and 1 after RECONNECT;
   the log records the harness flush).

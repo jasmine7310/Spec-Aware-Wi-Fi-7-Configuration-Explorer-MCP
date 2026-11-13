@@ -197,7 +197,7 @@ means the client allows an SAE-family AKM.
 | **Candidates** | `ap_sae_pwe`, `sta_sae_pwe`, `ap_akm`, `sta_akm` |
 | **Run evidence** | `ap_sae_pwe=1` with the client's `sae_pwe` unset: REJECTED, the client never finds the network (`runs/rejected/1794384673`, issue #61). With the client's `sae_pwe` set: see `runs/smoke/README.md` (issue #88). |
 | **Effect** | `ap_sae_pwe=1` becomes admissible, paired with a client that has H2E enabled. The client's `sae_pwe` (unset / `1` / `2`) is a setting in its own right, meaningful only with an SAE-family AKM (SEC.SAE_PWE_NEEDS_SAE). |
-| **Status** | **Not reviewed yet.** Drafted by Claude (AI agent) from the PDF text and the hostap lines at the pinned commit, 2026-11-12. Needs a person to check the IEEE and WFA citations in the PDFs. |
+| **Status** | **Verified.** Drafted by Claude (AI agent) from the PDF text and the hostap lines at the pinned commit, 2026-11-12. Michelle checked Table 9-131, §11.1.4.6 (heading and pages) and WFA Table 3 in the PDFs and accepted the hostap lines (2026-11-13, PR #92). §11.1.4.6 stays unclassified: its body text (PDF pp. 2463–2464), not only its NOTEs, describes not joining, without a "shall". |
 
 ## What this changes for the smoke test
 

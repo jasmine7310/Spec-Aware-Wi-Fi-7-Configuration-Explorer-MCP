@@ -16,7 +16,8 @@ def space():
 
 @pytest.fixture(scope="module")
 def plan(space):
-    return planner.plan(seed=0, space=space)
+    # The full design, so there are candidates whatever has already run.
+    return planner.plan(seed=0, space=space, build_on_runs=False)
 
 
 def _runner(script):

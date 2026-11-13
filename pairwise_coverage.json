@@ -1,5 +1,20 @@
 {
-  "admissible_but_not_executable_pairs": [],
+  "admissible_but_not_executable_pairs": [
+    {
+      "p2": {
+        "limits": [
+          "P2.DISABLE_MLD_AFTER_LINK_REMOVE"
+        ],
+        "roles": {
+          "unsupported": 288
+        }
+      },
+      "pair": {
+        "disable_enable_mld": "present",
+        "link_remove": "present"
+      }
+    }
+  ],
   "all_pairs": 261,
   "covered_by": [
     {
@@ -223,6 +238,24 @@
     {
       "choices": {
         "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "1",
+        "disable_enable_mld": "present",
+        "link_remove": "absent",
+        "rekey_gtk_now": "present",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "2"
+      },
+      "run_ids": [
+        "1794611986"
+      ]
+    },
+    {
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
         "ap_gtk_rekey_interval": "5",
         "ap_link_indicate_disabled": "0",
         "ap_pairwise_cipher": "GCMP-256",
@@ -272,6 +305,24 @@
       },
       "run_ids": [
         "1794557107"
+      ]
+    },
+    {
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "2",
+        "disable_enable_mld": "present",
+        "link_remove": "absent",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "1"
+      },
+      "run_ids": [
+        "1794611993"
       ]
     },
     {
@@ -331,6 +382,24 @@
     {
       "choices": {
         "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "0",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "present",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "run_ids": [
+        "1794611970"
+      ]
+    },
+    {
+      "choices": {
+        "ap_akm": "OWE",
         "ap_gtk_rekey_interval": "unset",
         "ap_link_indicate_disabled": "1",
         "ap_pairwise_cipher": "CCMP",
@@ -367,6 +436,24 @@
     {
       "choices": {
         "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "GCMP-256",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "run_ids": [
+        "1794611979"
+      ]
+    },
+    {
+      "choices": {
+        "ap_akm": "OWE",
         "ap_gtk_rekey_interval": "unset",
         "ap_link_indicate_disabled": "1",
         "ap_pairwise_cipher": "GCMP-256",
@@ -398,11 +485,13 @@
     "disable_enable_mld"
   ],
   "executable": {
-    "covered_feasible_pairs": 233,
-    "feasible_pairs": 250,
-    "pairwise_coverage": 0.932,
-    "planned_feasible_pairs": 250,
-    "planned_pairwise_coverage": 1.0
+    "covered_feasible_pairs": 249,
+    "covered_or_planned_feasible_pairs": 249,
+    "covered_or_planned_pairwise_coverage": 1.0,
+    "feasible_pairs": 249,
+    "pairwise_coverage": 1.0,
+    "planned_feasible_pairs": 0,
+    "planned_pairwise_coverage": 0.0
   },
   "infeasible_pairs": [
     {
@@ -566,13 +655,15 @@
       }
     }
   ],
-  "model_digest": "sha256:698f8e8a6b393342af435515450d399dc02bc1cd9ffe473e2ebe78d06752f055",
+  "model_digest": "sha256:8f84a4c31085be04c4e33e41a3be0cebda198743851b85f1bc323d440ee1583b",
   "modeled_admissible": {
-    "covered_feasible_pairs": 233,
+    "covered_feasible_pairs": 249,
+    "covered_or_planned_feasible_pairs": 249,
+    "covered_or_planned_pairwise_coverage": 0.996,
     "feasible_pairs": 250,
-    "pairwise_coverage": 0.932,
-    "planned_feasible_pairs": 250,
-    "planned_pairwise_coverage": 1.0
+    "pairwise_coverage": 0.996,
+    "planned_feasible_pairs": 0,
+    "planned_pairwise_coverage": 0.0
   },
   "seed": 0,
   "strength": 2

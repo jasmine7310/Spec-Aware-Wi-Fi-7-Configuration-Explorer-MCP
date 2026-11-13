@@ -13,9 +13,9 @@ Windows 11 + WSL2 Ubuntu 24.04 + Docker Desktop (Docker 29.9.2), image built fro
 manifest), hostap `43ee60e1`, wireless-next `21b4248b`, 2026-11-13. Each run folder's
 manifest records the candidate, its validation, the cache key and its parts, the context
 (campaign, seed, candidate ID, attempt) and the timeout (600 s). Single runs: P2 evidence,
-not reproducibility trials. Files here: `results.json` (each candidate's attempts),
-`rejected_cases.csv` (every case that didn't run or didn't come back `ACCEPTED`), and
-`../../pruning_counts.json` (the funnel).
+not reproducibility trials. Files here: `campaign_plan.json` (the plan it ran), `results.json` (each candidate's
+attempts), `rejected_cases.csv` (every case that didn't run or didn't come back
+`ACCEPTED`) and `pruning_counts.json` (the funnel).
 
 ## Results
 
@@ -67,8 +67,17 @@ both actions is for the team to decide (#80's rule: only from a recorded refusal
 
 ## Coverage
 
-Pairs covered by committed `ACCEPTED` legal runs went from 126 to
-**233 of 250**
-(0.932) feasible pairs (`pairwise_coverage.json`). The other 17 appear
-only in the four `REJECTED` candidates, among them `link_remove=present` with
-`disable_enable_mld=present`, which this finding says the pinned hostapd doesn't carry out.
+Pairs covered by committed `ACCEPTED` legal runs went from 126 to 233 of 250 feasible pairs
+(0.932) with this campaign. The other 17 appeared only in the four `REJECTED` candidates.
+
+## What changed after review (PR #92)
+
+- P2 now reads these `REJECTED` runs as recorded refusals (`support.rejected_runs`), and
+  answers `UNSUPPORTED_IMPLEMENTATION` for any candidate with `DISABLE_MLD` after a
+  `link_remove` (`support.IMPLEMENTATION_LIMITS`, `P2.DISABLE_MLD_AFTER_LINK_REMOVE`), citing
+  the four runs and the hostapd lines above. Michelle and the team agreed on the scope.
+- The top-up campaign [`seed0-topup-2026-11-13`](../seed0-topup-2026-11-13/README.md) covered
+  the 16 runnable pairs left (4 runs, all `ACCEPTED`); the remaining pair is the unsupported
+  one.
+- `campaign_plan.json` and `pruning_counts.json` here are this campaign's own copies (from
+  commit `0c76e0a`); the repo root's files describe the latest campaign.

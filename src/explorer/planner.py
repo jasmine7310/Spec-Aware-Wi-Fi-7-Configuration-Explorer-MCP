@@ -14,8 +14,9 @@ once and checks every full assignment with the real stages, before any guest lau
   ``SPEC_RULE_VIOLATION`` assignments are pruned with their rule IDs;
   ``SPEC_UNDETERMINED`` ones go to a separate review queue, never the default campaign.
 - **P2**: ``support.check_support``. Only ``SUPPORTED`` candidates and support probes
-  (``UNRESOLVED`` with ``all_values_evidenced``, decided in #80) are executable; others are
-  counted as not run.
+  (``UNRESOLVED`` with ``all_values_evidenced``, decided in #80) are executable;
+  ``UNSUPPORTED_IMPLEMENTATION`` ones (a recorded refusal, ``support.IMPLEMENTATION_LIMITS``)
+  and unevidenced ones are counted, not run.
 
 allpairspy generates the pairwise design over the executable assignments. Its filter sees
 partial rows and rejects one only if no executable assignment starts with it (an exact
@@ -25,7 +26,12 @@ which leaves some feasible pairs uncovered, so the planner checks the achieved c
 itself, as the roadmap asks, and tops it up: it adds the executable assignment that
 covers the most still-uncovered pairs (ties: the first in the seeded order) until every
 executable pair is planned. The seed shuffles each dimension's value order before
-allpairspy runs, so a seed always gives the same plan.
+allpairspy runs, so a seed always gives the same plan for the same evidence.
+
+By default the plan builds on what has run (``build_on_runs``): assignments with a committed
+legal ACCEPTED run (P2 ``SUPPORTED``) already cover their pairs, so they go to allpairspy
+as ``previously_tested`` and count as covered for the top-up, and the plan lists only new
+candidates. Each campaign then covers what the earlier ones left.
 
 Coverage (``coverage``) has two denominators, as the roadmap asks: pairs feasible after
 P0/P1 (modeled-admissible) and pairs feasible after P2 (executable). A pair counts as
@@ -74,7 +80,8 @@ class Assessment:
     configspace_rule_ids: list[str] = field(default_factory=list)   # [] = ConfigSpace-valid
     p1_status: str | None = None          # PASSES_MODELED_RULES / SPEC_RULE_VIOLATION / ...
     rule_ids: list[str] = field(default_factory=list)
-    p2_status: str | None = None          # SUPPORTED / UNRESOLVED
+    p2_status: str | None = None          # SUPPORTED / UNRESOLVED / UNSUPPORTED_IMPLEMENTATION
+    p2_limit: str | None = None           # the implementation limit, if UNSUPPORTED
     all_values_evidenced: bool = False
     run_ids: list[str] = field(default_factory=list)
     missing: list[str] = field(default_factory=list)
@@ -95,6 +102,8 @@ class Assessment:
             return "undetermined" if self.p1_status == "SPEC_UNDETERMINED" else "pruned"
         if self.p2_status == "SUPPORTED":
             return "supported"
+        if self.p2_status == "UNSUPPORTED_IMPLEMENTATION":
+            return "unsupported"
         return "probe" if self.all_values_evidenced else "not_run"
 
 
@@ -133,6 +142,7 @@ class Space:
         if result.legal:
             support = check_support(candidate)
             result.p2_status = support.status
+            result.p2_limit = support.limit
             result.all_values_evidenced = support.all_values_evidenced
             result.run_ids = support.run_ids
             result.missing = [f"{v.candidate}={v.value}" for v in support.values if not v.run_ids]
@@ -167,22 +177,27 @@ def prefix_filter(space: Space):
     return lambda partial: tuple(partial) in prefixes
 
 
-def design(space: Space, seed: int) -> list[tuple[Row, str]]:
+def design(space: Space, seed: int, build_on_runs: bool = True) -> list[tuple[Row, str]]:
     """The seeded pairwise design over the executable assignments: allpairspy's rows,
-    then the top-up that covers the pairs it left. Each row is tagged with its source."""
+    then the top-up that covers the pairs it left. Each row is tagged with its source.
+    With ``build_on_runs``, assignments that already ran (P2 SUPPORTED) count as covered
+    and aren't planned again."""
     executable = space.rows(lambda a: a.executable)
+    done = space.rows(lambda a: a.role == "supported") if build_on_runs else []
     rng = random.Random(seed)
     labels = [rng.sample(values, len(values)) for values in space.labels]
     extendable = prefix_filter(space)
 
     rows = [(tuple(r), "allpairspy")
-            for r in AllPairs(labels, filter_func=extendable, n=STRENGTH)]
+            for r in AllPairs(labels, filter_func=extendable, n=STRENGTH,
+                              previously_tested=[list(r) for r in done] or None)
+            if tuple(r) not in done]
     target = space.pairs_of(executable)
-    covered = space.pairs_of([r for r, _ in rows])
+    covered = space.pairs_of([r for r, _ in rows] + done)
     # The whole space in the seeded order, so ties in the top-up are reproducible.
     order = sorted(executable, key=lambda r: [labels[i].index(v) for i, v in enumerate(r)])
     while not target <= covered:
-        planned = {r for r, _ in rows}
+        planned = {r for r, _ in rows} | set(done)
         best = max((r for r in order if r not in planned),
                    key=lambda r: len(space.pairs(r) & (target - covered)))
         rows.append((best, "top_up"))
@@ -207,6 +222,17 @@ def _infeasible(space: Space, feasible: set[Pair]) -> list[dict]:
     return out
 
 
+def _not_executable_because(space: Space, pair: Pair) -> dict:
+    """Why no executable assignment has this legal pair: the P2 roles of the legal
+    assignments that have it, and any implementation limits behind them."""
+    (d1, v1), (d2, v2) = pair
+    i, j = space.names.index(d1), space.names.index(d2)
+    rows = [a for row, a in space.assessments.items()
+            if row[i] == v1 and row[j] == v2 and a.legal]
+    return {"roles": dict(Counter(a.role for a in rows)),
+            "limits": sorted({a.p2_limit for a in rows if a.p2_limit})}
+
+
 def coverage(space: Space, plan_rows: list[Row], ran_rows: list[Row]) -> dict:
     """Pairwise coverage with both denominators. ``ran_rows``: assignments with a real
     ACCEPTED legal run (only these cover pairs). ``plan_rows``: planned, reported apart."""
@@ -221,7 +247,10 @@ def coverage(space: Space, plan_rows: list[Row], ran_rows: list[Row]) -> dict:
                 "covered_feasible_pairs": len(covered & feasible),
                 "pairwise_coverage": ratio(len(covered & feasible)),
                 "planned_feasible_pairs": len(planned & feasible),
-                "planned_pairwise_coverage": ratio(len(planned & feasible))}
+                "planned_pairwise_coverage": ratio(len(planned & feasible)),
+                # what coverage becomes if every planned candidate runs ACCEPTED
+                "covered_or_planned_feasible_pairs": len((covered | planned) & feasible),
+                "covered_or_planned_pairwise_coverage": ratio(len((covered | planned) & feasible))}
 
     feasible_p1, feasible_p2 = space.pairs_of(legal), space.pairs_of(executable)
     return {
@@ -231,19 +260,22 @@ def coverage(space: Space, plan_rows: list[Row], ran_rows: list[Row]) -> dict:
         "modeled_admissible": block(feasible_p1),
         "executable": block(feasible_p2),
         "infeasible_pairs": _infeasible(space, feasible_p1),
-        "admissible_but_not_executable_pairs": [dict(p) for p in sorted(feasible_p1 - feasible_p2)],
+        "admissible_but_not_executable_pairs": [
+            {"pair": dict(p), "p2": _not_executable_because(space, p)}
+            for p in sorted(feasible_p1 - feasible_p2)],
         "covered_by": [{"choices": space.choices(r),
                         "run_ids": space.assessments[r].run_ids} for r in ran_rows],
     }
 
 
-def plan(seed: int = 0, budget: int = DEFAULT_BUDGET, space: Space | None = None) -> dict:
+def plan(seed: int = 0, budget: int = DEFAULT_BUDGET, space: Space | None = None,
+         build_on_runs: bool = True) -> dict:
     """The campaign plan for one seed (see the module docstring). At most ``budget``
     candidates; if the design needs more, the rest are reported as cut, not dropped
     silently."""
     space = space or Space()
     model = space.model
-    rows = design(space, seed)
+    rows = design(space, seed, build_on_runs)
     kept, cut = rows[:budget], rows[budget:]
     statuses = Counter(a.p1_status or "MALFORMED" for a in space.assessments.values())
     rules = Counter(rule for a in space.assessments.values() if not a.legal
@@ -267,6 +299,7 @@ def plan(seed: int = 0, budget: int = DEFAULT_BUDGET, space: Space | None = None
         "seed": seed,
         "budget": budget,
         "strength": STRENGTH,
+        "build_on_runs": build_on_runs,
         "model": {key: model[key] for key in ("schema_version", "rules_version",
                                                "model_digest", "pinned_versions")},
         "base": model_json.BASE_TEST,
@@ -284,7 +317,8 @@ def plan(seed: int = 0, budget: int = DEFAULT_BUDGET, space: Space | None = None
             "p1": dict(sorted(statuses.items())),
             "p1_rejections_by_rule": dict(sorted(rules.items())),
             "p2": {"supported": roles["supported"], "probe": roles["probe"],
-                   "not_run": roles["not_run"]},
+                   "unsupported": roles["unsupported"], "not_run": roles["not_run"]},
+            "already_run": roles["supported"] if build_on_runs else 0,
             "executable": roles["supported"] + roles["probe"],
             "planned": len(kept),
             "allpairspy_rows": sum(source == "allpairspy" for _, source in rows),
