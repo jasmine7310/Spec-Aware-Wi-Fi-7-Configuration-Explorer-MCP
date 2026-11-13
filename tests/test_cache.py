@@ -186,10 +186,12 @@ class _Record:
     test_result = "PASS"
 
 
-def test_committed_runs_without_a_key_are_skipped(tmp_path):
-    db = Cache(tmp_path / "c.sqlite")
+def test_rebuild_indexes_exactly_the_committed_runs_that_recorded_a_key(tmp_path):
     from explorer.support import EVIDENCE_DIRS
-    assert db.rebuild(EVIDENCE_DIRS) == 0    # no committed run predates the cache yet
+    keyed = [m for d in EVIDENCE_DIRS for m in Path(d).rglob("manifest.json")
+             if json.loads(m.read_text()).get("explorer_plan", {}).get("explorer", {}).get("cache_key")]
+    db = Cache(tmp_path / "c.sqlite")
+    assert db.rebuild(EVIDENCE_DIRS) == len(keyed)    # older runs (no key) are skipped
     db.close()
 
 

@@ -39,6 +39,7 @@ docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: clie
 .venv/bin/python scripts/build_model_json.py                 # regenerate model.json
 .venv/bin/python scripts/plan_campaign.py --seed 0           # campaign_plan.json + pairwise_coverage.json
 .venv/bin/python scripts/smoke_dimensions.py --check         # validate the dimension smoke candidates
+.venv/bin/python scripts/run_campaign.py                     # run campaign_plan.json (Docker; slow)
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
@@ -106,6 +107,11 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   with both denominators, covered only by real runs. `scripts/plan_campaign.py --seed N`
   writes `campaign_plan.json` and `pairwise_coverage.json`; a test fails if the committed
   plan no longer matches its seed and the current model.
+- `explorer.campaign`: runs a plan (#68). `run(plan, id, cache=Cache())` re-checks each
+  candidate, runs it through the cache (reruns once on `SETUP_FAIL` / `TIMEOUT`, never on
+  `REJECTED`); `pruning_counts` / `rejected_cases` build the funnel and table.
+  `scripts/run_campaign.py` writes `campaigns/<id>/` and `pruning_counts.json`; then
+  regenerate the plan files so coverage counts the new runs.
 - `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
   `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
   on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per

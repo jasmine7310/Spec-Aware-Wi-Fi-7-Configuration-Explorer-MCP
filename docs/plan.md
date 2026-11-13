@@ -19,22 +19,22 @@ every rejection says which stage and which sourced rule rejected it:
 | P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | ✅ Settings model (`model.Config`), action model (`model.Candidate`: config + ordered actions) and readable `P0.*` errors (`validate.parse_candidate`) |
 | P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | ✅ Rule registry (`rules.yaml` + `rules.load_rules()`); 7 security/setting rules coded (`validate.run_p1_checks`, applied to hostap tests by `run_hwsim_test`; `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` still `draft`), all 9 action-order rules (`validate.check_action_order`) and 3 open questions that give `SPEC_UNDETERMINED`, chained by `validate.validate_candidate` |
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | 🟡 `support.check_support`: `SUPPORTED` for an exact match to a tested scenario or to a committed legal adapter run on the pinned commits; otherwise `UNRESOLVED` with per-value run evidence and `all_values_evidenced` (a support probe), plus recorded refusals (#80) |
-| – | Campaign planner | Which legal, runnable candidates cover every pair of admitted values? | 🟡 Plan built (`planner.plan`: `campaign_plan.json`, `pairwise_coverage.json`); running it and the experiment cache aren't built yet |
+| – | Campaign planner and runner | Which legal, runnable candidates cover every pair of admitted values, and what happens when they run? | ✅ `planner.plan` (`campaign_plan.json`, `pairwise_coverage.json`), `cache.run_cached`, `campaign.run` (`campaigns/`, `pruning_counts.json`). Not over MCP yet |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()`; any candidate the adapter supports runs through `adapter.run_candidate()` (ACCEPTED / REJECTED / SETUP_FAIL / TIMEOUT) |
 | P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
 | – | MCP server | Lets the agent use all of the above in plain English | 🟡 `get_model`, `validate_candidate` (P0 + P1 + basic P2, no guest), `explain_rule` (full registry entry behind any finding) `run_hwsim_test` (runs an approved hostap test; one that breaks a modeled rule only as a labeled negative experiment) and `run_candidate` (runs any candidate the adapter supports, after validating it, with the same negative-experiment rule). `get_model` also reports `model.json`'s versions and admitted dimensions. Campaign tools are "Expose campaign over MCP" (not built yet); contrast tools come with P4 |
 
 Weeks 1–2 covered P0, P1, basic P2/P3 and MCP (Checkpoint 1). Week 3 adds the admitted
 dimensions, `model.json`, P2 support probes, the candidate adapter and the campaign plan;
-the ConfigSpace encoding and the experiment cache are done; running the campaign is still
-open.
+the ConfigSpace encoding, the experiment cache and the first campaign run (16 candidates,
+12 `ACCEPTED`, 4 `REJECTED`) are done.
 P4 (contrasts and minimization) is Weeks 4–5.
 
 ## Repo layout
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `config_space.py` (the static settings as a ConfigSpace space, each constraint tagged with its rule), `cache.py` (experiment cache: key, SQLite store, `run_cached`), `mcp_server.py` (MCP tools). `minimize.py` (Picire wrapper) is still a placeholder |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `config_space.py` (the static settings as a ConfigSpace space, each constraint tagged with its rule), `cache.py` (experiment cache: key, SQLite store, `run_cached`), `campaign.py` (runs a plan, the pruning funnel and rejected-cases table), `mcp_server.py` (MCP tools). `minimize.py` (Picire wrapper) is still a placeholder |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
 | `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
@@ -45,12 +45,14 @@ P4 (contrasts and minimization) is Weeks 4–5.
 | `docker/test_eht_client_bp.py` | Our `_client_bp` wrappers: hostap's tests with client beacon protection on |
 | `docker/test_explorer_candidate.py` | Our adapter test: runs one candidate's plan (from `adapter.build_plan`) with hostap's own helpers |
 | `scripts/build_model_json.py`, `scripts/plan_campaign.py` | Regenerate `model.json`, and `campaign_plan.json` + `pairwise_coverage.json` (`--seed N`, `--budget N`) |
+| `scripts/run_campaign.py` | Runs `campaign_plan.json` (each candidate in a fresh guest through the cache; `--id`, `--retries`) and writes `campaigns/<id>/` and `pruning_counts.json` |
 | `scripts/smoke_dimensions.py` | Runs the smoke candidates for the dimensions admitted through the adapter (`--check` validates only) |
 | `scripts/reproduce-scenarios.py` | Runs each rule-passing hostap scenario through the adapter and lists the facts that differ from its committed runs |
 | `runs/smoke/` | Runs showing each smoke-tested setting value executes (committed evidence; `surface_candidates.csv`'s `smoke_runs` column points here) |
 | `runs/anchors/` | Extra runs so each anchor family in `anchor_coverage.csv` has 3 independent passing runs (committed evidence) |
 | `runs/rejected/` | Runs of rule-passing candidates that hostapd / wpa_supplicant refused (P3 `REJECTED`), kept as labeled evidence of the refusal, never as smoke values (`runs/rejected/README.md`) |
-| `campaigns/` | Committed campaign runs (written by "Run ~20-candidate campaign"; none yet). Counted as P2 evidence |
+| `campaigns/` | Committed campaign runs, one folder per campaign (`campaigns/seed0-2026-11-13/`: run folders, `results.json`, `rejected_cases.csv`, `README.md`). Counted as P2 evidence |
+| `pruning_counts.json` | The latest campaign's funnel: enumerated → P0 → ConfigSpace / P1 → P2 → planned → P3 statuses, guest boots, cache hits, retries. Written by `scripts/run_campaign.py` |
 | `runs/cache.sqlite` | The experiment cache's index (git-ignored): run outcomes by cache key. The run folders are the evidence; `explorer.cache.Cache().rebuild()` re-indexes the committed ones |
 | `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
 | `docs/` | This plan; `references.md` (the standards, and the coverage matrix's legend); `research/` (the rule research `rules.yaml` is transcribed from); `dimensions.md` (below); Checkpoint 1's `demo.md` (script), `demo-transcript.md` and `demo-transcript-terminal.txt` (transcripts) and `checkpoint1-report.md` |
@@ -62,9 +64,6 @@ P4 (contrasts and minimization) is Weeks 4–5.
 | `pairwise_coverage.json` | Pairwise coverage with both denominators: feasible pairs after P0/P1 (modeled-admissible) and after P2 (executable), covered pairs (only candidates with a committed legal ACCEPTED run), planned pairs, and each infeasible pair with the rules that rule it out. Written with `campaign_plan.json` |
 | `model.json` | The machine-readable candidate space: P0 schema, admitted dimensions (typed values, smoke runs, rule IDs), constraints by rule ID, action catalog, pinned versions, `schema_version` / `rules_version` / `model_digest`. Generated by `scripts/build_model_json.py` from `explorer.model_json`; `tests/test_model_json.py` fails when it's out of date |
 | `anchor_coverage.csv` | The 4 scenario families (anchors): source test and helpers, modeled dimensions, real run IDs, observed signature and status (`IN_PROGRESS` until 3 passing runs with identical behavior signatures, then `PASS`). `tests/test_anchor_coverage.py` checks it |
-
-`pruning_counts.json` still sits in `src/` as a placeholder and should move to the repo
-root (as in the spec's layout) when it is first filled in.
 
 ## Decisions
 
@@ -290,7 +289,7 @@ on the board. Work lands on `week3-4` first; its issues close when it merges to 
 | Model parameter dependencies in ConfigSpace | Model | ✅ Done 2026-11-13. `explorer.config_space`: a ConfigSpace space over the 8 setting dimensions plus AP/client beacon protection; `SEC.SAE_PWE_NEEDS_SAE` as conditions, `SEC.MLD_CLIENT_COMMON_AKM` / `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` / `SEC.EHT_BEACON_PROT` as forbidden clauses, each tagged with its rule ID; the other coded setting rules documented as predicate-only, with the reason (Decisions, "How dependencies are represented"). `tests/test_config_space.py` checks all 2304 combinations: ConfigSpace and P1 agree on the verdict (144 legal) and on the rule IDs, and samples from ConfigSpace pass P1; #76 reuses it. `model.json`'s `configspace` section records the encoding, and the planner's funnel shows ConfigSpace pruning the same 3456 assignments as P1 |
 | Audit rules against clause text | Rules | ⬜ Not started (unassigned) |
 | Experiment cache | Search | ✅ Done 2026-11-13. `explorer.cache`: `key_parts` / `cache_key` (candidate and plan, pinned commits, environment digest, schema version and `model_digest`, harness hash; Decisions, "Experiment cache"), a SQLite store (`runs/cache.sqlite`, git-ignored) and `run_cached`, which reuses only `ACCEPTED` / `REJECTED` outcomes and marks hits not independent. `adapter.run_candidate` records the key, context and timeout in each run's manifest, and `Cache.rebuild()` re-indexes committed runs. `tests/test_cache.py` (16 tests): the key changes with the candidate, environment, harness and model; hit and miss; failures rerun; forced repeats; rebuild |
-| Run ~20-candidate campaign | Search | ⬜ Assigned to Jasmine, not started. The plan is ready (`campaign_plan.json`, seed 0: 16 candidates); it also writes `pruning_counts.json` and the rejected-cases table |
+| Run ~20-candidate campaign | Search | ✅ Done 2026-11-13. `explorer.campaign` + `scripts/run_campaign.py` ran the 16 planned candidates (seed 0), each re-checked at launch and run once in a fresh guest through the cache: **12 `ACCEPTED`, 4 `REJECTED`, 0 `SETUP_FAIL`, 0 `TIMEOUT`**, 16 guest boots, no cache hits or retries (`campaigns/seed0-2026-11-13/`, repo `7609144`, WSL2). Finding: all 4 `REJECTED` combine `link_remove` with `DISABLE_MLD`; the pinned hostapd fails `DISABLE_MLD` because the removed link's interface is already disabled (`hostapd/ctrl_iface.c:3670-3708`, `src/ap/hostapd.c:3744-3757`). A recorded implementation refusal, not a Wi-Fi rule; whether P2 answers `UNSUPPORTED_IMPLEMENTATION` for that pair is for the team. `pruning_counts.json`: 4608 → 1152 pass P0/ConfigSpace/P1 (3456 pruned, no guest) → 1152 executable → 16 planned → 12 / 4. Coverage by real runs: 233 of 250 feasible pairs (0.932); the other 17 appear only in the `REJECTED` candidates. `tests/test_campaign.py` (8 tests) |
 | Expose campaign over MCP | MCP | ⬜ Not started (unassigned) |
 | Add the cipher to the behavior record | Simulation | ⬜ Not started (unassigned). Calibrate on `1794384666` (CCMP) / `1794384688` (GCMP-256), as `docs/dimensions.md` notes |
 | Update plan.md for Week 3 | Docs | 🟡 Updated 2026-11-13 for what's on `week3-4`: the Week 3 decisions (dimensions, dependency representation, campaign strategy), these rows, the deliverables and the coverage summary below, and CLAUDE.md. Done when it reflects `main` at the end of Week 3 |
@@ -302,11 +301,11 @@ on the board. Work lands on `week3-4` first; its issues close when it merges to 
 | ≥8 executable dimensions | ✅ 11 (`docs/dimensions.md`, `model.json`) |
 | `rules.yaml` + tests | ✅ 17 rules (two still `draft`) and 3 open questions; `tests/test_rules.py`, `test_validate.py`, `test_action_order.py` |
 | `model.json` | ✅ `scripts/build_model_json.py` |
-| `campaign_plan.json` | ✅ Planned (seed 0, 16 candidates), not run |
-| `pairwise_coverage.json` | ✅ 250 feasible pairs after P1 and after P2, 250 planned, 126 covered by committed runs |
-| `pruning_counts.json` (P0 → P1 → P2 → P3) | ⬜ "Run ~20-candidate campaign"; the P0 → P2 part is already in `campaign_plan.json`'s `funnel` |
-| Table of rejected cases with rule IDs | ⬜ "Run ~20-candidate campaign"; P1 rejections by rule and the infeasible pairs are in the plan files |
-| ~20 distinct legal uncached runs | ⬜ "Run ~20-candidate campaign" (the admitted model needs 16 for full pairwise coverage) |
+| `campaign_plan.json` | ✅ Seed 0, 16 candidates; run as `campaigns/seed0-2026-11-13/` |
+| `pairwise_coverage.json` | ✅ 250 feasible pairs after P1 and after P2, 250 planned, 233 covered by committed runs |
+| `pruning_counts.json` (P0 → P1 → P2 → P3) | ✅ 4608 → 1152 → 1152 → 16 planned → 12 `ACCEPTED` / 4 `REJECTED` |
+| Table of rejected cases with rule IDs | ✅ `campaigns/seed0-2026-11-13/rejected_cases.csv`: P1 rejections grouped by rule IDs (count and an example) and the 4 `REJECTED` runs with their reason |
+| ~20 distinct legal uncached runs | ✅ 16, all the admitted model needs for full pairwise coverage (the roadmap: if fewer, run all and report the denominator) |
 
 ### Coverage summary
 
@@ -318,7 +317,8 @@ on the board. Work lands on `week3-4` first; its issues close when it merges to 
   F06 all `PASS` (3 independent runs each with identical signatures).
 - **Pairwise** ([`pairwise_coverage.json`](../pairwise_coverage.json)): 261 pairs of
   admitted values, 11 infeasible under the modeled rules, 250 feasible after P1 and after P2;
-  126 covered by committed runs (0.504), 250 planned by the campaign plan.
+  233 covered by committed `ACCEPTED` runs (0.932; 126 before the campaign), 250 planned.
+  The 17 uncovered pairs appear only in the campaign's `REJECTED` candidates.
 
 ## Checkpoint 1
 
