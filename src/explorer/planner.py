@@ -6,7 +6,11 @@ dimension of ``model.json`` set to one of its labels (``model_json.apply``). It 
 once and checks every full assignment with the real stages, before any guest launches:
 
 - **P0**: the candidate parses (``model.Candidate``).
-- **P1**: today's modeled rules: setting rules, open questions and action order.
+- **ConfigSpace** (``explorer.config_space``, #63): the static settings' conditions and
+  forbidden clauses, each tagged with its rule. Recorded per assignment and counted in the
+  funnel; ``tests/test_config_space.py`` keeps it in agreement with the P1 predicates.
+- **P1**: today's modeled rules: setting rules, open questions and action order (the
+  ConfigSpace rules among them, plus what ConfigSpace leaves to predicates).
   ``SPEC_RULE_VIOLATION`` assignments are pruned with their rule IDs;
   ``SPEC_UNDETERMINED`` ones go to a separate review queue, never the default campaign.
 - **P2**: ``support.check_support``. Only ``SUPPORTED`` candidates and support probes
@@ -31,8 +35,9 @@ its ACCEPTED runs are passed in. Planned pairs are reported separately and never
 as covered. Each infeasible pair lists the rules that reject every assignment containing
 it.
 
-ConfigSpace (#63) isn't built yet; until it is, the legal domain comes from the coded P1
-predicates over the enumerated space, which is exact at this size.
+The planner enumerates rather than sampling ConfigSpace because the actions are part of
+each assignment and stay out of ConfigSpace (the roadmap's split), and because at this size
+enumeration is exact.
 """
 
 from __future__ import annotations
@@ -47,7 +52,7 @@ from functools import cached_property
 from allpairspy import AllPairs
 from pydantic import ValidationError
 
-from explorer import model_json
+from explorer import config_space, model_json
 from explorer.model import Candidate
 
 REPO_ROOT = model_json.REPO_ROOT
@@ -66,6 +71,7 @@ class Assessment:
     row: Row
     candidate: Candidate | None
     p0_errors: list[str] = field(default_factory=list)
+    configspace_rule_ids: list[str] = field(default_factory=list)   # [] = ConfigSpace-valid
     p1_status: str | None = None          # PASSES_MODELED_RULES / SPEC_RULE_VIOLATION / ...
     rule_ids: list[str] = field(default_factory=list)
     p2_status: str | None = None          # SUPPORTED / UNRESOLVED
@@ -103,6 +109,14 @@ class Space:
     def choices(self, row: Row) -> dict[str, str]:
         return dict(zip(self.names, row))
 
+    def static(self, row: Row) -> dict[str, str]:
+        """The row's ConfigSpace hyperparameter values: its setting dimensions, and the
+        base's fixed settings (beacon protection on at both ends)."""
+        hps = config_space.hyperparameter_values()
+        values = {name: label for name, label in self.choices(row).items() if name in hps}
+        values.update({name: "1" for name in config_space.FIXED_SETTINGS})
+        return values
+
     def assess(self, row: Row) -> Assessment:
         from explorer.support import check_support
         from explorer.validate import (check_action_order, find_undetermined, p1_status,
@@ -114,7 +128,8 @@ class Space:
         findings = (run_p1_checks(candidate.config) + find_undetermined(candidate.config)
                     + check_action_order(candidate))
         result = Assessment(row, candidate, p1_status=p1_status(findings),
-                            rule_ids=sorted({f.rule_id for f in findings}))
+                            rule_ids=sorted({f.rule_id for f in findings}),
+                            configspace_rule_ids=config_space.violations(self.static(row)))
         if result.legal:
             support = check_support(candidate)
             result.p2_status = support.status
@@ -259,6 +274,13 @@ def plan(seed: int = 0, budget: int = DEFAULT_BUDGET, space: Space | None = None
         "funnel": {
             "enumerated": len(space.assessments),
             "p0_well_formed": sum(a.candidate is not None for a in space.assessments.values()),
+            "configspace": {
+                "valid": sum(not a.configspace_rule_ids for a in space.assessments.values()),
+                "rejected": sum(bool(a.configspace_rule_ids) for a in space.assessments.values()),
+                "rejections_by_rule": dict(sorted(Counter(
+                    rule for a in space.assessments.values()
+                    for rule in a.configspace_rule_ids).items())),
+            },
             "p1": dict(sorted(statuses.items())),
             "p1_rejections_by_rule": dict(sorted(rules.items())),
             "p2": {"supported": roles["supported"], "probe": roles["probe"],

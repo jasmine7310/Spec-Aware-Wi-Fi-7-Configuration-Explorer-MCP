@@ -63,6 +63,16 @@ def test_rule_breaking_rows_are_pruned_with_their_rules(space):
     assert not b.legal and "SEC.MLD_CLIENT_COMMON_AKM" in b.rule_ids
 
 
+def test_configspace_prunes_what_p1_prunes(space, plan0):
+    # The static settings' ConfigSpace verdict matches P1 on every assignment (the actions
+    # here never break an AO rule), and the funnel shows it.
+    for a in space.assessments.values():
+        assert (not a.configspace_rule_ids) == a.legal, a.row
+        assert set(a.configspace_rule_ids) <= set(a.rule_ids), a.row
+    funnel = plan0["funnel"]
+    assert funnel["configspace"]["valid"] == funnel["p1"]["PASSES_MODELED_RULES"]
+
+
 # --- allpairspy's filter: partial rows ------------------------------------------
 
 def test_filter_keeps_a_partial_row_that_can_still_be_completed(space):

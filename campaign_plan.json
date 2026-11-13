@@ -1345,6 +1345,15 @@
   ],
   "funnel": {
     "allpairspy_rows": 8,
+    "configspace": {
+      "rejected": 3456,
+      "rejections_by_rule": {
+        "SEC.MLD_CLIENT_COMMON_AKM": 2304,
+        "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E": 128,
+        "SEC.SAE_PWE_NEEDS_SAE": 2560
+      },
+      "valid": 1152
+    },
     "cut_by_budget": 0,
     "enumerated": 4608,
     "executable": 1152,
@@ -1368,7 +1377,7 @@
   },
   "generated_by": "scripts/plan_campaign.py",
   "model": {
-    "model_digest": "sha256:38243e11b5fa3873a394bf527a40e30f943776e540b77f25df68b8bd665d8e70",
+    "model_digest": "sha256:698f8e8a6b393342af435515450d399dc02bc1cd9ffe473e2ebe78d06752f055",
     "pinned_versions": {
       "base_image": "ubuntu:24.04@sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c",
       "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",

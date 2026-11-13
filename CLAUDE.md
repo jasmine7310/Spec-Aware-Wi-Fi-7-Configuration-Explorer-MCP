@@ -89,6 +89,11 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `.venv/bin/python scripts/build_model_json.py` after changing the model, `rules.yaml`,
   `surface_candidates.csv`'s `smoke_runs` or the adapter's actions; a test fails until you
   do. `model_json.apply({dimension: label})` turns choices into a candidate.
+- `explorer.config_space`: the static settings as a ConfigSpace space (#63), each condition
+  and forbidden clause tagged with its rule ID (`constraints()`); `PREDICATE_ONLY` lists the
+  coded setting rules left to P1, with the reason. `is_valid(values)` / `violations(values)`
+  judge hyperparameter values; `tests/test_config_space.py` keeps it in agreement with P1, so
+  a new setting rule needs a constraint or a `PREDICATE_ONLY` entry.
 - `explorer.planner`: the pairwise campaign planner (#66). `Space()` enumerates the candidate
   space from `model.json` and assesses each assignment with P0, P1 and P2; `plan(seed,
   budget)` builds the allpairspy design (exact legal-completion filter, then a coverage

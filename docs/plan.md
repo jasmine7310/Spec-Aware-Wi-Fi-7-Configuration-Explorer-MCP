@@ -26,14 +26,15 @@ every rejection says which stage and which sourced rule rejected it:
 
 Weeks 1–2 covered P0, P1, basic P2/P3 and MCP (Checkpoint 1). Week 3 adds the admitted
 dimensions, `model.json`, P2 support probes, the candidate adapter and the campaign plan;
-running the campaign, the experiment cache and the ConfigSpace encoding are still open.
+the ConfigSpace encoding is done; running the campaign and the experiment cache are still
+open.
 P4 (contrasts and minimization) is Weeks 4–5.
 
 ## Repo layout
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `mcp_server.py` (MCP tools). `cache.py` (experiment cache) and `minimize.py` (Picire wrapper) are still placeholders |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `config_space.py` (the static settings as a ConfigSpace space, each constraint tagged with its rule), `mcp_server.py` (MCP tools). `cache.py` (experiment cache) and `minimize.py` (Picire wrapper) are still placeholders |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
 | `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
@@ -178,11 +179,20 @@ root (as in the spec's layout) when it is first filled in.
   is a rule in `rules.yaml` (kind `dependency`, `normative` or `guidance`, with its
   citations) coded in `validate.P1_CHECKS`; action order is the `AO.*` rules in
   `validate.check_action_order`. `model.json` lists them as constraints by rule ID with their
-  role (forbidden / dependency / action order). The ConfigSpace encoding ("Model parameter
-  dependencies in ConfigSpace") isn't built yet. Until it is, the planner applies the coded
-  predicates to the fully enumerated space (4608 assignments), which is exact at this size;
-  when it lands, its conditions and forbidden clauses carry the same rule IDs and an
-  agreement test keeps them in step with P1.
+  role (forbidden / dependency / action order). The static settings are also a ConfigSpace
+  space (`explorer.config_space`, "Model parameter dependencies in ConfigSpace"): one
+  categorical hyperparameter per setting dimension plus the two beacon-protection settings,
+  `SEC.SAE_PWE_NEEDS_SAE` as conditions (the `sae_pwe` settings are active only with an SAE
+  AKM), and `SEC.MLD_CLIENT_COMMON_AKM`, `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` and
+  `SEC.EHT_BEACON_PROT` as forbidden clauses, each tagged with its rule ID. What ConfigSpace
+  can't express or can't reach here stays a P1 predicate, with the reason recorded
+  (`config_space.PREDICATE_ONLY`): per-link AKM lists (`SEC.MLD_COMMON_SUITES`), plain SAE
+  (`SEC.EHT_SAE_AKM`, `SEC.EHT_SAE_H2E`), PMF off (P0), the link layout (P0), action order
+  and the open questions. An exhaustive test checks that ConfigSpace and P1 agree on every
+  combination of the hyperparameters (verdict and rule IDs). Actions stay out of ConfigSpace,
+  as the roadmap suggests. The planner still enumerates the space (actions are part of each
+  assignment, and enumeration is exact at 4608), and reports ConfigSpace's pruning in its
+  funnel.
 - **Campaign strategy** ("Campaign planner", 2026-11-13): pairwise (strength 2) over the
   admitted dimensions on the F02 base. P0, P1 and P2 run on every assignment before any guest
   launches; only P2-supported candidates and support probes are planned, and
@@ -265,7 +275,7 @@ on the board. Work lands on `week3-4` first; its issues close when it merges to 
 | P2 sees the new dimensions | Simulation | ✅ Done. `support.setting_values` now covers `ap_sae_pwe` and `ap_pairwise_cipher`, and `rekey_gtk_now` / `disable_enable_mld` as absent / present like `link_remove`, so their smoke runs are cited. Committed adapter runs count as action evidence (`support.adapter_runs`: passing runs whose recorded validation is `PASSES_MODELED_RULES`), listed before hostap-test runs. A GCMP-256 candidate cites `1794384688`, DISABLE/ENABLE_MLD `1794384702`, `rekey_gtk_now` `1794384695`. Merged into `week3-4` with #88: `sta_sae_pwe` added too, `ap_sae_pwe=1` cites `1794548583`, and a test makes every model field reach P2 (an admitted dimension or a fixed setting), so a new field can't slip past it. The rejected run in `runs/rejected/` is never cited as evidence |
 | P2 for untested combinations | Simulation | ✅ Decided and built (Decisions). `all_values_evidenced` marks support probes, now also requiring a legal run for each fixed setting (e.g. `bss_transition` on has none); an exact match with a committed legal adapter run on the pinned commits and a compatible schema version is `SUPPORTED` (the #61 smoke candidates now are, e.g. F02 + GCMP-256 by `1794384688`, recorded under schema 1); recorded verdicts are re-checked against today's rules; `recorded_refusals` cites `runs/rejected/` runs no rule explains; `campaigns/` is in `EVIDENCE_DIRS`. Merged into `week3-4` after review (2026-11-13), with those fixes for #88 |
 | Campaign planner (allpairspy) | Search | ✅ Done 2026-11-13. `explorer.planner` enumerates the candidate space (F02 with each of `model.json`'s 11 dimensions set: 4608 assignments) and checks every one with P0, P1 and P2 before any guest launches: 1152 pass the modeled rules (3456 pruned: assignments rejected by `SEC.SAE_PWE_NEEDS_SAE` 2560, `SEC.MLD_CLIENT_COMMON_AKM` 2304, `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` 128; an assignment can break several), none is `SPEC_UNDETERMINED` (the review queue is empty), and all 1152 are executable (9 `SUPPORTED`, 1143 support probes). allpairspy builds the design with an exact filter (a partial row is rejected only when no executable completion exists); it stops after 8 rows covering 209 of the 250 feasible pairs, so the planner checks coverage itself and tops it up greedily: seed 0 plans 16 candidates (8 + 8, all new probes) covering all 250, within the budget of 20 (the roadmap's ~20: the admitted model needs fewer). `pairwise_coverage.json`: 261 pairs, 11 infeasible (each with its rules), 250 feasible after P1 and after P2, 126 already covered by committed runs (0.504), 250 planned. `scripts/plan_campaign.py` writes both files; `tests/test_planner.py` (19 tests) covers the filter, reproducibility, P2 filtering, the review queue and coverage counting. ConfigSpace ("Model parameter dependencies in ConfigSpace") isn't used yet: the legal domain is the coded P1 rules over the enumerated space, exact at this size |
-| Model parameter dependencies in ConfigSpace | Model | ⬜ Assigned to Jasmine, not started. Until it lands, `model.json` and the planner use the coded P1 rules (Decisions, "How dependencies are represented") |
+| Model parameter dependencies in ConfigSpace | Model | ✅ Done 2026-11-13. `explorer.config_space`: a ConfigSpace space over the 8 setting dimensions plus AP/client beacon protection; `SEC.SAE_PWE_NEEDS_SAE` as conditions, `SEC.MLD_CLIENT_COMMON_AKM` / `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` / `SEC.EHT_BEACON_PROT` as forbidden clauses, each tagged with its rule ID; the other coded setting rules documented as predicate-only, with the reason (Decisions, "How dependencies are represented"). `tests/test_config_space.py` checks all 2304 combinations: ConfigSpace and P1 agree on the verdict (144 legal) and on the rule IDs, and samples from ConfigSpace pass P1; #76 reuses it. `model.json`'s `configspace` section records the encoding, and the planner's funnel shows ConfigSpace pruning the same 3456 assignments as P1 |
 | Audit rules against clause text | Rules | ⬜ Not started (unassigned) |
 | Experiment cache | Search | ⬜ Not started (unassigned). "Run ~20-candidate campaign" needs it |
 | Run ~20-candidate campaign | Search | ⬜ Assigned to Jasmine, not started. The plan is ready (`campaign_plan.json`, seed 0: 16 candidates); it also writes `pruning_counts.json` and the rejected-cases table |

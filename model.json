@@ -668,8 +668,98 @@
     "type": "object"
   },
   "configspace": {
-    "issue": "#63: encode the static settings' conditions and forbidden clauses in ConfigSpace, tagged with these rule IDs",
-    "status": "not built yet"
+    "agreement": "tests/test_config_space.py: ConfigSpace and the P1 predicates agree on every combination of these hyperparameters, verdict and rule IDs",
+    "constraints": [
+      {
+        "encodes": "ap_sae_pwe only when ap_akm in ['SAE-EXT-KEY']",
+        "kind": "condition",
+        "rule_id": "SEC.SAE_PWE_NEEDS_SAE"
+      },
+      {
+        "encodes": "sta_sae_pwe only when sta_akm in ['SAE-EXT-KEY']",
+        "kind": "condition",
+        "rule_id": "SEC.SAE_PWE_NEEDS_SAE"
+      },
+      {
+        "encodes": "ap_akm=SAE-EXT-KEY and sta_akm=OWE is forbidden",
+        "kind": "forbidden",
+        "rule_id": "SEC.MLD_CLIENT_COMMON_AKM"
+      },
+      {
+        "encodes": "ap_akm=OWE and sta_akm=SAE-EXT-KEY is forbidden",
+        "kind": "forbidden",
+        "rule_id": "SEC.MLD_CLIENT_COMMON_AKM"
+      },
+      {
+        "encodes": "ap_sae_pwe=1 and sta_sae_pwe=unset is forbidden",
+        "kind": "forbidden",
+        "rule_id": "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E"
+      },
+      {
+        "encodes": "ap_beacon_protection=0 is forbidden",
+        "kind": "forbidden",
+        "rule_id": "SEC.EHT_BEACON_PROT"
+      },
+      {
+        "encodes": "sta_beacon_protection=0 is forbidden",
+        "kind": "forbidden",
+        "rule_id": "SEC.EHT_BEACON_PROT"
+      }
+    ],
+    "hyperparameters": {
+      "ap_akm": [
+        "SAE-EXT-KEY",
+        "OWE"
+      ],
+      "ap_beacon_protection": [
+        "1",
+        "0"
+      ],
+      "ap_gtk_rekey_interval": [
+        "unset",
+        "5"
+      ],
+      "ap_link_indicate_disabled": [
+        "0",
+        "1"
+      ],
+      "ap_pairwise_cipher": [
+        "CCMP",
+        "GCMP-256"
+      ],
+      "ap_ptk_rekey_interval": [
+        "unset",
+        "5"
+      ],
+      "ap_sae_pwe": [
+        "unset",
+        "1",
+        "2"
+      ],
+      "sta_akm": [
+        "SAE-EXT-KEY",
+        "OWE"
+      ],
+      "sta_beacon_protection": [
+        "1",
+        "0"
+      ],
+      "sta_sae_pwe": [
+        "unset",
+        "1",
+        "2"
+      ]
+    },
+    "predicate_only": {
+      "AO.*": "action order: actions stay out of ConfigSpace; validate.check_action_order",
+      "P0 link layout": "at most two links on different channels: model.ApConfig's validators",
+      "SEC.EHT_SAE_AKM": "plain SAE (AKM 8) isn't an admitted value; P1 checks other candidates",
+      "SEC.EHT_SAE_H2E": "fires only with plain SAE, which isn't an admitted value; P1 checks it",
+      "SEC.MLD_COMMON_SUITES": "per-link AKM lists and pairwise ciphers, compared by intersection; categorical hyperparameters can't express list intersection. In this space every link gets the same AKM and cipher (model_json.apply), so it can't fire here; P1 checks it",
+      "SEC.PMF": "PMF off isn't a value P0 accepts; nothing for ConfigSpace to forbid",
+      "UND.*": "open questions (SPEC_UNDETERMINED): validate.find_undetermined"
+    },
+    "status": "built (explorer.config_space)"
   },
   "constraints": [
     {
@@ -1185,7 +1275,7 @@
     }
   ],
   "generated_by": "scripts/build_model_json.py",
-  "model_digest": "sha256:38243e11b5fa3873a394bf527a40e30f943776e540b77f25df68b8bd665d8e70",
+  "model_digest": "sha256:698f8e8a6b393342af435515450d399dc02bc1cd9ffe473e2ebe78d06752f055",
   "not_admitted": [
     {
       "kind": "config",

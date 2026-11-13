@@ -26,8 +26,9 @@ file's own metadata, so recording a new run doesn't change it; changing a value,
 or a pinned version does. Run records carry it (``adapter.run_metadata``) and the
 experiment cache (#67) can key on it.
 
-The ConfigSpace encoding of the static settings is issue #63; until it lands, the
-dependencies and forbidden combinations are the coded P1 rules, listed by ID.
+``configspace`` summarizes the ConfigSpace encoding of the static settings
+(``explorer.config_space``, issue #63): its hyperparameters, each condition and forbidden
+clause with the rule it encodes, and the rules left to P1 predicates, with the reason.
 """
 
 from __future__ import annotations
@@ -200,6 +201,11 @@ def _actions() -> list[dict]:
     return sorted(out, key=lambda a: a["action"])
 
 
+def _configspace_summary() -> dict:
+    from explorer.config_space import summary  # config_space imports this module
+    return summary()
+
+
 def digest(model: dict) -> str:
     """sha256 over what defines the space: the model without its evidence (smoke run
     IDs), its metadata and the digest itself."""
@@ -238,9 +244,7 @@ def build() -> dict:
         "constraints": constraints,
         "open_questions": questions,
         "actions": _actions(),
-        "configspace": {"status": "not built yet",
-                        "issue": "#63: encode the static settings' conditions and forbidden "
-                                 "clauses in ConfigSpace, tagged with these rule IDs"},
+        "configspace": _configspace_summary(),
     }
     model["model_digest"] = digest(model)
     return model
