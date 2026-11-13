@@ -36,6 +36,9 @@ docker build --progress=plain -t wifi7-env docker/           # simulation image 
 docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in a fresh UML guest
 docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: client beacon protection on
 .venv/bin/python -m explorer.mcp_server                      # MCP server over stdio
+.venv/bin/python scripts/build_model_json.py                 # regenerate model.json
+.venv/bin/python scripts/plan_campaign.py --seed 0           # campaign_plan.json + pairwise_coverage.json
+.venv/bin/python scripts/smoke_dimensions.py --check         # validate the dimension smoke candidates
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
