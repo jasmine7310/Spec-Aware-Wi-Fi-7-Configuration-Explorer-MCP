@@ -86,9 +86,11 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `.venv/bin/python scripts/build_model_json.py` after changing the model, `rules.yaml`,
   `surface_candidates.csv`'s `smoke_runs` or the adapter's actions; a test fails until you
   do. `model_json.apply({dimension: label})` turns choices into a candidate.
-- `explorer.support.check_support(candidate)`: the P2 check. `SUPPORTED` only for an exact
-  match to a tested scenario with passing committed runs; otherwise `UNRESOLVED` with the
-  evidence per value. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
+- `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
+  `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
+  on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
+  admitted dimension, legal runs per fixed setting and per action) and
+  `all_values_evidenced` (a support probe). `recorded_refusals` cites `runs/rejected/`. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
 
 ## Rules for agents
 
@@ -111,5 +113,6 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   was calibrated on), `runs/smoke/` (runs showing a setting value executes),
   `runs/anchors/` (extra runs so each anchor family has 3), `runs/rejected/` (runs of
   rule-passing candidates the implementation refused, kept as labeled refusals, never as
-  smoke values), `runs/hwsim-logs/` (git-ignored trials). Never commit trials as evidence.
+  smoke values), `campaigns/` (committed campaign runs, #68), `runs/hwsim-logs/`
+  (git-ignored trials). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

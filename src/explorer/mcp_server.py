@@ -178,10 +178,12 @@ STAGES = [
                      "applied by validate_candidate and explained by explain_rule. Every "
                      "rule's citations are checked, and they're all reviewed."),
     StageStatus(stage="P2 implementation support", implemented=True,
-                note="Basic: validate_candidate reports SUPPORTED only when a tested hostap "
-                     "scenario executes the candidate exactly (with its passing committed "
-                     "runs), otherwise UNRESOLVED with per-value run evidence. Nothing is "
-                     "UNSUPPORTED_IMPLEMENTATION without a recorded failure."),
+                note="Basic: validate_candidate reports SUPPORTED when a tested hostap "
+                     "scenario or a committed adapter run (pinned versions) executed the candidate "
+                     "exactly, otherwise UNRESOLVED with per-value run evidence; "
+                     "all_values_evidenced marks a support probe the campaign may run. "
+                     "Nothing is UNSUPPORTED_IMPLEMENTATION without a recorded failure "
+                     "(issue #80)."),
     StageStatus(stage="P3 execution", implemented=True,
                 note="run_hwsim_test runs one approved hostap hwsim test in a fresh "
                      "UML guest and returns its behavior record; run_candidate runs any "
@@ -312,10 +314,13 @@ def validate_candidate(candidate: dict[str, Any]) -> ValidationResult:
     full entry.
 
     A candidate that passes the modeled rules also gets p2, the implementation support
-    check: SUPPORTED with the test name and run IDs when a tested hostap scenario executes
-    it exactly (then run it with run_hwsim_test), otherwise UNRESOLVED with the committed
-    runs behind each of its values and the closest tests. UNRESOLVED isn't "unsupported";
-    it means no run shows this exact combination."""
+    check: SUPPORTED with the test name and run IDs when a tested hostap scenario executed
+    it exactly (run it with run_hwsim_test), or when a committed adapter run did on the
+    pinned versions (test explorer_candidate; run it with run_candidate). Otherwise
+    UNRESOLVED with the committed runs behind each of its values and the closest tests.
+    UNRESOLVED isn't "unsupported"; it means no run shows this exact combination. With
+    all_values_evidenced true, every value has a passing legal run: a support probe. A
+    value with a recorded refusal (runs/rejected/) is listed in recorded_refusals."""
     return validate.validate_candidate(candidate)
 
 
@@ -403,9 +408,9 @@ class CandidateRunReport(BaseModel):
     negative_experiment: bool
     """True when the candidate doesn't pass the modeled rules and was run on request anyway."""
     p2: SupportResult | None
-    """validate_candidate's P2 result: SUPPORTED means a tested hostap scenario does exactly
-    this; UNRESOLVED means this run is a support probe. None when the modeled rules
-    didn't pass the candidate."""
+    """validate_candidate's P2 result: SUPPORTED means a tested hostap scenario or a
+    committed adapter run did exactly this; UNRESOLVED with all_values_evidenced means
+    this run is a support probe. None when the modeled rules didn't pass the candidate."""
     p3_status: adapter.P3Status
     """ACCEPTED (every action carried out), REJECTED (hostapd/wpa_supplicant refused a
     setup step or action; see reason), SETUP_FAIL or TIMEOUT (nothing said about the
