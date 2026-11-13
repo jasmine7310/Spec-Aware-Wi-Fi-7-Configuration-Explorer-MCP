@@ -7,8 +7,8 @@ Only committed evidence counts. The rules below were decided in issue #80
   ``_client_bp`` wrappers) sets up and does, configuration and actions alike, and that
   test has at least one passing committed run (``run_hwsim_test`` can run it); or it is
   exactly the candidate of a committed adapter run that passed the modeled rules and was
-  ACCEPTED on the pinned hostap and kernel commits with the current model schema
-  (``run_candidate`` can run it again). One such run is enough for P2; anchors and
+  ACCEPTED on the pinned hostap and kernel commits under a compatible model schema
+  (``model.COMPATIBLE_SCHEMA_VERSIONS``; ``run_candidate`` can run it again). One such run is enough for P2; anchors and
   contrasts need 3/3. The local image ID isn't compared: it changes on every rebuild,
   even from cache.
 - ``UNRESOLVED``: no test or adapter run executes this exact candidate. The result lists
@@ -19,19 +19,23 @@ Only committed evidence counts. The rules below were decided in issue #80
   runs of the hostap tests that perform it. Only runs that pass the modeled rules count:
   hostap tests that break one (the plain-SAE baseline, hostap's originals with the
   client's beacon protection off) are negative experiments, and an adapter run counts only
-  if its recorded validation is PASSES_MODELED_RULES. Rejected runs (``runs/rejected/``)
-  are never evidence. Settings that aren't admitted dimensions (``fixed_values``: AP PMF
+  if its recorded validation is PASSES_MODELED_RULES and its candidate still passes the
+  modeled rules today (re-checked: a rule can be added after a run, as #88 did). Rejected
+  runs (``runs/rejected/``) are never evidence. Settings that aren't admitted dimensions (``fixed_values``: AP PMF
   and beacon protection, bss_transition, the client's beacon protection and SAE groups,
   the link layout) count only with a legal committed run that used the same value.
   Values that each ran somewhere don't prove their combination runs.
   ``all_values_evidenced`` says whether every value has such a run: the campaign may run
   those candidates as labeled support probes, and only those. When a value has no run but
-  a committed rejected run (``runs/rejected/``) involves it, ``recorded_refusals`` cites it.
+  a committed rejected run (``runs/rejected/``) whose candidate still passes the modeled
+  rules involves it, ``recorded_refusals`` cites it. A rejected run that a rule now
+  explains isn't an implementation refusal, so it isn't cited.
 - ``UNSUPPORTED_IMPLEMENTATION``: needs real evidence that the pinned versions can't do
   it, such as a run that failed to set up. We have none recorded, so nothing returns
   this yet; it is never inferred from missing evidence. A refusal caused by a gap in our
-  model (e.g. ``ap_sae_pwe=1``, which needs the client's ``sae_pwe``, #88) isn't one: such
-  values are left out of the admitted values instead.
+  model isn't one: the gap gets modeled instead. ``ap_sae_pwe=1`` with the client's
+  ``sae_pwe`` unset (``runs/rejected/1794384673``) was such a gap; since #88 the client's
+  ``sae_pwe`` is a dimension and ``SEC.SAE_H2E_ONLY_NEEDS_STA_H2E`` rejects that pairing at P1.
 
 Runs in ``runs/hwsim-logs/`` are trials and never count.
 """
@@ -47,7 +51,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ValidationError
 
-from explorer.model import SCHEMA_VERSION, Candidate
+from explorer.model import COMPATIBLE_SCHEMA_VERSIONS, Candidate
 from explorer.scenarios import TEST_CANDIDATES
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -160,7 +164,8 @@ def _interval(seconds: int | None) -> str:
     return "unset" if seconds is None else str(seconds)
 
 
-# hostapd sae_pwe values, as surface_candidates.csv labels them.
+# sae_pwe values (hostapd and wpa_supplicant number them alike), as surface_candidates.csv
+# labels them.
 _SAE_PWE_LABEL = {None: "unset", "hash_to_element": "1", "both": "2"}
 
 # Actions admitted as absent / present dimensions (docs/dimensions.md); their smoke runs
@@ -179,6 +184,7 @@ def setting_values(candidate: Candidate) -> list[tuple[str, str]]:
     for akm in sta.akms:
         values.append(("sta_akm", akm))
     values.append(("ap_sae_pwe", _SAE_PWE_LABEL[ap.sae_pwe]))
+    values.append(("sta_sae_pwe", _SAE_PWE_LABEL[sta.sae_pwe]))
     for cipher in dict.fromkeys(link.pairwise_cipher for link in ap.links):
         values.append(("ap_pairwise_cipher", cipher))
     values.append(("ap_ptk_rekey_interval", _interval(ap.ptk_rekey_interval_s)))
@@ -229,18 +235,22 @@ def fixed_values(candidate: Candidate) -> list[tuple[str, str]]:
 def adapter_runs(evidence_dirs=EVIDENCE_DIRS) -> dict[str, RecordedRun]:
     """Run ID -> what a committed adapter run recorded, for runs that count as evidence.
 
-    Only runs of the adapter test (explorer.adapter) that passed and whose recorded
-    validation (``explorer_plan.explorer`` in the manifest) is PASSES_MODELED_RULES:
-    a negative experiment or a REJECTED run is never evidence that a value executes."""
+    Only runs of the adapter test (explorer.adapter) that passed, whose recorded
+    validation (``explorer_plan.explorer`` in the manifest) is PASSES_MODELED_RULES, and
+    whose candidate still parses and passes today's modeled rules: a negative experiment
+    or a REJECTED run is never evidence that a value executes."""
     from explorer.adapter import ADAPTER_TEST  # explorer.adapter imports explorer.validate
     found: dict[str, RecordedRun] = {}
     for manifest in _manifests(evidence_dirs):
         meta = manifest.get("explorer_plan", {}).get("explorer")
         passed = any(r["test"] == ADAPTER_TEST and r["result"] == "PASS"
                      for r in manifest["results"])
-        if (passed and meta and not meta["negative_experiment"]
+        if not (passed and meta and not meta["negative_experiment"]
                 and meta["validation"]["status"] == "PASSES_MODELED_RULES"):
-            found[manifest["run_id"]] = _recorded(manifest)
+            continue
+        recorded = _recorded(manifest)
+        if (parsed := _parse(recorded)) is not None and passes_current_rules(parsed):
+            found[manifest["run_id"]] = recorded
     return found
 
 
@@ -291,10 +301,21 @@ def _parse(recorded: RecordedRun) -> Candidate | None:
 
 
 def _on_pinned_versions(recorded: RecordedRun) -> bool:
+    """Run on the pinned hostap and kernel commits, under a schema version whose
+    candidates still mean the same today (model.COMPATIBLE_SCHEMA_VERSIONS)."""
     pinned = pinned_commits()
     return (recorded.hostap_commit == pinned["hostap_commit"]
             and recorded.kernel_commit == pinned["kernel_commit"]
-            and recorded.schema_version == SCHEMA_VERSION)
+            and recorded.schema_version in COMPATIBLE_SCHEMA_VERSIONS)
+
+
+def passes_current_rules(candidate: Candidate) -> bool:
+    """Whether the candidate passes today's modeled rules (P1 settings, open questions
+    and action order). A recorded verdict can be out of date: rules are added after runs."""
+    from explorer.validate import (check_action_order, find_undetermined, p1_status,
+                                   run_p1_checks)
+    return p1_status(run_p1_checks(candidate.config) + find_undetermined(candidate.config)
+                     + check_action_order(candidate)) == "PASSES_MODELED_RULES"
 
 
 def _key(step: dict) -> tuple[str, str]:
@@ -380,8 +401,8 @@ def recorded_refusals(candidate: Candidate,
     missing = [(v.candidate, v.value) for v in values if not v.run_ids]
     refused: dict[tuple[str, str], list[str]] = {}
     for run, recorded in sorted(_cached_rejected_runs().items()):
-        if (rejected := _parse(recorded)) is None:
-            continue
+        if (rejected := _parse(recorded)) is None or not passes_current_rules(rejected):
+            continue  # older model, or a modeled rule now explains the refusal
         involved = (set(setting_values(rejected)) | set(fixed_values(rejected))
                     | {action_key(s) for s in rejected.actions})
         for key in missing:

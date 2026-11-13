@@ -119,14 +119,19 @@ root (as in the spec's layout) when it is first filled in.
     labeled **support probes**; `pruning_counts.json` splits P2 into supported / probe /
     not run (#66).
   - An exact match (config and ordered actions) with a committed adapter run that passed
-    the modeled rules, on the pinned hostap and kernel commits and the current schema
-    version, is `SUPPORTED`. The image ID isn't compared (it changes on every rebuild).
-    One ACCEPTED run is enough for P2; anchors and contrasts need 3/3. A cache hit isn't a
-    new run. `campaigns/` counts as committed evidence.
-  - A refusal caused by our model (`ap_sae_pwe=1`, which needs the client's `sae_pwe`,
-    #88) isn't `UNSUPPORTED_IMPLEMENTATION`: the value stays out of the admitted values,
-    and P2 only cites the run in `recorded_refusals`. `UNSUPPORTED_IMPLEMENTATION` needs
-    a REJECTED run showing the pinned versions really can't do something.
+    the modeled rules, on the pinned hostap and kernel commits and a compatible schema
+    version (`model.COMPATIBLE_SCHEMA_VERSIONS`: versions whose recorded candidates still
+    mean the same, e.g. schema 1 runs under schema 2), is `SUPPORTED`. The image ID isn't
+    compared (it changes on every rebuild). One ACCEPTED run is enough for P2; anchors and
+    contrasts need 3/3. A cache hit isn't a new run. `campaigns/` counts as committed
+    evidence. A recorded verdict is re-checked against today's rules: a run whose candidate
+    a later rule rejects isn't evidence.
+  - A refusal caused by our model isn't `UNSUPPORTED_IMPLEMENTATION`: the gap gets modeled.
+    `ap_sae_pwe=1` with the client's `sae_pwe` unset was one; since #88 the client's
+    `sae_pwe` is a dimension and `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` rejects that pairing at
+    P1, so P2 no longer cites that run. `recorded_refusals` cites only rejected runs whose
+    candidate still passes the modeled rules. `UNSUPPORTED_IMPLEMENTATION` needs a REJECTED
+    run showing the pinned versions really can't do something.
   - A probe that comes back REJECTED, SETUP_FAIL or TIMEOUT is counted at P3, never
     dropped. SETUP_FAIL / TIMEOUT say nothing about the candidate: rerun once, never file
     under `runs/rejected/` or use as evidence (#68). Probe pairs count as executed
@@ -213,8 +218,8 @@ on the board. Rows are added as work lands.
 | Spec coverage matrix | Rules | ✅ `spec_coverage.csv`, 38 rows checked by `tests/test_spec_coverage.py`. Coverage: **22 RULE, 1 UND, 6 OUT_OF_SCOPE, 9 TODO** (802.11be: 9 / 0 / 4 / 4; 802.11-2024: 5 / 0 / 0 / 3; WFA: 8 / 1 / 2 / 2). Rows reuse the citations already checked in the PDFs, except the two 802.11-2024 rows added for the client's `sae_pwe` (Table 9-131, §11.1.4.6), read by Claude and still to be checked by a person; the 9 TODO rows (802.11-2024 rekey / PMF clauses, the rest of 802.11be §12.6, §35.3.6, §35.3.7, §35.3.5.2, WFA §3.2 and Table 4) need someone with the PDFs to find the clause and page |
 | Model the client's `sae_pwe` | Model, Rules | ✅ Done 2026-11-12, **rule needs a person's check**. `StaConfig.sae_pwe` (unset / `hash_to_element` / `both`, P0 schema version 2), passed to the guest with `wpas.set("sae_pwe")` and reset afterwards. New P1 dependency rule `SEC.SAE_H2E_ONLY_NEEDS_STA_H2E` (**draft**): an AP with `sae_pwe=1` and only SAE AKMs advertises the SAE H2E-only BSS membership selector (802.11-2024 Table 9-131, value 123), so the client needs `sae_pwe` 1 or 2; drafted from the PDF text (802.11-2024 Table 9-131 and §11.1.4.6, WFA Table 3) and the hostap lines, research in `docs/research/security-guidance.md`. `SEC.EHT_SAE_H2E` and `SEC.SAE_PWE_NEEDS_SAE` now also check the client's side. Smoke runs (all `ACCEPTED`, same signature as the base): `ap_sae_pwe=1` with the client's 1 (`1794548583`) or 2 (`1794548598`), and the client's 1 (`1794548609`) and 2 (`1794548623`) alone. So `ap_sae_pwe` gains the value 1 and `sta_sae_pwe` is an 11th dimension; the rejected run `1794384673` is now a P1 rejection. WFA guidance (not coded): for an EHT STA, Table 8 marks H2E Enabled (2) MAND and H2E Only (1) DISALLOW except in all-EHT networks |
 | Build `model.json` | Model | ✅ Done 2026-11-12. `model.json` at the repo root (placeholder `src/model.json` removed), built by `explorer.model_json` and written by `scripts/build_model_json.py`: P0 schema, the 11 admitted dimensions with typed values, smoke runs and rule IDs, the other rows as not admitted, every rule as a constraint (forbidden / dependency / action_order, coded or not), open questions, the action catalog (adapter support), pinned versions, `schema_version`, `rules_version` and `model_digest` (ignores smoke run IDs, so new evidence doesn't change it). `get_model` reports its versions and dimensions; adapter runs record `model_digest`; `tests/test_model_json.py` fails when the file is stale and applies every value to F02. `model_json.apply()` turns dimension choices into a candidate, for the planner. The ConfigSpace encoding is still to come ("Model parameter dependencies in ConfigSpace"); until then model.json lists the dependencies and forbidden combinations as the coded P1 rules |
-| P2 sees the new dimensions | Simulation | ✅ Done. `support.setting_values` now covers `ap_sae_pwe` and `ap_pairwise_cipher`, and `rekey_gtk_now` / `disable_enable_mld` as absent / present like `link_remove`, so their smoke runs are cited. Committed adapter runs count as action evidence (`support.adapter_runs`: passing runs whose recorded validation is `PASSES_MODELED_RULES`), listed before hostap-test runs. A GCMP-256 candidate cites `1794384688`, DISABLE/ENABLE_MLD `1794384702`, `rekey_gtk_now` `1794384695`; `ap_sae_pwe=1` has none (its REJECTED run in `runs/rejected/` is never cited). |
-| P2 for untested combinations | Simulation | ✅ Decided and built (Decisions). `all_values_evidenced` marks support probes, now also requiring a legal run for each fixed setting (e.g. `bss_transition` on has none); an exact match with a committed legal adapter run on the pinned commits is `SUPPORTED` (the #61 smoke candidates now are, e.g. F02 + GCMP-256 by `1794384688`); `recorded_refusals` cites `runs/rejected/`; `campaigns/` is in `EVIDENCE_DIRS` |
+| P2 sees the new dimensions | Simulation | ✅ Done. `support.setting_values` now covers `ap_sae_pwe` and `ap_pairwise_cipher`, and `rekey_gtk_now` / `disable_enable_mld` as absent / present like `link_remove`, so their smoke runs are cited. Committed adapter runs count as action evidence (`support.adapter_runs`: passing runs whose recorded validation is `PASSES_MODELED_RULES`), listed before hostap-test runs. A GCMP-256 candidate cites `1794384688`, DISABLE/ENABLE_MLD `1794384702`, `rekey_gtk_now` `1794384695`. Merged into `week3-4` with #88: `sta_sae_pwe` added too, `ap_sae_pwe=1` cites `1794548583`, and a test makes every model field reach P2 (an admitted dimension or a fixed setting), so a new field can't slip past it. The rejected run in `runs/rejected/` is never cited as evidence |
+| P2 for untested combinations | Simulation | ✅ Decided and built (Decisions). `all_values_evidenced` marks support probes, now also requiring a legal run for each fixed setting (e.g. `bss_transition` on has none); an exact match with a committed legal adapter run on the pinned commits and a compatible schema version is `SUPPORTED` (the #61 smoke candidates now are, e.g. F02 + GCMP-256 by `1794384688`, recorded under schema 1); recorded verdicts are re-checked against today's rules; `recorded_refusals` cites `runs/rejected/` runs no rule explains; `campaigns/` is in `EVIDENCE_DIRS`. Merged into `week3-4` after review (2026-11-13), with those fixes for #88 |
 
 ## Checkpoint 1
 

@@ -34,6 +34,13 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 # 2: StaConfig.sae_pwe added (issue #88).
 SCHEMA_VERSION = 2
 
+# Schema versions whose recorded candidates still mean what they did when they ran, read
+# with today's model. 1 -> 2 only added StaConfig.sae_pwe, whose default (unset) is what
+# every schema-1 run did, so a schema-1 run's candidate parses to the same experiment. A
+# version that changes what an existing field means must not be listed here. P2 uses this
+# to decide whether an old run still shows a candidate executes (support._on_pinned_versions).
+COMPATIBLE_SCHEMA_VERSIONS = frozenset({1, 2})
+
 # AKMs (hostapd wpa_key_mgmt / wpa_supplicant key_mgmt) used in test_eht.py.
 Akm = Literal["SAE", "SAE-EXT-KEY", "OWE", "WPA-PSK", "WPA-PSK-SHA256"]
 
