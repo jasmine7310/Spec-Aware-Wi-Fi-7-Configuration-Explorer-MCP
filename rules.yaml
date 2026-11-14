@@ -19,6 +19,11 @@
 # WFA citation's section, page and strength was checked against the PDF text on
 # 2026-11-02 by Claude (an AI agent); that doesn't replace a person's check.
 #
+# Each rule's examples are its plain-language description; the executable cases are in
+# rules/fixtures/<ID>.json (positive, negative and exception candidates with the exact
+# expected outcome, run by tests/test_rule_fixtures.py). A new rule or open question
+# needs a fixture file with at least one positive and one negative.
+#
 # status is "draft" until Michelle has finished checking the citations behind the rule's
 # research (docs/research/*.md). Reviewed on that basis on 2026-11-04; a hostap citation
 # marked "accepted by Michelle" was compared with the code by Claude and accepted by her.

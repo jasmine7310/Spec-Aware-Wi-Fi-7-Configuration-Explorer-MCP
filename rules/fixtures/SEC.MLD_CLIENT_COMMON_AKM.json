@@ -1,0 +1,171 @@
+{
+  "id": "SEC.MLD_CLIENT_COMMON_AKM",
+  "fixtures": [
+    {
+      "name": "client allows the common AKM",
+      "kind": "positive",
+      "source": "F02",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          }
+        ]
+      },
+      "expect": {
+        "status": "PASSES_MODELED_RULES",
+        "findings": []
+      }
+    },
+    {
+      "name": "client allows none of the common AKMs",
+      "kind": "negative",
+      "source": "rules.yaml disallowed: links offer SAE-EXT-KEY, client allows only OWE",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_RULE_VIOLATION",
+        "findings": [
+          "SEC.MLD_CLIENT_COMMON_AKM"
+        ]
+      }
+    },
+    {
+      "name": "links share no AKM",
+      "kind": "exception",
+      "source": "rules.yaml exception: skipped when the links share no AKM (SEC.MLD_COMMON_SUITES reports it)",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "SAE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_RULE_VIOLATION",
+        "findings": [
+          "SEC.MLD_COMMON_SUITES"
+        ]
+      }
+    }
+  ]
+}

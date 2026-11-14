@@ -1,0 +1,203 @@
+{
+  "id": "AO.ENABLE_AFTER_DISABLE",
+  "fixtures": [
+    {
+      "name": "hostap's disable / enable order",
+      "kind": "positive",
+      "source": "rules.yaml allowed (test_eht.py:728-760)",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "DISABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "ENABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
+          }
+        ]
+      },
+      "expect": {
+        "status": "PASSES_MODELED_RULES",
+        "findings": []
+      }
+    },
+    {
+      "name": "enable without a disable",
+      "kind": "negative",
+      "source": "rules.yaml disallowed",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "ENABLE_MLD"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_RULE_VIOLATION",
+        "findings": [
+          "AO.ENABLE_AFTER_DISABLE"
+        ]
+      }
+    },
+    {
+      "name": "reconnect while the AP MLD is disabled",
+      "kind": "negative",
+      "source": "rules.yaml disallowed",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "DISABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_RULE_VIOLATION",
+        "findings": [
+          "AO.ENABLE_AFTER_DISABLE"
+        ]
+      }
+    }
+  ]
+}

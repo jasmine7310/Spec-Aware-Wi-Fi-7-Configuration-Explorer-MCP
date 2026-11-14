@@ -1,0 +1,180 @@
+{
+  "id": "AO.ML_PROBE_STATE",
+  "fixtures": [
+    {
+      "name": "probe after a scan",
+      "kind": "positive",
+      "source": "rules.yaml allowed (test_eht_mld_discovery)",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "scan"
+          },
+          {
+            "action": "ml_probe_req"
+          }
+        ]
+      },
+      "expect": {
+        "status": "PASSES_MODELED_RULES",
+        "findings": []
+      }
+    },
+    {
+      "name": "probe without a scan",
+      "kind": "negative",
+      "source": "rules.yaml disallowed",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "ml_probe_req"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_RULE_VIOLATION",
+        "findings": [
+          "AO.ML_PROBE_STATE"
+        ]
+      }
+    },
+    {
+      "name": "probe while associated",
+      "kind": "negative",
+      "source": "rules.yaml exception text: hostap allows it, but it isn't admitted (decided 2026-11-03), so the rule refuses it",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "scan"
+          },
+          {
+            "action": "associate"
+          },
+          {
+            "action": "ml_probe_req"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_RULE_VIOLATION",
+        "findings": [
+          "AO.ML_PROBE_STATE"
+        ]
+      }
+    }
+  ]
+}

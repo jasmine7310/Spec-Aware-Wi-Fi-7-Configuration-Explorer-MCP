@@ -1,0 +1,141 @@
+{
+  "id": "UND.STA_STATE_WHILE_MLD_DISABLED",
+  "fixtures": [
+    {
+      "name": "disconnect while the AP MLD is disabled",
+      "kind": "positive",
+      "source": "hostap's order (test_eht.py:737-741)",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "DISABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "ENABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
+          },
+          {
+            "action": "rekey_gtk_now"
+          }
+        ]
+      },
+      "expect": {
+        "status": "PASSES_MODELED_RULES",
+        "findings": []
+      }
+    },
+    {
+      "name": "rekey while the AP MLD is disabled, no disconnect",
+      "kind": "negative",
+      "source": "test_eht.py:737-739: mac80211 may not notice the AP MLD going away",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "DISABLE_MLD"
+          },
+          {
+            "action": "rekey_gtk_now"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_UNDETERMINED",
+        "findings": [
+          "UND.STA_STATE_WHILE_MLD_DISABLED"
+        ]
+      }
+    }
+  ]
+}
