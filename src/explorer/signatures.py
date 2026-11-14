@@ -30,8 +30,14 @@ from pydantic import BaseModel, ConfigDict
 UNKNOWN: Literal["UNKNOWN"] = "UNKNOWN"
 Unknown = Literal["UNKNOWN"]
 
-# Station status fields worth keeping; values are hostap's own strings.
-STATUS_FIELDS = ("wpa_state", "key_mgmt", "pmf", "sae_group", "sae_h2e",
+# Station status fields worth keeping; values are hostap's own strings. The ciphers
+# (issue #89) are wpa_supplicant's STATUS lines (src/rsn_supp/wpa.c:5342-5343, 5368);
+# "BIP" is its name for AES-128-CMAC (src/common/wpa_common.c:3149-3150). Calibrated on
+# runs/smoke/1794384666 (CCMP / CCMP / BIP) and 1794384688 (GCMP-256 / GCMP-256 / BIP).
+# Like every status field they come from the last logged status, so a run that ends
+# disconnected has none of them.
+STATUS_FIELDS = ("wpa_state", "key_mgmt", "pairwise_cipher", "group_cipher",
+                 "mgmt_group_cipher", "pmf", "sae_group", "sae_h2e",
                  "bigtk_set", "wifi_generation", "ap_mld_addr")
 
 # Matches an event from one interface's own control socket, e.g.

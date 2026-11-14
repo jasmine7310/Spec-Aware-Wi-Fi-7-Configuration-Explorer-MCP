@@ -32,6 +32,9 @@ def test_baseline_record(run_id):
     assert record.station_status == {
         "wpa_state": "COMPLETED",
         "key_mgmt": "SAE",
+        "pairwise_cipher": "CCMP",
+        "group_cipher": "CCMP",
+        "mgmt_group_cipher": "BIP",
         "pmf": "2",
         "sae_group": "19",
         "sae_h2e": "1",
@@ -40,6 +43,29 @@ def test_baseline_record(run_id):
         "ap_mld_addr": "02:00:00:00:07:00",
     }
     assert record.packet_capture_bytes > 0
+
+
+# --- Ciphers (issue #89): calibrated on the #61 smoke runs ---------------------
+
+CCMP_RUN = RUNS / "smoke" / "1794384666"
+GCMP_256_RUN = RUNS / "smoke" / "1794384688"
+
+
+@pytest.mark.parametrize("run,pairwise", [(CCMP_RUN, "CCMP"), (GCMP_256_RUN, "GCMP-256")])
+def test_record_shows_the_negotiated_ciphers(run, pairwise):
+    status = extract_record(run).station_status
+    assert (status["pairwise_cipher"], status["group_cipher"]) == (pairwise, pairwise)
+    assert status["mgmt_group_cipher"] == "BIP"   # wpa_supplicant's name for AES-128-CMAC
+
+
+def test_cipher_tells_otherwise_identical_runs_apart():
+    # Same candidate except ap_pairwise_cipher: before #89 these signatures were equal.
+    ccmp, gcmp = (extract_record(r).signature() for r in (CCMP_RUN, GCMP_256_RUN))
+    differ = {k for k in ccmp if ccmp[k] != gcmp[k]}
+    assert differ == {"station_status"}
+    status_differ = {k for k in ccmp["station_status"]
+                     if ccmp["station_status"][k] != gcmp["station_status"][k]}
+    assert status_differ == {"pairwise_cipher", "group_cipher"}
 
 
 def test_baseline_signatures_match():
