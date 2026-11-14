@@ -832,7 +832,7 @@ rules:
   - id: AO.BSS_TM_NEEDS_BSS_TRANSITION
     title: A BSS TM request needs the AP to advertise BSS transition
     kind: harness
-    status: draft
+    status: reviewed
     applies_to: [bss_tm_link_removal_imminent, ap_bss_transition]
     meaning: >-
       bss_tm_link_removal_imminent is only admitted when the AP has bss_transition on, as in
@@ -846,29 +846,29 @@ rules:
         strength: code
         location: "tests/hwsim/test_eht.py:1438-1439"
         says: "test_eht_mld_bss_trans_mgmt_link_removal_imminent sets bss_transition=1 and mbo=1 before its BSS_TM_REQ."
-        checked: "Claude (AI agent), at the pinned commit, 2026-11-05"
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-05; accepted by Michelle, 2026-11-13"
       - doc: hostap
         strength: code
         location: "src/ap/wnm_ap.c:959-1063"
         says: "wnm_send_bss_tm_req() (the whole function) doesn't check bss_transition, so hostap sends the request either way."
-        checked: "Claude (AI agent), at the pinned commit, 2026-11-05; whole function re-checked 2026-11-13 (#64 audit)"
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-05; whole function re-checked 2026-11-13 (#64 audit); accepted by Michelle, 2026-11-13"
       - doc: hostap
         strength: code
         location: "src/ap/ctrl_iface_ap.c:1694-1861"
         says: "hostapd_ctrl_iface_bss_tm_req(), which handles BSS_TM_REQ, doesn't check bss_transition either before calling wnm_send_bss_tm_req()."
-        checked: "Claude (AI agent), at the pinned commit, 2026-11-13 (#64 audit)"
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-13 (#64 audit); accepted by Michelle, 2026-11-13"
       - doc: hostap
         strength: code
         location: "src/ap/ieee802_11_shared.c:393"
         says: "bss_transition sets the BSS Transition bit the AP advertises in its Extended Capabilities."
-        checked: "Claude (AI agent), at the pinned commit, 2026-11-05"
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-05; accepted by Michelle, 2026-11-13"
     examples:
       allowed:
         - "[associate, bss_tm_link_removal_imminent] with bss_transition on (eht_mld_bss_trans_mgmt_link_removal_imminent)"
       disallowed:
         - "[associate, bss_tm_link_removal_imminent] with bss_transition off"
     notes:
-      - "Draft until a person accepts its three hostap citations (the claim was re-checked in the #64 audit, 2026-11-13)."
+      - "Reviewed 2026-11-13: Michelle accepted its four hostap citations after the #64 audit re-checked them at the pinned commit. 'hostap sends the request either way' comes from reading the code path; no run has sent one with bss_transition off."
 
 
 # --- Open questions (SPEC_UNDETERMINED) -------------------------------------------
