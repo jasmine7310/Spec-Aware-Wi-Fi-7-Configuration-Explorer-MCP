@@ -36,6 +36,10 @@ docker build --progress=plain -t wifi7-env docker/           # simulation image 
 docker/run-test.sh eht_mld_sae_two_links                     # one hwsim test in a fresh UML guest
 docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: client beacon protection on
 .venv/bin/python -m explorer.mcp_server                      # MCP server over stdio
+.venv/bin/python scripts/build_model_json.py                 # regenerate model.json
+.venv/bin/python scripts/plan_campaign.py --seed 0           # campaign_plan.json + pairwise_coverage.json
+.venv/bin/python scripts/smoke_dimensions.py --check         # validate the dimension smoke candidates
+.venv/bin/python scripts/run_campaign.py                     # run campaign_plan.json (Docker; slow)
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
@@ -66,7 +70,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
-  ordered typed actions. `explorer.rules.load_rules()`: the P1 rule registry from
+  ordered typed actions; `model.SCHEMA_VERSION` goes up when the P0 schema changes.
+  `explorer.rules.load_rules()`: the P1 rule registry from
   `rules.yaml` (rules plus `UND.*` open questions). `explorer.validate`: `parse_candidate`
   (readable `P0.*` errors), `P1_CHECKS` / `run_p1_checks(config)` (coded rule checks by
   rule ID), `find_undetermined(config)`, `check_action_order(candidate)` (AO.* rules), all
@@ -79,9 +84,42 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   guest, P3 status `ACCEPTED` / `REJECTED` / `SETUP_FAIL` / `TIMEOUT`), `unsupported()`,
   `compare_signatures()`. MCP tool `run_candidate` validates first. Changing the adapter
   test means rebuilding the image.
-- `explorer.support.check_support(candidate)`: the P2 check. `SUPPORTED` only for an exact
-  match to a tested scenario with passing committed runs; otherwise `UNRESOLVED` with the
-  evidence per value. Never infer `UNSUPPORTED_IMPLEMENTATION` from missing evidence.
+- `model.json` (repo root): the machine-readable candidate space (P0 schema, admitted
+  dimensions with typed values and smoke runs, constraints by rule ID, actions, pinned
+  versions, `model_digest`), built by `explorer.model_json.build()`. Regenerate it with
+  `.venv/bin/python scripts/build_model_json.py` after changing the model, `rules.yaml`,
+  `surface_candidates.csv`'s `smoke_runs` or the adapter's actions; a test fails until you
+  do. `model_json.apply({dimension: label})` turns choices into a candidate.
+- `explorer.config_space`: the static settings as a ConfigSpace space (#63), each condition
+  and forbidden clause tagged with its rule ID (`constraints()`); `PREDICATE_ONLY` lists the
+  coded setting rules left to P1, with the reason. `is_valid(values)` / `violations(values)`
+  judge hyperparameter values; `tests/test_config_space.py` keeps it in agreement with P1, so
+  a new setting rule needs a constraint or a `PREDICATE_ONLY` entry.
+- `explorer.cache`: the experiment cache (#67). `run_cached(candidate, Cache())` runs a
+  candidate unless an `ACCEPTED` / `REJECTED` outcome is stored for its key (candidate +
+  plan, pinned commits, environment digest, model version, harness hash); a hit has
+  `independent=False`, so never count it as a repeat. `runs/cache.sqlite` is git-ignored;
+  `Cache().rebuild()` re-indexes committed runs from the key each run records.
+- `explorer.planner`: the pairwise campaign planner (#66). `Space()` enumerates the candidate
+  space from `model.json` and assesses each assignment with P0, P1 and P2; `plan(seed,
+  budget)` builds the allpairspy design (exact legal-completion filter, then a coverage
+  top-up) over executable candidates; `coverage(space, plan_rows, ran_rows)` counts pairs
+  with both denominators, covered only by real runs. `scripts/plan_campaign.py --seed N`
+  writes `campaign_plan.json` and `pairwise_coverage.json`; a test fails if the committed
+  plan no longer matches its seed and the current model.
+- `explorer.campaign`: runs a plan (#68). `run(plan, id, cache=Cache())` re-checks each
+  candidate, runs it through the cache (reruns once on `SETUP_FAIL` / `TIMEOUT`, never on
+  `REJECTED`); `pruning_counts` / `rejected_cases` build the funnel and table.
+  `scripts/run_campaign.py --id <id>` writes `campaigns/<id>/` (with the plan it ran) and
+  `pruning_counts.json`; then regenerate the plan files: plans build on committed runs,
+  so the next plan covers only what's left.
+- `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
+  `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
+  on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
+  admitted dimension, legal runs per fixed setting and per action) and
+  `all_values_evidenced` (a support probe). `recorded_refusals` cites `runs/rejected/` and
+  campaigns' `REJECTED` runs. `UNSUPPORTED_IMPLEMENTATION` only for an entry of
+  `IMPLEMENTATION_LIMITS` with recorded refusals; never infer it from missing evidence.
 
 ## Rules for agents
 
@@ -104,5 +142,7 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   was calibrated on), `runs/smoke/` (runs showing a setting value executes),
   `runs/anchors/` (extra runs so each anchor family has 3), `runs/rejected/` (runs of
   rule-passing candidates the implementation refused, kept as labeled refusals, never as
-  smoke values), `runs/hwsim-logs/` (git-ignored trials). Never commit trials as evidence.
+  smoke values), `campaigns/` (committed campaign runs, #68), `runs/hwsim-logs/`
+  (git-ignored trials), `runs/cache.sqlite` (the cache's git-ignored
+  index). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

@@ -41,7 +41,9 @@ that check). IEEE pages are "PDF p. N (printed p. M)"; the printed page is one l
 | `IEEE-802.11be-2024` | §35.3.5.2 | ML security: one PTKSA across setup links, a GTKSA / IGTKSA / BIGTKSA per link; different links use different group keys | PDF 512 (printed 511) |
 | `IEEE-802.11be-2024` | §35.3.6.3 | Removing affiliated AP(s): announcement, removal timer, and disassociation of a non-AP MLD whose only setup link is removed | PDF 515–518 (printed 514–517) |
 | `IEEE-802.11be-2024` | §35.3.7.5 | Affiliated AP link disablement / enablement: no individually addressed frames on a disabled link | PDF 533–535 (printed 532–534) |
+| `IEEE-802.11-2024` | §9.4.2.3, Table 9-131 | BSS membership selectors; value 123 "SAE Hash to Element Only" needs H2E support to join | PDF 936–937 (printed 935–936) |
 | `IEEE-802.11-2024` | §9.4.2.240, Table 9-373 (bit 5) | SAE Hash-to-element bit in the RSNXE; ignored when SAE isn't negotiated (NOTE) | PDF 1433 (printed 1432) |
+| `IEEE-802.11-2024` | §11.1.4.6 | STAs avoid joining a BSS whose membership selectors they don't support | PDF 2463–2464 (printed 2462–2463) |
 | `IEEE-802.11-2024` | §11.52 | Beacon protection requires PMF | PDF 2931 (printed 2930) |
 | `IEEE-802.11-2024` | §12.4.4.2.3, §12.4.4.3.3 | SAE hash-to-element derivation of the password element (ECC / FFC groups) | §12.4.4.2.3: PDF 2967 (printed 2966) |
 | `WFA-WPA3` | §2.1, Table 3 | Security parameters; what applies at the AP MLD level; SAE Hash-to-Element applies only with an SAE AKM (p. 10) | pp. 7–11 |

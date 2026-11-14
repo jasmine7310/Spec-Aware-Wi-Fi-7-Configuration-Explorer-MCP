@@ -1,0 +1,454 @@
+{
+  "base": "eht_mld_sae_ext_two_links_client_bp",
+  "budget": 20,
+  "build_on_runs": true,
+  "candidates": [
+    {
+      "all_values_evidenced": true,
+      "candidate": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "rekey_gtk_now"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "OWE"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "OWE"
+                ],
+                "channel": 6,
+                "indicate_disabled": false,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": 5,
+            "sae_pwe": null
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": null
+          }
+        }
+      },
+      "choices": {
+        "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "0",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "present",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c01",
+      "p1": "PASSES_MODELED_RULES",
+      "p2": "UNRESOLVED",
+      "previous_runs": [],
+      "role": "probe",
+      "source": "allpairspy"
+    },
+    {
+      "all_values_evidenced": true,
+      "candidate": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "OWE"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "GCMP-256"
+              },
+              {
+                "akms": [
+                  "OWE"
+                ],
+                "channel": 6,
+                "indicate_disabled": true,
+                "link_id": 1,
+                "pairwise_cipher": "GCMP-256"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": null
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": null
+          }
+        }
+      },
+      "choices": {
+        "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "GCMP-256",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c02",
+      "p1": "PASSES_MODELED_RULES",
+      "p2": "UNRESOLVED",
+      "previous_runs": [],
+      "role": "probe",
+      "source": "allpairspy"
+    },
+    {
+      "all_values_evidenced": true,
+      "candidate": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "rekey_gtk_now"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "DISABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "ENABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": null,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": true,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": 5,
+            "sae_pwe": "hash_to_element"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "both"
+          }
+        }
+      },
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "1",
+        "disable_enable_mld": "present",
+        "link_remove": "absent",
+        "rekey_gtk_now": "present",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "2"
+      },
+      "id": "c03",
+      "p1": "PASSES_MODELED_RULES",
+      "p2": "UNRESOLVED",
+      "previous_runs": [],
+      "role": "probe",
+      "source": "top_up"
+    },
+    {
+      "all_values_evidenced": true,
+      "candidate": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "DISABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "ENABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": null,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": true,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": "both"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "hash_to_element"
+          }
+        }
+      },
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "2",
+        "disable_enable_mld": "present",
+        "link_remove": "absent",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "1"
+      },
+      "id": "c04",
+      "p1": "PASSES_MODELED_RULES",
+      "p2": "UNRESOLVED",
+      "previous_runs": [],
+      "role": "probe",
+      "source": "top_up"
+    }
+  ],
+  "cut_by_budget": [],
+  "description": "Pairwise campaign plan over the legal, executable candidates of model.json (issue #66). Generated by scripts/plan_campaign.py; nothing here has run. A planned pair counts as covered only after its candidate runs (#68).",
+  "dimensions": [
+    {
+      "labels": [
+        "SAE-EXT-KEY",
+        "OWE"
+      ],
+      "name": "ap_akm"
+    },
+    {
+      "labels": [
+        "SAE-EXT-KEY",
+        "OWE"
+      ],
+      "name": "sta_akm"
+    },
+    {
+      "labels": [
+        "unset",
+        "1",
+        "2"
+      ],
+      "name": "ap_sae_pwe"
+    },
+    {
+      "labels": [
+        "unset",
+        "1",
+        "2"
+      ],
+      "name": "sta_sae_pwe"
+    },
+    {
+      "labels": [
+        "CCMP",
+        "GCMP-256"
+      ],
+      "name": "ap_pairwise_cipher"
+    },
+    {
+      "labels": [
+        "0",
+        "1"
+      ],
+      "name": "ap_link_indicate_disabled"
+    },
+    {
+      "labels": [
+        "unset",
+        "5"
+      ],
+      "name": "ap_ptk_rekey_interval"
+    },
+    {
+      "labels": [
+        "unset",
+        "5"
+      ],
+      "name": "ap_gtk_rekey_interval"
+    },
+    {
+      "labels": [
+        "absent",
+        "present"
+      ],
+      "name": "rekey_gtk_now"
+    },
+    {
+      "labels": [
+        "absent",
+        "present"
+      ],
+      "name": "link_remove"
+    },
+    {
+      "labels": [
+        "absent",
+        "present"
+      ],
+      "name": "disable_enable_mld"
+    }
+  ],
+  "funnel": {
+    "allpairspy_rows": 2,
+    "already_run": 21,
+    "configspace": {
+      "rejected": 3456,
+      "rejections_by_rule": {
+        "SEC.MLD_CLIENT_COMMON_AKM": 2304,
+        "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E": 128,
+        "SEC.SAE_PWE_NEEDS_SAE": 2560
+      },
+      "valid": 1152
+    },
+    "cut_by_budget": 0,
+    "enumerated": 4608,
+    "executable": 864,
+    "p0_well_formed": 4608,
+    "p1": {
+      "PASSES_MODELED_RULES": 1152,
+      "SPEC_RULE_VIOLATION": 3456
+    },
+    "p1_rejections_by_rule": {
+      "SEC.MLD_CLIENT_COMMON_AKM": 2304,
+      "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E": 128,
+      "SEC.SAE_PWE_NEEDS_SAE": 2560
+    },
+    "p2": {
+      "not_run": 0,
+      "probe": 843,
+      "supported": 21,
+      "unsupported": 288
+    },
+    "planned": 4,
+    "top_up_rows": 2
+  },
+  "generated_by": "scripts/plan_campaign.py",
+  "model": {
+    "model_digest": "sha256:8f84a4c31085be04c4e33e41a3be0cebda198743851b85f1bc323d440ee1583b",
+    "pinned_versions": {
+      "base_image": "ubuntu:24.04@sha256:24737cef17f4e22b1977df7d9a05e77c4e28b7da5b8911f8d8ccda136bf3573c",
+      "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",
+      "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda"
+    },
+    "rules_version": 1,
+    "schema_version": 2
+  },
+  "review_queue": [],
+  "seed": 0,
+  "strength": 2
+}

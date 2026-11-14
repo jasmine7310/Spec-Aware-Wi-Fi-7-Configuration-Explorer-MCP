@@ -81,3 +81,24 @@ The `ap_sae_pwe=1` candidate from the same batch was `REJECTED`; its run is in
 | `1794384688` | `ap_pairwise_cipher=GCMP-256` | ACCEPTED | Same signature; the logged station status shows pairwise and group cipher GCMP-256 (not in the record yet) |
 | `1794384695` | `rekey_gtk_now` | ACCEPTED | 1 GTK rekey; traffic on links 0 and 1 after it |
 | `1794384702` | `disable_enable_mld` | ACCEPTED | 2 four-way handshakes and 2 locally generated disconnects (reason 3); traffic on links 0 and 1 after RECONNECT |
+
+## Client SAE PWE (issue #88)
+
+Added 2026-11-12. The client's `sae_pwe` is now modeled (`StaConfig.sae_pwe`), so
+`ap_sae_pwe=1`, which was `REJECTED` with the client's left unset (`runs/rejected/1794384673`),
+can run with a client that has hash-to-element enabled (`SEC.SAE_H2E_ONLY_NEEDS_STA_H2E`). Same
+method as above: F02 through `explorer.adapter.run_candidate` (`scripts/smoke_dimensions.py`),
+the adapter setting the client's `sae_pwe` with `wpas.set` before connecting and back to 0
+afterwards (both logged as `SET sae_pwe`). Windows 11 + WSL2 Ubuntu 24.04 + Docker Desktop
+(Docker 29.9.2), image `sha256:80a5fc6c…`, hostap `43ee60e1`, repo at `08400c4` with the
+adapter change uncommitted (`repo_docker_dir_modified: true`). All four passed; none logged
+"SAE H2E disabled". Each record is identical to the base run `1794384666`: `key_mgmt`
+SAE-EXT-KEY, `sae_h2e=1`, `bigtk_set=1`, links `0x3`, traffic on links 0 and 1. (The settings
+themselves aren't in the behavior record; they're in each run's `explorer_plan.json`.)
+
+| Run ID | Candidate (F02 plus) | P3 |
+|---|---|---|
+| `1794548583` | `ap_sae_pwe=1`, `sta_sae_pwe=1` (as hostap's tests pair them) | ACCEPTED |
+| `1794548598` | `ap_sae_pwe=1`, `sta_sae_pwe=2` | ACCEPTED |
+| `1794548609` | `sta_sae_pwe=1` (AP unset) | ACCEPTED |
+| `1794548623` | `sta_sae_pwe=2` (AP unset) | ACCEPTED |

@@ -1,0 +1,1051 @@
+{
+  "budget": 20,
+  "campaign": "seed0-2026-11-13",
+  "finished_at": "2026-11-13T08:05:31Z",
+  "model_digest": "sha256:698f8e8a6b393342af435515450d399dc02bc1cd9ffe473e2ebe78d06752f055",
+  "plan": "campaign_plan.json",
+  "results": [
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557032",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c01",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557032",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": "UNKNOWN",
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 0,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "OWE",
+          "pmf": "2",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x1"
+      },
+      "source": "allpairspy",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557038",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "0",
+        "ap_pairwise_cipher": "GCMP-256",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "2",
+        "disable_enable_mld": "absent",
+        "link_remove": "absent",
+        "rekey_gtk_now": "present",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "1"
+      },
+      "id": "c02",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557038",
+      "signature": {
+        "active_links": "0x3",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": [
+          0,
+          1
+        ],
+        "data_test_rx_ap_links": [
+          0,
+          1
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 4,
+        "gtk_rekeys_completed": 4,
+        "link_reconfig_valid_links": [],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 3,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x3"
+      },
+      "source": "allpairspy",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": "actions[3] DISABLE_MLD: DISABLE_MLD failed",
+          "run_id": "1794557044",
+          "status": "REJECTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "1",
+        "disable_enable_mld": "present",
+        "link_remove": "present",
+        "rekey_gtk_now": "present",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "2"
+      },
+      "id": "c03",
+      "reason": "actions[3] DISABLE_MLD: DISABLE_MLD failed",
+      "role": "probe",
+      "run_id": "1794557044",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": [
+          0
+        ],
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 1,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "FAIL",
+        "valid_links": "0x1"
+      },
+      "source": "allpairspy",
+      "status": "REJECTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557050",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "0",
+        "ap_pairwise_cipher": "GCMP-256",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "present",
+        "link_remove": "absent",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c04",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557050",
+      "signature": {
+        "active_links": "0x3",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": [
+          0,
+          1
+        ],
+        "data_test_rx_ap_links": [
+          0,
+          1
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          },
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 4,
+        "gtk_rekeys_completed": 3,
+        "link_reconfig_valid_links": [],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 2,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "OWE",
+          "pmf": "2",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x3"
+      },
+      "source": "allpairspy",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": "actions[3] DISABLE_MLD: DISABLE_MLD failed",
+          "run_id": "1794557059",
+          "status": "REJECTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "GCMP-256",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "present",
+        "link_remove": "present",
+        "rekey_gtk_now": "present",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c05",
+      "reason": "actions[3] DISABLE_MLD: DISABLE_MLD failed",
+      "role": "probe",
+      "run_id": "1794557059",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": [
+          0
+        ],
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 1,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "OWE",
+          "pmf": "2",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "FAIL",
+        "valid_links": "0x1"
+      },
+      "source": "allpairspy",
+      "status": "REJECTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557065",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "0",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "present",
+        "link_remove": "absent",
+        "rekey_gtk_now": "present",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c06",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557065",
+      "signature": {
+        "active_links": "0x3",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": [
+          0,
+          1
+        ],
+        "data_test_rx_ap_links": [
+          0,
+          1
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          },
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 2,
+        "gtk_rekeys_completed": 1,
+        "link_reconfig_valid_links": [],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "OWE",
+          "pmf": "2",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x3"
+      },
+      "source": "allpairspy",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": "actions[3] DISABLE_MLD: DISABLE_MLD failed",
+          "run_id": "1794557071",
+          "status": "REJECTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "0",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "present",
+        "link_remove": "present",
+        "rekey_gtk_now": "present",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c07",
+      "reason": "actions[3] DISABLE_MLD: DISABLE_MLD failed",
+      "role": "probe",
+      "run_id": "1794557071",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": [
+          0,
+          1
+        ],
+        "data_test_rx_ap_links": [
+          0,
+          1
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 1,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "OWE",
+          "pmf": "2",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "FAIL",
+        "valid_links": "0x1"
+      },
+      "source": "allpairspy",
+      "status": "REJECTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557076",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "OWE",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "GCMP-256",
+        "ap_ptk_rekey_interval": "5",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "present",
+        "link_remove": "absent",
+        "rekey_gtk_now": "present",
+        "sta_akm": "OWE",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c08",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557076",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": [
+          0
+        ],
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          },
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 3,
+        "gtk_rekeys_completed": 1,
+        "link_reconfig_valid_links": [],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 1,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "OWE",
+          "pmf": "2",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x3"
+      },
+      "source": "allpairspy",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": "actions[2] DISABLE_MLD: DISABLE_MLD failed",
+          "run_id": "1794557082",
+          "status": "REJECTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "2",
+        "disable_enable_mld": "present",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "1"
+      },
+      "id": "c09",
+      "reason": "actions[2] DISABLE_MLD: DISABLE_MLD failed",
+      "role": "probe",
+      "run_id": "1794557082",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": "UNKNOWN",
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 0,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "FAIL",
+        "valid_links": "0x1"
+      },
+      "source": "top_up",
+      "status": "REJECTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557090",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "5",
+        "ap_link_indicate_disabled": "0",
+        "ap_pairwise_cipher": "GCMP-256",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "1",
+        "disable_enable_mld": "absent",
+        "link_remove": "absent",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "2"
+      },
+      "id": "c10",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557090",
+      "signature": {
+        "active_links": "0x3",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": [
+          0,
+          1
+        ],
+        "data_test_rx_ap_links": [
+          0,
+          1
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 2,
+        "link_reconfig_valid_links": [],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x3"
+      },
+      "source": "top_up",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557096",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c11",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557096",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": "UNKNOWN",
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 0,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x1"
+      },
+      "source": "top_up",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557101",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "2",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "2"
+      },
+      "id": "c12",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557101",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": "UNKNOWN",
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 0,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x1"
+      },
+      "source": "top_up",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557107",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "2",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "unset"
+      },
+      "id": "c13",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557107",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": "UNKNOWN",
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 0,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x1"
+      },
+      "source": "top_up",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557112",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "1",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "1"
+      },
+      "id": "c14",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557112",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": "UNKNOWN",
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 0,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x1"
+      },
+      "source": "top_up",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557120",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "1"
+      },
+      "id": "c15",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557120",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": "UNKNOWN",
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 0,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x1"
+      },
+      "source": "top_up",
+      "status": "ACCEPTED"
+    },
+    {
+      "attempts": [
+        {
+          "cache_hit": false,
+          "reason": null,
+          "run_id": "1794557126",
+          "status": "ACCEPTED"
+        }
+      ],
+      "cache_hit": false,
+      "choices": {
+        "ap_akm": "SAE-EXT-KEY",
+        "ap_gtk_rekey_interval": "unset",
+        "ap_link_indicate_disabled": "1",
+        "ap_pairwise_cipher": "CCMP",
+        "ap_ptk_rekey_interval": "unset",
+        "ap_sae_pwe": "unset",
+        "disable_enable_mld": "absent",
+        "link_remove": "present",
+        "rekey_gtk_now": "absent",
+        "sta_akm": "SAE-EXT-KEY",
+        "sta_sae_pwe": "2"
+      },
+      "id": "c16",
+      "reason": null,
+      "role": "probe",
+      "run_id": "1794557126",
+      "signature": {
+        "active_links": "0x1",
+        "association_succeeded": true,
+        "btm_request_handled": "UNKNOWN",
+        "data_test_rx_after_last_rekey_ap_links": "UNKNOWN",
+        "data_test_rx_ap_links": [
+          0
+        ],
+        "disconnects": [
+          {
+            "locally_generated": true,
+            "reason": 3
+          }
+        ],
+        "four_way_handshakes_completed": 1,
+        "gtk_rekeys_completed": 0,
+        "link_reconfig_valid_links": [
+          "0x1"
+        ],
+        "ml_probe_handled": "UNKNOWN",
+        "packet_capture_present": true,
+        "ptk_rekeys_completed": 0,
+        "station_status": {
+          "bigtk_set": "1",
+          "key_mgmt": "SAE-EXT-KEY",
+          "pmf": "2",
+          "sae_group": "19",
+          "sae_h2e": "1",
+          "wifi_generation": "7",
+          "wpa_state": "COMPLETED"
+        },
+        "test_result": "PASS",
+        "valid_links": "0x1"
+      },
+      "source": "top_up",
+      "status": "ACCEPTED"
+    }
+  ],
+  "seed": 0,
+  "started_at": "2026-11-13T08:03:51Z"
+}

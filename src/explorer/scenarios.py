@@ -32,11 +32,11 @@ TEST_CONFIGS: dict[str, Config] = {name: Config.model_validate(raw) for name, ra
     # STA sae_pwe 1, sae_groups "20 19", key_mgmt SAE (707-714)
     "eht_mld_sae_two_links": {
         "ap": _two_links(["SAE"], sae_pwe="hash_to_element"),
-        "sta": {"akms": ["SAE"], "sae_groups": [20, 19]},
+        "sta": {"akms": ["SAE"], "sae_groups": [20, 19], "sae_pwe": "hash_to_element"},
     },
     # test_eht_mld_sae_ext_two_links: AP key_mgmt SAE-EXT-KEY (817-824);
-    # STA key_mgmt SAE-EXT-KEY (826). The STA's sae_pwe isn't set here, unlike
-    # the fixed hash-to-element STA explorer.model assumes.
+    # STA key_mgmt SAE-EXT-KEY (826). Neither side's sae_pwe is set; the other tests below
+    # don't set the STA's either.
     "eht_mld_sae_ext_two_links": {
         "ap": _two_links(["SAE-EXT-KEY"]),
         "sta": {"akms": ["SAE-EXT-KEY"], "beacon_protection": False},

@@ -367,7 +367,7 @@ rules:
         - "Plain SAE with sae_pwe unset on 2.4 / 5 GHz."
     notes:
       - "explorer.model doesn't offer sae_pwe=0, so P0 already rejects that value."
-      - "Coded as explorer.validate.check_eht_sae_h2e (hostap lines checked by Claude, 2026-11-03)."
+      - "Coded as explorer.validate.check_eht_sae_h2e (hostap lines checked by Claude, 2026-11-03). The client's side is checked since issue #88 (StaConfig.sae_pwe); wpa_supplicant numbers sae_pwe the same way (wpa_supplicant.conf:501-509)."
 
   - id: SEC.SAE_PWE_NEEDS_SAE
     title: sae_pwe only means something with an SAE AKM
@@ -378,7 +378,9 @@ rules:
       sae_pwe chooses how SAE derives its password element, so it only has an effect
       when the AKM includes SAE or SAE-EXT-KEY. Not a spec violation: nothing forbids
       setting it, it just does nothing.
-    predicate: "If sae_pwe is set, the AP's AKM list includes SAE or SAE-EXT-KEY."
+    predicate: >-
+      If the AP's sae_pwe is set, an AP link's AKM list includes SAE or SAE-EXT-KEY; if the
+      client's sae_pwe is set, the client allows SAE or SAE-EXT-KEY.
     sources:
       - doc: IEEE-802.11-2024
         strength: unclassified
@@ -413,9 +415,92 @@ rules:
         - "SAE with sae_pwe=1."
       disallowed:
         - "OWE with sae_pwe=1: hostap accepts it but the setting has no effect."
+        - "A client allowing only OWE with sae_pwe=1."
     notes:
       - "sae_pwe only counts as a search dimension under an SAE-family AKM."
-      - "Coded as explorer.validate.check_sae_pwe_needs_sae."
+      - "Coded as explorer.validate.check_sae_pwe_needs_sae. The client's side is checked since issue #88 (StaConfig.sae_pwe), as applies_to already named sta_sae_pwe."
+
+  - id: SEC.SAE_H2E_ONLY_NEEDS_STA_H2E
+    title: An AP set to hash-to-element only needs a client with hash-to-element enabled
+    kind: dependency
+    status: reviewed
+    applies_to: [ap_sae_pwe, sta_sae_pwe, ap_akm, sta_akm]
+    meaning: >-
+      An AP with sae_pwe=1 (H2E only) and only SAE-family AKMs advertises the "SAE Hash to
+      Element Only" BSS membership selector, and joining that BSS needs hash-to-element
+      support. A client that leaves sae_pwe unset treats itself as hunting-and-pecking
+      only at BSS selection and skips the AP, even with SAE-EXT-KEY, whose handshake would
+      use H2E. A setting dependency, not a spec violation of either side.
+    predicate: >-
+      If the AP's sae_pwe is 1 (hash_to_element) and some AP link offers only SAE-family
+      AKMs, and the client allows an SAE-family AKM, then the client's sae_pwe is 1 or 2.
+    exceptions:
+      - "Not checked when the client allows no SAE-family AKM: wpa_supplicant's selector check is for SAE AKMs only, and SEC.MLD_CLIENT_COMMON_AKM decides those candidates."
+      - "hostap also advertises the selector when an SAE password identifier is in use, and the client also accepts it with a password identifier or on 6 GHz; neither is modeled."
+    sources:
+      - doc: IEEE-802.11-2024
+        strength: unclassified
+        location: "§9.4.2.3, Table 9-131 (value 123, SAE Hash to Element Only)"
+        page: "PDF 937 (printed 936)"
+        says: "Support for SAE hash-to-element is required to join a BSS that advertises this BSS membership selector."
+        checked: "Michelle, in the PDF, 2026-11-13; Claude (AI agent), PDF text, 2026-11-12"
+      - doc: IEEE-802.11-2024
+        strength: unclassified
+        location: "§11.1.4.6"
+        page: "PDF 2463-2464 (printed 2462-2463)"
+        says: "In the clause body (not a NOTE), STAs use the BSS membership selectors to avoid joining a BSS whose features they don't support, and a STA that doesn't recognize a selector doesn't attempt to join; descriptive, no 'shall' (the clause's 'shall's concern including selectors in frames)."
+        checked: "Michelle, in the PDF, 2026-11-13 (heading and pages); Claude (AI agent), PDF text, 2026-11-12 and 2026-11-13 (body text, PDF pp. 2463-2464)"
+      - doc: WFA-WPA3
+        strength: guidance
+        location: "Table 3, SAE Hash-to-Element row"
+        page: "p. 10"
+        says: >-
+          An AP set to H2E Only sets the H2E-only bit in the Supported Rates and BSS
+          Membership Selectors element; a STA with H2E Disabled doesn't attempt to connect
+          to an AP, or an AP MLD on any link, advertising H2E Only; Enabled and H2E Only
+          STAs use H2E with it.
+        checked: "Michelle, in the PDF, 2026-11-13; Claude (AI agent), PDF text, 2026-11-12"
+      - doc: hostap
+        strength: code
+        location: "src/ap/ieee802_11.c:166-170"
+        says: "The AP adds the SAE H2E-only BSS membership selector when sae_pwe=1 and all its AKMs are SAE-family."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-12; accepted by Michelle, 2026-11-13"
+      - doc: hostap
+        strength: code
+        location: "src/common/defs.h:133-140"
+        says: "'Only SAE' counts SAE, SAE-EXT-KEY and their FT forms."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-12; accepted by Michelle, 2026-11-13"
+      - doc: hostap
+        strength: code
+        location: "wpa_supplicant/events.c:1250-1259"
+        says: "A client whose sae_pwe is hunting-and-pecking skips a BSS with the H2E-only selector for any SAE AKM (logged 'SAE H2E disabled')."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-12; accepted by Michelle, 2026-11-13"
+      - doc: hostap
+        strength: code
+        location: "wpa_supplicant/wpa_supplicant.c:10332-10340"
+        says: "A network without its own sae_pwe uses the global value, whose default is hunting-and-pecking."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-12; accepted by Michelle, 2026-11-13"
+      - doc: hostap
+        strength: code
+        location: "wpa_supplicant/wpa_supplicant.conf:501-509"
+        says: "wpa_supplicant's sae_pwe: 0 hunting-and-pecking only (default without a password identifier), 1 H2E only, 2 both."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-12; accepted by Michelle, 2026-11-13"
+      - doc: hostap
+        strength: code
+        location: "tests/hwsim/test_eht.py:672, 707"
+        says: "hostap's MLD tests set the client's sae_pwe=1 before connecting to an AP with pwe 2 or 1."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-12; accepted by Michelle, 2026-11-13"
+    examples:
+      allowed:
+        - "AP sae_pwe=1, SAE-EXT-KEY on both links, client sae_pwe=1 or 2."
+        - "AP sae_pwe=2 (both), client sae_pwe unset: no H2E-only selector."
+      disallowed:
+        - "AP sae_pwe=1, SAE-EXT-KEY on both links, client sae_pwe unset (REJECTED run 1794384673)."
+    notes:
+      - "Coded as explorer.validate.check_sae_h2e_only_needs_sta_h2e (issue #88)."
+      - "Which client value to prefer is WFA guidance, not coded: Table 8 (p. 18), EHT STA in WPA3-Personal Only, H2E Enabled (2) MAND, Disabled DISALLOW, H2E Only (1) DISALLOW except where all APs and STAs are known to support EHT (footnote **, pp. 18-19); Table 5 (p. 14), Transition Mode, H2E Only DISALLOW. Our testbed has only EHT devices."
+      - "Research: docs/research/security-guidance.md. Reviewed 2026-11-13: Michelle checked the IEEE and WFA citations in the PDFs and accepted the hostap lines (PR #92)."
+      - "The other direction (WFA Table 3: a STA set to H2E Only doesn't associate unless the AP MLD advertises H2E on all its links) doesn't need a rule here: with SAE-EXT-KEY the AP advertises H2E in the RSNXE even with sae_pwe unset (src/ap/wpa_auth_ie.c:553-557), and client sae_pwe=1 with the AP's unset ran ACCEPTED (runs/smoke/1794548609, campaigns/seed0-2026-11-13/1794557120). It would fail only with plain SAE, which SEC.EHT_SAE_AKM excludes."
 
   # --- Action order (docs/research/action-order.md) --------------------------------
   # Harness and policy rules, not IEEE / Wi-Fi Alliance rules: a violation means the

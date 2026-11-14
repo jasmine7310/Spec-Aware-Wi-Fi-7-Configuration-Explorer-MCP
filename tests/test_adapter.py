@@ -88,6 +88,19 @@ def test_client_off_and_psk_options():
     assert plan["sta"]["connect"] == {"key_mgmt": "WPA-PSK", "ieee80211w": "2",
                                       "scan_freq": "2437", "psk": "qwertyuiop"}
     assert plan["sta"]["sae_groups"] == "19 20"
+    assert plan["sta"]["sae_pwe"] == ""   # unset: the guest leaves wpa_supplicant's default
+
+
+@pytest.mark.parametrize("value, number", [("hash_to_element", "1"), ("both", "2")])
+def test_client_sae_pwe_goes_to_the_guest(value, number):
+    # The guest sets it with wpas.set("sae_pwe", ...) before connecting (test_eht.py:707).
+    config = TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump()
+    config["ap"]["sae_pwe"] = "hash_to_element"
+    config["sta"]["sae_pwe"] = value
+    plan = build_plan(Candidate.model_validate({"config": config, "actions": [ASSOC]}))
+    assert plan["sta"]["sae_pwe"] == number
+    assert all(link["params"]["sae_pwe"] == "1" for link in plan["ap_links"])
+    assert "sae_pwe" not in plan["sta"]["connect"]   # global setting, not per network
 
 
 # --- Unsupported candidates are refused before a guest boots ---------------

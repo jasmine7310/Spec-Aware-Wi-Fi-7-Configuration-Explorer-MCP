@@ -111,6 +111,9 @@ class _Run:
         sta = self.plan["sta"]
         if sta["sae_groups"]:
             self.wpas.set("sae_groups", sta["sae_groups"])
+        if sta.get("sae_pwe"):
+            # Before connect, as hostap's MLD tests do (test_eht.py:672, 707).
+            self.wpas.set("sae_pwe", sta["sae_pwe"])
         try:
             self.wpas.connect(self.plan["ssid"], **sta["connect"])
         except Exception as e:
@@ -233,3 +236,6 @@ def test_explorer_candidate(dev, apdev):
         finally:
             if plan["sta"]["sae_groups"]:
                 wpas.set("sae_groups", "")
+            if plan["sta"].get("sae_pwe"):
+                # Back to the default, as hostap's tests reset it (e.g. test_eht.py:208).
+                wpas.set("sae_pwe", "0")

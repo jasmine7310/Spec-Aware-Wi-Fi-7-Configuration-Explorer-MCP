@@ -154,7 +154,10 @@ def build_plan(candidate: Candidate) -> dict:
         "ap_shared": shared,
         "ap_links": links,
         "sta": {"connect": connect,
-                "sae_groups": " ".join(map(str, sta.sae_groups)) if sta.sae_groups else ""},
+                "sae_groups": " ".join(map(str, sta.sae_groups)) if sta.sae_groups else "",
+                # wpas.set("sae_pwe", ...) before connecting, as hostap's MLD tests do
+                # (test_eht.py:672, 707); "" leaves it unset.
+                "sae_pwe": str(SAE_PWE_TO_HOSTAPD[sta.sae_pwe]) if sta.sae_pwe else ""},
         "needs_sae": bool(set(sta.akms) & _SAE),
         "needs_owe": "OWE" in sta.akms,
         "actions": [step.model_dump(mode="json") for step in candidate.actions],
@@ -212,13 +215,16 @@ def compare_signatures(adapter_signature: dict, test_signature: dict) -> dict:
 
 def run_metadata(candidate: Candidate) -> dict:
     """What a run folder records about the candidate besides the plan: the candidate
-    itself, the model's schema version, validate_candidate's verdict (status, rule IDs,
-    P2 status) and whether running it is a negative experiment."""
+    itself, the model's schema version and model.json digest (issue #65),
+    validate_candidate's verdict (status, rule IDs, P2 status) and whether running it is
+    a negative experiment."""
+    from explorer.model_json import build  # model_json imports adapter
     from explorer.validate import validate_candidate  # validate imports support -> scenarios
     data = candidate.model_dump(mode="json")
     result = validate_candidate(data)
     return {
         "schema_version": SCHEMA_VERSION,
+        "model_digest": build()["model_digest"],
         "candidate": data,
         "validation": {"status": result.status,
                        "rule_ids": [f.rule_id for f in result.findings],
@@ -230,12 +236,15 @@ def run_metadata(candidate: Candidate) -> dict:
 def run_candidate(candidate: Candidate, *,
                   log_dir: Path | str = DEFAULT_LOG_DIR,
                   image: str = DEFAULT_IMAGE,
-                  timeout_s: float = DEFAULT_TIMEOUT_S) -> CandidateRun:
+                  timeout_s: float = DEFAULT_TIMEOUT_S,
+                  metadata: dict | None = None) -> CandidateRun:
     """Run one candidate in a fresh guest. It runs whatever the modeled rules say (the
     MCP tool refuses rule-breaking candidates unless asked), but the run folder's
     ``explorer_plan.json`` and manifest record the verdict and label a rule-breaking run
-    as a negative experiment (``run_metadata``)."""
-    plan = {**build_plan(candidate), "explorer": run_metadata(candidate)}
+    as a negative experiment (``run_metadata``). ``metadata`` (e.g. the cache key, the
+    campaign and its seed) is recorded there too, with the timeout."""
+    plan = {**build_plan(candidate),
+            "explorer": {**run_metadata(candidate), "timeout_s": timeout_s, **(metadata or {})}}
     with tempfile.TemporaryDirectory() as tmp:
         plan_file = Path(tmp) / "explorer_plan.json"
         plan_file.write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n")

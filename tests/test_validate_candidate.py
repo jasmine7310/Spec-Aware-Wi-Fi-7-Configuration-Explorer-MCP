@@ -70,8 +70,10 @@ def test_legal_candidate_passes_modeled_rules_only():
                                  "actions": [ASSOC, REKEY]})
     assert (result.status, result.findings) == ("PASSES_MODELED_RULES", [])
     assert "not full 802.11be compliance" in result.note
-    # No tested scenario rekeys right after associating with SAE-EXT-KEY.
-    assert (result.stage_reached, result.p2.status) == ("P2", "UNRESOLVED")
+    # No hostap scenario does this, but the #61 smoke run 1794384695 (an adapter run) did
+    # exactly this candidate, so P2 says SUPPORTED by that run (#80).
+    assert (result.stage_reached, result.p2.status) == ("P2", "SUPPORTED")
+    assert (result.p2.test, result.p2.run_ids) == ("explorer_candidate", ["1794384695"])
 
 
 def test_tested_scenario_is_supported():

@@ -1,0 +1,515 @@
+2026-11-13 08:04:11,386 INFO START explorer_candidate 1/1
+2026-11-13 08:04:11,386 INFO Test: Explorer candidate from explorer_plan.json (adapter, not a hostap test)
+2026-11-13 08:04:11,386 DEBUG wlan0: CTRL: PING
+2026-11-13 08:04:11,386 DEBUG wlan0: CTRL(global): PING
+2026-11-13 08:04:11,386 DEBUG wlan0: CTRL: NOTE TEST-START explorer_candidate
+2026-11-13 08:04:11,386 DEBUG wlan1: CTRL: PING
+2026-11-13 08:04:11,386 DEBUG wlan1: CTRL(global): PING
+2026-11-13 08:04:11,386 DEBUG wlan1: CTRL: NOTE TEST-START explorer_candidate
+2026-11-13 08:04:11,386 DEBUG wlan2: CTRL: PING
+2026-11-13 08:04:11,386 DEBUG wlan2: CTRL(global): PING
+2026-11-13 08:04:11,386 DEBUG wlan2: CTRL: NOTE TEST-START explorer_candidate
+2026-11-13 08:04:11,386 DEBUG /tmp/wpas-wlan5: CTRL(global): NOTE TEST-START explorer_candidate
+2026-11-13 08:04:11,386 DEBUG : CTRL(global): NOTE TEST-START explorer_candidate
+2026-11-13 08:04:11,386 INFO EXPLORER-PLAN {"actions": [{"action": "associate"}, {"action": "disable_enable_mld", "command": "DISABLE_MLD"}, {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"}, {"action": "disable_enable_mld", "command": "ENABLE_MLD"}, {"action": "sta_disconnect_reconnect", "command": "RECONNECT"}], "ap_links": [{"link_id": 0, "params": {"beacon_prot": "1", "channel": "1", "group_mgmt_cipher": "AES-128-CMAC", "hw_mode": "g", "ieee80211ax": "1", "ieee80211be": "1", "ieee80211n": "1", "ieee80211w": "2", "rsn_pairwise": "GCMP-256", "ssid": "explorer_mld", "wpa": "2", "wpa_group_rekey": "5", "wpa_key_mgmt": "OWE", "wpa_ptk_rekey": "5"}}, {"link_id": 1, "params": {"beacon_prot": "1", "channel": "6", "group_mgmt_cipher": "AES-128-CMAC", "hw_mode": "g", "ieee80211ax": "1", "ieee80211be": "1", "ieee80211n": "1", "ieee80211w": "2", "rsn_pairwise": "GCMP-256", "ssid": "explorer_mld", "wpa": "2", "wpa_group_rekey": "5", "wpa_key_mgmt": "OWE", "wpa_ptk_rekey": "5"}}], "ap_shared": {"beacon_prot": "1", "group_mgmt_cipher": "AES-128-CMAC", "hw_mode": "g", "ieee80211ax": "1", "ieee80211be": "1", "ieee80211n": "1", "ieee80211w": "2", "ssid": "explorer_mld", "wpa": "2", "wpa_group_rekey": "5", "wpa_ptk_rekey": "5"}, "explorer": {"cache_key": "sha256:255b74d4fc49798d3f7e923c4820e6ccc826637b5fd3edb5b2c8fafd93e99be5", "cache_key_parts": {"environment": "50c5722e3260e56555f60e4aff2ed13ecaa7bc92e4523377dd1b15d4f49495f9", "harness": "39ac2c3e56f5a6b610dfa9f1ba03046f3902bbf260ebe6cefc3b1cceafb066e5", "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4", "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda", "model_digest": "sha256:698f8e8a6b393342af435515450d399dc02bc1cd9ffe473e2ebe78d06752f055", "schema_version": 2}, "candidate": {"actions": [{"action": "associate"}, {"action": "disable_enable_mld", "command": "DISABLE_MLD"}, {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"}, {"action": "disable_enable_mld", "command": "ENABLE_MLD"}, {"action": "sta_disconnect_reconnect", "command": "RECONNECT"}], "config": {"ap": {"beacon_protection": true, "bss_transition": false, "gtk_rekey_interval_s": 5, "links": [{"akms": ["OWE"], "channel": 1, "indicate_disabled": false, "link_id": 0, "pairwise_cipher": "GCMP-256"}, {"akms": ["OWE"], "channel": 6, "indicate_disabled": false, "link_id": 1, "pairwise_cipher": "GCMP-256"}], "pmf": "required", "ptk_rekey_interval_s": 5, "sae_pwe": null}, "sta": {"akms": ["OWE"], "beacon_protection": true, "sae_groups": null, "sae_pwe": null}}}, "context": {"attempt": 1, "campaign": "seed0-2026-11-13", "candidate_id": "c04", "seed": 0}, "model_digest": "sha256:698f8e8a6b393342af435515450d399dc02bc1cd9ffe473e2ebe78d06752f055", "negative_experiment": false, "schema_version": 2, "timeout_s": 600, "validation": {"p2": "UNRESOLVED", "rule_ids": [], "status": "PASSES_MODELED_RULES"}}, "needs_owe": true, "needs_sae": false, "ssid": "explorer_mld", "sta": {"connect": {"beacon_prot": "1", "group": "CCMP GCMP-256", "ieee80211w": "2", "key_mgmt": "OWE", "pairwise": "CCMP GCMP-256", "scan_freq": "2412 2437"}, "sae_groups": "", "sae_pwe": ""}}
+2026-11-13 08:04:11,386 DEBUG execute: ['id']
+2026-11-13 08:04:11,386 DEBUG status: 0
+2026-11-13 08:04:11,386 DEBUG buf: b'uid=0(root) gid=0(adm) groups=0(adm)\n'
+2026-11-13 08:04:11,386 DEBUG /tmp/wpas-wlan5: CTRL(global): INTERFACE_ADD wlan8		nl80211	DIR=/var/run/wpa_supplicant GROUP=adm
+2026-11-13 08:04:11,386 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: GET_CAPABILITY key_mgmt
+2026-11-13 08:04:11,387 INFO Adding link on: ifname=wlan7
+2026-11-13 08:04:11,387 DEBUG : CTRL(global): ADD wlan7 config=/tmp/link-0.conf-lrhl0r91
+2026-11-13 08:04:11,387 DEBUG wlan7_link0: CTRL: PING
+2026-11-13 08:04:11,387 DEBUG wlan7_link0: CTRL: ENABLE
+2026-11-13 08:04:11,387 DEBUG wlan7_link0: <3>AP-ENABLED 
+2026-11-13 08:04:11,387 INFO Adding link on: ifname=wlan7
+2026-11-13 08:04:11,387 DEBUG : CTRL(global): ADD wlan7 config=/tmp/link-1.conf-b_e9084l
+2026-11-13 08:04:11,387 DEBUG wlan7_link1: CTRL: PING
+2026-11-13 08:04:11,387 DEBUG wlan7_link1: CTRL: ENABLE
+2026-11-13 08:04:11,387 DEBUG wlan7_link1: <3>AP-ENABLED 
+2026-11-13 08:04:11,387 INFO EXPLORER-ACTION 0 {"action": "associate"}
+2026-11-13 08:04:11,387 INFO Connect STA wlan8 to AP
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: ADD_NETWORK
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: SET_NETWORK 0 ssid "explorer_mld"
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: SET_NETWORK 0 key_mgmt OWE
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: SET_NETWORK 0 ieee80211w 2
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: SET_NETWORK 0 pairwise CCMP GCMP-256
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: SET_NETWORK 0 group CCMP GCMP-256
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: SET_NETWORK 0 scan_freq 2412 2437
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: SET_NETWORK 0 beacon_prot 1
+2026-11-13 08:04:11,387 DEBUG wlan8: <3>CTRL-EVENT-NETWORK-ADDED 0
+2026-11-13 08:04:11,387 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-NETWORK-ADDED 0
+2026-11-13 08:04:11,387 DEBUG wlan8: CTRL: SELECT_NETWORK 0
+2026-11-13 08:04:11,387 DEBUG wlan8: <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-13 08:04:11,460 DEBUG wlan8: <3>CTRL-EVENT-BSS-ADDED 0 02:00:00:0e:49:71
+2026-11-13 08:04:11,460 DEBUG wlan8: <3>CTRL-EVENT-BSS-ADDED 1 02:00:00:a7:48:d3
+2026-11-13 08:04:11,460 DEBUG wlan8: <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-13 08:04:11,460 DEBUG wlan8: <3>SME: Trying to authenticate with 02:00:00:0e:49:71 (SSID='explorer_mld' freq=2412 MHz)
+2026-11-13 08:04:11,460 DEBUG wlan8: <3>Failed to get MLO link info
+2026-11-13 08:04:11,460 DEBUG wlan8: <3>Failed to get MLO link info
+2026-11-13 08:04:11,460 DEBUG wlan8: <3>Trying to associate with 02:00:00:00:07:00 (SSID='explorer_mld' freq=2412 MHz)
+2026-11-13 08:04:11,460 DEBUG wlan8: <3>Failed to get MLO link info
+2026-11-13 08:04:11,470 DEBUG wlan8: <3>PMKSA-CACHE-ADDED 02:00:00:00:07:00 0
+2026-11-13 08:04:11,470 DEBUG wlan8: <3>Associated with 02:00:00:00:07:00
+2026-11-13 08:04:11,470 DEBUG wlan8: <3>CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+2026-11-13 08:04:11,470 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 111
+2026-11-13 08:04:11,470 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 403
+2026-11-13 08:04:11,470 DEBUG wlan8: <3>WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=GCMP-256 GTK=GCMP-256]
+2026-11-13 08:04:11,470 DEBUG wlan8: <3>CTRL-EVENT-CONNECTED - Connection to 02:00:00:00:07:00 completed [id=0 id_str=] ap_mld_addr=02:00:00:00:07:00
+2026-11-13 08:04:11,470 INFO EXPLORER-OBSERVE after actions[0] associate (associated)
+2026-11-13 08:04:11,570 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,571 INFO valid_links=0x3
+
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,571 INFO active_links=0x3
+
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx': '2', 'channel_width': '20', 'pairwise_cipher': 'GCMP-256', 'group_cipher': 'GCMP-256', 'key_mgmt': 'OWE', 'pmf': '2', 'mgmt_group_cipher': 'BIP', 'pmk_len': '32', 'ptk_len': '64', 'kck_len': '16', 'kek_len': '16', 'tk_len': '32', 'mic_len': '16', 'wpa_state': 'COMPLETED', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'ap_mld_addr': '02:00:00:00:07:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f', 'bss_max_idle_period': '292', 'bigtk_set': '1'}
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-BSS-ADDED 0 02:00:00:0e:49:71
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-BSS-ADDED 1 02:00:00:a7:48:d3
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>SME: Trying to authenticate with 02:00:00:0e:49:71 (SSID='explorer_mld' freq=2412 MHz)
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>Failed to get MLO link info
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>Failed to get MLO link info
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>Trying to associate with 02:00:00:00:07:00 (SSID='explorer_mld' freq=2412 MHz)
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>Failed to get MLO link info
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>PMKSA-CACHE-ADDED 02:00:00:00:07:00 0
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>Associated with 02:00:00:00:07:00
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 111
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 403
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=GCMP-256 GTK=GCMP-256]
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-CONNECTED - Connection to 02:00:00:00:07:00 completed [id=0 id_str=] ap_mld_addr=02:00:00:00:07:00
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: <3>AP-STA-CONNECTED 02:00:00:00:08:00
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: <3>EAPOL-4WAY-HS-COMPLETED 02:00:00:00:08:00
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:11,571 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:11,571 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:11,571 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: <3>AP-STA-CONNECTED 02:00:00:00:08:00
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:11,571 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:11,571 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:11,571 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:11,571 INFO EXPLORER-ACTION 1 {"action": "disable_enable_mld", "command": "DISABLE_MLD"}
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: CTRL: DISABLE_MLD
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: <3>AP-STA-DISCONNECTED 02:00:00:00:08:00
+2026-11-13 08:04:11,571 DEBUG wlan7_link0: <3>AP-DISABLED 
+2026-11-13 08:04:11,571 DEBUG wlan7_link1: <3>AP-DISABLED 
+2026-11-13 08:04:11,571 INFO EXPLORER-OBSERVE after actions[1] disable_enable_mld (associated)
+2026-11-13 08:04:11,671 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,671 INFO valid_links=0x3
+
+2026-11-13 08:04:11,671 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,671 INFO active_links=0x3
+
+2026-11-13 08:04:11,671 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,671 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx': '2', 'channel_width': '20', 'pairwise_cipher': 'GCMP-256', 'group_cipher': 'GCMP-256', 'key_mgmt': 'OWE', 'pmf': '2', 'mgmt_group_cipher': 'BIP', 'pmk_len': '32', 'ptk_len': '64', 'kck_len': '16', 'kek_len': '16', 'tk_len': '32', 'mic_len': '16', 'wpa_state': 'COMPLETED', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'ap_mld_addr': '02:00:00:00:07:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f', 'bss_max_idle_period': '292', 'bigtk_set': '1'}
+2026-11-13 08:04:11,671 INFO EXPLORER-OBSERVE AP MLD disabled: no traffic test
+2026-11-13 08:04:11,671 INFO EXPLORER-ACTION 2 {"action": "sta_disconnect_reconnect", "command": "DISCONNECT"}
+2026-11-13 08:04:11,671 DEBUG wlan8: CTRL: DISCONNECT
+2026-11-13 08:04:11,671 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1
+2026-11-13 08:04:11,671 INFO EXPLORER-OBSERVE after actions[2] sta_disconnect_reconnect (not associated)
+2026-11-13 08:04:11,771 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,771 INFO valid_links=0x0
+
+2026-11-13 08:04:11,771 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,771 INFO active_links=0x0
+
+2026-11-13 08:04:11,771 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,771 INFO station status: {'wpa_state': 'DISCONNECTED', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f'}
+2026-11-13 08:04:11,771 INFO EXPLORER-OBSERVE AP MLD disabled: no traffic test
+2026-11-13 08:04:11,771 INFO EXPLORER-ACTION 3 {"action": "disable_enable_mld", "command": "ENABLE_MLD"}
+2026-11-13 08:04:11,771 DEBUG wlan7_link0: CTRL: ENABLE_MLD
+2026-11-13 08:04:11,772 DEBUG wlan7_link0: <3>AP-ENABLED 
+2026-11-13 08:04:11,772 DEBUG wlan7_link1: <3>AP-STA-DISCONNECTED 02:00:00:00:08:00
+2026-11-13 08:04:11,772 DEBUG wlan7_link1: <3>AP-ENABLED 
+2026-11-13 08:04:11,772 INFO EXPLORER-OBSERVE after actions[3] disable_enable_mld (not associated)
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,872 INFO valid_links=0x0
+
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:11,872 INFO active_links=0x0
+
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,872 INFO station status: {'wpa_state': 'DISCONNECTED', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f'}
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,872 DEBUG wlan8: <3>Failed to get MLO link info
+2026-11-13 08:04:11,872 DEBUG wlan8: <3>CTRL-EVENT-DSCP-POLICY clear_all
+2026-11-13 08:04:11,872 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:11,872 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:11,872 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1
+2026-11-13 08:04:11,872 DEBUG wlan8(global): IFNAME=wlan8 <3>Failed to get MLO link info
+2026-11-13 08:04:11,872 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-DSCP-POLICY clear_all
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:11,872 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:11,872 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:11,872 INFO EXPLORER-ACTION 4 {"action": "sta_disconnect_reconnect", "command": "RECONNECT"}
+2026-11-13 08:04:11,872 INFO EXPLORER-HARNESS PMKSA_FLUSH and BSS_FLUSH 0 before RECONNECT
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: PMKSA_FLUSH
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: BSS_FLUSH 0
+2026-11-13 08:04:11,872 DEBUG wlan8: CTRL: RECONNECT
+2026-11-13 08:04:11,872 DEBUG wlan8: <3>PMKSA-CACHE-REMOVED 02:00:00:00:07:00 0
+2026-11-13 08:04:11,872 DEBUG wlan8: <3>CTRL-EVENT-BSS-REMOVED 0 02:00:00:0e:49:71
+2026-11-13 08:04:11,872 DEBUG wlan8: <3>CTRL-EVENT-BSS-REMOVED 1 02:00:00:a7:48:d3
+2026-11-13 08:04:11,872 DEBUG wlan8: <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-13 08:04:11,950 DEBUG wlan8: <3>CTRL-EVENT-BSS-ADDED 2 02:00:00:be:17:8c
+2026-11-13 08:04:11,950 DEBUG wlan8: <3>CTRL-EVENT-BSS-ADDED 3 02:00:00:e7:c8:be
+2026-11-13 08:04:11,950 DEBUG wlan8: <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-13 08:04:11,950 DEBUG wlan8: <3>SME: Trying to authenticate with 02:00:00:be:17:8c (SSID='explorer_mld' freq=2412 MHz)
+2026-11-13 08:04:11,950 DEBUG wlan8: <3>Failed to get MLO link info
+2026-11-13 08:04:11,950 DEBUG wlan8: <3>Failed to get MLO link info
+2026-11-13 08:04:11,950 DEBUG wlan8: <3>Trying to associate with 02:00:00:00:07:00 (SSID='explorer_mld' freq=2412 MHz)
+2026-11-13 08:04:11,950 DEBUG wlan8: <3>Failed to get MLO link info
+2026-11-13 08:04:11,960 DEBUG wlan8: <3>PMKSA-CACHE-ADDED 02:00:00:00:07:00 0
+2026-11-13 08:04:11,960 DEBUG wlan8: <3>Associated with 02:00:00:00:07:00
+2026-11-13 08:04:11,960 DEBUG wlan8: <3>CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+2026-11-13 08:04:11,960 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 111
+2026-11-13 08:04:11,960 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 403
+2026-11-13 08:04:11,960 DEBUG wlan8: <3>WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=GCMP-256 GTK=GCMP-256]
+2026-11-13 08:04:11,960 DEBUG wlan8: <3>CTRL-EVENT-CONNECTED - Connection to 02:00:00:00:07:00 completed [id=0 id_str=] ap_mld_addr=02:00:00:00:07:00
+2026-11-13 08:04:11,960 INFO EXPLORER-OBSERVE after actions[4] sta_disconnect_reconnect (associated)
+2026-11-13 08:04:12,060 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:12,061 INFO valid_links=0x3
+
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:12,061 INFO active_links=0x3
+
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx': '2', 'channel_width': '20', 'pairwise_cipher': 'GCMP-256', 'group_cipher': 'GCMP-256', 'key_mgmt': 'OWE', 'pmf': '2', 'mgmt_group_cipher': 'BIP', 'pmk_len': '32', 'ptk_len': '64', 'kck_len': '16', 'kek_len': '16', 'tk_len': '32', 'mic_len': '16', 'wpa_state': 'COMPLETED', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'ap_mld_addr': '02:00:00:00:07:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f', 'bss_max_idle_period': '292', 'bigtk_set': '1'}
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>PMKSA-CACHE-REMOVED 02:00:00:00:07:00 0
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-BSS-REMOVED 0 02:00:00:0e:49:71
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-BSS-REMOVED 1 02:00:00:a7:48:d3
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-SCAN-STARTED 
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-BSS-ADDED 2 02:00:00:be:17:8c
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-BSS-ADDED 3 02:00:00:e7:c8:be
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-SCAN-RESULTS 
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>SME: Trying to authenticate with 02:00:00:be:17:8c (SSID='explorer_mld' freq=2412 MHz)
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>Failed to get MLO link info
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>Failed to get MLO link info
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>Trying to associate with 02:00:00:00:07:00 (SSID='explorer_mld' freq=2412 MHz)
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>Failed to get MLO link info
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>PMKSA-CACHE-ADDED 02:00:00:00:07:00 0
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>Associated with 02:00:00:00:07:00
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 111
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 403
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=GCMP-256 GTK=GCMP-256]
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>CTRL-EVENT-CONNECTED - Connection to 02:00:00:00:07:00 completed [id=0 id_str=] ap_mld_addr=02:00:00:00:07:00
+2026-11-13 08:04:12,061 DEBUG wlan7_link0: <3>AP-STA-CONNECTED 02:00:00:00:08:00
+2026-11-13 08:04:12,061 DEBUG wlan7_link0: <3>EAPOL-4WAY-HS-COMPLETED 02:00:00:00:08:00
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:12,061 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:12,061 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:12,061 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:12,061 DEBUG wlan7_link0: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:12,061 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan7_link0: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:12,061 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:12,061 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:12,061 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:12,061 DEBUG wlan7_link1: <3>AP-STA-CONNECTED 02:00:00:00:08:00
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:12,061 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:12,061 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:12,061 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:12,061 DEBUG wlan7_link1: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:12,061 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:12,061 DEBUG wlan7_link1: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:12,061 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:12,061 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:12,061 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:16,776 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 323
+2026-11-13 08:04:16,776 DEBUG wlan8: <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=GCMP-256]
+2026-11-13 08:04:16,961 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 111
+2026-11-13 08:04:16,961 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 403
+2026-11-13 08:04:16,961 DEBUG wlan8: <3>WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=GCMP-256 GTK=GCMP-256]
+2026-11-13 08:04:16,961 INFO EXPLORER-OBSERVE after PTK rekey (associated)
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:17,061 INFO valid_links=0x3
+
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:17,061 INFO active_links=0x3
+
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx': '2', 'channel_width': '20', 'pairwise_cipher': 'GCMP-256', 'group_cipher': 'GCMP-256', 'key_mgmt': 'OWE', 'pmf': '2', 'mgmt_group_cipher': 'BIP', 'pmk_len': '32', 'ptk_len': '64', 'kck_len': '16', 'kek_len': '16', 'tk_len': '32', 'mic_len': '16', 'wpa_state': 'COMPLETED', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'ap_mld_addr': '02:00:00:00:07:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f', 'bss_max_idle_period': '292', 'bigtk_set': '1'}
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 323
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=GCMP-256]
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 111
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 403
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=GCMP-256 GTK=GCMP-256]
+2026-11-13 08:04:17,061 DEBUG wlan7_link0: <3>EAPOL-4WAY-HS-COMPLETED 02:00:00:00:08:00
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:17,061 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:17,061 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:17,061 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:17,061 DEBUG wlan7_link0: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:17,061 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan7_link0: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:17,061 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:17,061 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:17,061 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:17,061 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:17,061 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:17,061 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:17,061 DEBUG wlan7_link1: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:17,061 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:17,061 DEBUG wlan7_link1: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:17,061 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:17,061 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:17,061 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:21,776 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 323
+2026-11-13 08:04:21,776 DEBUG wlan8: <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=GCMP-256]
+2026-11-13 08:04:21,776 INFO EXPLORER-OBSERVE after GTK rekey 1 (associated)
+2026-11-13 08:04:21,876 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:21,877 INFO valid_links=0x3
+
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:21,877 INFO active_links=0x3
+
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx': '2', 'channel_width': '20', 'pairwise_cipher': 'GCMP-256', 'group_cipher': 'GCMP-256', 'key_mgmt': 'OWE', 'pmf': '2', 'mgmt_group_cipher': 'BIP', 'pmk_len': '32', 'ptk_len': '64', 'kck_len': '16', 'kek_len': '16', 'tk_len': '32', 'mic_len': '16', 'wpa_state': 'COMPLETED', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'ap_mld_addr': '02:00:00:00:07:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f', 'bss_max_idle_period': '292', 'bigtk_set': '1'}
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:21,877 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:21,877 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 323
+2026-11-13 08:04:21,877 DEBUG wlan8(global): IFNAME=wlan8 <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=GCMP-256]
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:21,877 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:21,877 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:21,877 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:21,877 DEBUG wlan7_link0: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:21,877 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan7_link0: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:21,877 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:21,877 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:21,877 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:21,877 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:21,877 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:21,877 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:21,877 DEBUG wlan7_link1: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:21,877 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:21,877 DEBUG wlan7_link1: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:21,877 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:21,877 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:21,877 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:21,961 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 111
+2026-11-13 08:04:21,961 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 403
+2026-11-13 08:04:21,961 DEBUG wlan8: <3>WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=GCMP-256 GTK=GCMP-256]
+2026-11-13 08:04:26,781 DEBUG wlan8: <3>EAPOL-RX 02:00:00:00:07:00 323
+2026-11-13 08:04:26,781 DEBUG wlan8: <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=GCMP-256]
+2026-11-13 08:04:26,781 INFO EXPLORER-OBSERVE after GTK rekey 2 (associated)
+2026-11-13 08:04:26,881 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:26,881 INFO valid_links=0x3
+
+2026-11-13 08:04:26,881 DEBUG wlan8: CTRL: STATUS-DRIVER
+2026-11-13 08:04:26,881 INFO active_links=0x3
+
+2026-11-13 08:04:26,881 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,881 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx': '2', 'channel_width': '20', 'pairwise_cipher': 'GCMP-256', 'group_cipher': 'GCMP-256', 'key_mgmt': 'OWE', 'pmf': '2', 'mgmt_group_cipher': 'BIP', 'pmk_len': '32', 'ptk_len': '64', 'kck_len': '16', 'kek_len': '16', 'tk_len': '32', 'mic_len': '16', 'wpa_state': 'COMPLETED', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'ap_mld_addr': '02:00:00:00:07:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f', 'bss_max_idle_period': '292', 'bigtk_set': '1'}
+2026-11-13 08:04:26,881 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,881 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,881 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:26,881 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:26,881 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 111
+2026-11-13 08:04:26,881 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 403
+2026-11-13 08:04:26,881 DEBUG wlan8(global): IFNAME=wlan8 <3>WPA: Key negotiation completed with 02:00:00:00:07:00 [PTK=GCMP-256 GTK=GCMP-256]
+2026-11-13 08:04:26,881 DEBUG wlan8(global): IFNAME=wlan8 <3>EAPOL-RX 02:00:00:00:07:00 323
+2026-11-13 08:04:26,881 DEBUG wlan8(global): IFNAME=wlan8 <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=GCMP-256]
+2026-11-13 08:04:26,881 DEBUG wlan7_link0: <3>EAPOL-4WAY-HS-COMPLETED 02:00:00:00:08:00
+2026-11-13 08:04:26,881 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:26,881 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:26,881 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:26,882 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:26,882 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:26,882 DEBUG wlan7_link0: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:26,882 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan7_link0: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:26,882 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:26,882 DEBUG wlan7_link0: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:26,882 DEBUG wlan8(global): IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:26,882 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 1
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: DATA_TEST_TX 02:00:00:00:07:00 02:00:00:00:08:00 0
+2026-11-13 08:04:26,882 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00 0
+2026-11-13 08:04:26,882 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+2026-11-13 08:04:26,882 DEBUG wlan7_link1: CTRL: DATA_TEST_TX 02:00:00:00:08:00 02:00:00:00:07:00 0
+2026-11-13 08:04:26,882 DEBUG wlan8: <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: STATUS
+2026-11-13 08:04:26,882 DEBUG wlan7_link1: CTRL: DATA_TEST_TX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00 0
+2026-11-13 08:04:26,882 DEBUG wlan8: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:26,882 DEBUG wlan8: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:26,882 DEBUG wlan7_link1: CTRL: DATA_TEST_CONFIG 0
+2026-11-13 08:04:26,882 INFO EXPLORER-DONE
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL: STATUS-DRIVER
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL: STATUS-DRIVER
+2026-11-13 08:04:26,882 DEBUG wlan2: CTRL: STATUS-DRIVER
+2026-11-13 08:04:26,882 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1
+2026-11-13 08:04:26,882 DEBUG wlan8: <3>Failed to get MLO link info
+2026-11-13 08:04:26,882 DEBUG : IFNAME=wlan8 <3>DATA-TEST-RX 02:00:00:00:08:00 02:00:00:00:07:00
+2026-11-13 08:04:26,882 DEBUG : IFNAME=wlan8 <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:07:00
+2026-11-13 08:04:26,882 DEBUG : IFNAME=wlan8 <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1
+2026-11-13 08:04:26,882 DEBUG : IFNAME=wlan8 <3>Failed to get MLO link info
+2026-11-13 08:04:26,882 DEBUG wlan0: <3>CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+2026-11-13 08:04:26,882 DEBUG wlan0: <3>CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+2026-11-13 08:04:26,882 DEBUG wlan0: <3>CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+2026-11-13 08:04:26,882 DEBUG wlan0(global): IFNAME=wlan0 <3>CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+2026-11-13 08:04:26,882 DEBUG wlan0(global): IFNAME=wlan0 <3>CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+2026-11-13 08:04:26,882 DEBUG wlan0(global): IFNAME=wlan0 <3>CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL: NOTE TEST-STOP explorer_candidate
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL: NOTE TEST-STOP explorer_candidate
+2026-11-13 08:04:26,882 DEBUG wlan2: CTRL: NOTE TEST-STOP explorer_candidate
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL: FLUSH
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL(global): REMOVE_NETWORK all
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL(global): SET p2p_no_group_iface 1
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL(global): P2P_FLUSH
+2026-11-13 08:04:26,882 DEBUG wlan0: <3>WPS-CANCEL 
+2026-11-13 08:04:26,882 DEBUG wlan0(global): IFNAME=wlan0 <3>WPS-CANCEL 
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL: STATUS-DRIVER
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL(global): IFNAME=p2p-dev-wlan0 STATUS-DRIVER
+2026-11-13 08:04:26,882 DEBUG wlan0: CTRL: PING
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL: FLUSH
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL(global): REMOVE_NETWORK all
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL(global): SET p2p_no_group_iface 1
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL(global): P2P_FLUSH
+2026-11-13 08:04:26,882 DEBUG wlan1: <3>WPS-CANCEL 
+2026-11-13 08:04:26,882 DEBUG wlan1(global): IFNAME=wlan1 <3>WPS-CANCEL 
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL: STATUS-DRIVER
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL(global): IFNAME=p2p-dev-wlan1 STATUS-DRIVER
+2026-11-13 08:04:26,882 DEBUG wlan1: CTRL: PING
+2026-11-13 08:04:26,882 DEBUG wlan2: CTRL: FLUSH
+2026-11-13 08:04:26,883 DEBUG wlan2: CTRL(global): REMOVE_NETWORK all
+2026-11-13 08:04:26,883 DEBUG wlan2: CTRL(global): SET p2p_no_group_iface 1
+2026-11-13 08:04:26,883 DEBUG wlan2: CTRL(global): P2P_FLUSH
+2026-11-13 08:04:26,883 DEBUG wlan2: <3>WPS-CANCEL 
+2026-11-13 08:04:26,883 DEBUG wlan2(global): IFNAME=wlan2 <3>WPS-CANCEL 
+2026-11-13 08:04:26,883 DEBUG wlan2: CTRL: STATUS-DRIVER
+2026-11-13 08:04:26,883 DEBUG wlan2: CTRL(global): IFNAME=p2p-dev-wlan2 STATUS-DRIVER
+2026-11-13 08:04:26,883 DEBUG wlan2: CTRL: PING
+2026-11-13 08:04:26,883 DEBUG /tmp/wpas-wlan5: CTRL(global): INTERFACES
+2026-11-13 08:04:26,883 DEBUG /tmp/wpas-wlan5: CTRL(global): INTERFACE_REMOVE wlan8
+2026-11-13 08:04:26,883 DEBUG /tmp/wpas-wlan6: CTRL(global): INTERFACES
+2026-11-13 08:04:26,883 DEBUG /tmp/wpas-wlan7: CTRL(global): INTERFACES
+2026-11-13 08:04:26,883 DEBUG : CTRL(global): FLUSH
+2026-11-13 08:04:26,883 DEBUG : CTRL(global): INTERFACES
+2026-11-13 08:04:26,883 DEBUG : CTRL(global): REMOVE wlan7
+2026-11-13 08:04:26,883 DEBUG : CTRL(global): REMOVE wlan7
+2026-11-13 08:04:26,883 DEBUG : CTRL(global): REMOVE as-erp
+2026-11-13 08:04:26,883 DEBUG /tmp/wpas-wlan5: CTRL(global): RELOG
+2026-11-13 08:04:26,883 DEBUG /tmp/wpas-wlan6: CTRL(global): RELOG
+2026-11-13 08:04:26,883 DEBUG /tmp/wpas-wlan7: CTRL(global): RELOG
+2026-11-13 08:04:26,883 DEBUG wlan0: CTRL(global): RELOG
+2026-11-13 08:04:26,883 DEBUG wlan1: CTRL(global): RELOG
+2026-11-13 08:04:26,883 DEBUG wlan2: CTRL(global): RELOG
+2026-11-13 08:04:26,883 DEBUG : CTRL(global): RELOG
+2026-11-13 08:04:26,883 INFO PASS explorer_candidate 15.497456 2026-11-13 08:04:26.883731

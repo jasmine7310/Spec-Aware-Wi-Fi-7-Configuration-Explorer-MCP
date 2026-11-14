@@ -178,6 +178,27 @@ The guide marks each value per device type, and Wi-Fi 7 means the EHT rows:
 | **Effect** | A candidate like OWE + `sae_pwe=1` would run in P2/P3, because hostap ignores the setting, but varying `sae_pwe` under OWE is a meaningless difference. `sae_pwe` only counts as a dimension under an SAE-family AKM. |
 | **Status** | IEEE Table 9-373 NOTE and §12.4.4.2.3 verified by Michelle in the PDF (2026-10-31), and §12.4.4.3.3 (2026-11-05); WFA Table 3 row verified by Michelle in the PDF (2026-11-04); hostap lines checked by Claude, accepted by Michelle (2026-11-04) |
 
+Since issue #88 the client's `sae_pwe` is modeled (`StaConfig.sae_pwe`), so both
+SEC.EHT_SAE_H2E and SEC.SAE_PWE_NEEDS_SAE are checked on the client's side too, as
+their `applies_to` (`sta_sae_pwe`) already said. For the client, "the AKM includes SAE"
+means the client allows an SAE-family AKM.
+
+### SEC.SAE_H2E_ONLY_NEEDS_STA_H2E: an AP set to H2E only needs a client with H2E enabled
+
+| | |
+|---|---|
+| **Kind** | **Setting dependency** (issue #88), not a normative prohibition: the IEEE text below describes what joining needs, without a "shall" |
+| **IEEE** | IEEE-802.11-2024 §9.4.2.3 "Supported Rates and BSS Membership Selectors element", Table 9-131 "BSS membership selector value encoding", value 123 "SAE Hash to Element Only", PDF p. 937 (printed p. 936): support for the SAE hash-to-element method is required to join a BSS that advertises it. §11.1.4.6 "Operation of Supported Rates and BSS Membership Selectors element and Extended Supported Rates and BSS Membership Selectors element", PDF pp. 2463–2464 (printed pp. 2462–2463): STAs use these elements to avoid joining a BSS whose membership selectors name features they don't support, and a STA that doesn't support them doesn't attempt to join (descriptive text; the clause's "shall"s are about including selectors, not joining). 802.11be §12.4.4.2.3 (PDF p. 399, printed p. 398) changes how H2E support is signaled in the RSNXE, not the selector. |
+| **WFA** | WFA-WPA3 Table 3, SAE Hash-to-Element row (p. 10). AP: "H2E Only" sets the RSNXE bit and the Hash-to-Element Only bit in the Supported Rates and BSS Membership Selectors element, and always uses H2E. STA: "Disabled" doesn't attempt to connect with an SAE AKM to an AP, or an AP MLD on any of its links, that advertises H2E Only; "Enabled" uses H2E with an AP advertising Enabled or H2E Only; "H2E Only" always uses H2E. |
+| **WFA, which client value** | Guidance, not coded (we don't prune choices that are merely not recommended). Table 8, WPA3-Personal Only (p. 18), EHT STA: H2E "Enabled" (`sae_pwe=2`) MAND, "Disabled" DISALLOW, "H2E Only" (`sae_pwe=1`) DISALLOW except, per footnote (**) (pp. 18–19), where all APs and STAs are known to support EHT, as in our two-device testbed. Table 5, Transition Mode (p. 14), EHT STA: Enabled MAND, H2E Only and Disabled DISALLOW. For an AP with EHT enabled on 2.4 GHz, Table 8 makes Enabled MAND; its H2E Only cell only names 6 GHz / sub-1 GHz (MAND there). Read with the layout of the PDF page (pypdf layout mode), 2026-11-12. |
+| **Strength** | IEEE: unclassified (descriptive); WFA: guidance; hostap: code |
+| **hostap mapping** | `sae_pwe` is numbered the same in hostapd and wpa_supplicant: `0` hunting-and-pecking only (the default without a password identifier), `1` H2E only, `2` both (`hostapd/hostapd.conf:2292-2294`, `wpa_supplicant/wpa_supplicant.conf:501-509`). The AP adds the H2E-only selector when `sae_pwe=1` and all its AKMs are SAE-family (`src/ap/ieee802_11.c:166-170`; `wpa_key_mgmt_only_sae` counts SAE, SAE-EXT-KEY and their FT forms, `src/common/defs.h:133-140`). The client, when its `sae_pwe` is hunting-and-pecking (unset falls back to the global value, `wpa_supplicant/wpa_supplicant.c:10332-10340`), skips a BSS with that selector for any SAE AKM, SAE-EXT-KEY included (`wpa_supplicant/events.c:1250-1259`, "SAE H2E disabled"). The handshake itself uses H2E with SAE-EXT-KEY even when unset (`wpa_supplicant/sme.c:364-366`), so this is about BSS selection only. hostap's MLD tests set the client's `sae_pwe=1` whenever the AP uses `pwe=1` (`tests/hwsim/test_eht.py:672, 707`). |
+| **Rule candidate** | If the AP's `sae_pwe` is `1` and some AP link offers only SAE-family AKMs, a client that allows an SAE AKM needs `sae_pwe` `1` or `2`. |
+| **Candidates** | `ap_sae_pwe`, `sta_sae_pwe`, `ap_akm`, `sta_akm` |
+| **Run evidence** | `ap_sae_pwe=1` with the client's `sae_pwe` unset: REJECTED, the client never finds the network (`runs/rejected/1794384673`, issue #61). With the client's `sae_pwe` set: see `runs/smoke/README.md` (issue #88). |
+| **Effect** | `ap_sae_pwe=1` becomes admissible, paired with a client that has H2E enabled. The client's `sae_pwe` (unset / `1` / `2`) is a setting in its own right, meaningful only with an SAE-family AKM (SEC.SAE_PWE_NEEDS_SAE). |
+| **Status** | **Verified.** Drafted by Claude (AI agent) from the PDF text and the hostap lines at the pinned commit, 2026-11-12. Michelle checked Table 9-131, §11.1.4.6 (heading and pages) and WFA Table 3 in the PDFs and accepted the hostap lines (2026-11-13, PR #92). §11.1.4.6 stays unclassified: its body text (PDF pp. 2463–2464), not only its NOTEs, describes not joining, without a "shall". |
+
 ## What this changes for the smoke test
 
 If the findings above hold:

@@ -11,13 +11,15 @@ Fields and allowed values come from ``surface_candidates.csv`` and hostap at the
 commit (43ee60e1). Values are limited to those hostap's EHT/MLD tests actually use;
 meanings are from ``hostapd/hostapd.conf`` and ``wpa_supplicant/wpa_supplicant.conf``.
 
-Not fields: client PMF is required (``ieee80211w=2``) in the MLD tests. Client SAE PWE
-isn't modeled: the plain-SAE tests set ``sae_pwe=1``, the SAE-EXT-KEY tests leave it unset,
-and wpa_supplicant uses hash-to-element with SAE-EXT-KEY either way. But BSS selection
-does depend on it: a client with it unset skips an AP with ``sae_pwe=1`` (hash_to_element)
-and only SAE AKMs, which advertises the SAE H2E-only selector (run 1794384673,
-docs/dimensions.md). Modeling it is open. SSID and passphrase
-are supplied by the harness.
+Not fields: client PMF is required (``ieee80211w=2``) in the MLD tests. SSID and
+passphrase are supplied by the harness.
+
+Client SAE PWE (``StaConfig.sae_pwe``, issue #88): the plain-SAE MLD tests set
+``sae_pwe=1``, the SAE-EXT-KEY tests leave it unset. wpa_supplicant uses hash-to-element
+with SAE-EXT-KEY either way (``wpa_supplicant/sme.c:364-366``), but BSS selection depends on
+it: a client with it unset skips an AP with ``sae_pwe=1`` and only SAE AKMs, which
+advertises the SAE H2E-only selector (``wpa_supplicant/events.c:1250-1256``; run
+1794384673). That pairing is P1 rule ``SEC.SAE_H2E_ONLY_NEEDS_STA_H2E``.
 
 Actions are the runtime operations in ``surface_candidates.csv`` (kind "action"), as
 hostap's tests issue them at the pinned commit; each class names its source lines.
@@ -29,7 +31,15 @@ from typing import Annotated, Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-SCHEMA_VERSION = 1
+# 2: StaConfig.sae_pwe added (issue #88).
+SCHEMA_VERSION = 2
+
+# Schema versions whose recorded candidates still mean what they did when they ran, read
+# with today's model. 1 -> 2 only added StaConfig.sae_pwe, whose default (unset) is what
+# every schema-1 run did, so a schema-1 run's candidate parses to the same experiment. A
+# version that changes what an existing field means must not be listed here. P2 uses this
+# to decide whether an old run still shows a candidate executes (support._on_pinned_versions).
+COMPATIBLE_SCHEMA_VERSIONS = frozenset({1, 2})
 
 # AKMs (hostapd wpa_key_mgmt / wpa_supplicant key_mgmt) used in test_eht.py.
 Akm = Literal["SAE", "SAE-EXT-KEY", "OWE", "WPA-PSK", "WPA-PSK-SHA256"]
@@ -52,8 +62,11 @@ CHANNELS = {1, 6}
 Pmf = Literal["optional", "required"]
 PMF_TO_IEEE80211W = {"optional": 1, "required": 2}
 
-# hostapd sae_pwe: 1 = hash-to-element only, 2 = both hunting-and-pecking and
-# hash-to-element (hostapd.conf). 0 (hunting-and-pecking only) isn't used in the tests.
+# sae_pwe, the same numbers in hostapd and wpa_supplicant: 1 = hash-to-element only,
+# 2 = both hunting-and-pecking and hash-to-element (hostapd/hostapd.conf,
+# wpa_supplicant/wpa_supplicant.conf). 0 (hunting-and-pecking only) isn't set in the MLD
+# tests; leaving the field unset gives it. The client uses 1 (test_eht.py:672, 707, ...)
+# and 2 (1282); the WFA guide calls 1 "H2E Only" and 2 "Enabled" (Table 3, p. 10).
 SaePwe = Literal["hash_to_element", "both"]
 SAE_PWE_TO_HOSTAPD = {"hash_to_element": 1, "both": 2}
 
@@ -142,6 +155,11 @@ class StaConfig(BaseModel):
     sae_groups: list[SaeGroup] | None = Field(
         default=None, min_length=1,
         description="wpa_supplicant sae_groups, tried in order; None = default.")
+    sae_pwe: SaePwe | None = Field(
+        default=None,
+        description="wpa_supplicant sae_pwe (hash_to_element=1, both=2); None leaves it "
+                    "unset (0: hunting-and-pecking, though SAE-EXT-KEY still uses "
+                    "hash-to-element). Unset can't join an AP that advertises H2E only.")
     beacon_protection: bool = Field(
         default=True,
         description="wpa_supplicant beacon_prot; False leaves it unset, as most of hostap's "

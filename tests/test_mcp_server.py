@@ -57,7 +57,20 @@ def test_get_model_lists_every_rule_and_question():
     assert rules["SEC.MLD_COMMON_SUITES"]["kind"] == "normative"
     assert rules["AO.ASSOC_REQUIRED"]["kind"] == "harness"
     assert rules["UND.AKM_PREFERENCE"]["kind"] == "open_question"
-    assert len(rules) == 16 + 3   # rules.yaml: 16 rules + 3 open questions
+    assert len(rules) == 17 + 3   # rules.yaml: 17 rules + 3 open questions
+
+
+def test_get_model_matches_model_json():
+    import json
+    from explorer.model_json import MODEL_JSON
+    on_disk = json.loads(MODEL_JSON.read_text())
+    model = _get_model()["model"]
+    assert model["file"] == "model.json"
+    assert model["model_digest"] == on_disk["model_digest"]
+    assert (model["schema_version"], model["rules_version"]) == (
+        on_disk["schema_version"], on_disk["rules_version"])
+    assert {d["name"]: d["values"] for d in model["dimensions"]} == {
+        d["name"]: [v["label"] for v in d["values"]] for d in on_disk["dimensions"]}
 
 
 def test_uncalibrated_facts_are_flagged():
@@ -134,7 +147,8 @@ def test_validate_candidate_legal():
     result = _validate({"config": TEST_CONFIGS["eht_mld_sae_ext_two_links_client_bp"].model_dump(),
                         "actions": [{"action": "associate"}, {"action": "rekey_gtk_now"}]})
     assert (result["status"], result["findings"]) == ("PASSES_MODELED_RULES", [])
-    assert result["p2"]["status"] == "UNRESOLVED"
+    # The #61 smoke run 1794384695 (an adapter run) did exactly this candidate (#80).
+    assert (result["p2"]["status"], result["p2"]["test"]) == ("SUPPORTED", "explorer_candidate")
 
 
 def test_validate_candidate_supported_names_the_test_to_run():
@@ -406,8 +420,9 @@ def test_run_candidate_runs_a_legal_candidate(monkeypatch):
     assert [s.action for s in seen[0].actions] == ["associate", "rekey_gtk_now"]
     assert (report["status"], report["negative_experiment"]) == ("PASSES_MODELED_RULES", False)
     assert report["p3_status"] == "ACCEPTED" and report["run_id"] == "1793897820"
-    # No hostap test does associate + rekey_gtk_now alone, so this run is a support probe.
-    assert report["p2"]["status"] == "UNRESOLVED"
+    # No hostap test does associate + rekey_gtk_now alone, but the adapter run 1794384695
+    # did, so P2 counts it as SUPPORTED (#80) rather than a support probe.
+    assert report["p2"]["status"] == "SUPPORTED"
     assert report["run_folder"] == "runs/smoke/1793897820"
 
 

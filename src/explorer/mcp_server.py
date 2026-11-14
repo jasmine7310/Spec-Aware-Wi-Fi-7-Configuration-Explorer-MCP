@@ -30,7 +30,7 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from pydantic import BaseModel
 
-from explorer import adapter, validate
+from explorer import adapter, model_json, validate
 from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test
 from explorer.scenarios import TEST_CONFIGS
@@ -102,8 +102,29 @@ class RuleSummary(BaseModel):
     title: str
 
 
+class DimensionSummary(BaseModel):
+    name: str
+    category: str
+    """security, key or link."""
+    path: str
+    """Where it sits in a candidate, e.g. config.ap.sae_pwe, or actions."""
+    values: list[str]
+    """Its smoke-tested values as model.json labels; model.json gives the typed values."""
+
+
+class ModelVersion(BaseModel):
+    file: str
+    schema_version: int
+    rules_version: int
+    model_digest: str
+    """Changes when the schema, a dimension's values, a rule or a pinned version does."""
+    dimensions: list[DimensionSummary]
+
+
 class ModelInfo(BaseModel):
     status: str
+    model: ModelVersion
+    """model.json: the candidate space's versions and admitted dimensions."""
     pinned_versions: PinnedVersions
     stages: list[StageStatus]
     observable_facts: list[ObservableFact]
@@ -152,15 +173,18 @@ STAGES = [
                 note="validate_candidate checks a candidate against the settings and action "
                      "models and reports readable P0.* errors."),
     StageStatus(stage="P1 specification rules", implemented=True,
-                note="A modeled subset, not full 802.11be: six security/setting rules, nine "
+                note="A modeled subset, not full 802.11be: seven security/setting rules, nine "
                      "action-order rules and three open questions (SPEC_UNDETERMINED), all "
-                     "applied by validate_candidate and explained by explain_rule. Every "
-                     "rule's citations are checked, and they're all reviewed."),
+                     "applied by validate_candidate and explained by explain_rule. A rule "
+                     "whose status is draft (explain_rule shows it) still waits for a person "
+                     "to check its citations; the others are reviewed."),
     StageStatus(stage="P2 implementation support", implemented=True,
-                note="Basic: validate_candidate reports SUPPORTED only when a tested hostap "
-                     "scenario executes the candidate exactly (with its passing committed "
-                     "runs), otherwise UNRESOLVED with per-value run evidence. Nothing is "
-                     "UNSUPPORTED_IMPLEMENTATION without a recorded failure."),
+                note="Basic: validate_candidate reports SUPPORTED when a tested hostap "
+                     "scenario or a committed adapter run (pinned versions) executed the candidate "
+                     "exactly, otherwise UNRESOLVED with per-value run evidence; "
+                     "all_values_evidenced marks a support probe the campaign may run. "
+                     "Nothing is UNSUPPORTED_IMPLEMENTATION without a recorded failure "
+                     "(issue #80)."),
     StageStatus(stage="P3 execution", implemented=True,
                 note="run_hwsim_test runs one approved hostap hwsim test in a fresh "
                      "UML guest and returns its behavior record; run_candidate runs any "
@@ -236,17 +260,34 @@ def rule_summaries() -> list[RuleSummary]:
             for entry in [*registry.rules, *registry.undetermined]]
 
 
+def model_version() -> ModelVersion:
+    """model.json's versions and admitted dimensions (built from the same sources the
+    file is; tests/test_model_json.py keeps the file in step)."""
+    built = model_json.build()
+    return ModelVersion(
+        file=model_json.MODEL_JSON.name,
+        schema_version=built["schema_version"],
+        rules_version=built["rules_version"],
+        model_digest=built["model_digest"],
+        dimensions=[DimensionSummary(name=d["name"], category=d["category"], path=d["path"],
+                                     values=[v["label"] for v in d["values"]])
+                    for d in built["dimensions"]])
+
+
 @server.tool()
 def get_model() -> ModelInfo:
-    """Describe the explorer's current scope: pinned hostap/kernel versions, which
+    """Describe the explorer's current scope: model.json's versions and the admitted
+    dimensions with their smoke-tested values, pinned hostap/kernel versions, which
     pipeline stages (P0-P4) are implemented, which behavior facts runs can report,
     which hostap tests have recorded runs in the repo, which tests run_hwsim_test
     accepts (with what the coded P1 rules say about each), and every modeled rule and
     open question by ID."""
     return ModelInfo(
         status=("Candidates can be validated through P0, P1 and a basic P2 support check "
-                "(validate_candidate), and approved hostap tests run in fresh guests "
-                "(run_hwsim_test). Campaigns and contrasts aren't built yet."),
+                "(validate_candidate), and approved hostap tests or any candidate the "
+                "adapter supports run in fresh guests (run_hwsim_test, run_candidate). "
+                "Campaigns and contrasts aren't built yet."),
+        model=model_version(),
         pinned_versions=pinned_versions(),
         stages=STAGES,
         observable_facts=observable_facts(),
@@ -274,10 +315,13 @@ def validate_candidate(candidate: dict[str, Any]) -> ValidationResult:
     full entry.
 
     A candidate that passes the modeled rules also gets p2, the implementation support
-    check: SUPPORTED with the test name and run IDs when a tested hostap scenario executes
-    it exactly (then run it with run_hwsim_test), otherwise UNRESOLVED with the committed
-    runs behind each of its values and the closest tests. UNRESOLVED isn't "unsupported";
-    it means no run shows this exact combination."""
+    check: SUPPORTED with the test name and run IDs when a tested hostap scenario executed
+    it exactly (run it with run_hwsim_test), or when a committed adapter run did on the
+    pinned versions (test explorer_candidate; run it with run_candidate). Otherwise
+    UNRESOLVED with the committed runs behind each of its values and the closest tests.
+    UNRESOLVED isn't "unsupported"; it means no run shows this exact combination. With
+    all_values_evidenced true, every value has a passing legal run: a support probe. A
+    value with a recorded refusal (runs/rejected/) is listed in recorded_refusals."""
     return validate.validate_candidate(candidate)
 
 
@@ -365,9 +409,9 @@ class CandidateRunReport(BaseModel):
     negative_experiment: bool
     """True when the candidate doesn't pass the modeled rules and was run on request anyway."""
     p2: SupportResult | None
-    """validate_candidate's P2 result: SUPPORTED means a tested hostap scenario does exactly
-    this; UNRESOLVED means this run is a support probe. None when the modeled rules
-    didn't pass the candidate."""
+    """validate_candidate's P2 result: SUPPORTED means a tested hostap scenario or a
+    committed adapter run did exactly this; UNRESOLVED with all_values_evidenced means
+    this run is a support probe. None when the modeled rules didn't pass the candidate."""
     p3_status: adapter.P3Status
     """ACCEPTED (every action carried out), REJECTED (hostapd/wpa_supplicant refused a
     setup step or action; see reason), SETUP_FAIL or TIMEOUT (nothing said about the

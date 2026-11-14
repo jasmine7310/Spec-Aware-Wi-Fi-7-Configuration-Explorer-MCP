@@ -1,0 +1,184 @@
+[    1.010000] running hwsim test case explorer_candidate
+[    1.010000] TEST-START explorer_candidate @1794611971.382857
+[    1.080000] wlan8: determined local STA to be UHR, BW limited to 40 MHz
+[    1.080000] wlan8: Allocated STA 02:00:00:00:07:00
+[    1.080000] wlan8: [link 0] determined AP 02:00:00:26:e0:91 to be EHT
+[    1.080000] wlan8: [link 0] connecting with EHT mode, max bandwidth 40 MHz
+[    1.080000] wlan8: Inserted STA 02:00:00:00:07:00
+[    1.080000] wlan8: authenticate with 02:00:00:00:07:00 (local address=22:da:8a:12:8a:e6)
+[    1.080000] wlan8: send auth to 02:00:00:00:07:00 (try 1/3)
+[    1.080000] wlan7: Allocated STA 02:00:00:00:08:00
+[    1.080000] wlan7: Inserted STA 02:00:00:00:08:00
+[    1.080000] wlan8: authenticated
+[    1.080000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[    1.080000] wlan8: [link 0] determined local STA to be UHR, BW limited to 40 MHz
+[    1.080000] wlan8: [link 1] determined local STA to be UHR, BW limited to 40 MHz
+[    1.080000] wlan8: [link 1] determined AP 02:00:00:8a:9c:03 to be EHT
+[    1.080000] wlan8: [link 1] connecting with EHT mode, max bandwidth 40 MHz
+[    1.090000] wlan8: associate with 02:00:00:00:07:00 (try 1/3)
+[    1.090000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[    1.090000] wlan7: moving STA 02:00:00:00:08:00 to state 3
+[    1.090000] wlan8: RX AssocResp from 02:00:00:00:07:00 (capab=0x411 status=0 aid=1)
+[    1.090000] wlan8: [link 0] local address 22:da:8a:12:8a:e6, AP link address 02:00:00:26:e0:91 (assoc)
+[    1.090000] wlan8: WMM AC=0 acm=0 aifs=2 cWmin=3 cWmax=7 txop=47 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=1 acm=0 aifs=2 cWmin=7 cWmax=15 txop=94 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=2 acm=0 aifs=3 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=3 acm=0 aifs=7 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[    1.090000] wlan8: [link 1] local address 5a:bb:c3:9d:ab:67, AP link address 02:00:00:8a:9c:03
+[    1.090000] wlan8: [link 1] determined AP 02:00:00:8a:9c:03 to be EHT
+[    1.090000] wlan8: [link 1] connecting with EHT mode, max bandwidth 40 MHz
+[    1.090000] wlan8: WMM AC=0 acm=0 aifs=2 cWmin=3 cWmax=7 txop=47 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=1 acm=0 aifs=2 cWmin=7 cWmax=15 txop=94 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=2 acm=0 aifs=3 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=3 acm=0 aifs=7 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[    1.090000] wlan8: moving STA 02:00:00:00:07:00 to state 3
+[    1.090000] wlan8: associated
+[    1.090000] wlan8: moving STA 02:00:00:00:07:00 to state 4
+[    1.090000] wlan7: moving STA 02:00:00:00:08:00 to state 4
+[    1.090000] wlan8: WMM AC=0 acm=0 aifs=2 cWmin=3 cWmax=7 txop=47 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=1 acm=0 aifs=2 cWmin=7 cWmax=15 txop=94 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=2 acm=0 aifs=3 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[    1.090000] wlan8: WMM AC=3 acm=0 aifs=7 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[    1.630000] wlan8: MLO Reconfiguration: work: valid=0x3, removed=0x2
+[   10.090000] wlan7: moving STA 02:00:00:00:08:00 to state 3
+[   10.090000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   10.090000] wlan7: moving STA 02:00:00:00:08:00 to state 1
+[   10.090000] wlan7: Removed STA 02:00:00:00:08:00
+[   10.090000] wlan7: Destroyed STA 02:00:00:00:08:00
+[   10.090000] wlan8: deauthenticated from 02:00:00:00:07:00 (Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
+[   10.090000] wlan8: moving STA 02:00:00:00:07:00 to state 3
+[   10.090000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   10.090000] wlan8: moving STA 02:00:00:00:07:00 to state 1
+[   10.090000] wlan8: Removed STA 02:00:00:00:07:00
+[   10.090000] wlan8: Destroyed STA 02:00:00:00:07:00
+[   10.270000] wlan8: determined local STA to be UHR, BW limited to 40 MHz
+[   10.270000] wlan8: Allocated STA 02:00:00:00:07:00
+[   10.270000] wlan8: [link 0] determined AP 02:00:00:26:e0:91 to be EHT
+[   10.270000] wlan8: [link 0] connecting with EHT mode, max bandwidth 40 MHz
+[   10.270000] wlan8: Inserted STA 02:00:00:00:07:00
+[   10.270000] wlan8: authenticate with 02:00:00:00:07:00 (local address=f6:e1:e2:78:d1:4a)
+[   10.270000] wlan8: send auth to 02:00:00:00:07:00 (try 1/3)
+[   10.270000] wlan7: Allocated STA 02:00:00:00:08:00
+[   10.270000] wlan7: Inserted STA 02:00:00:00:08:00
+[   10.270000] wlan8: authenticated
+[   10.270000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   10.270000] wlan8: [link 0] determined local STA to be UHR, BW limited to 40 MHz
+[   10.280000] wlan8: associate with 02:00:00:00:07:00 (try 1/3)
+[   10.280000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   10.280000] wlan7: moving STA 02:00:00:00:08:00 to state 3
+[   10.280000] wlan8: RX AssocResp from 02:00:00:00:07:00 (capab=0x411 status=0 aid=1)
+[   10.280000] wlan8: [link 0] local address f6:e1:e2:78:d1:4a, AP link address 02:00:00:26:e0:91 (assoc)
+[   10.280000] wlan8: WMM AC=0 acm=0 aifs=2 cWmin=3 cWmax=7 txop=47 uapsd=0, downgraded=0
+[   10.280000] wlan8: WMM AC=1 acm=0 aifs=2 cWmin=7 cWmax=15 txop=94 uapsd=0, downgraded=0
+[   10.280000] wlan8: WMM AC=2 acm=0 aifs=3 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[   10.280000] wlan8: WMM AC=3 acm=0 aifs=7 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[   10.280000] wlan8: moving STA 02:00:00:00:07:00 to state 3
+[   10.280000] wlan8: associated
+[   11.830000] wlan8: dropped frame to 02:00:00:00:07:00 (unauthorized port)
+[   14.280000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   14.280000] wlan7: moving STA 02:00:00:00:08:00 to state 1
+[   14.280000] wlan7: Removed STA 02:00:00:00:08:00
+[   14.280000] wlan7: Destroyed STA 02:00:00:00:08:00
+[   14.280000] wlan8: deauthenticated from 02:00:00:00:07:00 (Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
+[   14.280000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   14.280000] wlan8: moving STA 02:00:00:00:07:00 to state 1
+[   14.280000] wlan8: Removed STA 02:00:00:00:07:00
+[   14.280000] wlan8: Destroyed STA 02:00:00:00:07:00
+[   14.460000] wlan8: determined local STA to be UHR, BW limited to 40 MHz
+[   14.460000] wlan8: Allocated STA 02:00:00:00:07:00
+[   14.460000] wlan8: [link 0] determined AP 02:00:00:26:e0:91 to be EHT
+[   14.460000] wlan8: [link 0] connecting with EHT mode, max bandwidth 40 MHz
+[   14.460000] wlan8: Inserted STA 02:00:00:00:07:00
+[   14.460000] wlan8: authenticate with 02:00:00:00:07:00 (local address=06:44:31:0f:c1:4b)
+[   14.460000] wlan8: send auth to 02:00:00:00:07:00 (try 1/3)
+[   14.460000] wlan7: Allocated STA 02:00:00:00:08:00
+[   14.460000] wlan7: Inserted STA 02:00:00:00:08:00
+[   14.460000] wlan8: authenticated
+[   14.460000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   14.460000] wlan8: [link 0] determined local STA to be UHR, BW limited to 40 MHz
+[   14.470000] wlan8: associate with 02:00:00:00:07:00 (try 1/3)
+[   14.470000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   14.470000] wlan7: moving STA 02:00:00:00:08:00 to state 3
+[   14.470000] wlan8: RX AssocResp from 02:00:00:00:07:00 (capab=0x411 status=0 aid=1)
+[   14.470000] wlan8: [link 0] local address 06:44:31:0f:c1:4b, AP link address 02:00:00:26:e0:91 (assoc)
+[   14.470000] wlan8: WMM AC=0 acm=0 aifs=2 cWmin=3 cWmax=7 txop=47 uapsd=0, downgraded=0
+[   14.470000] wlan8: WMM AC=1 acm=0 aifs=2 cWmin=7 cWmax=15 txop=94 uapsd=0, downgraded=0
+[   14.470000] wlan8: WMM AC=2 acm=0 aifs=3 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[   14.470000] wlan8: WMM AC=3 acm=0 aifs=7 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[   14.470000] wlan8: moving STA 02:00:00:00:07:00 to state 3
+[   14.470000] wlan8: associated
+[   15.200000] wlan8: dropped frame to 02:00:00:00:07:00 (unauthorized port)
+[   18.470000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   18.470000] wlan7: moving STA 02:00:00:00:08:00 to state 1
+[   18.470000] wlan7: Removed STA 02:00:00:00:08:00
+[   18.470000] wlan7: Destroyed STA 02:00:00:00:08:00
+[   18.470000] wlan8: deauthenticated from 02:00:00:00:07:00 (Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
+[   18.470000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   18.470000] wlan8: moving STA 02:00:00:00:07:00 to state 1
+[   18.470000] wlan8: Removed STA 02:00:00:00:07:00
+[   18.470000] wlan8: Destroyed STA 02:00:00:00:07:00
+[   18.650000] wlan8: determined local STA to be UHR, BW limited to 40 MHz
+[   18.650000] wlan8: Allocated STA 02:00:00:00:07:00
+[   18.650000] wlan8: [link 0] determined AP 02:00:00:26:e0:91 to be EHT
+[   18.650000] wlan8: [link 0] connecting with EHT mode, max bandwidth 40 MHz
+[   18.650000] wlan8: Inserted STA 02:00:00:00:07:00
+[   18.650000] wlan8: authenticate with 02:00:00:00:07:00 (local address=3e:0a:77:44:00:6c)
+[   18.650000] wlan8: send auth to 02:00:00:00:07:00 (try 1/3)
+[   18.650000] wlan7: Allocated STA 02:00:00:00:08:00
+[   18.650000] wlan7: Inserted STA 02:00:00:00:08:00
+[   18.650000] wlan8: authenticated
+[   18.650000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   18.650000] wlan8: [link 0] determined local STA to be UHR, BW limited to 40 MHz
+[   18.660000] wlan8: associate with 02:00:00:00:07:00 (try 1/3)
+[   18.660000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   18.660000] wlan7: moving STA 02:00:00:00:08:00 to state 3
+[   18.660000] wlan8: RX AssocResp from 02:00:00:00:07:00 (capab=0x411 status=0 aid=1)
+[   18.660000] wlan8: [link 0] local address 3e:0a:77:44:00:6c, AP link address 02:00:00:26:e0:91 (assoc)
+[   18.660000] wlan8: WMM AC=0 acm=0 aifs=2 cWmin=3 cWmax=7 txop=47 uapsd=0, downgraded=0
+[   18.660000] wlan8: WMM AC=1 acm=0 aifs=2 cWmin=7 cWmax=15 txop=94 uapsd=0, downgraded=0
+[   18.660000] wlan8: WMM AC=2 acm=0 aifs=3 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[   18.660000] wlan8: WMM AC=3 acm=0 aifs=7 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[   18.660000] wlan8: moving STA 02:00:00:00:07:00 to state 3
+[   18.660000] wlan8: associated
+[   22.660000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   22.660000] wlan7: moving STA 02:00:00:00:08:00 to state 1
+[   22.660000] wlan7: Removed STA 02:00:00:00:08:00
+[   22.660000] wlan7: Destroyed STA 02:00:00:00:08:00
+[   22.660000] wlan8: deauthenticated from 02:00:00:00:07:00 (Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
+[   22.660000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   22.660000] wlan8: moving STA 02:00:00:00:07:00 to state 1
+[   22.660000] wlan8: Removed STA 02:00:00:00:07:00
+[   22.660000] wlan8: Destroyed STA 02:00:00:00:07:00
+[   32.920000] wlan8: determined local STA to be UHR, BW limited to 40 MHz
+[   32.920000] wlan8: Allocated STA 02:00:00:00:07:00
+[   32.920000] wlan8: [link 0] determined AP 02:00:00:26:e0:91 to be EHT
+[   32.920000] wlan8: [link 0] connecting with EHT mode, max bandwidth 40 MHz
+[   32.920000] wlan8: Inserted STA 02:00:00:00:07:00
+[   32.920000] wlan8: authenticate with 02:00:00:00:07:00 (local address=7a:d0:2a:f9:ea:61)
+[   32.920000] wlan8: send auth to 02:00:00:00:07:00 (try 1/3)
+[   32.920000] wlan7: Allocated STA 02:00:00:00:08:00
+[   32.920000] wlan7: Inserted STA 02:00:00:00:08:00
+[   32.920000] wlan8: authenticated
+[   32.920000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   32.920000] wlan8: [link 0] determined local STA to be UHR, BW limited to 40 MHz
+[   32.930000] wlan8: associate with 02:00:00:00:07:00 (try 1/3)
+[   32.930000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   32.930000] wlan7: moving STA 02:00:00:00:08:00 to state 3
+[   32.930000] wlan8: RX AssocResp from 02:00:00:00:07:00 (capab=0x411 status=0 aid=1)
+[   32.930000] wlan8: [link 0] local address 7a:d0:2a:f9:ea:61, AP link address 02:00:00:26:e0:91 (assoc)
+[   32.930000] wlan8: WMM AC=0 acm=0 aifs=2 cWmin=3 cWmax=7 txop=47 uapsd=0, downgraded=0
+[   32.930000] wlan8: WMM AC=1 acm=0 aifs=2 cWmin=7 cWmax=15 txop=94 uapsd=0, downgraded=0
+[   32.930000] wlan8: WMM AC=2 acm=0 aifs=3 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[   32.930000] wlan8: WMM AC=3 acm=0 aifs=7 cWmin=15 cWmax=1023 txop=0 uapsd=0, downgraded=0
+[   32.930000] wlan8: moving STA 02:00:00:00:07:00 to state 3
+[   32.930000] wlan8: associated
+[   36.930000] wlan7: moving STA 02:00:00:00:08:00 to state 2
+[   36.930000] wlan7: moving STA 02:00:00:00:08:00 to state 1
+[   36.930000] wlan7: Removed STA 02:00:00:00:08:00
+[   36.930000] wlan7: Destroyed STA 02:00:00:00:08:00
+[   36.930000] wlan8: deauthenticated from 02:00:00:00:07:00 (Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
+[   36.930000] wlan8: moving STA 02:00:00:00:07:00 to state 2
+[   36.930000] wlan8: moving STA 02:00:00:00:07:00 to state 1
+[   36.930000] wlan8: Removed STA 02:00:00:00:07:00
+[   36.930000] wlan8: Destroyed STA 02:00:00:00:07:00
+[   37.030000] TEST-STOP explorer_candidate @1794612007.411654

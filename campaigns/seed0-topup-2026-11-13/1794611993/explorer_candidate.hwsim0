@@ -1,0 +1,199 @@
+1794611994.341165: Writing PCAPNG dump to '/tmp/logs/hwsim0.pcapng'
+1794611994.345441: Discovered new BSS - 02:00:00:af:0e:eb
+1794611994.345441: DEAUTH 02:00:00:af:0e:eb -> ff:ff:ff:ff:ff:ff (reason=2) (valid=1)
+1794611994.345588: Discovered new BSS - 02:00:00:39:48:ca
+1794611994.345588: DEAUTH 02:00:00:39:48:ca -> ff:ff:ff:ff:ff:ff (reason=2) (valid=1)
+1794611994.345768: Store SSID 'explorer_mld' for BSSID 02:00:00:af:0e:eb
+1794611994.345768: BSS 02:00:00:af:0e:eb - RSN IE stored
+1794611994.345768: RSN IE - hexdump(len=22): 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00
+1794611994.345769: Learned AP MLD MAC Address from Beacon/Probe Response frame: 02:00:00:00:07:00 (BSSID 02:00:00:af:0e:eb)
+1794611994.345769: Learned AP MLD Link ID 0 for this affiliated link
+1794611994.345769: BSS 02:00:00:af:0e:eb proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=rsn_capab=MFPR MFPC 
+1794611994.362842: Store SSID 'explorer_mld' for BSSID 02:00:00:39:48:ca
+1794611994.362842: BSS 02:00:00:39:48:ca - RSN IE stored
+1794611994.362842: RSN IE - hexdump(len=22): 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00
+1794611994.362843: Learned AP MLD MAC Address from Beacon/Probe Response frame: 02:00:00:00:07:00 (BSSID 02:00:00:39:48:ca)
+1794611994.362843: Learned AP MLD Link ID 1 for this affiliated link
+1794611994.362843: BSS 02:00:00:39:48:ca proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=rsn_capab=MFPR MFPC 
+1794611994.362843: Beacon frame BSSID 02:00:00:39:48:ca MME KeyID 6 BIPN 0x1
+1794611994.362844: No BIGTK known to validate BIP frame from 02:00:00:39:48:ca
+1794611994.362844: Beacon frame BSSID 02:00:00:af:0e:eb MME KeyID 6 BIPN 0x1
+1794611994.362844: No BIGTK known to validate BIP frame from 02:00:00:af:0e:eb
+1794611994.418956: Discovered new STA ae:d8:1b:9b:8b:21 in BSS 02:00:00:af:0e:eb (MLD 02:00:00:00:07:00)
+1794611994.418957: AUTH ae:d8:1b:9b:8b:21 -> 02:00:00:af:0e:eb (alg=3 trans=1 status=126)
+1794611994.418957: SAE Commit using group 19
+1794611994.418958: AUTH 02:00:00:af:0e:eb -> ae:d8:1b:9b:8b:21 (alg=3 trans=1 status=126)
+1794611994.418958: SAE Commit using group 19
+1794611994.419007: AUTH ae:d8:1b:9b:8b:21 -> 02:00:00:af:0e:eb (alg=3 trans=2 status=0)
+1794611994.419008: AUTH 02:00:00:af:0e:eb -> ae:d8:1b:9b:8b:21 (alg=3 trans=2 status=0)
+1794611994.419008: STA ae:d8:1b:9b:8b:21 moved to State 2 with 02:00:00:af:0e:eb
+1794611994.428841: ASSOCREQ ae:d8:1b:9b:8b:21 -> 02:00:00:af:0e:eb (capab=0x430 listen_int=5)
+1794611994.428841: RSN IE - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1794611994.428841: STA ae:d8:1b:9b:8b:21 proto=WPA2 pairwise=CCMP key_mgmt=SAE-EXT-KEY rsn_capab=MFPR MFPC 
+1794611994.428842: STA MLD Address: 02:00:00:00:08:00
+1794611994.428842: Learned Link ID 0 MAC address ae:d8:1b:9b:8b:21 from Association Request (assoc link)
+1794611994.428842: Multi-Link Control: Type=0 Reserved=0 Presence Bitmap=0x10
+1794611994.428842: MLD MAC Address: 02:00:00:00:08:00
+1794611994.428843: MLD Capabilities and Operations: 0x0 (Max_Simultaneous_Links=0 SRS=0 T2L=0x0 Freq_Sep_STR=0x0 AAR=0 Reserved=0x0)
+1794611994.428843: Per-STA Profile: len=98 Link_ID=1 Complete=1 Reserved=0x0
+1794611994.428843: STA MAC Address: 62:77:f0:e5:ef:f1
+1794611994.428843: Learned Link ID 1 MAC address 62:77:f0:e5:ef:f1 from Association Request
+1794611994.428844: STA Profile - hexdump(len=89): 30 04 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 11 6c 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00
+1794611994.428844: MLO association - AP MLD: 02:00:00:00:07:00  STA MLD: 02:00:00:00:08:00
+1794611994.428844:   Link 0 - AP: 02:00:00:af:0e:eb  STA: ae:d8:1b:9b:8b:21
+1794611994.428844:   Link 1 - AP: 02:00:00:39:48:ca  STA: 62:77:f0:e5:ef:f1
+1794611994.428872: ASSOCRESP 02:00:00:af:0e:eb -> ae:d8:1b:9b:8b:21 (capab=0x411 status=0 aid=1)
+1794611994.428872: Multi-Link Control: Type=0 Reserved=0 Presence Bitmap=0x1b
+1794611994.428873: MLD MAC Address: 02:00:00:00:07:00
+1794611994.428873: Link ID Info: 0x0
+1794611994.428873: BSS Parameters Change Count: 1
+1794611994.428873: EML Capabilities: 0x81 (EMLSR=1 EMLSR_Padding_Delay=0 EMLSR_Transition_Delay=0 EMLMR=1 Transition_Timeout=0 Reserved=0)
+1794611994.428874: MLD Capabilities and Operations: 0x2001 (Max_Simultaneous_Links=1 SRS=0 T2L=0x0 Freq_Sep_STR=0x0 AAR=0 Reserved=0x1)
+1794611994.428874: Per-STA Profile: len=193 Link_ID=1 Complete=1 Reserved=0x0
+1794611994.428874: STA MAC Address: 02:00:00:39:48:ca
+1794611994.428874: Beacon Interval: 100
+1794611994.428875: TSF Offset: 0x0
+1794611994.428875: DTIM Info: 0x200
+1794611994.428875: BSS Parameters Change Count: 1
+1794611994.428875: STA Profile - hexdump(len=171): 11 04 00 00 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 96 fc ff ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794611994.428876: STA ae:d8:1b:9b:8b:21 moved to State 3 with 02:00:00:af:0e:eb
+1794611994.428876: FT: RSNXE - hexdump(len=1): 20
+1794611994.428967: RX EAPOL: 02:00:00:00:07:00 -> ae:d8:1b:9b:8b:21 ver=2 type=3 len=129 #0
+1794611994.428968: EAPOL-Key ver=0 P idx=0 ACK datalen=34
+1794611994.428968: EAPOL-Key 1/4 02:00:00:00:07:00 -> ae:d8:1b:9b:8b:21 (BSSID 02:00:00:af:0e:eb)
+1794611994.428968: WPA: PMKID in EAPOL-Key - hexdump(len=22): dd 14 00 0f ac 04 25 79 29 63 f2 a6 d7 d8 03 be e6 94 d1 25 55 f4
+1794611994.428968: WPA: MAC Address in EAPOL-Key: 02:00:00:00:07:00
+1794611994.429034: RX EAPOL: ae:d8:1b:9b:8b:21 -> 02:00:00:00:07:00 ver=1 type=3 len=151 #0
+1794611994.429035: EAPOL-Key ver=0 P idx=0 MIC datalen=56
+1794611994.429035: EAPOL-Key 2/4 ae:d8:1b:9b:8b:21 -> 02:00:00:00:07:00 (BSSID 02:00:00:af:0e:eb)
+1794611994.429035: WPA: RSN IE in EAPOL-Key - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1794611994.429035: WPA: RSNXE in EAPOL-Key - hexdump(len=3): f4 01 20
+1794611994.429036: WPA: MAC Address in EAPOL-Key: 02:00:00:00:08:00
+1794611994.429036: RSN: Link ID 1 - MLO Link KDE in EAPOL-Key - hexdump(len=13): dd 0b 00 0f ac 13 01 62 77 f0 e5 ef f1
+1794611994.429036: Updated non-AP STA MLD MAC Address from EAPOL-Key 2/4: 02:00:00:00:08:00 --> 02:00:00:00:08:00
+1794611994.429036: Trying to derive PTK for ae:d8:1b:9b:8b:21 (MLD 02:00:00:00:08:00) (ver 0)
+1794611994.429037: No matching PMK found to derive PTK
+1794611994.429037: No PTK known to process EAPOL-Key 2/4
+1794611994.429038: RX EAPOL: 02:00:00:00:07:00 -> ae:d8:1b:9b:8b:21 ver=2 type=3 len=375 #0
+1794611994.429038: EAPOL-Key ver=0 P idx=0 Install ACK MIC Secure Encr datalen=280
+1794611994.429038: EAPOL-Key 3/4 02:00:00:00:07:00 -> ae:d8:1b:9b:8b:21 (BSSID 02:00:00:af:0e:eb)
+1794611994.429039: No PTK known to process EAPOL-Key 3/4
+1794611994.429116: RX EAPOL: ae:d8:1b:9b:8b:21 -> 02:00:00:00:07:00 ver=1 type=3 len=107 #0
+1794611994.429116: EAPOL-Key ver=0 P idx=0 MIC Secure datalen=12
+1794611994.429116: EAPOL-Key 4/4 ae:d8:1b:9b:8b:21 -> 02:00:00:00:07:00 (BSSID 02:00:00:af:0e:eb)
+1794611994.429116: No PTK known to process EAPOL-Key 4/4
+1794611994.465240: Beacon frame BSSID 02:00:00:39:48:ca MME KeyID 7 BIPN 0x1
+1794611994.465241: No BIGTK known to validate BIP frame from 02:00:00:39:48:ca
+1794611994.465241: Beacon frame BSSID 02:00:00:af:0e:eb MME KeyID 7 BIPN 0x1
+1794611994.465242: No BIGTK known to validate BIP frame from 02:00:00:af:0e:eb
+1794611994.529535: MME KeyID 5 IPN 0x1
+1794611994.529536: No IGTK known to validate BIP frame
+1794611994.529536: DEAUTH 02:00:00:af:0e:eb -> ff:ff:ff:ff:ff:ff (reason=3) (valid=1)
+1794611994.529536: STA ae:d8:1b:9b:8b:21 moved to State 1 with 02:00:00:af:0e:eb
+1794611994.529537: Robust group-addressed management frame sent without BIP by 02:00:00:af:0e:eb
+1794611994.529537: DEAUTH 02:00:00:af:0e:eb -> ff:ff:ff:ff:ff:ff (reason=3) (valid=0)
+1794611994.529537: Robust group-addressed management frame sent without BIP by 02:00:00:af:0e:eb
+1794611994.529538: DEAUTH 02:00:00:af:0e:eb -> ff:ff:ff:ff:ff:ff (reason=3) (valid=0)
+1794611994.529538: MME KeyID 5 IPN 0x1
+1794611994.529538: No IGTK known to validate BIP frame
+1794611994.529539: DEAUTH 02:00:00:39:48:ca -> ff:ff:ff:ff:ff:ff (reason=3) (valid=1)
+1794611994.629762: DEAUTH ae:d8:1b:9b:8b:21 -> 02:00:00:af:0e:eb (reason=4) (valid=0)
+1794611994.629762: Do not change STA ae:d8:1b:9b:8b:21 State since Disassociation frame was not protected correctly
+1794611994.730211: Discovered new BSS - 02:00:00:7b:4b:01
+1794611994.730211: DEAUTH 02:00:00:7b:4b:01 -> ff:ff:ff:ff:ff:ff (reason=2) (valid=1)
+1794611994.730332: Discovered new BSS - 02:00:00:4d:af:cf
+1794611994.730332: DEAUTH 02:00:00:4d:af:cf -> ff:ff:ff:ff:ff:ff (reason=2) (valid=1)
+1794611994.772441: Store SSID 'explorer_mld' for BSSID 02:00:00:7b:4b:01
+1794611994.772441: BSS 02:00:00:7b:4b:01 - RSN IE stored
+1794611994.772441: RSN IE - hexdump(len=22): 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00
+1794611994.772442: Learned AP MLD MAC Address from Beacon/Probe Response frame: 02:00:00:00:07:00 (BSSID 02:00:00:7b:4b:01)
+1794611994.772442: Learned AP MLD Link ID 0 for this affiliated link
+1794611994.772442: BSS 02:00:00:7b:4b:01 proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=rsn_capab=MFPR MFPC 
+1794611994.772442: Beacon frame BSSID 02:00:00:7b:4b:01 MME KeyID 6 BIPN 0x1
+1794611994.772443: No BIGTK known to validate BIP frame from 02:00:00:7b:4b:01
+1794611994.772443: Store SSID 'explorer_mld' for BSSID 02:00:00:4d:af:cf
+1794611994.772443: BSS 02:00:00:4d:af:cf - RSN IE stored
+1794611994.772444: RSN IE - hexdump(len=22): 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00
+1794611994.772444: Learned AP MLD MAC Address from Beacon/Probe Response frame: 02:00:00:00:07:00 (BSSID 02:00:00:4d:af:cf)
+1794611994.772444: Learned AP MLD Link ID 1 for this affiliated link
+1794611994.772444: BSS 02:00:00:4d:af:cf proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=rsn_capab=MFPR MFPC 
+1794611994.772445: Beacon frame BSSID 02:00:00:4d:af:cf MME KeyID 6 BIPN 0x1
+1794611994.772445: No BIGTK known to validate BIP frame from 02:00:00:4d:af:cf
+1794611994.874840: Beacon frame BSSID 02:00:00:7b:4b:01 MME KeyID 6 BIPN 0x2
+1794611994.874841: No BIGTK known to validate BIP frame from 02:00:00:7b:4b:01
+1794611994.874841: Beacon frame BSSID 02:00:00:4d:af:cf MME KeyID 6 BIPN 0x2
+1794611994.874842: No BIGTK known to validate BIP frame from 02:00:00:4d:af:cf
+1794611994.908955: Discovered new STA 12:7a:de:4a:61:09 in BSS 02:00:00:7b:4b:01 (MLD 02:00:00:00:07:00)
+1794611994.908955: AUTH 12:7a:de:4a:61:09 -> 02:00:00:7b:4b:01 (alg=3 trans=1 status=126)
+1794611994.908955: SAE Commit using group 19
+1794611994.908956: AUTH 02:00:00:7b:4b:01 -> 12:7a:de:4a:61:09 (alg=3 trans=1 status=126)
+1794611994.908956: SAE Commit using group 19
+1794611994.909006: AUTH 12:7a:de:4a:61:09 -> 02:00:00:7b:4b:01 (alg=3 trans=2 status=0)
+1794611994.909007: AUTH 02:00:00:7b:4b:01 -> 12:7a:de:4a:61:09 (alg=3 trans=2 status=0)
+1794611994.909007: STA 12:7a:de:4a:61:09 moved to State 2 with 02:00:00:7b:4b:01
+1794611994.918840: ASSOCREQ 12:7a:de:4a:61:09 -> 02:00:00:7b:4b:01 (capab=0x430 listen_int=5)
+1794611994.918841: RSN IE - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1794611994.918841: STA 12:7a:de:4a:61:09 proto=WPA2 pairwise=CCMP key_mgmt=SAE-EXT-KEY rsn_capab=MFPR MFPC 
+1794611994.918841: STA MLD Address: 02:00:00:00:08:00
+1794611994.918842: Learned Link ID 0 MAC address 12:7a:de:4a:61:09 from Association Request (assoc link)
+1794611994.918842: Multi-Link Control: Type=0 Reserved=0 Presence Bitmap=0x10
+1794611994.918842: MLD MAC Address: 02:00:00:00:08:00
+1794611994.918842: MLD Capabilities and Operations: 0x0 (Max_Simultaneous_Links=0 SRS=0 T2L=0x0 Freq_Sep_STR=0x0 AAR=0 Reserved=0x0)
+1794611994.918843: Per-STA Profile: len=98 Link_ID=1 Complete=1 Reserved=0x0
+1794611994.918843: STA MAC Address: ea:15:79:5c:75:1e
+1794611994.918843: Learned Link ID 1 MAC address ea:15:79:5c:75:1e from Association Request
+1794611994.918843: STA Profile - hexdump(len=89): 30 04 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 11 6c 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00
+1794611994.918844: MLO association - AP MLD: 02:00:00:00:07:00  STA MLD: 02:00:00:00:08:00
+1794611994.918844:   Link 0 - AP: 02:00:00:7b:4b:01  STA: 12:7a:de:4a:61:09
+1794611994.918844:   Link 1 - AP: 02:00:00:4d:af:cf  STA: ea:15:79:5c:75:1e
+1794611994.918872: ASSOCRESP 02:00:00:7b:4b:01 -> 12:7a:de:4a:61:09 (capab=0x411 status=0 aid=1)
+1794611994.918872: Multi-Link Control: Type=0 Reserved=0 Presence Bitmap=0x1b
+1794611994.918872: MLD MAC Address: 02:00:00:00:07:00
+1794611994.918872: Link ID Info: 0x0
+1794611994.918873: BSS Parameters Change Count: 1
+1794611994.918873: EML Capabilities: 0x81 (EMLSR=1 EMLSR_Padding_Delay=0 EMLSR_Transition_Delay=0 EMLMR=1 Transition_Timeout=0 Reserved=0)
+1794611994.918873: MLD Capabilities and Operations: 0x2001 (Max_Simultaneous_Links=1 SRS=0 T2L=0x0 Freq_Sep_STR=0x0 AAR=0 Reserved=0x1)
+1794611994.918874: Per-STA Profile: len=193 Link_ID=1 Complete=1 Reserved=0x0
+1794611994.918874: STA MAC Address: 02:00:00:4d:af:cf
+1794611994.918874: Beacon Interval: 100
+1794611994.918874: TSF Offset: 0x0
+1794611994.918875: DTIM Info: 0x200
+1794611994.918875: BSS Parameters Change Count: 1
+1794611994.918875: STA Profile - hexdump(len=171): 11 04 00 00 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 96 fc ff ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794611994.918875: STA 12:7a:de:4a:61:09 moved to State 3 with 02:00:00:7b:4b:01
+1794611994.918876: FT: RSNXE - hexdump(len=1): 20
+1794611994.918966: RX EAPOL: 02:00:00:00:07:00 -> 12:7a:de:4a:61:09 ver=2 type=3 len=129 #0
+1794611994.918966: EAPOL-Key ver=0 P idx=0 ACK datalen=34
+1794611994.918966: EAPOL-Key 1/4 02:00:00:00:07:00 -> 12:7a:de:4a:61:09 (BSSID 02:00:00:7b:4b:01)
+1794611994.918967: WPA: PMKID in EAPOL-Key - hexdump(len=22): dd 14 00 0f ac 04 4e 11 7b 6a 1b 75 ea d6 f1 f7 a9 63 17 9b 51 15
+1794611994.918967: WPA: MAC Address in EAPOL-Key: 02:00:00:00:07:00
+1794611994.919033: RX EAPOL: 12:7a:de:4a:61:09 -> 02:00:00:00:07:00 ver=1 type=3 len=151 #0
+1794611994.919033: EAPOL-Key ver=0 P idx=0 MIC datalen=56
+1794611994.919033: EAPOL-Key 2/4 12:7a:de:4a:61:09 -> 02:00:00:00:07:00 (BSSID 02:00:00:7b:4b:01)
+1794611994.919034: WPA: RSN IE in EAPOL-Key - hexdump(len=28): 30 1a 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00 00 0f ac 18 cc 00 00 00 00 0f ac 06
+1794611994.919034: WPA: RSNXE in EAPOL-Key - hexdump(len=3): f4 01 20
+1794611994.919034: WPA: MAC Address in EAPOL-Key: 02:00:00:00:08:00
+1794611994.919034: RSN: Link ID 1 - MLO Link KDE in EAPOL-Key - hexdump(len=13): dd 0b 00 0f ac 13 01 ea 15 79 5c 75 1e
+1794611994.919035: Updated non-AP STA MLD MAC Address from EAPOL-Key 2/4: 02:00:00:00:08:00 --> 02:00:00:00:08:00
+1794611994.919035: Trying to derive PTK for 12:7a:de:4a:61:09 (MLD 02:00:00:00:08:00) (ver 0)
+1794611994.919035: No matching PMK found to derive PTK
+1794611994.919035: No PTK known to process EAPOL-Key 2/4
+1794611994.919036: RX EAPOL: 02:00:00:00:07:00 -> 12:7a:de:4a:61:09 ver=2 type=3 len=375 #0
+1794611994.919036: EAPOL-Key ver=0 P idx=0 Install ACK MIC Secure Encr datalen=280
+1794611994.919037: EAPOL-Key 3/4 02:00:00:00:07:00 -> 12:7a:de:4a:61:09 (BSSID 02:00:00:7b:4b:01)
+1794611994.919037: No PTK known to process EAPOL-Key 3/4
+1794611994.919114: RX EAPOL: 12:7a:de:4a:61:09 -> 02:00:00:00:07:00 ver=1 type=3 len=107 #0
+1794611994.919114: EAPOL-Key ver=0 P idx=0 MIC Secure datalen=12
+1794611994.919114: EAPOL-Key 4/4 12:7a:de:4a:61:09 -> 02:00:00:00:07:00 (BSSID 02:00:00:7b:4b:01)
+1794611994.919114: No PTK known to process EAPOL-Key 4/4
+1794611994.977240: Beacon frame BSSID 02:00:00:7b:4b:01 MME KeyID 7 BIPN 0x1
+1794611994.977241: No BIGTK known to validate BIP frame from 02:00:00:7b:4b:01
+1794611994.977241: Beacon frame BSSID 02:00:00:4d:af:cf MME KeyID 7 BIPN 0x1
+1794611994.977242: No BIGTK known to validate BIP frame from 02:00:00:4d:af:cf
+1794611995.019421: DEAUTH 12:7a:de:4a:61:09 -> 02:00:00:7b:4b:01 (reason=4) (valid=0)
+1794611995.019421: Do not change STA 12:7a:de:4a:61:09 State since Disassociation frame was not protected correctly
+1794611995.019422: DEAUTH from 12:7a:de:4a:61:09 acknowledged by 02:00:00:7b:4b:01
+1794611995.020629: Re-open log/capture files
+1794611995.020630: Writing PCAPNG dump to '/tmp/logs/hwsim0.pcapng'
+1794611995.020630: Disconnect control interface connection 7
+1794611995.020670: Re-open log/capture files
