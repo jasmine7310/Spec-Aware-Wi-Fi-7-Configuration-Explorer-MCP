@@ -78,7 +78,7 @@ The `ap_sae_pwe=1` candidate from the same batch was `REJECTED`; its run is in
 |---|---|---|---|
 | `1794384666` | base (F02 through the adapter) | ACCEPTED | `key_mgmt` SAE-EXT-KEY, `sae_h2e=1`, `bigtk_set=1`; links `0x3`; traffic on links 0 and 1 |
 | `1794384680` | `ap_sae_pwe=2` | ACCEPTED | Same signature |
-| `1794384688` | `ap_pairwise_cipher=GCMP-256` | ACCEPTED | Same signature; the logged station status shows pairwise and group cipher GCMP-256 (not in the record yet) |
+| `1794384688` | `ap_pairwise_cipher=GCMP-256` | ACCEPTED | Differs from the base run only in `station_status.pairwise_cipher` / `group_cipher`: GCMP-256 (in the record since #89; it was the same signature before) |
 | `1794384695` | `rekey_gtk_now` | ACCEPTED | 1 GTK rekey; traffic on links 0 and 1 after it |
 | `1794384702` | `disable_enable_mld` | ACCEPTED | 2 four-way handshakes and 2 locally generated disconnects (reason 3); traffic on links 0 and 1 after RECONNECT |
 

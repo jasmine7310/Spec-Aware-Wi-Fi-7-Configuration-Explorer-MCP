@@ -156,10 +156,11 @@ summarized here so the record is in one place.
 - **Tested alternatives:** hostap runs GCMP-256 on all links only for non-MLD or
   single-AP EHT tests (`start_eht_sae_ap`, test_eht.py:163-172); on an AP MLD only on one
   link (mismatch test).
-- **Observed as:** not in the record yet, so the two runs have identical signatures. The
-  GCMP-256 run's logged station status shows `pairwise_cipher` and `group_cipher`
-  `GCMP-256` (`mgmt_group_cipher` BIP); the CCMP runs show `CCMP`. Adding these fields to
-  `signatures.STATUS_FIELDS` can now be calibrated on `1794384666` / `1794384688`.
+- **Observed as:** `station_status.pairwise_cipher` / `group_cipher` (issue #89): `CCMP` /
+  `CCMP` in `1794384666`, `GCMP-256` / `GCMP-256` in `1794384688`, with `mgmt_group_cipher`
+  `BIP` (AES-128-CMAC) in both. These two runs' signatures now differ only in those two
+  fields. Like every status field they come from the last logged status, so a run that
+  ends disconnected doesn't show them.
 - **Smoke runs:** CCMP `1794384666`, GCMP-256 `1794384688`.
 
 ### 9. `rekey_gtk_now`
