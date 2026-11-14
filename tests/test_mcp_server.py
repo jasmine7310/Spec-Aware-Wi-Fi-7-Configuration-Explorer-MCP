@@ -200,7 +200,7 @@ def test_explain_a_normative_rule():
 
 
 def test_every_rule_is_reviewed_except_new_drafts():
-    drafts = {"AO.BSS_TM_NEEDS_BSS_TRANSITION"}  # added 2026-11-05, waiting on Michelle
+    drafts = set()  # AO.BSS_TM_NEEDS_BSS_TRANSITION was the last; reviewed 2026-11-13 (#64)
     for rule in load_rules().rules:
         expected = "draft" if rule.id in drafts else "reviewed"
         assert _explain(rule.id).structured_content["status"] == expected, rule.id

@@ -1,0 +1,121 @@
+{
+  "id": "AO.BSS_TM_NEEDS_BSS_TRANSITION",
+  "fixtures": [
+    {
+      "name": "BSS TM request with bss_transition on",
+      "kind": "positive",
+      "source": "rules.yaml allowed (eht_mld_bss_trans_mgmt_link_removal_imminent)",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": true
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "bss_tm_link_removal_imminent"
+          }
+        ]
+      },
+      "expect": {
+        "status": "PASSES_MODELED_RULES",
+        "findings": []
+      }
+    },
+    {
+      "name": "BSS TM request with bss_transition off",
+      "kind": "negative",
+      "source": "rules.yaml disallowed",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": null,
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "bss_tm_link_removal_imminent"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_RULE_VIOLATION",
+        "findings": [
+          "AO.BSS_TM_NEEDS_BSS_TRANSITION"
+        ]
+      }
+    }
+  ]
+}

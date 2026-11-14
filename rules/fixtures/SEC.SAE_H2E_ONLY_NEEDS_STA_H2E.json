@@ -1,0 +1,169 @@
+{
+  "id": "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E",
+  "fixtures": [
+    {
+      "name": "H2E-only AP and an H2E client",
+      "kind": "positive",
+      "source": "rules.yaml allowed: client sae_pwe=1",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": "hash_to_element",
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "sae_groups": null,
+            "sae_pwe": "hash_to_element",
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          }
+        ]
+      },
+      "expect": {
+        "status": "PASSES_MODELED_RULES",
+        "findings": []
+      }
+    },
+    {
+      "name": "AP with both methods and an unset client",
+      "kind": "positive",
+      "source": "rules.yaml allowed: no H2E-only selector with sae_pwe=2",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": "both",
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          }
+        ]
+      },
+      "expect": {
+        "status": "PASSES_MODELED_RULES",
+        "findings": []
+      }
+    },
+    {
+      "name": "H2E-only AP and an unset client",
+      "kind": "negative",
+      "source": "rules.yaml disallowed (REJECTED run 1794384673)",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": "hash_to_element",
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "sae_groups": null,
+            "sae_pwe": null,
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          }
+        ]
+      },
+      "expect": {
+        "status": "SPEC_RULE_VIOLATION",
+        "findings": [
+          "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E"
+        ]
+      }
+    }
+  ]
+}

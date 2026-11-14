@@ -72,7 +72,9 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
   ordered typed actions; `model.SCHEMA_VERSION` goes up when the P0 schema changes.
   `explorer.rules.load_rules()`: the P1 rule registry from
-  `rules.yaml` (rules plus `UND.*` open questions). `explorer.validate`: `parse_candidate`
+  `rules.yaml` (rules plus `UND.*` open questions); `rules/fixtures/<ID>.json` holds each
+  entry's executable positive / negative / exception cases (`explorer.fixtures`, run by
+  `tests/test_rule_fixtures.py`): add one with every new rule. `explorer.validate`: `parse_candidate`
   (readable `P0.*` errors), `P1_CHECKS` / `run_p1_checks(config)` (coded rule checks by
   rule ID), `find_undetermined(config)`, `check_action_order(candidate)` (AO.* rules), all
   returning `Finding`s with an outcome; `p1_status` sums them up; `validate_candidate(data)`
