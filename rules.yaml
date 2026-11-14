@@ -82,7 +82,7 @@ rules:
         says: >-
           Two requirements on the affiliated APs of an AP MLD: identical RSNE and RSNXE
           apart from the AKM Suite List and MFPR, and at least one AKM in common.
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: WFA-WPA3
         strength: guidance
         location: "§3.1.4.1 APs (NOTE)"
@@ -102,6 +102,7 @@ rules:
     notes:
       - "hostap's invalid_link* / no_common_key_mgmt tests are deliberate failure tests and serve as P1 rejection examples."
       - "Coded as explorer.validate.check_mld_common_suites. The client side is SEC.MLD_CLIENT_COMMON_AKM."
+      - "Audit (#64, 2026-11-13): §12.6.2's first 'shall' also requires the same RSNXE on every link, with no exception, and this rule doesn't check that. hostapd sets a link's RSNXE SAE hash-to-element bit from that link's own AKMs (src/ap/wpa_auth_ie.c:553-557), so links whose AKM lists differ in SAE presence (e.g. [SAE-EXT-KEY, OWE] and [OWE]) may advertise different RSNXEs. Not run yet: a follow-up issue reads each link's beacon RSNXE in a labeled experiment. The campaign never hits it (every link gets the same AKM there)."
 
   - id: SEC.MLD_CLIENT_COMMON_AKM
     title: For an ML association the client selects an AKM offered on every link, or declines
@@ -127,7 +128,7 @@ rules:
           For MLO the non-AP MLD includes a single RSNE whose AKM, pairwise and group
           cipher are common to the affiliated APs; a STA with no overlap in an RSNE field
           declines to associate.
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: WFA-WPA3
         strength: guidance
         location: "§2.1.1 and Table 3 (AKM Suite, Pairwise Cipher Suite rows)"
@@ -144,6 +145,7 @@ rules:
         - "Links share only SAE-EXT-KEY and the client allows only SAE."
     notes:
       - "Coded as explorer.validate.check_mld_client_common_akm."
+      - "Audit (#64, 2026-11-13): §12.6.3.1 also requires the client's pairwise and group cipher to be common to all affiliated APs. The client's ciphers aren't modeled, but it holds anyway: SEC.MLD_COMMON_SUITES forces the same pairwise cipher on every link, hostapd derives the group cipher from it (src/common/wpa_common.c:3823-3825), and the adapter lets the client allow CCMP and GCMP-256 (explorer.adapter). Declining means not associating at all (not setting up fewer links), so rejecting the candidate is right."
 
   - id: SEC.EHT_BEACON_PROT
     title: Beacon protection is mandatory for EHT with RSN
@@ -160,7 +162,7 @@ rules:
         location: "§12.12.9 Security constraints for EHT"
         page: "PDF 446 (printed 445)"
         says: "EHT APs and EHT non-AP STAs that use RSN must have beacon protection enabled."
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: IEEE-802.11be-2024
         strength: unclassified
         location: "§9.4.2.25, Table 9-192, bit 84 Beacon Protection Enabled"
@@ -218,13 +220,13 @@ rules:
         location: "§11.52 Beacon protection procedures"
         page: "PDF 2931 (printed 2930)"
         says: "Beacon protection must be off whenever PMF is not activated."
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: IEEE-802.11be-2024
         strength: note
         location: "§12.12.9 Security constraints for EHT (NOTE)"
         page: "PDF 446 (printed 445)"
         says: "A NOTE (informative) says an EHT AP using RSN has PMF activated, following from the two rules."
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: WFA-WPA3
         strength: guidance
         location: "Tables 5, 8 and 15"
@@ -266,7 +268,7 @@ rules:
         location: "§12.12.9 Security constraints for EHT"
         page: "PDF 446 (printed 445)"
         says: "Two EHT STAs negotiating SAE must use AKM 00-0F-AC:24 or :25."
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: WFA-WPA3
         strength: guidance
         location: "Tables 5 and 8 and footnotes"
@@ -322,7 +324,7 @@ rules:
         location: "§12.12.9 Security constraints for EHT"
         page: "PDF 446 (printed 445)"
         says: "In SAE between two EHT STAs, both advertise the RSNXE hash-to-element bit and use that method."
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: WFA-WPA3
         strength: guidance
         location: "Tables 5 and 8 and footnotes"
@@ -366,6 +368,7 @@ rules:
         - "SAE with sae_pwe=0."
         - "Plain SAE with sae_pwe unset on 2.4 / 5 GHz."
     notes:
+      - "Audit (#64, 2026-11-13): 'sae_pwe' in the predicate means each side's: §12.12.9 binds each EHT STA, and explorer.validate.check_eht_sae_h2e checks the AP and the client separately (one finding per side). The predicate text is left as is because model.json copies it into model_digest, the experiment cache key."
       - "explorer.model doesn't offer sae_pwe=0, so P0 already rejects that value."
       - "Coded as explorer.validate.check_eht_sae_h2e (hostap lines checked by Claude, 2026-11-03). The client's side is checked since issue #88 (StaConfig.sae_pwe); wpa_supplicant numbers sae_pwe the same way (wpa_supplicant.conf:501-509)."
 
@@ -387,19 +390,19 @@ rules:
         location: "§12.4.4.2.3 (ECC) and §12.4.4.3.3 (FFC)"
         page: "§12.4.4.2.3: PDF 2967 (printed 2966); §12.4.4.3.3: starts printed 2969, hash-to-element text around printed 2970"
         says: "Hash-to-element is one of SAE's two ways to derive the password element, under the SAE clause."
-        checked: "Michelle, in the PDF, §12.4.4.2.3 on 2026-10-31, §12.4.4.3.3 on 2026-11-05; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, §12.4.4.2.3 on 2026-10-31, §12.4.4.3.3 on 2026-11-05; Claude (AI agent), PDF text, 2026-11-02; §12.4.4.2.3 re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: IEEE-802.11-2024
         strength: note
         location: "§9.4.2.240, Table 9-373, bit 5 SAE Hash-to-element (NOTE)"
         page: "PDF 1433 (printed 1432)"
         says: "A NOTE (informative) says the receiver ignores this bit when SAE isn't negotiated."
-        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-10-31; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: WFA-WPA3
         strength: guidance
         location: "Table 3, SAE Hash-to-Element row"
         page: "p. 10"
         says: "The SAE Hash-to-Element setting applies only if an SAE AKM is used, for both AP and STA."
-        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02"
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-02; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: hostap
         strength: code
         location: "hostapd/config_file.c:4675-4676"
@@ -449,7 +452,7 @@ rules:
         location: "§11.1.4.6"
         page: "PDF 2463-2464 (printed 2462-2463)"
         says: "In the clause body (not a NOTE), STAs use the BSS membership selectors to avoid joining a BSS whose features they don't support, and a STA that doesn't recognize a selector doesn't attempt to join; descriptive, no 'shall' (the clause's 'shall's concern including selectors in frames)."
-        checked: "Michelle, in the PDF, 2026-11-13 (heading and pages); Claude (AI agent), PDF text, 2026-11-12 and 2026-11-13 (body text, PDF pp. 2463-2464)"
+        checked: "Michelle, in the PDF, 2026-11-13 (heading, pages and body text, PDF pp. 2463-2464); Claude (AI agent), PDF text, 2026-11-12 and 2026-11-13"
       - doc: WFA-WPA3
         strength: guidance
         location: "Table 3, SAE Hash-to-Element row"
@@ -669,13 +672,25 @@ rules:
           After an advertised TTLM's Mapping Switch Time, the MLME of a non-AP MLD whose setup
           links are all on disabled links signals its disassociation, and a STA that isn't
           associated doesn't send (Re)association Requests on a disabled link. hostap's
-          mld_indicate_disabled is a static setting, not that TTLM procedure.
-        checked: "Michelle, in the PDF, 2026-11-04"
+          mld_indicate_disabled (a testing option) advertises a TTLM that maps no TIDs to the
+          link, with no Mapping Switch Time, so the clause applies to it directly; we read a
+          TTLM without a switch time as already in effect (not checked in the PDF).
+        checked: "Michelle, in the PDF, 2026-11-04; re-read by Michelle for the #64 audit, 2026-11-13"
       - doc: hostap
         strength: code
         location: "tests/hwsim/test_eht.py:1416-1424"
         says: "After removing the last link the test expects traffic to fail."
         checked: "Claude (AI agent), at the pinned commit, 2026-11-04; accepted by Michelle"
+      - doc: hostap
+        strength: code
+        location: "src/ap/ieee802_11_eht.c:2903-2924"
+        says: "With mld_indicate_disabled on a link (CONFIG_TESTING_OPTIONS), the AP's TID-to-link mapping element maps all eight TIDs only to the other links and doesn't set the Mapping Switch Time present bit (EHT_TID_TO_LINK_MAP_SWITCH_TIME_PRESENT, src/common/ieee802_11_defs.h:3203)."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-13 (#64 audit); accepted by Michelle"
+      - doc: hostap
+        strength: code
+        location: "src/ap/ieee802_11.c:10888-10889"
+        says: "mld_indicate_disabled also sets that link's Disabled Link Indication bit in the Reduced Neighbor Report's MLD Parameters (802.11be Figure 9-734c, per src/common/ieee802_11_defs.h:2790-2791)."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-13 (#64 audit); accepted by Michelle"
     examples:
       allowed:
         - "[associate, link_remove(1), link_remove(0)] (ends there)"
@@ -829,9 +844,14 @@ rules:
         checked: "Claude (AI agent), at the pinned commit, 2026-11-05"
       - doc: hostap
         strength: code
-        location: "src/ap/wnm_ap.c:959-977"
-        says: "wnm_send_bss_tm_req() doesn't check bss_transition, so hostap sends the request either way."
-        checked: "Claude (AI agent), at the pinned commit, 2026-11-05"
+        location: "src/ap/wnm_ap.c:959-1063"
+        says: "wnm_send_bss_tm_req() (the whole function) doesn't check bss_transition, so hostap sends the request either way."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-05; whole function re-checked 2026-11-13 (#64 audit)"
+      - doc: hostap
+        strength: code
+        location: "src/ap/ctrl_iface_ap.c:1694-1861"
+        says: "hostapd_ctrl_iface_bss_tm_req(), which handles BSS_TM_REQ, doesn't check bss_transition either before calling wnm_send_bss_tm_req()."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-13 (#64 audit)"
       - doc: hostap
         strength: code
         location: "src/ap/ieee802_11_shared.c:393"
@@ -842,6 +862,8 @@ rules:
         - "[associate, bss_tm_link_removal_imminent] with bss_transition on (eht_mld_bss_trans_mgmt_link_removal_imminent)"
       disallowed:
         - "[associate, bss_tm_link_removal_imminent] with bss_transition off"
+    notes:
+      - "Draft until a person accepts its three hostap citations (the claim was re-checked in the #64 audit, 2026-11-13)."
 
 
 # --- Open questions (SPEC_UNDETERMINED) -------------------------------------------
@@ -868,8 +890,10 @@ undetermined:
         page: "p. 9"
         says: >-
           When several AKMs are enabled on both sides, the selection preference order is
-          defined in the WPA3 Specification (its reference [1]).
-        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-03"
+          defined in the WPA3 Specification (the guide's reference [1], confirmed in its
+          reference list). With an AP MLD the STA picks an AKM enabled on all affiliated links,
+          which SEC.MLD_CLIENT_COMMON_AKM covers.
+        checked: "Michelle, in the PDF, 2026-11-04; Claude (AI agent), PDF text, 2026-11-03; re-read by Michelle for the #64 audit, 2026-11-13"
     notes:
       - "Two SAE-family AKMs don't count: between EHT devices 802.11be §12.12.9 forces SAE-EXT-KEY."
 
