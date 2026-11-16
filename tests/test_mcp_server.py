@@ -18,6 +18,14 @@ BASELINE_RUN = REPO_ROOT / "runs" / "baseline" / "1793298094"
 SAE_EXT_RUN = REPO_ROOT / "runs" / "smoke" / "1793897820"
 
 
+@pytest.fixture(autouse=True)
+def _current_image(monkeypatch):
+    # No docker call in unit tests: assume the image matches the repo's harness
+    # (tests that check the guard override this).
+    if os.environ.get("WIFI7_DOCKER_TESTS") != "1":
+        monkeypatch.setattr(mcp_server, "stale_harness", lambda: [])
+
+
 def _call(target, tool, arguments=None):
     async def go():
         async with Client(target) as client:
@@ -47,7 +55,7 @@ def test_pinned_versions_come_from_the_dockerfile():
 def test_implemented_stages():
     stages = {s["stage"].split()[0]: s for s in _get_model()["stages"]}
     assert {k: s["implemented"] for k, s in stages.items()} == {
-        "P0": True, "P1": True, "P2": True, "P3": True, "P4": False}
+        "P0": True, "P1": True, "P2": True, "P3": True, "Campaign": True, "P4": False}
     assert "not full 802.11be" in stages["P1"]["note"]
     assert stages["P2"]["note"].startswith("Basic")
 
@@ -122,8 +130,9 @@ def test_server_starts_the_way_mcp_json_launches_it():
                                    cwd=str(REPO_ROOT))
     tools, result = _call(params, "get_model")
 
-    assert sorted(tools) == ["explain_rule", "get_model", "run_candidate", "run_hwsim_test",
-                            "validate_candidate"]
+    assert sorted(tools) == ["explain_rule", "get_campaign", "get_model", "list_campaigns",
+                             "plan_campaign", "run_campaign", "run_candidate", "run_hwsim_test",
+                             "validate_candidate"]
     assert not result.is_error
     assert result.structured_content["stages"][3]["implemented"] is True
 

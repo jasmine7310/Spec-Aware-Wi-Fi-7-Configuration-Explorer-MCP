@@ -66,7 +66,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 - `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
   `.signature()` gives the comparable facts.
 - `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`,
-  `run_hwsim_test` and `run_candidate`. Add new tools
+  `run_hwsim_test`, `run_candidate` and the campaign tools `plan_campaign`, `run_campaign`,
+  `list_campaigns`, `get_campaign`. Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
@@ -85,7 +86,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   and actions for `docker/test_explorer_candidate.py`), `run_candidate(candidate)` (fresh
   guest, P3 status `ACCEPTED` / `REJECTED` / `SETUP_FAIL` / `TIMEOUT`), `unsupported()`,
   `compare_signatures()`. MCP tool `run_candidate` validates first. Changing the adapter
-  test means rebuilding the image.
+  test means rebuilding the image; so does pulling anyone's change to `docker/`. `run_candidate` and
+  `run_campaign` refuse a stale image (`runner.stale_harness`) until `scripts/build-env.sh` reruns.
 - `model.json` (repo root): the machine-readable candidate space (P0 schema, admitted
   dimensions with typed values and smoke runs, constraints by rule ID, actions, pinned
   versions, `model_digest`), built by `explorer.model_json.build()`. Regenerate it with

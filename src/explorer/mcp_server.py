@@ -15,14 +15,18 @@ configuration breaks one (e.g. plain SAE between EHT devices, 802.11be §12.12.9
 runs as an explicitly labeled negative experiment, so it never passes for a legal
 candidate. ``validate_candidate`` checks any candidate (configuration plus ordered
 actions) through P0 and P1 without booting a guest, and ``explain_rule`` returns the
-full registry entry behind any finding. Campaign and contrast tools are added as the
-stages behind them are built.
+full registry entry behind any finding. ``plan_campaign`` / ``run_campaign`` plan and run
+a bounded pairwise campaign (issue #69, over ``explorer.planner`` and ``explorer.campaign``);
+``list_campaigns`` / ``get_campaign`` give the details. Contrast tools come with P4.
 """
 
 from __future__ import annotations
 
+import csv
+import hashlib
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
@@ -30,9 +34,10 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from pydantic import BaseModel
 
-from explorer import adapter, model_json, validate
+from explorer import adapter, campaign, model_json, planner, validate
+from explorer.cache import DEFAULT_DB, Cache, run_cached
 from explorer.rules import Citation, Examples, load_rules
-from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test
+from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test, stale_harness
 from explorer.scenarios import TEST_CONFIGS
 from explorer.signatures import UNKNOWN, BehaviorRecord
 from explorer.support import EVIDENCE_DIRS, SupportResult
@@ -112,6 +117,21 @@ class DimensionSummary(BaseModel):
     """Its smoke-tested values as model.json labels; model.json gives the typed values."""
 
 
+class Dependency(BaseModel):
+    """A modeled constraint between parameters (model.json ``constraints``)."""
+    id: str
+    kind: str
+    """normative / guidance / dependency / harness / policy."""
+    role: str
+    """forbidden (rules out a combination), dependency (a setting needs another) or
+    action_order (AO.*, on the ordered actions)."""
+    coded: bool
+    """False when the rule isn't checked by code (e.g. P0 already can't express it)."""
+    applies_to: list[str]
+    """The dimensions / settings it ties together."""
+    predicate: str
+
+
 class ModelVersion(BaseModel):
     file: str
     schema_version: int
@@ -119,6 +139,8 @@ class ModelVersion(BaseModel):
     model_digest: str
     """Changes when the schema, a dimension's values, a rule or a pinned version does."""
     dimensions: list[DimensionSummary]
+    dependencies: list[Dependency]
+    """The constraints between dimensions, by rule ID; explain_rule gives each in full."""
 
 
 class ModelInfo(BaseModel):
@@ -190,6 +212,12 @@ STAGES = [
                      "UML guest and returns its behavior record; run_candidate runs any "
                      "candidate the adapter supports (ACCEPTED / REJECTED / SETUP_FAIL / "
                      "TIMEOUT)."),
+    StageStatus(stage="Campaign", implemented=True,
+                note="plan_campaign builds a bounded pairwise plan over the legal, executable "
+                     "candidates (P0, ConfigSpace/P1 and P2 applied to every enumerated "
+                     "assignment before anything boots); run_campaign re-checks each "
+                     "candidate at launch and runs it through the experiment cache; "
+                     "list_campaigns / get_campaign give the results."),
     StageStatus(stage="P4 compare and minimize", implemented=False,
                 note="Planned for Weeks 3-5."),
 ]
@@ -271,7 +299,9 @@ def model_version() -> ModelVersion:
         model_digest=built["model_digest"],
         dimensions=[DimensionSummary(name=d["name"], category=d["category"], path=d["path"],
                                      values=[v["label"] for v in d["values"]])
-                    for d in built["dimensions"]])
+                    for d in built["dimensions"]],
+        dependencies=[Dependency(**{k: c[k] for k in Dependency.model_fields})
+                      for c in built["constraints"]])
 
 
 @server.tool()
@@ -280,13 +310,14 @@ def get_model() -> ModelInfo:
     dimensions with their smoke-tested values, pinned hostap/kernel versions, which
     pipeline stages (P0-P4) are implemented, which behavior facts runs can report,
     which hostap tests have recorded runs in the repo, which tests run_hwsim_test
-    accepts (with what the coded P1 rules say about each), and every modeled rule and
-    open question by ID."""
+    accepts (with what the coded P1 rules say about each), every modeled rule and
+    open question by ID, and the dependencies between dimensions (model.dependencies)."""
     return ModelInfo(
         status=("Candidates can be validated through P0, P1 and a basic P2 support check "
                 "(validate_candidate), and approved hostap tests or any candidate the "
                 "adapter supports run in fresh guests (run_hwsim_test, run_candidate). "
-                "Campaigns and contrasts aren't built yet."),
+                "Bounded pairwise campaigns can be planned and run (plan_campaign, "
+                "run_campaign, list_campaigns, get_campaign). Contrasts (P4) aren't built yet."),
         model=model_version(),
         pinned_versions=pinned_versions(),
         stages=STAGES,
@@ -450,6 +481,7 @@ def run_candidate(candidate: dict[str, Any], negative_experiment: bool = False) 
     parsed, _ = validate.parse_candidate(candidate)
     if reasons := adapter.unsupported(parsed):
         raise ToolError("the adapter can't run this candidate yet: " + "; ".join(reasons))
+    _require_current_image()
     try:
         run = adapter.run_candidate(parsed)
     except RunnerError as exc:
@@ -463,6 +495,311 @@ def run_candidate(candidate: dict[str, Any], negative_experiment: bool = False) 
         negative_experiment=result.status != "PASSES_MODELED_RULES", p2=result.p2,
         p3_status=run.status, reason=run.reason, run_id=run.run_id, record=run.record,
         run_folder=run_folder)
+
+
+def _require_current_image() -> None:
+    """Refuse to run on an image built from older harness files (runner.stale_harness):
+    its runs would be filed under the repo's harness and could report false results."""
+    try:
+        stale = stale_harness()
+    except RunnerError as exc:
+        raise ToolError(f"simulation environment unavailable: {exc}") from exc
+    if stale:
+        raise ToolError(f"the wifi7-env image is older than docker/{', docker/'.join(stale)} "
+                        "in the repo, so its runs wouldn't test the current code; rebuild it "
+                        "with scripts/build-env.sh, then try again")
+
+
+# --- Campaigns (issue #69) ---------------------------------------------------------
+
+MAX_BUDGET = 40
+"""Most candidates one plan may hold: the roadmap's campaign is about 20, so a plan can't
+turn into an unbounded number of guest boots."""
+MAX_RETRIES = 2
+CAMPAIGN_RUNNER = run_cached
+"""How run_campaign runs one candidate (cache lookup, else a fresh guest); tests replace it."""
+CACHE_DB = DEFAULT_DB
+_PLANS: dict[str, dict] = {}
+"""Plans made by plan_campaign in this server process, by plan ID."""
+_PLAN_ID = re.compile(r"^seed(?P<seed>-?\d+)-b(?P<budget>\d+)-(?P<mode>runs|fresh)-[0-9a-f]{8}$")
+_CAMPAIGN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+
+
+class PlannedCandidate(BaseModel):
+    id: str
+    role: str
+    """probe (every value has a passing legal run, the combination hasn't run) or
+    supported (this exact candidate already ran; the cache answers it without a boot)."""
+    source: str
+    """allpairspy, or top_up (added to cover pairs allpairspy left)."""
+    choices: dict[str, str]
+    """The model.json label of each dimension; the F02 base supplies everything else."""
+
+
+class PairCoverage(BaseModel):
+    feasible_pairs: int
+    planned_feasible_pairs: int
+    """Feasible pairs some planned candidate contains (not yet run)."""
+    covered_feasible_pairs: int
+    """Feasible pairs a committed legal ACCEPTED run already contains."""
+
+
+class CampaignPlanSummary(BaseModel):
+    plan_id: str
+    """Pass it to run_campaign."""
+    seed: int
+    budget: int
+    build_on_runs: bool
+    model_digest: str
+    funnel: dict[str, Any]
+    """Enumerated assignments surviving P0 -> ConfigSpace/P1 -> P2, with P1 rejections by
+    rule ID, then planned and cut by the budget."""
+    modeled_admissible: PairCoverage
+    """Pairs feasible after P0/P1."""
+    executable: PairCoverage
+    """Pairs feasible after P2 too."""
+    infeasible_pairs: int
+    review_queue: int
+    """SPEC_UNDETERMINED assignments: kept out of the campaign, never approved."""
+    candidates: list[PlannedCandidate]
+    note: str
+
+
+class CandidateResult(BaseModel):
+    id: str
+    status: str
+    """ACCEPTED / REJECTED / SETUP_FAIL / TIMEOUT, or NOT_RUN_P1 / NOT_RUN_ADAPTER when the
+    launch-time re-check refused it (nothing booted)."""
+    run_id: str | None
+    cache_hit: bool | None
+    """True when the experiment cache answered (no new guest, not an independent run)."""
+    reason: str | None
+
+
+class CampaignSummary(BaseModel):
+    campaign_id: str
+    folder: str
+    """Repo-relative: run folders, results.json, rejected_cases.csv, pruning_counts.json."""
+    seed: int
+    started_at: str
+    finished_at: str
+    p3: dict[str, int]
+    not_run_at_launch: dict[str, int]
+    executed: dict[str, int]
+    """guest_boots, cache_hits, retries, distinct_candidates_run."""
+    candidates: list[CandidateResult]
+
+
+class CampaignDetails(CampaignSummary):
+    pruning_counts: dict[str, Any]
+    rejected_cases: list[dict[str, str]]
+    """Every case that didn't run or didn't come back ACCEPTED, with rule IDs or reasons."""
+    candidate: dict[str, Any] | None
+    """The full entry for candidate_id: choices, candidate JSON, attempts, signature."""
+
+
+def _plan_id(plan: dict) -> str:
+    blob = json.dumps([c["choices"] for c in plan["candidates"]] + [plan["model"]["model_digest"]],
+                      sort_keys=True)
+    mode = "runs" if plan["build_on_runs"] else "fresh"
+    return (f"seed{plan['seed']}-b{plan['budget']}-{mode}-"
+            f"{hashlib.sha256(blob.encode()).hexdigest()[:8]}")
+
+
+def _make_plan(seed: int, budget: int, build_on_runs: bool) -> tuple[dict, dict]:
+    """The plan and its pair coverage, as scripts/plan_campaign.py computes them, without
+    writing the repo-root files. A fresh Space each time: evidence changes after runs."""
+    space = planner.Space()
+    plan = planner.plan(seed, budget, space, build_on_runs=build_on_runs)
+    rows = [tuple(c["choices"][n] for n in space.names) for c in plan["candidates"]]
+    ran = space.rows(lambda a: a.legal and a.p2_status == "SUPPORTED")
+    return plan, planner.coverage(space, rows, ran)
+
+
+def _pairs(block: dict) -> PairCoverage:
+    return PairCoverage(feasible_pairs=block["feasible_pairs"],
+                        planned_feasible_pairs=block["planned_feasible_pairs"],
+                        covered_feasible_pairs=block["covered_feasible_pairs"])
+
+
+@server.tool()
+def plan_campaign(seed: int = 0, budget: int = planner.DEFAULT_BUDGET,
+                  build_on_runs: bool = True) -> CampaignPlanSummary:
+    """Plan a bounded pairwise campaign over model.json's admitted dimensions. Nothing
+    boots; takes a few seconds.
+
+    Every assignment of the dimensions (on the legal F02 base) goes through P0,
+    ConfigSpace/P1 (modeled rules; SPEC_UNDETERMINED ones go to a review queue, never
+    the campaign) and P2 (only SUPPORTED candidates and support probes are executable).
+    allpairspy then picks candidates covering every executable pair of values, topped up
+    where it falls short, at most `budget` (1-40). The same seed gives the same plan for
+    the same evidence.
+
+    build_on_runs (default) counts pairs already covered by committed runs, so the plan
+    lists only what's left; an empty plan means every executable pair has run. Pass
+    build_on_runs=false (or another seed) for a full fresh design; candidates that have
+    already run are then answered by the cache without a boot.
+
+    Returns a brief summary with a plan_id for run_campaign."""
+    if not 1 <= budget <= MAX_BUDGET:
+        raise ToolError(f"budget must be 1-{MAX_BUDGET}, got {budget}")
+    plan, cover = _make_plan(seed, budget, build_on_runs)
+    plan_id = _plan_id(plan)
+    _PLANS[plan_id] = plan
+    funnel = plan["funnel"]
+    if not plan["candidates"]:
+        note = ("Nothing to run: every executable pair is already covered by committed runs. "
+                "Use build_on_runs=false or another seed for a fresh design.")
+    else:
+        note = (f"{len(plan['candidates'])} candidates planned, nothing run yet. "
+                f"run_campaign(plan_id={plan_id!r}) runs them in fresh guests.")
+        if funnel["cut_by_budget"]:
+            note += f" {funnel['cut_by_budget']} more were cut by the budget."
+    return CampaignPlanSummary(
+        plan_id=plan_id, seed=seed, budget=budget, build_on_runs=build_on_runs,
+        model_digest=plan["model"]["model_digest"], funnel=funnel,
+        modeled_admissible=_pairs(cover["modeled_admissible"]),
+        executable=_pairs(cover["executable"]),
+        infeasible_pairs=len(cover["infeasible_pairs"]),
+        review_queue=len(plan["review_queue"]),
+        candidates=[PlannedCandidate(**{k: c[k] for k in PlannedCandidate.model_fields})
+                    for c in plan["candidates"]],
+        note=note)
+
+
+def _find_plan(plan_id: str) -> dict:
+    """A plan made earlier, or (after a server restart) the same plan made again; refused
+    if the evidence or model changed in between, since that changes what's planned."""
+    if plan_id in _PLANS:
+        return _PLANS[plan_id]
+    m = _PLAN_ID.match(plan_id)
+    if not m:
+        raise ToolError(f"unknown plan_id {plan_id!r}; call plan_campaign first")
+    plan, _ = _make_plan(int(m["seed"]), int(m["budget"]), m["mode"] == "runs")
+    if _plan_id(plan) != plan_id:
+        raise ToolError(f"plan {plan_id!r} no longer matches the model and evidence (it "
+                        f"would now be {_plan_id(plan)!r}); call plan_campaign again")
+    _PLANS[plan_id] = plan
+    return plan
+
+
+def _folder(path: Path) -> str:
+    return str(path.relative_to(REPO_ROOT)) if path.is_relative_to(REPO_ROOT) else str(path)
+
+
+def _summary(campaign_dir: Path, results: dict, counts: dict) -> dict:
+    return dict(
+        campaign_id=results["campaign"], folder=_folder(campaign_dir), seed=results["seed"],
+        started_at=results["started_at"], finished_at=results["finished_at"],
+        p3=counts["P3"], not_run_at_launch=counts["not_run_at_launch"],
+        executed=counts["executed"],
+        candidates=[CandidateResult(id=r["id"], status=r["status"], run_id=r.get("run_id"),
+                                    cache_hit=r.get("cache_hit"), reason=r.get("reason"))
+                    for r in results["results"]])
+
+
+@server.tool()
+def run_campaign(plan_id: str, campaign_id: str | None = None,
+                 retries: int = 1) -> CampaignSummary:
+    """Run every candidate of a plan from plan_campaign, each in a fresh simulated network
+    (about 5-10 s per guest; a 20-candidate campaign takes a few minutes).
+
+    Each candidate is re-checked at launch with today's rules (P0/P1 and what the
+    adapter can express) and skipped as NOT_RUN_P1 / NOT_RUN_ADAPTER if it no longer
+    passes, so a campaign never runs a rule-breaking candidate. Then the experiment cache
+    answers it if the same candidate already ran under the same versions (no boot), or a
+    fresh guest runs it. SETUP_FAIL / TIMEOUT are rerun up to `retries` times (0-2);
+    REJECTED is a result and never retried. Refused if the simulation image is older
+    than the repo's harness files (rebuild with scripts/build-env.sh).
+
+    Writes campaigns/<campaign_id>/ (run folders, campaign_plan.json, results.json,
+    rejected_cases.csv, pruning_counts.json) and the repo-root pruning_counts.json, as
+    scripts/run_campaign.py does. They're evidence only once a person reviews and commits
+    them. Returns a brief summary with each candidate's status and run ID; get_campaign
+    gives the details."""
+    if not 0 <= retries <= MAX_RETRIES:
+        raise ToolError(f"retries must be 0-{MAX_RETRIES}, got {retries}")
+    plan = _find_plan(plan_id)
+    if not plan["candidates"]:
+        raise ToolError(f"plan {plan_id!r} has no candidates; nothing to run")
+    campaign_id = campaign_id or f"seed{plan['seed']}-{datetime.now(timezone.utc):%Y-%m-%dT%H%M%SZ}"
+    if not _CAMPAIGN_ID.match(campaign_id):
+        raise ToolError("campaign_id may use letters, digits, '.', '_' and '-' (at most 64)")
+    campaign_dir = campaign.CAMPAIGNS / campaign_id
+    if campaign_dir.exists():
+        raise ToolError(f"{_folder(campaign_dir)} already exists; choose another campaign_id")
+    _require_current_image()
+    cache = Cache(CACHE_DB)
+    try:
+        cache.rebuild()
+        results = campaign.run(plan, campaign_id, cache=cache, campaigns_dir=campaign.CAMPAIGNS,
+                               retries=retries, runner=CAMPAIGN_RUNNER)
+    except RunnerError as exc:
+        raise ToolError(f"simulation environment unavailable: {exc}. Runs that finished "
+                        f"before this are in {_folder(campaign_dir)}.") from exc
+    finally:
+        cache.close()
+    counts = campaign.pruning_counts(plan, results)
+    rejected = campaign.rejected_cases(plan, results, planner.Space())
+    campaign.write(campaign_dir, plan, results, rejected, counts)
+    return CampaignSummary(**_summary(campaign_dir, results, counts))
+
+
+class CampaignListing(BaseModel):
+    campaign_id: str
+    folder: str
+    seed: int
+    started_at: str
+    p3: dict[str, int]
+
+
+def _campaign_dirs() -> list[Path]:
+    return sorted(d for d in campaign.CAMPAIGNS.glob("*") if (d / "results.json").is_file())
+
+
+@server.tool()
+def list_campaigns() -> list[CampaignListing]:
+    """Campaigns in campaigns/ (committed ones and any run_campaign wrote here), with
+    their P3 counts. get_campaign gives one in detail."""
+    listing = []
+    for d in _campaign_dirs():
+        results = json.loads((d / "results.json").read_text())
+        statuses = [r["status"] for r in results["results"]]
+        listing.append(CampaignListing(
+            campaign_id=d.name, folder=_folder(d), seed=results["seed"],
+            started_at=results["started_at"],
+            p3={s: statuses.count(s) for s in campaign.P3_STATUSES}))
+    return listing
+
+
+@server.tool()
+def get_campaign(campaign_id: str, candidate_id: str | None = None) -> CampaignDetails:
+    """One campaign in detail: its pruning funnel (P0 -> ConfigSpace/P1 -> P2 -> P3), the
+    rejected-cases table (P1 rejections with rule IDs, non-ACCEPTED runs with reasons) and
+    each candidate's status. With candidate_id (e.g. "c03"), also that candidate's full
+    entry: its choices, the candidate JSON, every attempt and its behavior signature."""
+    by_id = {d.name: d for d in _campaign_dirs()}
+    if campaign_id not in by_id:
+        raise ToolError(f"no campaign {campaign_id!r}; known: {sorted(by_id)}")
+    d = by_id[campaign_id]
+    results = json.loads((d / "results.json").read_text())
+    counts = json.loads((d / "pruning_counts.json").read_text())
+    with (d / "rejected_cases.csv").open(newline="") as f:
+        rejected = list(csv.DictReader(f))
+    candidate = None
+    if candidate_id is not None:
+        entries = {r["id"]: r for r in results["results"]}
+        if candidate_id not in entries:
+            raise ToolError(f"campaign {campaign_id!r} has no candidate {candidate_id!r}; "
+                            f"known: {sorted(entries)}")
+        planned = {c["id"]: c for c in json.loads((d / "campaign_plan.json").read_text())["candidates"]}
+        candidate = {**entries[candidate_id],
+                     "candidate": planned.get(candidate_id, {}).get("candidate")}
+        if run_id := candidate.get("run_id"):
+            if (d / run_id).is_dir():
+                candidate["run_folder"] = _folder(d / run_id)
+    return CampaignDetails(**_summary(d, results, counts), pruning_counts=counts,
+                           rejected_cases=rejected, candidate=candidate)
 
 
 def main() -> None:
