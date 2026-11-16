@@ -66,7 +66,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 - `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
   `.signature()` gives the comparable facts.
 - `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`,
-  `run_hwsim_test` and `run_candidate`. Add new tools
+  `run_hwsim_test`, `run_candidate` and the campaign tools `plan_campaign`, `run_campaign`,
+  `list_campaigns`, `get_campaign`. Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus

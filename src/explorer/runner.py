@@ -19,6 +19,7 @@ expected to show.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -109,6 +110,29 @@ def check_environment(image: str = DEFAULT_IMAGE) -> None:
               else inspect.stderr.strip() or f"exit code {inspect.returncode}")
     raise RunnerError(f"image {image!r} not found ({detail}); "
                       "build it with scripts/build-env.sh")
+
+
+# Our harness files the Dockerfile copies into the image (its COPY line), by guest path.
+IMAGE_HARNESS = {name: f"/opt/hostap/tests/hwsim/{name}"
+                 for name in ("test_eht_client_bp.py", "test_explorer_candidate.py")}
+
+
+def stale_harness(image: str = DEFAULT_IMAGE) -> list[str]:
+    """Harness files whose copy in ``image`` differs from ``docker/`` in the repo, i.e.
+    the image wasn't rebuilt after they changed. Empty when the image is current.
+
+    The experiment cache keys a run by the repo's copies (``cache.harness_digest``), so a
+    run on a stale image would be filed as a result of code it didn't run. Seen
+    2026-11-16: an image built before #88 ignored the client's sae_pwe and turned a
+    legal candidate into a REJECTED run."""
+    check_environment(image)
+    result = _docker(["run", "--rm", "--entrypoint", "sha256sum", image,
+                      *IMAGE_HARNESS.values()], DOCKER_WAKE_TIMEOUT_S)
+    in_image = {Path(path).name: digest for digest, path in
+                (line.split(maxsplit=1) for line in result.stdout.splitlines() if line.strip())}
+    return [name for name in IMAGE_HARNESS
+            if hashlib.sha256((REPO_ROOT / "docker" / name).read_bytes()).hexdigest()
+            != in_image.get(name)]
 
 
 def run_test(test: str, *,
