@@ -1,0 +1,1617 @@
+1794812758.159820: Using existing control interface directory.
+1794812758.160682: Global ctrl_iface command: PING
+1794812758.162879: Global ctrl_iface command: ATTACH
+1794812758.162879: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-16\x00
+1794812758.162883: Global ctrl_iface command: FLUSH
+1794812758.162887: Global ctrl_iface command: INTERFACES
+1794812758.162890: Global ctrl_iface command: REMOVE as-erp
+1794812758.162890: Removing interface as-erp failed
+1794812758.162893: Global ctrl_iface command: DETACH
+1794812758.162893: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-16\x00
+1794812758.162991: Global ctrl_iface command: ATTACH
+1794812758.162992: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-19\x00
+1794812758.162995: Global ctrl_iface command: NOTE TEST-START explorer_candidate
+1794812758.162995: Unrecognized global ctrl_iface command ignored
+1794812758.162998: Global ctrl_iface command: DETACH
+1794812758.162998: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-19\x00
+1794812758.163630: Global ctrl_iface command: ATTACH
+1794812758.163631: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-25\x00
+1794812758.163637: Global ctrl_iface command: ADD wlan7 config=/tmp/link-0.conf-_9sr3c3a
+1794812758.163638: AP MLD wlan7 created
+1794812758.163639: Using existing control interface directory.
+1794812758.163640: Setting up MLD wlan7 ctrl_iface
+1794812758.163640: AP MLD: wlan7: Link ID 0 assigned.
+1794812758.163641: Using existing control interface directory.
+1794812758.163642: Add interface 'wlan7'
+1794812758.163644: RX ctrl_iface - hexdump_ascii(len=6):
+     41 54 54 41 43 48                                 ATTACH          
+1794812758.163644: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-27\x00
+1794812758.163650: Global ctrl_iface command: DETACH
+1794812758.163651: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-25\x00
+1794812758.163654: RX ctrl_iface - hexdump_ascii(len=6):
+     45 4e 41 42 4c 45                                 ENABLE          
+1794812758.163655: Enable interface wlan7
+1794812758.163655: nl80211: Kernel version: Linux 7.3.0-rc4 (#1 Fri Nov  6 18:13:36 UTC 2026; x86_64)
+1794812758.163655: nl80211: Maximum supported attribute ID: 370
+1794812758.163655: nl80211: Initialize interface wlan7 (driver: mac80211_hwsim)
+1794812758.163656: nl80211: wlan7 wdev_id=0x700000001
+1794812758.163656: nl80211: TDLS supported
+1794812758.163656: nl80211: TDLS external setup
+1794812758.163656: nl80211: Supported cipher 00-0f-ac:1
+1794812758.163657: nl80211: Supported cipher 00-0f-ac:5
+1794812758.163657: nl80211: Supported cipher 00-0f-ac:2
+1794812758.163657: nl80211: Supported cipher 00-0f-ac:4
+1794812758.163657: nl80211: Supported cipher 00-0f-ac:10
+1794812758.163658: nl80211: Supported cipher 00-0f-ac:8
+1794812758.163658: nl80211: Supported cipher 00-0f-ac:9
+1794812758.163658: nl80211: Supported cipher 00-0f-ac:6
+1794812758.163658: nl80211: Supported cipher 00-0f-ac:13
+1794812758.163659: nl80211: Supported cipher 00-0f-ac:11
+1794812758.163659: nl80211: Supported cipher 00-0f-ac:12
+1794812758.163659: nl80211: Using driver-based off-channel TX
+1794812758.163659: nl80211: Driver-advertised extended capabilities (default) - hexdump(len=8): 04 00 40 00 00 00 00 40
+1794812758.163660: nl80211: Driver-advertised extended capabilities mask (default) - hexdump(len=8): 04 00 40 00 00 00 00 40
+1794812758.163660: nl80211: Supported vendor command: vendor_id=0x1374 subcmd=1
+1794812758.163660: nl80211: Supported vendor event: vendor_id=0x1374 subcmd=1
+1794812758.163660: nl80211: Driver-advertised extended capabilities for interface type AP
+1794812758.163661: nl80211: Extended capabilities - hexdump(len=10): 04 00 40 00 00 00 00 c0 01 40
+1794812758.163661: nl80211: Extended capabilities mask - hexdump(len=10): 04 00 40 00 00 00 00 c0 01 40
+1794812758.163661: nl80211: EML Capability: 0x81 MLD Capability: 0x2e
+1794812758.163661: nl80211: Driver-advertised extended capabilities for interface type STATION
+1794812758.163662: nl80211: Extended capabilities - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794812758.163662: nl80211: Extended capabilities mask - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794812758.163662: nl80211: EML Capability: 0x0 MLD Capability: 0x0
+1794812758.163663: nl80211: Driver-advertised extended capabilities for interface type P2P_CLIENT
+1794812758.163663: nl80211: Extended capabilities - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794812758.163663: nl80211: Extended capabilities mask - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794812758.163663: nl80211: EML Capability: 0x0 MLD Capability: 0x0
+1794812758.163664: nl80211: Driver-advertised extended capabilities for interface type P2P_GO
+1794812758.163664: nl80211: Extended capabilities - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794812758.163664: nl80211: Extended capabilities mask - hexdump(len=9): 04 00 40 00 00 00 00 c0 01
+1794812758.163664: nl80211: EML Capability: 0x0 MLD Capability: 0x0
+1794812758.163665: mbssid: max interfaces 8, max profile periodicity 3
+1794812758.163665: nl80211: Use separate P2P group interface (driver advertised support)
+1794812758.163665: nl80211: key_mgmt=0x737ff2f enc=0xfef auth=0x7 flags=0xe5000d31db5bfbe0 flags2=0xe0f00c103 rrm_flags=0x10 probe_resp_offloads=0x0 max_stations=0 max_remain_on_chan=1000 max_scan_ssids=255
+1794812758.163665: nl80211: interface wlan7 in phy phy7
+1794812758.163666: nl80211: Set mode ifindex 12 iftype 3 (AP)
+1794812758.163666: nl80211: Setup AP(wlan7) - device_ap_sme=0
+1794812758.163666: nl80211: Subscribe to mgmt frames with AP handle 0x5500002e4120
+1794812758.163666: nl80211: Register frame type=0xb0 (WLAN_FC_STYPE_AUTH) nl_handle=0x5500002e4120 match= multicast=0
+1794812758.163667: nl80211: Register frame type=0x0 (WLAN_FC_STYPE_ASSOC_REQ) nl_handle=0x5500002e4120 match= multicast=0
+1794812758.163667: nl80211: Register frame type=0x20 (WLAN_FC_STYPE_REASSOC_REQ) nl_handle=0x5500002e4120 match= multicast=0
+1794812758.163667: nl80211: Register frame type=0xa0 (WLAN_FC_STYPE_DISASSOC) nl_handle=0x5500002e4120 match= multicast=0
+1794812758.163667: nl80211: Register frame type=0xc0 (WLAN_FC_STYPE_DEAUTH) nl_handle=0x5500002e4120 match= multicast=0
+1794812758.163668: nl80211: Register frame type=0x40 (WLAN_FC_STYPE_PROBE_REQ) nl_handle=0x5500002e4120 match= multicast=0
+1794812758.163668: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=04 multicast=0
+1794812758.163668: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=0501 multicast=0
+1794812758.163668: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=0503 multicast=0
+1794812758.163669: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=0504 multicast=0
+1794812758.163669: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=06 multicast=0
+1794812758.163669: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=08 multicast=0
+1794812758.163669: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=09 multicast=0
+1794812758.163670: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=0a multicast=0
+1794812758.163670: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=11 multicast=0
+1794812758.163670: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=12 multicast=0
+1794812758.163670: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=250b multicast=0
+1794812758.163671: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=7e multicast=0
+1794812758.163671: nl80211: Register frame type=0xd0 (WLAN_FC_STYPE_ACTION) nl_handle=0x5500002e4120 match=7f multicast=0
+1794812758.163777: rfkill: initial event: idx=7 type=1 op=0 soft=0 hard=0
+1794812758.163778: nl80211: QCA vendor test command response received
+1794812758.163778: nl80211: Received QCA vendor test command response - hexdump(len=8): 08 00 08 00 7d 00 00 00
+1794812758.163778: nl80211: QCA vendor test command returned 0 (Success)
+1794812758.163781: nl80211: Add own interface ifindex 12 (ifidx_reason -1)
+1794812758.163781: nl80211: if_indices[16]: 12(-1)
+1794812758.163781: nl80211: Do not open EAPOL RX socket - using control port for RX
+1794812758.163783: Setup of first link (0) BSS of MLD wlan7
+1794812758.163783: MLD: Set link_id=0, mld_addr=02:00:00:00:07:00, own_addr=02:00:00:38:65:ef
+1794812758.163783: nl80211: MLD: add link_id=0, addr=02:00:00:38:65:ef
+1794812758.163783: nl80211: MLD: valid_links=0x0001 active_links=0x0001 on wlan7
+1794812758.163784: AP MLD wlan7: Link ID 0 added. num_links: 1
+1794812758.163784: AP MLD wlan7: First link BSS set to 0x5500002e2300
+1794812758.163784: phy: phy7
+1794812758.163784: BSS count 1, BSSID mask 00:00:00:00:00:00 (0 bits)
+1794812758.163785: ctrl_iface already exists!
+1794812758.163785: nl80211: No channel number found for frequency 5900 MHz
+1794812758.163785: nl80211: No channel number found for frequency 5905 MHz
+1794812758.163785: nl80211: No channel number found for frequency 5910 MHz
+1794812758.163786: nl80211: No channel number found for frequency 5915 MHz
+1794812758.163786: nl80211: No channel number found for frequency 5920 MHz
+1794812758.163786: nl80211: No channel number found for frequency 5925 MHz
+1794812758.163786: nl80211: No channel number found for frequency 902 MHz
+1794812758.163787: nl80211: No channel number found for frequency 903 MHz
+1794812758.163787: nl80211: No channel number found for frequency 904 MHz
+1794812758.163787: nl80211: No channel number found for frequency 905 MHz
+1794812758.163787: nl80211: No channel number found for frequency 906 MHz
+1794812758.163788: nl80211: No channel number found for frequency 907 MHz
+1794812758.163788: nl80211: No channel number found for frequency 908 MHz
+1794812758.163788: nl80211: No channel number found for frequency 909 MHz
+1794812758.163788: nl80211: No channel number found for frequency 910 MHz
+1794812758.163789: nl80211: No channel number found for frequency 911 MHz
+1794812758.163789: nl80211: No channel number found for frequency 912 MHz
+1794812758.163789: nl80211: No channel number found for frequency 913 MHz
+1794812758.163789: nl80211: No channel number found for frequency 914 MHz
+1794812758.163790: nl80211: No channel number found for frequency 915 MHz
+1794812758.163790: nl80211: No channel number found for frequency 916 MHz
+1794812758.163790: nl80211: No channel number found for frequency 917 MHz
+1794812758.163791: nl80211: No channel number found for frequency 918 MHz
+1794812758.163791: nl80211: No channel number found for frequency 919 MHz
+1794812758.163791: nl80211: No channel number found for frequency 920 MHz
+1794812758.163791: nl80211: No channel number found for frequency 921 MHz
+1794812758.163792: nl80211: No channel number found for frequency 922 MHz
+1794812758.163792: nl80211: No channel number found for frequency 923 MHz
+1794812758.163792: nl80211: No channel number found for frequency 924 MHz
+1794812758.163792: nl80211: No channel number found for frequency 925 MHz
+1794812758.163793: nl80211: No channel number found for frequency 926 MHz
+1794812758.163793: nl80211: No channel number found for frequency 927 MHz
+1794812758.163793: nl80211: Regulatory information - country=00
+1794812758.163793: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794812758.163794: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794812758.163794: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794812758.163794: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794812758.163794: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794812758.163795: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794812758.163795: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794812758.163795: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794812758.163795: nl80211: Remove unsupported mode
+1794812758.163796: nl80211: Added 802.11b mode based on 802.11g information
+1794812758.163796: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794812758.163796: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794812758.163796: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794812758.163797: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794812758.163797: Allowed channel: mode=1 chan=1 freq=2412 MHz max_tx_power=20 dBm
+1794812758.163797: Allowed channel: mode=1 chan=2 freq=2417 MHz max_tx_power=20 dBm
+1794812758.163797: Allowed channel: mode=1 chan=3 freq=2422 MHz max_tx_power=20 dBm
+1794812758.163798: Allowed channel: mode=1 chan=4 freq=2427 MHz max_tx_power=20 dBm
+1794812758.163798: Allowed channel: mode=1 chan=5 freq=2432 MHz max_tx_power=20 dBm
+1794812758.163798: Allowed channel: mode=1 chan=6 freq=2437 MHz max_tx_power=20 dBm
+1794812758.163798: Allowed channel: mode=1 chan=7 freq=2442 MHz max_tx_power=20 dBm
+1794812758.163799: Allowed channel: mode=1 chan=8 freq=2447 MHz max_tx_power=20 dBm
+1794812758.163799: Allowed channel: mode=1 chan=9 freq=2452 MHz max_tx_power=20 dBm
+1794812758.163799: Allowed channel: mode=1 chan=10 freq=2457 MHz max_tx_power=20 dBm
+1794812758.163799: Allowed channel: mode=1 chan=11 freq=2462 MHz max_tx_power=20 dBm
+1794812758.163800: Allowed channel: mode=0 chan=1 freq=2412 MHz max_tx_power=20 dBm
+1794812758.163800: Allowed channel: mode=0 chan=2 freq=2417 MHz max_tx_power=20 dBm
+1794812758.163800: Allowed channel: mode=0 chan=3 freq=2422 MHz max_tx_power=20 dBm
+1794812758.163800: Allowed channel: mode=0 chan=4 freq=2427 MHz max_tx_power=20 dBm
+1794812758.163801: Allowed channel: mode=0 chan=5 freq=2432 MHz max_tx_power=20 dBm
+1794812758.163801: Allowed channel: mode=0 chan=6 freq=2437 MHz max_tx_power=20 dBm
+1794812758.163801: Allowed channel: mode=0 chan=7 freq=2442 MHz max_tx_power=20 dBm
+1794812758.163802: Allowed channel: mode=0 chan=8 freq=2447 MHz max_tx_power=20 dBm
+1794812758.163802: Allowed channel: mode=0 chan=9 freq=2452 MHz max_tx_power=20 dBm
+1794812758.163802: Allowed channel: mode=0 chan=10 freq=2457 MHz max_tx_power=20 dBm
+1794812758.163802: Allowed channel: mode=0 chan=11 freq=2462 MHz max_tx_power=20 dBm
+1794812758.163803: Completing interface initialization
+1794812758.163803: Mode: IEEE 802.11g  Channel: 1  Frequency: 2412 MHz
+1794812758.163803: DFS 0 channels required radar detection
+1794812758.163803: hostapd_set_freq: link_id=0
+1794812758.163804: nl80211: Set freq 2412 (ht_enabled=1, vht_enabled=0, he_enabled=1, eht_enabled=1, bandwidth=20 MHz, cf1=2412 MHz, cf2=0 MHz)
+1794812758.163804:   * freq=2412
+1794812758.163804:   * eht_enabled=1
+1794812758.163804:   * he_enabled=1
+1794812758.163805:   * vht_enabled=0
+1794812758.163805:   * ht_enabled=1
+1794812758.163805:   * radar_background=0
+1794812758.163805:   * sec_channel_offset=0
+1794812758.163806:   * channel_type=1
+1794812758.163806: nl80211: Set link_id=0 for freq
+1794812758.163806: hostapd_setup_bss(hapd=0x5500002e2300 (wlan7), first=1)
+1794812758.163806: RATE[0] rate=10 flags=0x1
+1794812758.163807: RATE[1] rate=20 flags=0x1
+1794812758.163807: RATE[2] rate=55 flags=0x1
+1794812758.163807: RATE[3] rate=110 flags=0x1
+1794812758.163807: RATE[4] rate=60 flags=0x0
+1794812758.163808: RATE[5] rate=90 flags=0x0
+1794812758.163808: RATE[6] rate=120 flags=0x0
+1794812758.163808: RATE[7] rate=180 flags=0x0
+1794812758.163808: RATE[8] rate=240 flags=0x0
+1794812758.163809: RATE[9] rate=360 flags=0x0
+1794812758.163809: RATE[10] rate=480 flags=0x0
+1794812758.163809: RATE[11] rate=540 flags=0x0
+1794812758.163809: nl80211: flush -> DEL_STATION wlan7 (with link 0)
+1794812758.163810: Using interface wlan7 with hwaddr 02:00:00:38:65:ef and ssid "explorer_mld"
+1794812758.163810: RSN: Own IEs - hexdump(len=22): 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00
+1794812758.163823: GMK - hexdump(len=32): 40 35 de 3b 2e c6 7b 17 e8 89 67 63 34 72 d1 47 ed 1d ba 87 b0 65 5f c0 5e b2 01 7f 25 b3 98 e7
+1794812758.163827: Key Counter - hexdump(len=32): 0e 19 da 36 61 80 17 fb d7 45 5e 99 05 6a f1 a3 99 83 7a 23 19 41 ef a1 f5 74 4f 89 ee 90 c4 bd
+1794812758.163827: WPA: Delay group state machine start until Beacon frames have been configured
+1794812758.163828: PTKSA: Initializing
+1794812758.163829: MLD: EML Capabilities=0x81
+1794812758.163829: MLD: MLD Capabilities and Operations=0x2000
+1794812758.163830: MLD: Reconfiguration ML
+1794812758.163830: MLD: Reconfiguration ML: 0
+1794812758.163830: nl80211: Set beacon (beacon_set=0)
+1794812758.163830: nl80211: Beacon head - hexdump(len=63): 80 00 00 00 ff ff ff ff ff ff 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 01
+1794812758.163831: nl80211: Beacon tail - hexdump(len=204): 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9c fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 00 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.163831: nl80211: ifindex=12
+1794812758.163831: nl80211: beacon_int=100
+1794812758.163831: nl80211: beacon_rate=0
+1794812758.163832: nl80211: rate_type=0
+1794812758.163832: nl80211: dtim_period=2
+1794812758.163832: nl80211: ssid=explorer_mld
+1794812758.163832:   * beacon_int=100
+1794812758.163833:   * dtim_period=2
+1794812758.163833: nl80211: link_id=0
+1794812758.163833: nl80211: hidden SSID not in use
+1794812758.163834: nl80211: privacy=2
+1794812758.163834: nl80211: auth_algs=0x3
+1794812758.163834: nl80211: wpa_version=0x2
+1794812758.163834: nl80211: key_mgmt_suites=0x400000
+1794812758.163835: nl80211: pairwise_ciphers=0x100
+1794812758.163835: nl80211: group_cipher=0x100
+1794812758.163835: nl80211: beacon_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163835: nl80211: proberesp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163836: nl80211: assocresp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163836:   * freq=2412
+1794812758.163836:   * eht_enabled=1
+1794812758.163836:   * he_enabled=1
+1794812758.163837:   * vht_enabled=0
+1794812758.163837:   * ht_enabled=1
+1794812758.163837:   * radar_background=0
+1794812758.163837:   * sec_channel_offset=0
+1794812758.163838:   * channel_type=1
+1794812758.163838: nl80211: multicast to unicast disabled on interface wlan7
+1794812758.163838: wlan7: Deauthenticate all stations at BSS start
+1794812758.163839: nl80211: send_mlme - da=ff:ff:ff:ff:ff:ff sa=02:00:00:38:65:ef bssid=02:00:00:38:65:ef noack=0 freq=0 no_cck=0 offchanok=0 wait_time=0 no_encrypt=0 fc=0xc0 (WLAN_FC_STYPE_DEAUTH) nlmode=3
+1794812758.163839: nl80211: send_mlme - Use bss->freq=2412
+1794812758.163839: nl80211: send_mlme -> send_frame_cmd
+1794812758.163839: nl80211: CMD_FRAME freq=2412 wait=0 no_cck=0 no_ack=0 offchanok=0
+1794812758.163840: CMD_FRAME - hexdump(len=26): c0 00 00 00 ff ff ff ff ff ff 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 02 00
+1794812758.163840: nl80211: Frame TX command accepted; cookie 0x1
+1794812758.163840: nl80211: Set wlan7 operstate 0->1 (UP)
+1794812758.163840: netlink: Operstate: ifindex=12 linkmode=-1 (no change), operstate=6 (IF_OPER_UP)
+1794812758.163841: WPA: Start group state machine to set initial keys
+1794812758.163841: WPA: group state machine entering state GTK_INIT (VLAN-ID 0)
+1794812758.163863: GTK - hexdump(len=32): 86 8c d0 88 88 50 63 8e 93 af 6d 01 87 be cb 7c 73 a3 ff 0b f0 69 11 ce 89 c6 da c0 f4 49 6c 45
+1794812758.163865: IGTK - hexdump(len=16): 80 bb 63 86 47 3f 38 db 74 13 cc 90 bb 7d 03 86
+1794812758.163867: BIGTK - hexdump(len=16): eb d2 be 24 51 7d 53 13 4c d4 db 49 f4 b9 35 8d
+1794812758.163867: WPA: group state machine entering state SETKEYSDONE (VLAN-ID 0)
+1794812758.163867: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=8 addr=0x55000024a0de key_idx=1 set_tx=1 seq_len=0 key_len=32 key_flag=0x1a link_id=0
+1794812758.163867: nl80211: NEW_KEY
+1794812758.163868: nl80211: KEY_DATA - hexdump(len=32): 86 8c d0 88 88 50 63 8e 93 af 6d 01 87 be cb 7c 73 a3 ff 0b f0 69 11 ce 89 c6 da c0 f4 49 6c 45
+1794812758.163868:    broadcast key
+1794812758.163868: nl80211: Link ID 0
+1794812758.163868: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.163869: nl80211: set_key default - Link ID 0
+1794812758.163869: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=4 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=0
+1794812758.163869: nl80211: NEW_KEY
+1794812758.163869: nl80211: KEY_DATA - hexdump(len=16): 80 bb 63 86 47 3f 38 db 74 13 cc 90 bb 7d 03 86
+1794812758.163870:    broadcast key
+1794812758.163870: nl80211: Link ID 0
+1794812758.163870: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.163870: nl80211: set_key default - Link ID 0
+1794812758.163871: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=6 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=0
+1794812758.163871: nl80211: NEW_KEY
+1794812758.163871: nl80211: KEY_DATA - hexdump(len=16): eb d2 be 24 51 7d 53 13 4c d4 db 49 f4 b9 35 8d
+1794812758.163871:    broadcast key
+1794812758.163872: nl80211: Link ID 0
+1794812758.163872: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.163872: nl80211: set_key default - Link ID 0
+1794812758.163872: nl80211: link=0: TX queue param set: queue=0 aifs=1 cw_min=3 cw_max=7 burst_time=15 --> res=0
+1794812758.163873: nl80211: link=0: TX queue param set: queue=1 aifs=1 cw_min=7 cw_max=15 burst_time=30 --> res=0
+1794812758.163873: nl80211: link=0: TX queue param set: queue=2 aifs=3 cw_min=15 cw_max=63 burst_time=0 --> res=0
+1794812758.163873: nl80211: link=0: TX queue param set: queue=3 aifs=7 cw_min=15 cw_max=1023 burst_time=0 --> res=0
+1794812758.163873: wlan7: interface state UNINITIALIZED->ENABLED
+1794812758.163874: wlan7: AP-ENABLED 
+1794812758.163874: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.163874: wlan7: Setup of interface done.
+1794812758.163876: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=0 linkmode=0 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794812758.163876: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=6 linkmode=0 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794812758.163876: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=6 linkmode=0 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794812758.163881: nl80211: Event message available
+1794812758.163881: nl80211: Drv Event 103 (NL80211_CMD_VENDOR) received for wlan7
+1794812758.163881: nl80211: Vendor event: wiphy=7 vendor_id=0x1374 subcmd=1
+1794812758.163882: nl80211: Vendor data - hexdump(len=8): 08 00 08 00 7c 00 00 00
+1794812758.163882: nl80211: QCA test event - hexdump(len=8): 08 00 08 00 7c 00 00 00
+1794812758.163882: VLAN: RTM_NEWLINK: ifi_index=12 ifname=wlan7 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794812758.163882: VLAN: vlan_newlink(wlan7)
+1794812758.163884: Global ctrl_iface command: ATTACH
+1794812758.163884: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-29\x00
+1794812758.163884: nl80211: Event message available
+1794812758.163885: nl80211: Drv Event 15 (NL80211_CMD_START_AP) received for wlan7
+1794812758.163885: nl80211: START_AP event on link 0
+1794812758.163885: nl80211: Update link (ifindex=12 link_id=0 START_AP)
+1794812758.163885: VLAN: RTM_NEWLINK: ifi_index=12 ifname=wlan7 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794812758.163886: VLAN: vlan_newlink(wlan7)
+1794812758.163887: nl80211: Event message available
+1794812758.163888: nl80211: Drv Event 60 (NL80211_CMD_FRAME_TX_STATUS) received for wlan7
+1794812758.163888: nl80211: MLME event 60 (NL80211_CMD_FRAME_TX_STATUS) on wlan7(02:00:00:00:07:00) A1=ff:ff:ff:ff:ff:ff A2=02:00:00:38:65:ef on link_id=-1
+1794812758.163888: nl80211: MLME event frame - hexdump(len=26): c0 00 00 00 ff ff ff ff ff ff 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 02 00
+1794812758.163888: nl80211: Frame TX status event A1=ff:ff:ff:ff:ff:ff stype=12 cookie=0x1 ack=0
+1794812758.163889: wlan7: Event TX_STATUS (16) received
+1794812758.163889: mgmt::deauth cb
+1794812758.163895: Global ctrl_iface command: ADD wlan7 config=/tmp/link-1.conf-5j7q58qf
+1794812758.163896: AP MLD: wlan7: Link ID 1 assigned.
+1794812758.163898: Using existing control interface directory.
+1794812758.163898: Add interface 'wlan7'
+1794812758.163900: RX ctrl_iface - hexdump_ascii(len=6):
+     41 54 54 41 43 48                                 ATTACH          
+1794812758.163901: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-31\x00
+1794812758.163907: Global ctrl_iface command: DETACH
+1794812758.163907: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-29\x00
+1794812758.163911: RX ctrl_iface - hexdump_ascii(len=6):
+     45 4e 41 42 4c 45                                 ENABLE          
+1794812758.163911: Enable interface wlan7
+1794812758.163912: Setup of non first link (1) BSS of MLD wlan7
+1794812758.163912: MLD: Set link_id=1, mld_addr=02:00:00:00:07:00, own_addr=02:00:00:2a:56:4a
+1794812758.163913: nl80211: MLD: add link_id=1, addr=02:00:00:2a:56:4a
+1794812758.163913: nl80211: MLD: valid_links=0x0003 active_links=0x0003 on wlan7
+1794812758.163913: AP MLD wlan7: Link ID 1 added. num_links: 2
+1794812758.163913: phy: phy7
+1794812758.163914: BSS count 1, BSSID mask 00:00:00:00:00:00 (0 bits)
+1794812758.163914: ctrl_iface already exists!
+1794812758.163914: nl80211: No channel number found for frequency 5900 MHz
+1794812758.163914: nl80211: No channel number found for frequency 5905 MHz
+1794812758.163915: nl80211: No channel number found for frequency 5910 MHz
+1794812758.163915: nl80211: No channel number found for frequency 5915 MHz
+1794812758.163915: nl80211: No channel number found for frequency 5920 MHz
+1794812758.163915: nl80211: No channel number found for frequency 5925 MHz
+1794812758.163916: nl80211: No channel number found for frequency 902 MHz
+1794812758.163916: nl80211: No channel number found for frequency 903 MHz
+1794812758.163916: nl80211: No channel number found for frequency 904 MHz
+1794812758.163916: nl80211: No channel number found for frequency 905 MHz
+1794812758.163917: nl80211: No channel number found for frequency 906 MHz
+1794812758.163917: nl80211: No channel number found for frequency 907 MHz
+1794812758.163917: nl80211: No channel number found for frequency 908 MHz
+1794812758.163917: nl80211: No channel number found for frequency 909 MHz
+1794812758.163918: nl80211: No channel number found for frequency 910 MHz
+1794812758.163918: nl80211: No channel number found for frequency 911 MHz
+1794812758.163918: nl80211: No channel number found for frequency 912 MHz
+1794812758.163919: nl80211: No channel number found for frequency 913 MHz
+1794812758.163919: nl80211: No channel number found for frequency 914 MHz
+1794812758.163919: nl80211: No channel number found for frequency 915 MHz
+1794812758.163919: nl80211: No channel number found for frequency 916 MHz
+1794812758.163920: nl80211: No channel number found for frequency 917 MHz
+1794812758.163920: nl80211: No channel number found for frequency 918 MHz
+1794812758.163920: nl80211: No channel number found for frequency 919 MHz
+1794812758.163920: nl80211: No channel number found for frequency 920 MHz
+1794812758.163921: nl80211: No channel number found for frequency 921 MHz
+1794812758.163921: nl80211: No channel number found for frequency 922 MHz
+1794812758.163921: nl80211: No channel number found for frequency 923 MHz
+1794812758.163921: nl80211: No channel number found for frequency 924 MHz
+1794812758.163922: nl80211: No channel number found for frequency 925 MHz
+1794812758.163922: nl80211: No channel number found for frequency 926 MHz
+1794812758.163922: nl80211: No channel number found for frequency 927 MHz
+1794812758.163922: nl80211: Regulatory information - country=00
+1794812758.163923: nl80211: 2402-2472 @ 40 MHz 20 mBm
+1794812758.163923: nl80211: 2457-2482 @ 20 MHz 20 mBm (no IR)
+1794812758.163923: nl80211: 2474-2494 @ 20 MHz 20 mBm (no OFDM) (no IR)
+1794812758.163923: nl80211: 5170-5250 @ 80 MHz 20 mBm (no IR)
+1794812758.163924: nl80211: 5250-5330 @ 80 MHz 20 mBm (DFS) (no IR)
+1794812758.163924: nl80211: 5490-5730 @ 160 MHz 20 mBm (DFS) (no IR)
+1794812758.163924: nl80211: 5735-5835 @ 80 MHz 20 mBm (no IR)
+1794812758.163924: nl80211: 57240-63720 @ 2160 MHz 0 mBm
+1794812758.163925: nl80211: Remove unsupported mode
+1794812758.163925: nl80211: Added 802.11b mode based on 802.11g information
+1794812758.163925: nl80211: Mode IEEE 802.11g: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794812758.163925: nl80211: Mode IEEE 802.11a: 5180[NO_IR] 5200[NO_IR] 5220[NO_IR] 5240[NO_IR] 5260[NO_IR][RADAR] 5280[NO_IR][RADAR] 5300[NO_IR][RADAR] 5320[NO_IR][RADAR] 5500[NO_IR][RADAR] 5520[NO_IR][RADAR] 5540[NO_IR][RADAR] 5560[NO_IR][RADAR] 5580[NO_IR][RADAR] 5600[NO_IR][RADAR] 5620[NO_IR][RADAR] 5640[NO_IR][RADAR] 5660[NO_IR][RADAR] 5680[NO_IR][RADAR] 5700[NO_IR][RADAR] 5745[NO_IR] 5765[NO_IR] 5785[NO_IR] 5805[NO_IR] 5825[NO_IR] 5845[DISABLED] 5855[DISABLED] 5860[DISABLED] 5865[DISABLED] 5870[DISABLED] 5875[DISABLED] 5880[DISABLED] 5885[DISABLED] 5890[DISABLED] 5895[DISABLED] 5900[DISABLED] 5905[DISABLED] 5910[DISABLED] 5915[DISABLED] 5920[DISABLED] 5925[DISABLED]
+1794812758.163926: nl80211: Mode IEEE 802.11a: 5955[DISABLED] 5975[DISABLED] 5995[DISABLED] 6015[DISABLED] 6035[DISABLED] 6055[DISABLED] 6075[DISABLED] 6095[DISABLED] 6115[DISABLED] 6135[DISABLED] 6155[DISABLED] 6175[DISABLED] 6195[DISABLED] 6215[DISABLED] 6235[DISABLED] 6255[DISABLED] 6275[DISABLED] 6295[DISABLED] 6315[DISABLED] 6335[DISABLED] 6355[DISABLED] 6375[DISABLED] 6395[DISABLED] 6415[DISABLED] 6435[DISABLED] 6455[DISABLED] 6475[DISABLED] 6495[DISABLED] 6515[DISABLED] 6535[DISABLED] 6555[DISABLED] 6575[DISABLED] 6595[DISABLED] 6615[DISABLED] 6635[DISABLED] 6655[DISABLED] 6675[DISABLED] 6695[DISABLED] 6715[DISABLED] 6735[DISABLED] 6755[DISABLED] 6775[DISABLED] 6795[DISABLED] 6815[DISABLED] 6835[DISABLED] 6855[DISABLED] 6875[DISABLED] 6895[DISABLED] 6915[DISABLED] 6935[DISABLED] 6955[DISABLED] 6975[DISABLED] 6995[DISABLED] 7015[DISABLED] 7035[DISABLED] 7055[DISABLED] 7075[DISABLED] 7095[DISABLED] 7115[DISABLED]
+1794812758.163926: nl80211: Mode IEEE 802.11b: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467[NO_IR] 2472[NO_IR] 2484[NO_IR]
+1794812758.163926: Allowed channel: mode=1 chan=1 freq=2412 MHz max_tx_power=20 dBm
+1794812758.163926: Allowed channel: mode=1 chan=2 freq=2417 MHz max_tx_power=20 dBm
+1794812758.163927: Allowed channel: mode=1 chan=3 freq=2422 MHz max_tx_power=20 dBm
+1794812758.163927: Allowed channel: mode=1 chan=4 freq=2427 MHz max_tx_power=20 dBm
+1794812758.163927: Allowed channel: mode=1 chan=5 freq=2432 MHz max_tx_power=20 dBm
+1794812758.163927: Allowed channel: mode=1 chan=6 freq=2437 MHz max_tx_power=20 dBm
+1794812758.163928: Allowed channel: mode=1 chan=7 freq=2442 MHz max_tx_power=20 dBm
+1794812758.163928: Allowed channel: mode=1 chan=8 freq=2447 MHz max_tx_power=20 dBm
+1794812758.163928: Allowed channel: mode=1 chan=9 freq=2452 MHz max_tx_power=20 dBm
+1794812758.163928: Allowed channel: mode=1 chan=10 freq=2457 MHz max_tx_power=20 dBm
+1794812758.163929: Allowed channel: mode=1 chan=11 freq=2462 MHz max_tx_power=20 dBm
+1794812758.163929: Allowed channel: mode=0 chan=1 freq=2412 MHz max_tx_power=20 dBm
+1794812758.163929: Allowed channel: mode=0 chan=2 freq=2417 MHz max_tx_power=20 dBm
+1794812758.163930: Allowed channel: mode=0 chan=3 freq=2422 MHz max_tx_power=20 dBm
+1794812758.163930: Allowed channel: mode=0 chan=4 freq=2427 MHz max_tx_power=20 dBm
+1794812758.163930: Allowed channel: mode=0 chan=5 freq=2432 MHz max_tx_power=20 dBm
+1794812758.163930: Allowed channel: mode=0 chan=6 freq=2437 MHz max_tx_power=20 dBm
+1794812758.163931: Allowed channel: mode=0 chan=7 freq=2442 MHz max_tx_power=20 dBm
+1794812758.163931: Allowed channel: mode=0 chan=8 freq=2447 MHz max_tx_power=20 dBm
+1794812758.163931: Allowed channel: mode=0 chan=9 freq=2452 MHz max_tx_power=20 dBm
+1794812758.163931: Allowed channel: mode=0 chan=10 freq=2457 MHz max_tx_power=20 dBm
+1794812758.163932: Allowed channel: mode=0 chan=11 freq=2462 MHz max_tx_power=20 dBm
+1794812758.163932: Completing interface initialization
+1794812758.163932: Mode: IEEE 802.11g  Channel: 6  Frequency: 2437 MHz
+1794812758.163932: DFS 0 channels required radar detection
+1794812758.163933: hostapd_set_freq: link_id=1
+1794812758.163933: nl80211: Set freq 2437 (ht_enabled=1, vht_enabled=0, he_enabled=1, eht_enabled=1, bandwidth=20 MHz, cf1=2437 MHz, cf2=0 MHz)
+1794812758.163933:   * freq=2437
+1794812758.163933:   * eht_enabled=1
+1794812758.163934:   * he_enabled=1
+1794812758.163934:   * vht_enabled=0
+1794812758.163934:   * ht_enabled=1
+1794812758.163934:   * radar_background=0
+1794812758.163935:   * sec_channel_offset=0
+1794812758.163935:   * channel_type=1
+1794812758.163935: nl80211: Set link_id=1 for freq
+1794812758.163935: MLD: hostapd_setup_bss: Setting non-first BSS
+1794812758.163936: hostapd_setup_bss(hapd=0x550000319870 (wlan7), first=1)
+1794812758.163936: RATE[0] rate=10 flags=0x1
+1794812758.163936: RATE[1] rate=20 flags=0x1
+1794812758.163936: RATE[2] rate=55 flags=0x1
+1794812758.163937: RATE[3] rate=110 flags=0x1
+1794812758.163937: RATE[4] rate=60 flags=0x0
+1794812758.163937: RATE[5] rate=90 flags=0x0
+1794812758.163937: RATE[6] rate=120 flags=0x0
+1794812758.163938: RATE[7] rate=180 flags=0x0
+1794812758.163938: RATE[8] rate=240 flags=0x0
+1794812758.163938: RATE[9] rate=360 flags=0x0
+1794812758.163938: RATE[10] rate=480 flags=0x0
+1794812758.163939: RATE[11] rate=540 flags=0x0
+1794812758.163939: nl80211: flush -> DEL_STATION wlan7 (with link 1)
+1794812758.163939: Using interface wlan7 with hwaddr 02:00:00:2a:56:4a and ssid "explorer_mld"
+1794812758.163940: MLD: Using RADIUS client of the first BSS
+1794812758.163940: MLD: Using auth_serv of the first BSS
+1794812758.163940: MLD: Using IEEE 802.1X state machine of the first BSS
+1794812758.163940: RSN: Own IEs - hexdump(len=22): 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00
+1794812758.163942: GMK - hexdump(len=32): 09 9b 57 92 d9 6c 59 7b b5 56 04 ba f1 13 da de 6e 1e a8 75 38 d5 98 49 33 a7 60 69 ce 8c b5 8a
+1794812758.163943: Key Counter - hexdump(len=32): 22 cd c5 61 3b e7 05 53 6b 3c 5e 1c 56 8d 86 2b 95 28 5f 55 2d c1 50 39 c1 94 d8 2e ea 57 68 16
+1794812758.163943: WPA: Delay group state machine start until Beacon frames have been configured
+1794812758.163944: PTKSA: Initializing
+1794812758.163945: MLD: EML Capabilities=0x81
+1794812758.163945: MLD: MLD Capabilities and Operations=0x2001
+1794812758.163945: MLD: Reconfiguration ML
+1794812758.163946: MLD: Reconfiguration ML: 0
+1794812758.163946: MLD: Reconfiguration ML: 0
+1794812758.163946: nl80211: Set beacon (beacon_set=0)
+1794812758.163946: nl80211: Beacon head - hexdump(len=63): 80 00 00 00 ff ff ff ff ff ff 02 00 00 2a 56 4a 02 00 00 2a 56 4a 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 06
+1794812758.163947: nl80211: Beacon tail - hexdump(len=247): 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 c9 14 00 10 51 01 ff 02 00 00 38 65 ef d7 01 3a 3a 42 7f 00 10 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 b0 fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 01 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.163947: nl80211: ifindex=12
+1794812758.163947: nl80211: beacon_int=100
+1794812758.163947: nl80211: beacon_rate=0
+1794812758.163948: nl80211: rate_type=0
+1794812758.163948: nl80211: dtim_period=2
+1794812758.163948: nl80211: ssid=explorer_mld
+1794812758.163948:   * beacon_int=100
+1794812758.163949:   * dtim_period=2
+1794812758.163949: nl80211: link_id=1
+1794812758.163949: nl80211: hidden SSID not in use
+1794812758.163949: nl80211: privacy=2
+1794812758.163950: nl80211: auth_algs=0x3
+1794812758.163950: nl80211: wpa_version=0x2
+1794812758.163950: nl80211: key_mgmt_suites=0x400000
+1794812758.163951: nl80211: pairwise_ciphers=0x100
+1794812758.163951: nl80211: group_cipher=0x100
+1794812758.163951: nl80211: beacon_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163951: nl80211: proberesp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163952: nl80211: assocresp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163952:   * freq=2437
+1794812758.163952:   * eht_enabled=1
+1794812758.163952:   * he_enabled=1
+1794812758.163953:   * vht_enabled=0
+1794812758.163953:   * ht_enabled=1
+1794812758.163953:   * radar_background=0
+1794812758.163953:   * sec_channel_offset=0
+1794812758.163954:   * channel_type=1
+1794812758.163954: nl80211: multicast to unicast disabled on interface wlan7
+1794812758.163954: MLD: EML Capabilities=0x81
+1794812758.163955: MLD: MLD Capabilities and Operations=0x2001
+1794812758.163955: MLD: Reconfiguration ML
+1794812758.163955: MLD: Reconfiguration ML: 0
+1794812758.163955: MLD: Reconfiguration ML: 0
+1794812758.163956: nl80211: Set beacon (beacon_set=1)
+1794812758.163956: nl80211: Beacon head - hexdump(len=63): 80 00 00 00 ff ff ff ff ff ff 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 01
+1794812758.163956: nl80211: Beacon tail - hexdump(len=247): 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 c9 14 00 10 51 06 ff 02 00 00 2a 56 4a d7 01 3a 3a 42 7f 00 11 20 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9c fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.163956: nl80211: ifindex=12
+1794812758.163957: nl80211: beacon_int=100
+1794812758.163957: nl80211: beacon_rate=0
+1794812758.163957: nl80211: rate_type=0
+1794812758.163957: nl80211: dtim_period=2
+1794812758.163958: nl80211: ssid=explorer_mld
+1794812758.163958:   * beacon_int=100
+1794812758.163958:   * dtim_period=2
+1794812758.163958: nl80211: link_id=0
+1794812758.163959: nl80211: hidden SSID not in use
+1794812758.163959: nl80211: privacy=2
+1794812758.163959: nl80211: auth_algs=0x3
+1794812758.163959: nl80211: wpa_version=0x2
+1794812758.163960: nl80211: key_mgmt_suites=0x400000
+1794812758.163960: nl80211: pairwise_ciphers=0x100
+1794812758.163960: nl80211: group_cipher=0x100
+1794812758.163960: nl80211: beacon_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163961: nl80211: proberesp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163961: nl80211: assocresp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.163961:   * freq=2412
+1794812758.163962:   * eht_enabled=1
+1794812758.163962:   * he_enabled=1
+1794812758.163962:   * vht_enabled=0
+1794812758.163962:   * ht_enabled=1
+1794812758.163963:   * radar_background=0
+1794812758.163963:   * sec_channel_offset=0
+1794812758.163963:   * channel_type=1
+1794812758.163963: nl80211: multicast to unicast disabled on interface wlan7
+1794812758.163964: MLD: Generating per STA profiles for MLD wlan7
+1794812758.163964: MLD: Reporting link 0
+1794812758.163964: MLD: EML Capabilities=0x81
+1794812758.163964: MLD: MLD Capabilities and Operations=0x2001
+1794812758.163965: MLD: Reconfiguration ML
+1794812758.163965: MLD: Reconfiguration ML: 0
+1794812758.163965: MLD: Reconfiguration ML: 0
+1794812758.163965: MLD: EML Capabilities=0x81
+1794812758.163966: MLD: MLD Capabilities and Operations=0x2001
+1794812758.163966: MLD: Reconfiguration ML
+1794812758.163966: MLD: Reconfiguration ML: 0
+1794812758.163966: MLD: Reconfiguration ML: 0
+1794812758.163967: MLD: Reported link STA info for 1: 38 bytes
+1794812758.163967: MLD: Generating per STA profiles for MLD wlan7
+1794812758.163967: MLD: Reporting link 1
+1794812758.163967: MLD: EML Capabilities=0x81
+1794812758.163968: MLD: MLD Capabilities and Operations=0x2001
+1794812758.163968: MLD: Reconfiguration ML
+1794812758.163968: MLD: Reconfiguration ML: 0
+1794812758.163968: MLD: Reconfiguration ML: 0
+1794812758.163969: MLD: EML Capabilities=0x81
+1794812758.163969: MLD: MLD Capabilities and Operations=0x2001
+1794812758.163969: MLD: Reconfiguration ML
+1794812758.163969: MLD: Reconfiguration ML: 0
+1794812758.163970: MLD: Reconfiguration ML: 0
+1794812758.163970: MLD: Reported link STA info for 0: 38 bytes
+1794812758.163970: wlan7: Deauthenticate all stations at BSS start
+1794812758.163970: nl80211: send_mlme - da=ff:ff:ff:ff:ff:ff sa=02:00:00:2a:56:4a bssid=02:00:00:2a:56:4a noack=0 freq=0 no_cck=0 offchanok=0 wait_time=0 no_encrypt=0 fc=0xc0 (WLAN_FC_STYPE_DEAUTH) nlmode=3
+1794812758.163971: nl80211: send_mlme - Use bss->freq=2437
+1794812758.163971: nl80211: send_mlme -> send_frame_cmd
+1794812758.163971: nl80211: CMD_FRAME freq=2437 wait=0 no_cck=0 no_ack=0 offchanok=0
+1794812758.163972: CMD_FRAME - hexdump(len=26): c0 00 00 00 ff ff ff ff ff ff 02 00 00 2a 56 4a 02 00 00 2a 56 4a 00 00 02 00
+1794812758.163972: nl80211: Frame TX command accepted; cookie 0x2
+1794812758.163972: nl80211: Set wlan7 operstate 1->1 (UP)
+1794812758.163972: netlink: Operstate: ifindex=12 linkmode=-1 (no change), operstate=6 (IF_OPER_UP)
+1794812758.163973: WPA: Start group state machine to set initial keys
+1794812758.163973: WPA: group state machine entering state GTK_INIT (VLAN-ID 0)
+1794812758.163989: GTK - hexdump(len=32): 9f 98 13 aa a6 b0 22 9c d0 88 61 b5 b3 2f 00 13 36 aa 7c e8 5c b0 b2 df 37 63 72 49 09 3e 3d c2
+1794812758.163991: IGTK - hexdump(len=16): d7 fc 78 0b a2 87 a5 14 80 66 95 c0 7a 88 2d 40
+1794812758.163992: BIGTK - hexdump(len=16): 93 a0 42 12 1b 1b c5 c2 93 81 8a c5 b3 39 62 37
+1794812758.163993: WPA: group state machine entering state SETKEYSDONE (VLAN-ID 0)
+1794812758.163993: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=8 addr=0x55000024a0de key_idx=1 set_tx=1 seq_len=0 key_len=32 key_flag=0x1a link_id=1
+1794812758.163993: nl80211: NEW_KEY
+1794812758.163994: nl80211: KEY_DATA - hexdump(len=32): 9f 98 13 aa a6 b0 22 9c d0 88 61 b5 b3 2f 00 13 36 aa 7c e8 5c b0 b2 df 37 63 72 49 09 3e 3d c2
+1794812758.163994:    broadcast key
+1794812758.163994: nl80211: Link ID 1
+1794812758.163994: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.163995: nl80211: set_key default - Link ID 1
+1794812758.163995: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=4 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=1
+1794812758.163995: nl80211: NEW_KEY
+1794812758.163995: nl80211: KEY_DATA - hexdump(len=16): d7 fc 78 0b a2 87 a5 14 80 66 95 c0 7a 88 2d 40
+1794812758.163996:    broadcast key
+1794812758.163996: nl80211: Link ID 1
+1794812758.163996: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.163996: nl80211: set_key default - Link ID 1
+1794812758.163997: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=6 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=1
+1794812758.163997: nl80211: NEW_KEY
+1794812758.163997: nl80211: KEY_DATA - hexdump(len=16): 93 a0 42 12 1b 1b c5 c2 93 81 8a c5 b3 39 62 37
+1794812758.163997:    broadcast key
+1794812758.163998: nl80211: Link ID 1
+1794812758.163998: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.163998: nl80211: set_key default - Link ID 1
+1794812758.163998: nl80211: link=1: TX queue param set: queue=0 aifs=1 cw_min=3 cw_max=7 burst_time=15 --> res=0
+1794812758.163999: nl80211: link=1: TX queue param set: queue=1 aifs=1 cw_min=7 cw_max=15 burst_time=30 --> res=0
+1794812758.163999: nl80211: link=1: TX queue param set: queue=2 aifs=3 cw_min=15 cw_max=63 burst_time=0 --> res=0
+1794812758.163999: nl80211: link=1: TX queue param set: queue=3 aifs=7 cw_min=15 cw_max=1023 burst_time=0 --> res=0
+1794812758.163999: wlan7: interface state UNINITIALIZED->ENABLED
+1794812758.164000: wlan7: AP-ENABLED 
+1794812758.164000: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-31\x00
+1794812758.164000: wlan7: Setup of interface done.
+1794812758.164000: MLD: EML Capabilities=0x81
+1794812758.164001: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164001: MLD: Reconfiguration ML
+1794812758.164001: MLD: Reconfiguration ML: 0
+1794812758.164001: MLD: Reconfiguration ML: 0
+1794812758.164002: nl80211: Set beacon (beacon_set=1)
+1794812758.164002: nl80211: Beacon head - hexdump(len=63): 80 00 00 00 ff ff ff ff ff ff 02 00 00 2a 56 4a 02 00 00 2a 56 4a 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 06
+1794812758.164002: nl80211: Beacon tail - hexdump(len=247): 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 c9 14 00 10 51 01 ff 02 00 00 38 65 ef d7 01 3a 3a 42 7f 00 10 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 b0 fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 01 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.164002: nl80211: ifindex=12
+1794812758.164003: nl80211: beacon_int=100
+1794812758.164003: nl80211: beacon_rate=0
+1794812758.164003: nl80211: rate_type=0
+1794812758.164004: nl80211: dtim_period=2
+1794812758.164004: nl80211: ssid=explorer_mld
+1794812758.164004:   * beacon_int=100
+1794812758.164004:   * dtim_period=2
+1794812758.164005: nl80211: link_id=1
+1794812758.164005: nl80211: hidden SSID not in use
+1794812758.164005: nl80211: privacy=2
+1794812758.164005: nl80211: auth_algs=0x3
+1794812758.164006: nl80211: wpa_version=0x2
+1794812758.164006: nl80211: key_mgmt_suites=0x400000
+1794812758.164006: nl80211: pairwise_ciphers=0x100
+1794812758.164006: nl80211: group_cipher=0x100
+1794812758.164007: nl80211: beacon_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164007: nl80211: proberesp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164007: nl80211: assocresp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164007:   * freq=2437
+1794812758.164008:   * eht_enabled=1
+1794812758.164008:   * he_enabled=1
+1794812758.164008:   * vht_enabled=0
+1794812758.164008:   * ht_enabled=1
+1794812758.164009:   * radar_background=0
+1794812758.164009:   * sec_channel_offset=0
+1794812758.164009:   * channel_type=1
+1794812758.164009: nl80211: multicast to unicast disabled on interface wlan7
+1794812758.164010: MLD: EML Capabilities=0x81
+1794812758.164010: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164010: MLD: Reconfiguration ML
+1794812758.164010: MLD: Reconfiguration ML: 0
+1794812758.164011: MLD: Reconfiguration ML: 0
+1794812758.164011: nl80211: Set beacon (beacon_set=1)
+1794812758.164011: nl80211: Beacon head - hexdump(len=63): 80 00 00 00 ff ff ff ff ff ff 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 01
+1794812758.164011: nl80211: Beacon tail - hexdump(len=247): 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 c9 14 00 10 51 06 ff 02 00 00 2a 56 4a d7 01 3a 3a 42 7f 00 11 20 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9c fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.164012: nl80211: ifindex=12
+1794812758.164012: nl80211: beacon_int=100
+1794812758.164012: nl80211: beacon_rate=0
+1794812758.164012: nl80211: rate_type=0
+1794812758.164013: nl80211: dtim_period=2
+1794812758.164013: nl80211: ssid=explorer_mld
+1794812758.164013:   * beacon_int=100
+1794812758.164013:   * dtim_period=2
+1794812758.164014: nl80211: link_id=0
+1794812758.164014: nl80211: hidden SSID not in use
+1794812758.164014: nl80211: privacy=2
+1794812758.164015: nl80211: auth_algs=0x3
+1794812758.164015: nl80211: wpa_version=0x2
+1794812758.164015: nl80211: key_mgmt_suites=0x400000
+1794812758.164015: nl80211: pairwise_ciphers=0x100
+1794812758.164016: nl80211: group_cipher=0x100
+1794812758.164016: nl80211: beacon_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164016: nl80211: proberesp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164016: nl80211: assocresp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164017:   * freq=2412
+1794812758.164017:   * eht_enabled=1
+1794812758.164017:   * he_enabled=1
+1794812758.164017:   * vht_enabled=0
+1794812758.164018:   * ht_enabled=1
+1794812758.164018:   * radar_background=0
+1794812758.164018:   * sec_channel_offset=0
+1794812758.164018:   * channel_type=1
+1794812758.164019: nl80211: multicast to unicast disabled on interface wlan7
+1794812758.164019: MLD: Generating per STA profiles for MLD wlan7
+1794812758.164019: MLD: Reporting link 0
+1794812758.164019: MLD: EML Capabilities=0x81
+1794812758.164020: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164020: MLD: Reconfiguration ML
+1794812758.164020: MLD: Reconfiguration ML: 0
+1794812758.164020: MLD: Reconfiguration ML: 0
+1794812758.164021: MLD: EML Capabilities=0x81
+1794812758.164021: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164021: MLD: Reconfiguration ML
+1794812758.164021: MLD: Reconfiguration ML: 0
+1794812758.164022: MLD: Reconfiguration ML: 0
+1794812758.164022: MLD: Reported link STA info for 1: 38 bytes
+1794812758.164022: MLD: Generating per STA profiles for MLD wlan7
+1794812758.164022: MLD: Reporting link 1
+1794812758.164023: MLD: EML Capabilities=0x81
+1794812758.164023: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164023: MLD: Reconfiguration ML
+1794812758.164023: MLD: Reconfiguration ML: 0
+1794812758.164024: MLD: Reconfiguration ML: 0
+1794812758.164024: MLD: EML Capabilities=0x81
+1794812758.164024: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164024: MLD: Reconfiguration ML
+1794812758.164025: MLD: Reconfiguration ML: 0
+1794812758.164025: MLD: Reconfiguration ML: 0
+1794812758.164025: MLD: Reported link STA info for 0: 38 bytes
+1794812758.164026: MLD: EML Capabilities=0x81
+1794812758.164026: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164026: MLD: Reconfiguration ML
+1794812758.164026: MLD: Reconfiguration ML: 0
+1794812758.164027: MLD: Reconfiguration ML: 0
+1794812758.164027: nl80211: Set beacon (beacon_set=1)
+1794812758.164027: nl80211: Beacon head - hexdump(len=63): 80 00 00 00 ff ff ff ff ff ff 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 01
+1794812758.164027: nl80211: Beacon tail - hexdump(len=247): 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 c9 14 00 10 51 06 ff 02 00 00 2a 56 4a d7 01 3a 3a 42 7f 00 11 20 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9c fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.164028: nl80211: ifindex=12
+1794812758.164028: nl80211: beacon_int=100
+1794812758.164028: nl80211: beacon_rate=0
+1794812758.164028: nl80211: rate_type=0
+1794812758.164029: nl80211: dtim_period=2
+1794812758.164029: nl80211: ssid=explorer_mld
+1794812758.164029:   * beacon_int=100
+1794812758.164029:   * dtim_period=2
+1794812758.164030: nl80211: link_id=0
+1794812758.164030: nl80211: hidden SSID not in use
+1794812758.164030: nl80211: privacy=2
+1794812758.164030: nl80211: auth_algs=0x3
+1794812758.164031: nl80211: wpa_version=0x2
+1794812758.164031: nl80211: key_mgmt_suites=0x400000
+1794812758.164031: nl80211: pairwise_ciphers=0x100
+1794812758.164031: nl80211: group_cipher=0x100
+1794812758.164032: nl80211: beacon_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164032: nl80211: proberesp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164032: nl80211: assocresp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164032:   * freq=2412
+1794812758.164033:   * eht_enabled=1
+1794812758.164033:   * he_enabled=1
+1794812758.164033:   * vht_enabled=0
+1794812758.164033:   * ht_enabled=1
+1794812758.164034:   * radar_background=0
+1794812758.164034:   * sec_channel_offset=0
+1794812758.164034:   * channel_type=1
+1794812758.164034: nl80211: multicast to unicast disabled on interface wlan7
+1794812758.164035: MLD: EML Capabilities=0x81
+1794812758.164035: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164035: MLD: Reconfiguration ML
+1794812758.164036: MLD: Reconfiguration ML: 0
+1794812758.164036: MLD: Reconfiguration ML: 0
+1794812758.164036: nl80211: Set beacon (beacon_set=1)
+1794812758.164036: nl80211: Beacon head - hexdump(len=63): 80 00 00 00 ff ff ff ff ff ff 02 00 00 2a 56 4a 02 00 00 2a 56 4a 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 06
+1794812758.164037: nl80211: Beacon tail - hexdump(len=247): 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 c9 14 00 10 51 01 ff 02 00 00 38 65 ef d7 01 3a 3a 42 7f 00 10 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 b0 fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 01 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.164037: nl80211: ifindex=12
+1794812758.164037: nl80211: beacon_int=100
+1794812758.164037: nl80211: beacon_rate=0
+1794812758.164038: nl80211: rate_type=0
+1794812758.164038: nl80211: dtim_period=2
+1794812758.164038: nl80211: ssid=explorer_mld
+1794812758.164038:   * beacon_int=100
+1794812758.164039:   * dtim_period=2
+1794812758.164039: nl80211: link_id=1
+1794812758.164039: nl80211: hidden SSID not in use
+1794812758.164039: nl80211: privacy=2
+1794812758.164040: nl80211: auth_algs=0x3
+1794812758.164040: nl80211: wpa_version=0x2
+1794812758.164040: nl80211: key_mgmt_suites=0x400000
+1794812758.164040: nl80211: pairwise_ciphers=0x100
+1794812758.164041: nl80211: group_cipher=0x100
+1794812758.164041: nl80211: beacon_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164041: nl80211: proberesp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164041: nl80211: assocresp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.164042:   * freq=2437
+1794812758.164042:   * eht_enabled=1
+1794812758.164042:   * he_enabled=1
+1794812758.164042:   * vht_enabled=0
+1794812758.164043:   * ht_enabled=1
+1794812758.164043:   * radar_background=0
+1794812758.164043:   * sec_channel_offset=0
+1794812758.164043:   * channel_type=1
+1794812758.164044: nl80211: multicast to unicast disabled on interface wlan7
+1794812758.164044: MLD: Generating per STA profiles for MLD wlan7
+1794812758.164044: MLD: Reporting link 0
+1794812758.164044: MLD: EML Capabilities=0x81
+1794812758.164045: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164045: MLD: Reconfiguration ML
+1794812758.164045: MLD: Reconfiguration ML: 0
+1794812758.164045: MLD: Reconfiguration ML: 0
+1794812758.164046: MLD: EML Capabilities=0x81
+1794812758.164046: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164046: MLD: Reconfiguration ML
+1794812758.164047: MLD: Reconfiguration ML: 0
+1794812758.164047: MLD: Reconfiguration ML: 0
+1794812758.164047: MLD: Reported link STA info for 1: 38 bytes
+1794812758.164047: MLD: Generating per STA profiles for MLD wlan7
+1794812758.164048: MLD: Reporting link 1
+1794812758.164048: MLD: EML Capabilities=0x81
+1794812758.164048: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164048: MLD: Reconfiguration ML
+1794812758.164049: MLD: Reconfiguration ML: 0
+1794812758.164049: MLD: Reconfiguration ML: 0
+1794812758.164049: MLD: EML Capabilities=0x81
+1794812758.164049: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164050: MLD: Reconfiguration ML
+1794812758.164050: MLD: Reconfiguration ML: 0
+1794812758.164050: MLD: Reconfiguration ML: 0
+1794812758.164050: MLD: Reported link STA info for 0: 38 bytes
+1794812758.164052: nl80211: Event message available
+1794812758.164052: nl80211: Drv Event 15 (NL80211_CMD_START_AP) received for wlan7
+1794812758.164052: nl80211: START_AP event on link 1
+1794812758.164053: nl80211: Update link (ifindex=12 link_id=1 START_AP)
+1794812758.164054: nl80211: Event message available
+1794812758.164054: nl80211: Drv Event 60 (NL80211_CMD_FRAME_TX_STATUS) received for wlan7
+1794812758.164055: nl80211: MLME event 60 (NL80211_CMD_FRAME_TX_STATUS) on wlan7(02:00:00:00:07:00) A1=ff:ff:ff:ff:ff:ff A2=02:00:00:2a:56:4a on link_id=-1
+1794812758.164055: nl80211: MLME event frame - hexdump(len=26): c0 00 00 00 ff ff ff ff ff ff 02 00 00 2a 56 4a 02 00 00 2a 56 4a 00 00 02 00
+1794812758.164055: nl80211: Frame TX status event A1=ff:ff:ff:ff:ff:ff stype=12 cookie=0x2 ack=0
+1794812758.164055: wlan7: Event TX_STATUS (16) received
+1794812758.164056: mgmt::deauth cb
+1794812758.164128: nl80211: Event message available
+1794812758.164128: nl80211: Ignored event 33 (NL80211_CMD_TRIGGER_SCAN) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.164128: nl80211: Event message available
+1794812758.164129: nl80211: BSS Event 59 (NL80211_CMD_FRAME) received for wlan7
+1794812758.164129: nl80211: MLME event 59 (NL80211_CMD_FRAME) on wlan7(02:00:00:00:07:00) A1=ff:ff:ff:ff:ff:ff A2=02:00:00:00:08:00 on link_id=0
+1794812758.164129: nl80211: MLME event frame - hexdump(len=277): 40 00 00 00 ff ff ff ff ff ff 02 00 00 00 08 00 ff ff ff ff ff ff 00 00 00 00 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 4a 02 01 40 40 c0 01 01 20 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 11 6c 07 00 7c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 0c 98 10 00 00 00 00 00 c0 00 00 00 00 dd 69 00 50 f2 04 10 4a 00 01 10 10 3a 00 01 00 10 08 00 02 31 48 10 47 00 10 75 a9 ac 25 80 84 59 95 9e 1a dd 9a 73 95 af 8f 10 54 00 08 00 00 00 00 00 00 00 00 10 3c 00 01 03 10 02 00 02 00 00 10 09 00 02 00 00 10 12 00 02 00 00 10 21 00 01 20 10 23 00 01 20 10 24 00 01 20 10 11 00 01 20 10 49 00 06 00 37 2a 00 01 20 dd 11 50 6f 9a 09 02 02 00 25 00 06 05 00 58 58 04 51 0b 72 00 dd 07 50 6f 9a 16 03 01 03
+1794812758.164129: nl80211: Frame event
+1794812758.164130: nl80211: RX frame da=ff:ff:ff:ff:ff:ff sa=02:00:00:00:08:00 bssid=ff:ff:ff:ff:ff:ff freq=2412 ssi_signal=-50 fc=0x40 seq_ctrl=0x0 stype=4 (WLAN_FC_STYPE_PROBE_REQ) len=277
+1794812758.164130: MLD: EML Capabilities=0x81
+1794812758.164130: MLD: MLD Capabilities and Operations=0x2001
+1794812758.164130: MLD: Reconfiguration ML
+1794812758.164131: MLD: Reconfiguration ML: 0
+1794812758.164131: MLD: Reconfiguration ML: 0
+1794812758.164131: nl80211: send_mlme - da=02:00:00:00:08:00 sa=02:00:00:38:65:ef bssid=02:00:00:38:65:ef noack=1 freq=0 no_cck=0 offchanok=0 wait_time=0 no_encrypt=0 fc=0x50 (WLAN_FC_STYPE_PROBE_RESP) nlmode=3
+1794812758.164132: nl80211: send_mlme - Use bss->freq=2412
+1794812758.164132: nl80211: send_mlme -> send_frame_cmd
+1794812758.164132: nl80211: CMD_FRAME freq=2412 wait=0 no_cck=0 no_ack=1 offchanok=0
+1794812758.164132: CMD_FRAME - hexdump(len=310): 50 00 00 00 02 00 00 00 08 00 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 01 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 c9 14 00 10 51 06 ff 02 00 00 2a 56 4a d7 01 3a 3a 42 7f 00 11 20 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9c fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.164133: nl80211: Frame TX command accepted (no ACK); cookie 0x0
+1794812758.197604: nl80211: Event message available
+1794812758.197604: nl80211: BSS Event 59 (NL80211_CMD_FRAME) received for wlan7
+1794812758.197604: nl80211: MLME event 59 (NL80211_CMD_FRAME) on wlan7(02:00:00:00:07:00) A1=ff:ff:ff:ff:ff:ff A2=02:00:00:00:08:00 on link_id=1
+1794812758.197605: nl80211: MLME event frame - hexdump(len=277): 40 00 00 00 ff ff ff ff ff ff 02 00 00 00 08 00 ff ff ff ff ff ff 10 00 00 00 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 4a 02 01 40 40 c0 01 01 20 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 11 6c 07 00 7c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 0c 98 10 00 00 00 00 00 c0 00 00 00 00 dd 69 00 50 f2 04 10 4a 00 01 10 10 3a 00 01 00 10 08 00 02 31 48 10 47 00 10 75 a9 ac 25 80 84 59 95 9e 1a dd 9a 73 95 af 8f 10 54 00 08 00 00 00 00 00 00 00 00 10 3c 00 01 03 10 02 00 02 00 00 10 09 00 02 00 00 10 12 00 02 00 00 10 21 00 01 20 10 23 00 01 20 10 24 00 01 20 10 11 00 01 20 10 49 00 06 00 37 2a 00 01 20 dd 11 50 6f 9a 09 02 02 00 25 00 06 05 00 58 58 04 51 0b 72 00 dd 07 50 6f 9a 16 03 01 03
+1794812758.197605: nl80211: Frame event
+1794812758.197605: nl80211: RX frame da=ff:ff:ff:ff:ff:ff sa=02:00:00:00:08:00 bssid=ff:ff:ff:ff:ff:ff freq=2437 ssi_signal=-50 fc=0x40 seq_ctrl=0x10 stype=4 (WLAN_FC_STYPE_PROBE_REQ) len=277
+1794812758.197605: MLD: EML Capabilities=0x81
+1794812758.197606: MLD: MLD Capabilities and Operations=0x2001
+1794812758.197606: MLD: Reconfiguration ML
+1794812758.197606: MLD: Reconfiguration ML: 0
+1794812758.197606: MLD: Reconfiguration ML: 0
+1794812758.197607: nl80211: send_mlme - da=02:00:00:00:08:00 sa=02:00:00:2a:56:4a bssid=02:00:00:2a:56:4a noack=1 freq=0 no_cck=0 offchanok=0 wait_time=0 no_encrypt=0 fc=0x50 (WLAN_FC_STYPE_PROBE_RESP) nlmode=3
+1794812758.197607: nl80211: send_mlme - Use bss->freq=2437
+1794812758.197607: nl80211: send_mlme -> send_frame_cmd
+1794812758.197607: nl80211: CMD_FRAME freq=2437 wait=0 no_cck=0 no_ack=1 offchanok=0
+1794812758.197608: CMD_FRAME - hexdump(len=310): 50 00 00 00 02 00 00 00 08 00 02 00 00 2a 56 4a 02 00 00 2a 56 4a 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 06 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 c9 14 00 10 51 01 ff 02 00 00 38 65 ef d7 01 3a 3a 42 7f 00 10 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 b0 fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 01 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.197608: nl80211: Frame TX command accepted (no ACK); cookie 0x0
+1794812758.237604: RTM_NEWLINK: ifi_index=13 ifname=wlan8 wext ifi_family=0 ifi_flags=0x1003 ([UP])
+1794812758.237605: nl80211: Event message available
+1794812758.237605: nl80211: Ignored event 34 (NL80211_CMD_NEW_SCAN_RESULTS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.237605: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794812758.237606: VLAN: vlan_newlink(wlan8)
+1794812758.237606: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x1003 ([UP])
+1794812758.237606: VLAN: vlan_newlink(wlan8)
+1794812758.237672: nl80211: Event message available
+1794812758.237672: nl80211: Ignored event 19 (NL80211_CMD_NEW_STATION) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.237673: nl80211: Event message available
+1794812758.237673: nl80211: BSS Event 59 (NL80211_CMD_FRAME) received for wlan7
+1794812758.237673: nl80211: MLME event 59 (NL80211_CMD_FRAME) on wlan7(02:00:00:00:07:00) A1=02:00:00:38:65:ef A2=9a:9c:f4:6c:99:e1 on link_id=0
+1794812758.237673: nl80211: MLME event frame - hexdump(len=42): b0 00 00 00 02 00 00 38 65 ef 9a 9c f4 6c 99 e1 02 00 00 38 65 ef 20 00 00 00 01 00 00 00 ff 0a 6b 00 00 07 02 00 00 00 08 00
+1794812758.237674: nl80211: Frame event
+1794812758.237674: nl80211: RX frame da=02:00:00:38:65:ef sa=9a:9c:f4:6c:99:e1 bssid=02:00:00:38:65:ef freq=2412 ssi_signal=-50 fc=0xb0 seq_ctrl=0x20 stype=11 (WLAN_FC_STYPE_AUTH) len=42
+1794812758.237674: wlan7: Event RX_MGMT (18) received
+1794812758.237674: mgmt::auth
+1794812758.237675: authentication: STA=02:00:00:00:08:00 auth_alg=0 auth_transaction=1 status_code=0 protected=0 seq_ctrl=0x20
+1794812758.237675:   New STA
+1794812758.237676: ap_sta_add: register ap_handle_timer timeout for 02:00:00:00:08:00 (300 seconds - ap_max_inactivity)
+1794812758.237677: nl80211: sta_remove -> DEL_STATION wlan7 02:00:00:00:08:00 --> -2 (No such file or directory)
+1794812758.237677: nl80211: NL80211_CMD_NEW_STATION STA 02:00:00:00:08:00
+1794812758.237677:   * supported rates - hexdump(len=4): 02 04 0b 16
+1794812758.237678:   * capability=0x0
+1794812758.237678:   * aid=1 (UNASSOC_STA workaround)
+1794812758.237678:   * listen_interval=0
+1794812758.237679:   * flags set=0x0 mask=0xa0
+1794812758.237679:   * mld_link_id=0
+1794812758.237679:   * mld_link_addr=9a:9c:f4:6c:99:e1
+1794812758.237679: authentication reply: STA=02:00:00:00:08:00 auth_alg=0 auth_transaction=2 resp=0 (IE len=0) (dbg=handle-auth)
+1794812758.237680: nl80211: send_mlme - da=02:00:00:00:08:00 sa=02:00:00:38:65:ef bssid=02:00:00:38:65:ef noack=0 freq=0 no_cck=0 offchanok=0 wait_time=0 no_encrypt=0 fc=0xb0 (WLAN_FC_STYPE_AUTH) nlmode=3
+1794812758.237680: nl80211: send_mlme - Use bss->freq=2412
+1794812758.237680: nl80211: send_mlme -> send_frame_cmd
+1794812758.237680: nl80211: CMD_FRAME freq=2412 wait=0 no_cck=0 no_ack=0 offchanok=0
+1794812758.237681: CMD_FRAME - hexdump(len=42): b0 00 00 00 02 00 00 00 08 00 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 00 00 02 00 00 00 ff 0a 6b 00 00 07 02 00 00 00 07 00
+1794812758.237681: nl80211: Frame TX command accepted; cookie 0x5
+1794812758.237682: nl80211: Event message available
+1794812758.237683: nl80211: Drv Event 19 (NL80211_CMD_NEW_STATION) received for wlan7
+1794812758.237683: nl80211: New station 02:00:00:00:08:00
+1794812758.237684: nl80211: Event message available
+1794812758.237685: nl80211: Drv Event 60 (NL80211_CMD_FRAME_TX_STATUS) received for wlan7
+1794812758.237685: nl80211: MLME event 60 (NL80211_CMD_FRAME_TX_STATUS) on wlan7(02:00:00:00:07:00) A1=02:00:00:00:08:00 A2=02:00:00:38:65:ef on link_id=-1
+1794812758.237685: nl80211: MLME event frame - hexdump(len=42): b0 00 00 00 02 00 00 00 08 00 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 00 00 02 00 00 00 ff 0a 6b 00 00 07 02 00 00 00 07 00
+1794812758.237685: nl80211: Frame TX status event A1=02:00:00:00:08:00 stype=11 cookie=0x5 ack=1
+1794812758.237686: wlan7: Event TX_STATUS (16) received
+1794812758.237686: mgmt::auth cb
+1794812758.237686: 1794812758.237686: wlan7: STA 02:00:00:00:08:00 IEEE 802.11: authenticated
+1794812758.237734: nl80211: Set STA flags - ifname=wlan7 addr=02:00:00:00:08:00 total_flags=0x20 flags_or=0x0 flags_and=0xfffffff0 authorized=0
+1794812758.237736: nl80211: Event message available
+1794812758.237736: nl80211: Ignored event 37 (NL80211_CMD_AUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.247608: nl80211: Event message available
+1794812758.247609: nl80211: BSS Event 59 (NL80211_CMD_FRAME) received for wlan7
+1794812758.247609: nl80211: MLME event 59 (NL80211_CMD_FRAME) on wlan7(02:00:00:00:07:00) A1=02:00:00:00:07:00 A2=02:00:00:00:08:00 on link_id=0
+1794812758.247609: nl80211: MLME event frame - hexdump(len=354): 00 00 00 00 02 00 00 00 07 00 02 00 00 00 08 00 02 00 00 00 07 00 30 00 30 04 05 00 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 30 1a 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 00 00 00 0f ac 06 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 7f 0a 04 00 4a 02 01 40 00 c0 01 01 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 70 6b 00 01 09 02 00 00 00 08 00 00 00 00 62 31 00 07 62 08 c9 12 5c bd 30 04 01 08 02 04 0b 16 0c 12 18 24 32 04 30 48 60 6c 2d 1a fe 13 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 11 6c 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00 ff 11 6c 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00 3b 17 51 51 52 53 54 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f 80 81 00 82 80 ff 23 20 13 00 ad 7a 4e af 19 8b 27 bc 8f 86 47 b0 fc 01 55 0c 8d ee 27 d9 ae d5 66 75 6a dd b4 dd 74 98 5e d0 dd 07 00 50 f2 02 00 01 00
+1794812758.247610: nl80211: Frame event
+1794812758.247610: nl80211: RX frame da=02:00:00:00:07:00 sa=02:00:00:00:08:00 bssid=02:00:00:00:07:00 freq=2412 ssi_signal=-50 fc=0x0 seq_ctrl=0x30 stype=0 (WLAN_FC_STYPE_ASSOC_REQ) len=354
+1794812758.247610: wlan7: Event RX_MGMT (18) received
+1794812758.247610: mgmt::assoc_req
+1794812758.247611: association request: STA=02:00:00:00:08:00 capab_info=0x430 listen_interval=5 seq_ctrl=0x30
+1794812758.247611: WMM IE - hexdump(len=7): 00 50 f2 02 00 01 00
+1794812758.247611: Validating WMM IE: OUI 00:50:f2  OUI type 2  OUI sub-type 0  version 1  QoS info 0x0
+1794812758.247611: MLD: EML capabilities not present
+1794812758.247612: MLD: EXT ML capabilities not present
+1794812758.247612: MLD: expected_common_info_len=9
+1794812758.247612: MLD: addr=02:00:00:00:08:00, eml=0x0, mld=0x0
+1794812758.247612: MLD: sub element len=98, Fragment subelems=0
+1794812758.247613: MLD: assoc: link id=1, addr=62:08:c9:12:5c:bd
+1794812758.247613: MLD: link ctrl=0x31, 62:08:c9:12:5c:bd, nstr bitmap len=0
+1794812758.247613: MLD: Set ML info in RSN Authenticator
+1794812758.247613: WPA_AUTH: MLD: id=0, peer=9a:9c:f4:6c:99:e1
+1794812758.247614: WPA_AUTH: MLD: id=1, peer=62:08:c9:12:5c:bd
+1794812758.247614: OWE: DH shared secret - hexdump(len=32): 1f 81 41 52 04 86 d1 52 ab c0 cf 32 1e 90 10 68 3a 9a e3 03 30 a3 a2 e3 c0 64 2b de a7 dd 0d 42
+1794812758.247614: OWE: prk - hexdump(len=32): 00 f5 76 6a ff 9d 74 74 4b f4 84 61 25 05 b6 24 68 b3 60 67 0b b7 a7 3e b3 36 d7 28 da fa 94 d3
+1794812758.247614: OWE: PMK - hexdump(len=32): 96 68 d9 19 71 61 21 e1 62 bf 03 d3 a0 9b 6e c9 3e d7 98 d4 82 71 1f 70 55 27 bb 00 3c 37 01 cb
+1794812758.247615: OWE: PMKID - hexdump(len=16): 19 c4 3c f1 6b f7 1f d9 8a 1a ff 53 49 b1 ad 67
+1794812758.247615: RSN: Cache PMK (3) - hexdump(len=32): 96 68 d9 19 71 61 21 e1 62 bf 03 d3 a0 9b 6e c9 3e d7 98 d4 82 71 1f 70 55 27 bb 00 3c 37 01 cb
+1794812758.247616: RSN: added PMKSA cache entry for 02:00:00:00:08:00
+1794812758.247616: RSN: added PMKID - hexdump(len=16): 19 c4 3c f1 6b f7 1f d9 8a 1a ff 53 49 b1 ad 67
+1794812758.247616:   new AID 1
+1794812758.247617: HT: STA 02:00:00:00:08:00 HT Capabilities Info: 0x13fe
+1794812758.247617: hostapd_ht_operation_update current operation mode=0x0
+1794812758.247617: hostapd_ht_operation_update new operation mode=0x0 changes=0
+1794812758.247617: MLD: link: link_id=1, peer=62:08:c9:12:5c:bd
+1794812758.247618:   New STA
+1794812758.247619: ap_sta_add: register ap_handle_timer timeout for 02:00:00:00:08:00 (300 seconds - ap_max_inactivity)
+1794812758.247620: MLD: sub element: len=100, sub_elem_len=98, Fragment subelems=0
+1794812758.247620: MLD: link: sub_elem_len=87
+1794812758.247620: WMM IE - hexdump(len=7): 00 50 f2 02 00 01 00
+1794812758.247621: Validating WMM IE: OUI 00:50:f2  OUI type 2  OUI sub-type 0  version 1  QoS info 0x0
+1794812758.247621: MLD: Set ML info in RSN Authenticator
+1794812758.247621: AP MLD: Replacing lsta->wpa_sm 0x5500002dd470 with (nil) for a partner link
+1794812758.247621: AP MLD: Clearing to be freed wpa_sm=0x550000355830 pointer from sta=0x5500003547c0
+1794812758.247622: HT: STA 02:00:00:00:08:00 HT Capabilities Info: 0x13fe
+1794812758.247622: hostapd_ht_operation_update current operation mode=0x0
+1794812758.247622: hostapd_ht_operation_update new operation mode=0x0 changes=0
+1794812758.247622: MLD: link=1, association OK (aid=1)
+1794812758.247623: Add associated STA 02:00:00:00:08:00 (added_unassoc=0 auth_alg=0 ft_over_ds=0 reassoc=0 authorized=0 ft_tk=0 fils_tk=0)
+1794812758.247623: nl80211: NL80211_CMD_ADD_LINK_STA STA 02:00:00:00:08:00
+1794812758.247623:   * supported rates - hexdump(len=12): 02 04 0b 16 0c 12 18 24 30 48 60 6c
+1794812758.247623:   * capability=0x0
+1794812758.247624:   * ht_capabilities - hexdump(len=26): 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00
+1794812758.247624:   * he_capab - hexdump(len=21): 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff
+1794812758.247624:   * eht_capab - hexdump(len=16): 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00
+1794812758.247624:   * aid=1
+1794812758.247625:   * listen_interval=5
+1794812758.247625:   * flags set=0xbc mask=0xbc
+1794812758.247625:   * qosinfo=0x0
+1794812758.247625:   * mld_link_id=1
+1794812758.247626:   * mld_link_addr=62:08:c9:12:5c:bd
+1794812758.247626: MLD: link: status=0
+1794812758.247626: Add associated STA 02:00:00:00:08:00 (added_unassoc=1 auth_alg=0 ft_over_ds=0 reassoc=0 authorized=0 ft_tk=0 fils_tk=0)
+1794812758.247626: nl80211: NL80211_CMD_SET_STATION STA 02:00:00:00:08:00
+1794812758.247627:   * supported rates - hexdump(len=12): 02 04 0b 16 0c 12 18 24 30 48 60 6c
+1794812758.247627:   * capability=0x430
+1794812758.247627:   * ht_capabilities - hexdump(len=26): 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00
+1794812758.247627:   * he_capab - hexdump(len=21): 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff
+1794812758.247628:   * eht_capab - hexdump(len=16): 07 00 7c 00 00 fe ff ff 0f 01 00 88 88 88 00 00
+1794812758.247628:   * aid=1
+1794812758.247628:   * listen_interval=5
+1794812758.247628:   * flags set=0xbc mask=0xbc
+1794812758.247629:   * qosinfo=0x0
+1794812758.247629:   * mld_link_id=0
+1794812758.247629:   * mld_link_addr=9a:9c:f4:6c:99:e1
+1794812758.247630: MLD: EML Capabilities=0x81
+1794812758.247630: MLD: MLD Capabilities and Operations=0x2001
+1794812758.247630: MLD: Reconfiguration ML
+1794812758.247631: MLD: Reconfiguration ML: 0
+1794812758.247631: MLD: Reconfiguration ML: 0
+1794812758.247631: nl80211: send_mlme - da=02:00:00:00:08:00 sa=02:00:00:38:65:ef bssid=02:00:00:38:65:ef noack=0 freq=0 no_cck=0 offchanok=0 wait_time=0 no_encrypt=0 fc=0x10 (WLAN_FC_STYPE_ASSOC_RESP) nlmode=3
+1794812758.247631: nl80211: send_mlme - Use bss->freq=2412
+1794812758.247632: nl80211: send_mlme -> send_frame_cmd
+1794812758.247632: nl80211: CMD_FRAME freq=2412 wait=0 no_cck=0 no_ack=0 offchanok=0
+1794812758.247632: CMD_FRAME - hexdump(len=495): 10 00 00 00 02 00 00 00 08 00 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 11 04 00 00 01 c0 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9c fc ff 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 5a 03 24 01 00 ff d3 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 01 20 00 c1 f1 09 14 02 00 00 2a 56 4a 64 00 00 00 00 00 00 00 00 00 00 02 01 11 04 00 00 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 b0 fc ff ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 ff 23 20 13 00 b4 ba 24 f8 d3 da 7b 86 22 27 99 63 07 35 4a 83 a7 58 b0 72 f9 36 7d 5d 33 28 a4 94 6a 83 cd e1 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.247632: nl80211: Frame TX command accepted; cookie 0x6
+1794812758.247634: nl80211: Event message available
+1794812758.247634: nl80211: Drv Event 60 (NL80211_CMD_FRAME_TX_STATUS) received for wlan7
+1794812758.247634: nl80211: MLME event 60 (NL80211_CMD_FRAME_TX_STATUS) on wlan7(02:00:00:00:07:00) A1=02:00:00:00:08:00 A2=02:00:00:38:65:ef on link_id=-1
+1794812758.247635: nl80211: MLME event frame - hexdump(len=495): 10 00 00 00 02 00 00 00 08 00 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 11 04 00 00 01 c0 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 9c fc ff 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 5a 03 24 01 00 ff d3 6b b0 01 0d 02 00 00 00 07 00 00 01 81 00 01 20 00 c1 f1 09 14 02 00 00 2a 56 4a 64 00 00 00 00 00 00 00 00 00 00 02 01 11 04 00 00 01 08 82 84 8b 96 0c 12 18 24 32 04 30 48 60 6c 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 b0 fc ff ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 ff 23 20 13 00 b4 ba 24 f8 d3 da 7b 86 22 27 99 63 07 35 4a 83 a7 58 b0 72 f9 36 7d 5d 33 28 a4 94 6a 83 cd e1 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.247635: nl80211: Frame TX status event A1=02:00:00:00:08:00 stype=1 cookie=0x6 ack=1
+1794812758.247635: wlan7: Event TX_STATUS (16) received
+1794812758.247635: mgmt::assoc_resp cb
+1794812758.247636: 1794812758.247636: wlan7: STA 02:00:00:00:08:00 IEEE 802.11: associated (aid 1)
+1794812758.247664: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.247664: nl80211: DEL_KEY
+1794812758.247665:    addr=02:00:00:00:08:00
+1794812758.247665:    pairwise key
+1794812758.247665: nl80211: wlan7[12]: set_sta_vlan(02:00:00:00:08:00, ifname=wlan7[12], vlan_id=0)
+1794812758.247665: nl80211: wlan7[12]: set_sta_vlan(02:00:00:00:08:00, ifname=wlan7[12], vlan_id=0)
+1794812758.247666: nl80211: Set STA flags - ifname=wlan7 addr=02:00:00:00:08:00 total_flags=0x6e flags_or=0xe flags_and=0xfffffffe authorized=0
+1794812758.247666: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.247666: nl80211: DEL_KEY
+1794812758.247666:    addr=02:00:00:00:08:00
+1794812758.247667:    pairwise key
+1794812758.247667: IEEE 802.1X: Ignore STA - 802.1X not enabled or forced for WPS
+1794812758.247667: WPA: 02:00:00:00:08:00 WPA_PTK entering state INITIALIZE
+1794812758.247667: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.247668: nl80211: DEL_KEY
+1794812758.247668:    addr=02:00:00:00:08:00
+1794812758.247668:    pairwise key
+1794812758.247668: nl80211: Set STA flags - ifname=wlan7 addr=02:00:00:00:08:00 total_flags=0x6e flags_or=0x0 flags_and=0xfffffffe authorized=0
+1794812758.247669: hostapd_set_authorized: Do not update link station flags (02:00:00:00:08:00)
+1794812758.247669: WPA: 02:00:00:00:08:00 WPA_PTK_GROUP entering state IDLE
+1794812758.247669: WPA: 02:00:00:00:08:00 WPA_PTK entering state AUTHENTICATION
+1794812758.247669: WPA: 02:00:00:00:08:00 WPA_PTK entering state AUTHENTICATION2
+1794812758.247670: WPA: Re-initialize GMK/Counter on first station
+1794812758.247700: GMK - hexdump(len=32): 2b 5d 50 54 27 6a 68 ab ac 53 45 fb 23 84 97 00 e4 e7 f8 ff 27 fe 23 07 a1 8a 41 04 14 b0 4c f1
+1794812758.247702: Key Counter - hexdump(len=32): fa d0 57 1d d9 17 54 69 2a ec a2 e6 b7 38 9a b6 cf 91 c2 1f 60 c6 33 90 3a 27 25 2f fd 56 0d 65
+1794812758.247703: GTK - hexdump(len=32): a7 f5 49 fe 83 3e fe 36 b6 99 79 f3 3c 43 b1 76 78 2e 27 b9 41 28 c3 e7 c8 9a a1 eb df fa 8d b6
+1794812758.247704: IGTK - hexdump(len=16): 0d 5b d1 3a 7f 8f b1 f6 d6 31 31 57 dd e8 52 0d
+1794812758.247706: BIGTK - hexdump(len=16): a0 99 19 24 cb f2 c1 8c 6f f1 ef 6e 96 dc fe fa
+1794812758.247706: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=8 addr=0x55000024a0de key_idx=2 set_tx=1 seq_len=0 key_len=32 key_flag=0x1a link_id=0
+1794812758.247707: nl80211: NEW_KEY
+1794812758.247707: nl80211: KEY_DATA - hexdump(len=32): a7 f5 49 fe 83 3e fe 36 b6 99 79 f3 3c 43 b1 76 78 2e 27 b9 41 28 c3 e7 c8 9a a1 eb df fa 8d b6
+1794812758.247707:    broadcast key
+1794812758.247707: nl80211: Link ID 0
+1794812758.247708: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.247708: nl80211: set_key default - Link ID 0
+1794812758.247708: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=5 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=0
+1794812758.247708: nl80211: NEW_KEY
+1794812758.247709: nl80211: KEY_DATA - hexdump(len=16): 0d 5b d1 3a 7f 8f b1 f6 d6 31 31 57 dd e8 52 0d
+1794812758.247709:    broadcast key
+1794812758.247709: nl80211: Link ID 0
+1794812758.247709: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.247710: nl80211: set_key default - Link ID 0
+1794812758.247710: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=7 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=0
+1794812758.247710: nl80211: NEW_KEY
+1794812758.247710: nl80211: KEY_DATA - hexdump(len=16): a0 99 19 24 cb f2 c1 8c 6f f1 ef 6e 96 dc fe fa
+1794812758.247711:    broadcast key
+1794812758.247711: nl80211: Link ID 0
+1794812758.247711: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.247711: nl80211: set_key default - Link ID 0
+1794812758.247712: WPA: Re-initialize GMK/Counter on first station
+1794812758.247718: GMK - hexdump(len=32): c8 75 f7 c3 a4 8f d1 32 73 36 09 f2 54 ed 4d b4 de 9b a2 68 cc 27 1d 3b c7 71 f4 34 e6 9e 7a 55
+1794812758.247720: Key Counter - hexdump(len=32): 87 e6 44 c7 fe e9 97 30 1d 2d a9 8b d9 9e 85 17 d4 fd 32 2f ad c4 3b f4 c2 b7 82 f3 ff 7c c7 3b
+1794812758.247721: GTK - hexdump(len=32): 6f d5 d6 77 89 31 55 9c 2f 1f 27 b3 0a 60 b5 32 a8 af b2 85 57 90 34 8b 6b 80 3b f2 b7 5c 58 0a
+1794812758.247723: IGTK - hexdump(len=16): fc ab 98 f0 48 5f 6c a6 d3 a0 9b 58 9b f3 67 bd
+1794812758.247724: BIGTK - hexdump(len=16): 87 ac 3d f8 77 a9 fd f6 c5 81 97 09 0f ce 7d c5
+1794812758.247724: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=8 addr=0x55000024a0de key_idx=2 set_tx=1 seq_len=0 key_len=32 key_flag=0x1a link_id=1
+1794812758.247725: nl80211: NEW_KEY
+1794812758.247725: nl80211: KEY_DATA - hexdump(len=32): 6f d5 d6 77 89 31 55 9c 2f 1f 27 b3 0a 60 b5 32 a8 af b2 85 57 90 34 8b 6b 80 3b f2 b7 5c 58 0a
+1794812758.247725:    broadcast key
+1794812758.247725: nl80211: Link ID 1
+1794812758.247726: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.247726: nl80211: set_key default - Link ID 1
+1794812758.247726: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=5 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=1
+1794812758.247727: nl80211: NEW_KEY
+1794812758.247727: nl80211: KEY_DATA - hexdump(len=16): fc ab 98 f0 48 5f 6c a6 d3 a0 9b 58 9b f3 67 bd
+1794812758.247727:    broadcast key
+1794812758.247727: nl80211: Link ID 1
+1794812758.247728: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.247728: nl80211: set_key default - Link ID 1
+1794812758.247728: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=7 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=1
+1794812758.247728: nl80211: NEW_KEY
+1794812758.247729: nl80211: KEY_DATA - hexdump(len=16): 87 ac 3d f8 77 a9 fd f6 c5 81 97 09 0f ce 7d c5
+1794812758.247729:    broadcast key
+1794812758.247729: nl80211: Link ID 1
+1794812758.247729: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.247730: nl80211: set_key default - Link ID 1
+1794812758.247731: WPA: Assign ANonce - hexdump(len=32): a2 fa 5d ba 21 7f c6 d4 ea 13 62 2f 7f a8 6a f7 5c cb 8a 35 05 cf c8 91 f1 0d 1b 43 23 e8 72 7a
+1794812758.247731: WPA: 02:00:00:00:08:00 WPA_PTK entering state INITPSK
+1794812758.247731: WPA: 02:00:00:00:08:00 WPA_PTK entering state PTKSTART
+1794812758.247732: RSN: MLD: Add MAC Address KDE: kde_len=0
+1794812758.247732: WPA: Send EAPOL(version=0 secure=0 mic=0 ack=1 install=0 pairwise=1 kde_len=12 keyidx=0 encr=0)
+1794812758.247732: WPA: Replay Counter - hexdump(len=8): 00 00 00 00 00 00 00 01
+1794812758.247732: Send EAPOL-Key msg - hexdump(len=111): 02 03 00 6b 02 00 88 00 20 00 00 00 00 00 00 00 01 a2 fa 5d ba 21 7f c6 d4 ea 13 62 2f 7f a8 6a f7 5c cb 8a 35 05 cf c8 91 f1 0d 1b 43 23 e8 72 7a 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0c dd 0a 00 0f ac 03 02 00 00 00 07 00
+1794812758.247733: nl80211: Send over control port dest=02:00:00:00:08:00 proto=0x888e len=111 no_encrypt=1
+1794812758.247733: nl80211: tx_control_port cookie=0x7
+1794812758.247733: WPA: Use EAPOL-Key timeout of 100 ms (retry counter 1)
+1794812758.247734: wlan7: hostapd_new_assoc_sta: reschedule ap_handle_timer timeout for 02:00:00:00:08:00 (300 seconds - ap_max_inactivity)
+1794812758.247734: hostapd_set_sta_flags: Do not update link station flags (02:00:00:00:08:00)
+1794812758.247736: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=5 linkmode=1 ifi_family=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+1794812758.247770: nl80211: Event message available
+1794812758.247770: nl80211: Ignored event 38 (NL80211_CMD_ASSOCIATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.247770: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+1794812758.247770: VLAN: vlan_newlink(wlan8)
+1794812758.247771: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x11003 ([UP][LOWER_UP])
+1794812758.247771: VLAN: vlan_newlink(wlan8)
+1794812758.247772: nl80211: Event message available
+1794812758.247773: nl80211: Ignored event 46 (NL80211_CMD_CONNECT) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.247773: nl80211: Event message available
+1794812758.247773: nl80211: BSS Event 129 (NL80211_CMD_CONTROL_PORT_FRAME) received for wlan7
+1794812758.247773: wlan7: Event EAPOL_RX (23) received
+1794812758.247774: IEEE 802.1X: 152 bytes from 02:00:00:00:08:00 (encrypted=0)
+1794812758.247774:    IEEE 802.1X: version=1 type=3 length=148
+1794812758.247774: WPA: RX EAPOL data - hexdump(len=152): 01 03 00 94 02 01 08 00 00 00 00 00 00 00 00 00 01 2b 7e 45 00 21 f4 f2 0f dc a7 5e f0 d0 39 3a 8a 52 20 df f3 33 53 77 e6 25 3c e8 ae 20 c4 0f 51 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 25 4f 10 4a 62 a6 fc 86 67 72 7a b7 ce 22 2f ec 00 35 30 1a 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 00 00 00 0f ac 06 dd 0a 00 0f ac 03 02 00 00 00 08 00 dd 0b 00 0f ac 13 01 62 08 c9 12 5c bd
+1794812758.247774: WPA: Received EAPOL-Key from 02:00:00:00:08:00 key_info=0x108 type=2 mic_len=16 key_data_length=53
+1794812758.247775: WPA: EAPOL-Key header (ending before Key MIC) - hexdump(len=77): 02 01 08 00 00 00 00 00 00 00 00 00 01 2b 7e 45 00 21 f4 f2 0f dc a7 5e f0 d0 39 3a 8a 52 20 df f3 33 53 77 e6 25 3c e8 ae 20 c4 0f 51 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794812758.247775: WPA: EAPOL-Key Key MIC - hexdump(len=16): 25 4f 10 4a 62 a6 fc 86 67 72 7a b7 ce 22 2f ec
+1794812758.247775: WPA: Received Key Nonce - hexdump(len=32): 2b 7e 45 00 21 f4 f2 0f dc a7 5e f0 d0 39 3a 8a 52 20 df f3 33 53 77 e6 25 3c e8 ae 20 c4 0f 51
+1794812758.247775: WPA: Received Replay Counter - hexdump(len=8): 00 00 00 00 00 00 00 01
+1794812758.247776: WPA: 02:00:00:00:08:00 WPA_PTK entering state PTKCALCNEGOTIATING
+1794812758.247776: WPA: PTK derivation using PRF(SHA256)
+1794812758.247776: WPA: PTK derivation - A1=02:00:00:00:07:00 A2=02:00:00:00:08:00
+1794812758.247776: WPA: Nonce1 - hexdump(len=32): a2 fa 5d ba 21 7f c6 d4 ea 13 62 2f 7f a8 6a f7 5c cb 8a 35 05 cf c8 91 f1 0d 1b 43 23 e8 72 7a
+1794812758.247777: WPA: Nonce2 - hexdump(len=32): 2b 7e 45 00 21 f4 f2 0f dc a7 5e f0 d0 39 3a 8a 52 20 df f3 33 53 77 e6 25 3c e8 ae 20 c4 0f 51
+1794812758.247777: WPA: PMK - hexdump(len=32): 96 68 d9 19 71 61 21 e1 62 bf 03 d3 a0 9b 6e c9 3e d7 98 d4 82 71 1f 70 55 27 bb 00 3c 37 01 cb
+1794812758.247777: WPA: PTK - hexdump(len=64): dc d8 04 78 72 f7 f7 15 08 0d 58 22 fc 2f dd 85 a7 d1 44 f6 6c 86 51 c0 70 9c 8b ab e0 06 9a 58 43 73 03 7e 6d 7c 65 de 03 26 db 18 86 35 63 2e 40 d4 96 d6 a8 69 0b fd 49 84 6d 32 9c b6 29 46
+1794812758.247777: WPA: KCK - hexdump(len=16): dc d8 04 78 72 f7 f7 15 08 0d 58 22 fc 2f dd 85
+1794812758.247778: WPA: KEK - hexdump(len=16): a7 d1 44 f6 6c 86 51 c0 70 9c 8b ab e0 06 9a 58
+1794812758.247778: WPA: TK - hexdump(len=32): 43 73 03 7e 6d 7c 65 de 03 26 db 18 86 35 63 2e 40 d4 96 d6 a8 69 0b fd 49 84 6d 32 9c b6 29 46
+1794812758.247778: RSN: EAPOL-Key MIC using HMAC-SHA256 (AKM-defined - OWE)
+1794812758.247778: RSN: KCK - hexdump(len=16): dc d8 04 78 72 f7 f7 15 08 0d 58 22 fc 2f dd 85
+1794812758.247779: RSN: EAPOL-Key MIC - hexdump(len=16): 25 4f 10 4a 62 a6 fc 86 67 72 7a b7 ce 22 2f ec
+1794812758.247779: WPA: RSN IE in EAPOL-Key - hexdump(len=28): 30 1a 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 00 00 00 0f ac 06
+1794812758.247779: WPA: MAC Address in EAPOL-Key: 02:00:00:00:08:00
+1794812758.247780: RSN: Link ID 1 - MLO Link KDE in EAPOL-Key - hexdump(len=13): dd 0b 00 0f ac 13 01 62 08 c9 12 5c bd
+1794812758.247780: WPA: 02:00:00:00:08:00 WPA_PTK entering state PTKCALCNEGOTIATING2
+1794812758.247780: WPA: 02:00:00:00:08:00 WPA_PTK entering state PTKINITNEGOTIATING
+1794812758.247780: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=8 addr=0x5500002dd480 key_idx=0 set_tx=0 seq_len=0 key_len=32 key_flag=0xa4 link_id=-1
+1794812758.247781: nl80211: set_key for the next TK for RX-only - ignored
+1794812758.247781: MLO Group KDEs len = 214
+1794812758.247781: RSN: MLD: Adding MAC Address KDE
+1794812758.247781: RSN: MLO Link: link=0, len=33
+1794812758.247782: RSN: MLO Link: link=1, len=33
+1794812758.247782: RSN: MLO Link KDEs and RSN Override Link KDEs len = 82
+1794812758.247782: WPA_AUTH: MLD: Get key info CB: n_mld_links=2
+1794812758.247782: WPA_AUTH: MLD: Get link info CB: link_id=0
+1794812758.247783: MLD: Get group key info: link_id=0, IGTK=1, BIGTK=1 VLAN ID:0
+1794812758.247783: WPA_AUTH: MLD: Get link info CB: link_id=1
+1794812758.247783: MLD: Get group key info: link_id=1, IGTK=1, BIGTK=1 VLAN ID:0
+1794812758.247783: RSN: MLO GTK: link=0
+1794812758.247784: RSN: MLO GTK - hexdump(len=32): a7 f5 49 fe 83 3e fe 36 b6 99 79 f3 3c 43 b1 76 78 2e 27 b9 41 28 c3 e7 c8 9a a1 eb df fa 8d b6
+1794812758.247784: RSN: MLO GTK: link=1
+1794812758.247784: RSN: MLO GTK - hexdump(len=32): 6f d5 d6 77 89 31 55 9c 2f 1f 27 b3 0a 60 b5 32 a8 af b2 85 57 90 34 8b 6b 80 3b f2 b7 5c 58 0a
+1794812758.247784: RSN: MLO IGTK: link=0
+1794812758.247785: RSN: MLO IGTK - hexdump(len=16): 0d 5b d1 3a 7f 8f b1 f6 d6 31 31 57 dd e8 52 0d
+1794812758.247785: RSN: MLO IGTK: link=1
+1794812758.247785: RSN: MLO IGTK - hexdump(len=16): fc ab 98 f0 48 5f 6c a6 d3 a0 9b 58 9b f3 67 bd
+1794812758.247785: RSN: MLO BIGTK: link=0
+1794812758.247786: RSN: MLO BIGTK - hexdump(len=16): a0 99 19 24 cb f2 c1 8c 6f f1 ef 6e 96 dc fe fa
+1794812758.247786: RSN: MLO BIGTK: link=1
+1794812758.247786: RSN: MLO BIGTK - hexdump(len=16): 87 ac 3d f8 77 a9 fd f6 c5 81 97 09 0f ce 7d c5
+1794812758.247786: RSN: MLO Group KDE len = 214
+1794812758.247787: WPA: Send EAPOL(version=0 secure=1 mic=1 ack=1 install=1 pairwise=1 kde_len=296 keyidx=0 encr=1)
+1794812758.247787: WPA: Replay Counter - hexdump(len=8): 00 00 00 00 00 00 00 02
+1794812758.247787: Plaintext EAPOL-Key Key Data (+ padding) - hexdump(len=304): dd 0a 00 0f ac 03 02 00 00 00 07 00 dd 21 00 0f ac 13 10 02 00 00 38 65 ef 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 dd 21 00 0f ac 13 11 02 00 00 2a 56 4a 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 dd 2b 00 0f ac 10 02 00 00 00 00 00 00 a7 f5 49 fe 83 3e fe 36 b6 99 79 f3 3c 43 b1 76 78 2e 27 b9 41 28 c3 e7 c8 9a a1 eb df fa 8d b6 dd 2b 00 0f ac 10 12 00 00 00 00 00 00 6f d5 d6 77 89 31 55 9c 2f 1f 27 b3 0a 60 b5 32 a8 af b2 85 57 90 34 8b 6b 80 3b f2 b7 5c 58 0a dd 1d 00 0f ac 11 05 00 00 00 00 00 00 00 00 0d 5b d1 3a 7f 8f b1 f6 d6 31 31 57 dd e8 52 0d dd 1d 00 0f ac 11 05 00 00 00 00 00 00 00 10 fc ab 98 f0 48 5f 6c a6 d3 a0 9b 58 9b f3 67 bd dd 1d 00 0f ac 12 07 00 00 00 00 00 00 00 00 a0 99 19 24 cb f2 c1 8c 6f f1 ef 6e 96 dc fe fa dd 1d 00 0f ac 12 07 00 00 00 00 00 00 00 10 87 ac 3d f8 77 a9 fd f6 c5 81 97 09 0f ce 7d c5 00 00 00 00 00 00 00 00
+1794812758.247787: RSN: AES-WRAP using KEK - hexdump(len=16): a7 d1 44 f6 6c 86 51 c0 70 9c 8b ab e0 06 9a 58
+1794812758.247788: RSN: Encrypted Key Data from AES-WRAP - hexdump(len=304): dc 31 9b 97 24 36 b7 3e 11 e4 3c a0 e5 40 16 91 ae e9 9e b0 75 65 f9 24 9a af ce 53 e0 40 9b ee 94 aa 1c f8 a8 30 35 86 84 39 30 32 f1 37 e2 86 9e 9d 6a 1e f2 e9 b2 5a 6f 37 a9 58 63 7b 6e ba a4 17 9d ba 81 6d e0 89 47 86 51 e1 29 92 af 84 7a 1b 72 0c cf 26 c0 13 e7 f0 d9 93 b7 ce c7 0c b8 49 0e 8f ed 9b 4b 95 1b c6 7d 85 73 b4 56 06 ab 58 ae 0a 43 aa d4 45 cc ce a5 99 ee 35 08 5b 68 9b 07 d7 ea ce b3 77 2f c4 88 7c d7 65 09 4b 45 db fd 07 dc ab 0e 6e 17 6b a0 74 b5 e1 f6 1b 44 58 34 ba 7c 5e 28 98 8b e7 bc 6e 70 1d 0b ee 91 b7 66 e5 88 1d 4b 3e a9 e1 18 ed 17 f3 49 1e 86 77 d9 ed a0 bd e1 fd 5e a1 6a 04 88 cc cc 5c ab a4 5c 0b 2d 9f b1 02 c0 42 ff 38 4a 6b fb 7a 47 35 5f 70 ae 39 22 27 fe a6 32 c5 3d 7b 13 a5 ce a1 7c 39 ed f2 e7 11 dc cc a3 d9 29 65 7a 1e 74 48 92 38 85 07 5d 7d f5 41 a7 04 8c 00 1f 2d 0c ab d9 5a 95 8a ed a6 a5 60 88 df b5 83 63 21 92 20 0a de 84 5c b0 d6 3e c0 02 3a 07 51 97 9b
+1794812758.247788: RSN: EAPOL-Key MIC using HMAC-SHA256 (AKM-defined - OWE)
+1794812758.247788: RSN: KCK - hexdump(len=16): dc d8 04 78 72 f7 f7 15 08 0d 58 22 fc 2f dd 85
+1794812758.247788: RSN: EAPOL-Key MIC - hexdump(len=16): 9d 5e 4a 16 ac 07 87 15 2d e7 57 18 58 3e d1 a5
+1794812758.247789: Send EAPOL-Key msg - hexdump(len=403): 02 03 01 8f 02 13 c8 00 20 00 00 00 00 00 00 00 02 a2 fa 5d ba 21 7f c6 d4 ea 13 62 2f 7f a8 6a f7 5c cb 8a 35 05 cf c8 91 f1 0d 1b 43 23 e8 72 7a 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 9d 5e 4a 16 ac 07 87 15 2d e7 57 18 58 3e d1 a5 01 30 dc 31 9b 97 24 36 b7 3e 11 e4 3c a0 e5 40 16 91 ae e9 9e b0 75 65 f9 24 9a af ce 53 e0 40 9b ee 94 aa 1c f8 a8 30 35 86 84 39 30 32 f1 37 e2 86 9e 9d 6a 1e f2 e9 b2 5a 6f 37 a9 58 63 7b 6e ba a4 17 9d ba 81 6d e0 89 47 86 51 e1 29 92 af 84 7a 1b 72 0c cf 26 c0 13 e7 f0 d9 93 b7 ce c7 0c b8 49 0e 8f ed 9b 4b 95 1b c6 7d 85 73 b4 56 06 ab 58 ae 0a 43 aa d4 45 cc ce a5 99 ee 35 08 5b 68 9b 07 d7 ea ce b3 77 2f c4 88 7c d7 65 09 4b 45 db fd 07 dc ab 0e 6e 17 6b a0 74 b5 e1 f6 1b 44 58 34 ba 7c 5e 28 98 8b e7 bc 6e 70 1d 0b ee 91 b7 66 e5 88 1d 4b 3e a9 e1 18 ed 17 f3 49 1e 86 77 d9 ed a0 bd e1 fd 5e a1 6a 04 88 cc cc 5c ab a4 5c 0b 2d 9f b1 02 c0 42 ff 38 4a 6b fb 7a 47 35 5f 70 ae 39 22 27 fe a6 32 c5 3d 7b 13 a5 ce a1 7c 39 ed f2 e7 11 dc cc a3 d9 29 65 7a 1e 74 48 92 38 85 07 5d 7d f5 41 a7 04 8c 00 1f 2d 0c ab d9 5a 95 8a ed a6 a5 60 88 df b5 83 63 21 92 20 0a de 84 5c b0 d6 3e c0 02 3a 07 51 97 9b
+1794812758.247789: nl80211: Send over control port dest=02:00:00:00:08:00 proto=0x888e len=403 no_encrypt=1
+1794812758.247789: nl80211: tx_control_port cookie=0x8
+1794812758.247789: WPA: Use EAPOL-Key timeout of 100 ms (retry counter 1)
+1794812758.247791: nl80211: Event message available
+1794812758.247792: nl80211: Drv Event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) received for wlan7
+1794812758.247792: nl80211: Control port TX status (ack=1), cookie=7
+1794812758.247792: wlan7: Event EAPOL_TX_STATUS (37) received
+1794812758.247792: IEEE 802.1X: 02:00:00:00:08:00 TX status - version=2 type=3 length=107 - ack=1
+1794812758.247793: WPA: EAPOL-Key TX status for STA 02:00:00:00:08:00 ack=1
+1794812758.247794: nl80211: Event message available
+1794812758.247794: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.247796: nl80211: Event message available
+1794812758.247796: nl80211: Drv Event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) received for wlan7
+1794812758.247796: nl80211: Control port TX status (ack=1), cookie=8
+1794812758.247797: wlan7: Event EAPOL_TX_STATUS (37) received
+1794812758.247797: IEEE 802.1X: 02:00:00:00:08:00 TX status - version=2 type=3 length=399 - ack=1
+1794812758.247797: WPA: EAPOL-Key TX status for STA 02:00:00:00:08:00 ack=1
+1794812758.247876: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=6 linkmode=1 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794812758.247877: nl80211: Event message available
+1794812758.247877: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.247878: nl80211: Event message available
+1794812758.247878: nl80211: BSS Event 129 (NL80211_CMD_CONTROL_PORT_FRAME) received for wlan7
+1794812758.247878: wlan7: Event EAPOL_RX (23) received
+1794812758.247878: IEEE 802.1X: 111 bytes from 02:00:00:00:08:00 (encrypted=0)
+1794812758.247879:    IEEE 802.1X: version=1 type=3 length=107
+1794812758.247879: WPA: RX EAPOL data - hexdump(len=111): 01 03 00 6b 02 03 08 00 00 00 00 00 00 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 95 e1 75 ac e2 76 64 21 78 36 d8 3c ce 02 1c 4a 00 0c dd 0a 00 0f ac 03 02 00 00 00 08 00
+1794812758.247879: WPA: Received EAPOL-Key from 02:00:00:00:08:00 key_info=0x308 type=2 mic_len=16 key_data_length=12
+1794812758.247879: WPA: EAPOL-Key header (ending before Key MIC) - hexdump(len=77): 02 03 08 00 00 00 00 00 00 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794812758.247880: WPA: EAPOL-Key Key MIC - hexdump(len=16): 95 e1 75 ac e2 76 64 21 78 36 d8 3c ce 02 1c 4a
+1794812758.247880: WPA: Received Key Nonce - hexdump(len=32): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794812758.247880: WPA: Received Replay Counter - hexdump(len=8): 00 00 00 00 00 00 00 02
+1794812758.247880: RSN: EAPOL-Key MIC using HMAC-SHA256 (AKM-defined - OWE)
+1794812758.247881: RSN: KCK - hexdump(len=16): dc d8 04 78 72 f7 f7 15 08 0d 58 22 fc 2f dd 85
+1794812758.247881: RSN: EAPOL-Key MIC - hexdump(len=16): 95 e1 75 ac e2 76 64 21 78 36 d8 3c ce 02 1c 4a
+1794812758.247881: WPA: 02:00:00:00:08:00 WPA_PTK entering state PTKINITDONE
+1794812758.247881: WPA: MAC Address in EAPOL-Key: 02:00:00:00:08:00
+1794812758.247882: MLD: MLD address in EAPOL-Key msg 4/4: 02:00:00:00:08:00
+1794812758.247882: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=8 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=32 key_flag=0x2c link_id=-1
+1794812758.247882: nl80211: NEW_KEY
+1794812758.247882: nl80211: KEY_DATA - hexdump(len=32): 43 73 03 7e 6d 7c 65 de 03 26 db 18 86 35 63 2e 40 d4 96 d6 a8 69 0b fd 49 84 6d 32 9c b6 29 46
+1794812758.247883:    addr=02:00:00:00:08:00
+1794812758.247883:    pairwise key
+1794812758.247883: Added PTKSA cache entry addr=02:00:00:00:08:00 cipher=256
+1794812758.247884: nl80211: Set STA flags - ifname=wlan7 addr=02:00:00:00:08:00 total_flags=0x6f flags_or=0x1 flags_and=0xffffffff authorized=1
+1794812758.247884: wlan7: AP-STA-CONNECTED 02:00:00:00:08:00
+1794812758.247885: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.247885: 1794812758.247885: wlan7: STA 02:00:00:00:08:00 RADIUS: starting accounting session FCD3C2E883846D6A
+1794812758.247896: hostapd_set_authorized: Do not update link station flags (02:00:00:00:08:00)
+1794812758.247896: wlan7: AP-STA-CONNECTED 02:00:00:00:08:00
+1794812758.247896: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-31\x00
+1794812758.247897: 1794812758.247897: wlan7: STA 02:00:00:00:08:00 RADIUS: starting accounting session 6BB8C2120EFB1A87
+1794812758.247899: 1794812758.247899: wlan7: STA 02:00:00:00:08:00 WPA: pairwise key handshake completed (RSN)
+1794812758.247900: wlan7: EAPOL-4WAY-HS-COMPLETED 02:00:00:00:08:00
+1794812758.247900: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.247901: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794812758.247901: VLAN: vlan_newlink(wlan8)
+1794812758.247901: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x11043 ([UP][RUNNING][LOWER_UP])
+1794812758.247901: VLAN: vlan_newlink(wlan8)
+1794812758.348079: RX ctrl_iface - hexdump_ascii(len=6):
+     53 54 41 54 55 53                                 STATUS          
+1794812758.348113: RX ctrl_iface - hexdump_ascii(len=18):
+     44 41 54 41 5f 54 45 53 54 5f 43 4f 4e 46 49 47   DATA_TEST_CONFIG
+     20 31                                              1              
+1794812758.348113: wlan7: test data: Enabled
+1794812758.348123: l2_packet_receive: src=02:00:00:00:08:00 len=1500
+1794812758.348123: wlan7: DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+1794812758.348123: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.348141: l2_packet_receive: src=02:00:00:00:08:00 len=1500
+1794812758.348141: wlan7: DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+1794812758.348141: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.348146: RX ctrl_iface - hexdump_ascii(len=50):
+     44 41 54 41 5f 54 45 53 54 5f 54 58 20 30 32 3a   DATA_TEST_TX 02:
+     30 30 3a 30 30 3a 30 30 3a 30 38 3a 30 30 20 30   00:00:00:08:00 0
+     32 3a 30 30 3a 30 30 3a 30 30 3a 30 37 3a 30 30   2:00:00:00:07:00
+     20 30                                              0              
+1794812758.348147: wlan7: test data: TX dst=02:00:00:00:08:00 src=02:00:00:00:07:00 tos=0x0
+1794812758.348165: RX ctrl_iface - hexdump_ascii(len=50):
+     44 41 54 41 5f 54 45 53 54 5f 54 58 20 66 66 3a   DATA_TEST_TX ff:
+     66 66 3a 66 66 3a 66 66 3a 66 66 3a 66 66 20 30   ff:ff:ff:ff:ff 0
+     32 3a 30 30 3a 30 30 3a 30 30 3a 30 37 3a 30 30   2:00:00:00:07:00
+     20 30                                              0              
+1794812758.348165: wlan7: test data: TX dst=ff:ff:ff:ff:ff:ff src=02:00:00:00:07:00 tos=0x0
+1794812758.348177: RX ctrl_iface - hexdump_ascii(len=18):
+     44 41 54 41 5f 54 45 53 54 5f 43 4f 4e 46 49 47   DATA_TEST_CONFIG
+     20 30                                              0              
+1794812758.348178: wlan7: test data: Disabled
+1794812758.348182: RX ctrl_iface - hexdump_ascii(len=9):
+     52 45 4b 45 59 5f 47 54 4b                        REKEY_GTK       
+1794812758.348184: GTK - hexdump(len=32): 38 57 5f c4 65 39 af b6 7f 58 a3 34 c1 bf 64 b6 31 1e c5 df 9b f1 a1 46 51 a4 e4 f1 79 2d b9 dc
+1794812758.348186: IGTK - hexdump(len=16): ab 58 9f 4e 24 05 79 28 8c 5a 34 11 0a 69 6b 5d
+1794812758.348188: BIGTK - hexdump(len=16): 47 01 5f 1e f8 b0 58 0d c3 70 75 d3 8f 27 87 f3
+1794812758.348189: GTK - hexdump(len=32): 19 c7 5a b1 e9 ab 2b 5c ca eb ab 5d 67 95 41 af 33 41 e6 e8 da 2a 73 43 af c7 11 2d b3 e7 86 31
+1794812758.348190: IGTK - hexdump(len=16): 70 08 e6 dc 56 2c c2 33 ee df da e2 80 5b b9 d7
+1794812758.348192: BIGTK - hexdump(len=16): d3 aa f1 71 2a 45 40 51 fc 2c dc b5 7c a9 23 70
+1794812758.348192: GTK rekey start for authenticator (02:00:00:38:65:ef), group vlan 0
+1794812758.348192: WPA: group state machine entering state SETKEYS (VLAN-ID 0)
+1794812758.348193: WPA: 02:00:00:00:08:00 WPA_PTK_GROUP entering state REKEYNEGOTIATING
+1794812758.348193: MLO Group KDEs len = 214
+1794812758.348193: WPA_AUTH: MLD: Get key info CB: n_mld_links=2
+1794812758.348193: WPA_AUTH: MLD: Get link info CB: link_id=0
+1794812758.348194: MLD: Get group key info: link_id=0, IGTK=1, BIGTK=1 VLAN ID:0
+1794812758.348194: WPA_AUTH: MLD: Get link info CB: link_id=1
+1794812758.348194: MLD: Get group key info: link_id=1, IGTK=1, BIGTK=1 VLAN ID:0
+1794812758.348194: RSN: MLO GTK: link=0
+1794812758.348195: RSN: MLO GTK - hexdump(len=32): 38 57 5f c4 65 39 af b6 7f 58 a3 34 c1 bf 64 b6 31 1e c5 df 9b f1 a1 46 51 a4 e4 f1 79 2d b9 dc
+1794812758.348195: RSN: MLO GTK: link=1
+1794812758.348195: RSN: MLO GTK - hexdump(len=32): 19 c7 5a b1 e9 ab 2b 5c ca eb ab 5d 67 95 41 af 33 41 e6 e8 da 2a 73 43 af c7 11 2d b3 e7 86 31
+1794812758.348196: RSN: MLO IGTK: link=0
+1794812758.348196: RSN: MLO IGTK - hexdump(len=16): ab 58 9f 4e 24 05 79 28 8c 5a 34 11 0a 69 6b 5d
+1794812758.348196: RSN: MLO IGTK: link=1
+1794812758.348196: RSN: MLO IGTK - hexdump(len=16): 70 08 e6 dc 56 2c c2 33 ee df da e2 80 5b b9 d7
+1794812758.348197: RSN: MLO BIGTK: link=0
+1794812758.348197: RSN: MLO BIGTK - hexdump(len=16): 47 01 5f 1e f8 b0 58 0d c3 70 75 d3 8f 27 87 f3
+1794812758.348197: RSN: MLO BIGTK: link=1
+1794812758.348197: RSN: MLO BIGTK - hexdump(len=16): d3 aa f1 71 2a 45 40 51 fc 2c dc b5 7c a9 23 70
+1794812758.348198: RSN: MLO Group KDE len = 214
+1794812758.348198: WPA: Send EAPOL(version=0 secure=1 mic=1 ack=1 install=0 pairwise=0 kde_len=214 keyidx=1 encr=1)
+1794812758.348198: WPA: Replay Counter - hexdump(len=8): 00 00 00 00 00 00 00 03
+1794812758.348198: Plaintext EAPOL-Key Key Data (+ padding) - hexdump(len=224): dd 2b 00 0f ac 10 01 00 00 00 00 00 00 38 57 5f c4 65 39 af b6 7f 58 a3 34 c1 bf 64 b6 31 1e c5 df 9b f1 a1 46 51 a4 e4 f1 79 2d b9 dc dd 2b 00 0f ac 10 11 00 00 00 00 00 00 19 c7 5a b1 e9 ab 2b 5c ca eb ab 5d 67 95 41 af 33 41 e6 e8 da 2a 73 43 af c7 11 2d b3 e7 86 31 dd 1d 00 0f ac 11 04 00 00 00 00 00 00 00 00 ab 58 9f 4e 24 05 79 28 8c 5a 34 11 0a 69 6b 5d dd 1d 00 0f ac 11 04 00 00 00 00 00 00 00 10 70 08 e6 dc 56 2c c2 33 ee df da e2 80 5b b9 d7 dd 1d 00 0f ac 12 06 00 00 00 00 00 00 00 00 47 01 5f 1e f8 b0 58 0d c3 70 75 d3 8f 27 87 f3 dd 1d 00 0f ac 12 06 00 00 00 00 00 00 00 10 d3 aa f1 71 2a 45 40 51 fc 2c dc b5 7c a9 23 70 dd 00 00 00 00 00 00 00 00 00
+1794812758.348199: RSN: AES-WRAP using KEK - hexdump(len=16): a7 d1 44 f6 6c 86 51 c0 70 9c 8b ab e0 06 9a 58
+1794812758.348199: RSN: Encrypted Key Data from AES-WRAP - hexdump(len=224): 5d 62 8a 3c f2 b9 95 e4 17 ea d6 05 f5 ea 2e 75 70 25 99 2b 54 f3 17 ff 29 83 ab c8 c5 f8 3c 8f 94 ef 76 83 de 55 bf db 4b 58 1d cc f6 b4 00 38 32 cf 4c e3 2c 15 ec f8 91 08 7d 19 12 f5 a7 3e 3b fd 8c 23 86 56 ec a0 be 47 5d 2b fe 93 e1 e4 71 fb 7b 06 2a fd fc 98 f6 d4 e4 4f 1d b4 9b b2 9d 90 ec ba 09 89 3a 38 d8 c5 d1 14 24 cc a8 c5 43 a8 54 f0 06 82 3c f8 21 f6 cc c0 9f 95 f6 51 1b 47 6b b7 4a 70 3d bd 53 71 d5 7f a8 77 df 09 af cd 83 4f 30 6a 1d 0d b8 22 a5 09 52 4d bd d8 2b c1 47 8e 06 fa 0b eb 5a 5d 04 11 e5 73 ac 1f 45 c0 e1 06 e9 b3 82 5e d0 62 42 30 29 41 4b 6d e8 06 16 2f 76 55 7c af 52 8b b4 f4 7e 74 79 d0 6a 7b 5f 7b c3 29 42 d0 ca 58 c3 2d 53 24 67 33
+1794812758.348199: RSN: EAPOL-Key MIC using HMAC-SHA256 (AKM-defined - OWE)
+1794812758.348199: RSN: KCK - hexdump(len=16): dc d8 04 78 72 f7 f7 15 08 0d 58 22 fc 2f dd 85
+1794812758.348200: RSN: EAPOL-Key MIC - hexdump(len=16): 17 93 a7 f4 ed 42 f8 98 b6 fc 1d ec f7 37 9c c5
+1794812758.348200: Send EAPOL-Key msg - hexdump(len=323): 02 03 01 3f 02 13 80 00 00 00 00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 17 93 a7 f4 ed 42 f8 98 b6 fc 1d ec f7 37 9c c5 00 e0 5d 62 8a 3c f2 b9 95 e4 17 ea d6 05 f5 ea 2e 75 70 25 99 2b 54 f3 17 ff 29 83 ab c8 c5 f8 3c 8f 94 ef 76 83 de 55 bf db 4b 58 1d cc f6 b4 00 38 32 cf 4c e3 2c 15 ec f8 91 08 7d 19 12 f5 a7 3e 3b fd 8c 23 86 56 ec a0 be 47 5d 2b fe 93 e1 e4 71 fb 7b 06 2a fd fc 98 f6 d4 e4 4f 1d b4 9b b2 9d 90 ec ba 09 89 3a 38 d8 c5 d1 14 24 cc a8 c5 43 a8 54 f0 06 82 3c f8 21 f6 cc c0 9f 95 f6 51 1b 47 6b b7 4a 70 3d bd 53 71 d5 7f a8 77 df 09 af cd 83 4f 30 6a 1d 0d b8 22 a5 09 52 4d bd d8 2b c1 47 8e 06 fa 0b eb 5a 5d 04 11 e5 73 ac 1f 45 c0 e1 06 e9 b3 82 5e d0 62 42 30 29 41 4b 6d e8 06 16 2f 76 55 7c af 52 8b b4 f4 7e 74 79 d0 6a 7b 5f 7b c3 29 42 d0 ca 58 c3 2d 53 24 67 33
+1794812758.348200: nl80211: Send over control port dest=02:00:00:00:08:00 proto=0x888e len=323 no_encrypt=0
+1794812758.348200: nl80211: tx_control_port cookie=0x9
+1794812758.348201: WPA: Use EAPOL-Key timeout of 500 ms (retry counter 1)
+1794812758.348201: wpa_group_setkeys: GKeyDoneStations=1
+1794812758.348201: GTK rekey start for authenticator (02:00:00:2a:56:4a), group vlan 0
+1794812758.348202: WPA: group state machine entering state SETKEYS (VLAN-ID 0)
+1794812758.348202: wpa_group_setkeys: GKeyDoneStations=1
+1794812758.348204: nl80211: Event message available
+1794812758.348204: nl80211: Drv Event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) received for wlan7
+1794812758.348204: nl80211: Control port TX status (ack=1), cookie=9
+1794812758.348204: wlan7: Event EAPOL_TX_STATUS (37) received
+1794812758.348205: IEEE 802.1X: 02:00:00:00:08:00 TX status - version=2 type=3 length=319 - ack=1
+1794812758.348205: WPA: EAPOL-Key TX status for STA 02:00:00:00:08:00 ack=1
+1794812758.348256: nl80211: Event message available
+1794812758.348256: nl80211: Ignored event 139 (NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.348256: nl80211: Event message available
+1794812758.348256: nl80211: BSS Event 129 (NL80211_CMD_CONTROL_PORT_FRAME) received for wlan7
+1794812758.348257: wlan7: Event EAPOL_RX (23) received
+1794812758.348257: IEEE 802.1X: 99 bytes from 02:00:00:00:08:00 (encrypted=1)
+1794812758.348257:    IEEE 802.1X: version=1 type=3 length=95
+1794812758.348257: WPA: RX EAPOL data - hexdump(len=99): 01 03 00 5f 02 03 00 00 00 00 00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 61 75 99 69 09 10 39 d6 54 93 2d 07 d7 64 b7 4e 00 00
+1794812758.348258: WPA: Received EAPOL-Key from 02:00:00:00:08:00 key_info=0x300 type=2 mic_len=16 key_data_length=0
+1794812758.348258: WPA: EAPOL-Key header (ending before Key MIC) - hexdump(len=77): 02 03 00 00 00 00 00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794812758.348258: WPA: EAPOL-Key Key MIC - hexdump(len=16): 61 75 99 69 09 10 39 d6 54 93 2d 07 d7 64 b7 4e
+1794812758.348258: WPA: Received Key Nonce - hexdump(len=32): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+1794812758.348259: WPA: Received Replay Counter - hexdump(len=8): 00 00 00 00 00 00 00 03
+1794812758.348259: RSN: EAPOL-Key MIC using HMAC-SHA256 (AKM-defined - OWE)
+1794812758.348259: RSN: KCK - hexdump(len=16): dc d8 04 78 72 f7 f7 15 08 0d 58 22 fc 2f dd 85
+1794812758.348260: RSN: EAPOL-Key MIC - hexdump(len=16): 61 75 99 69 09 10 39 d6 54 93 2d 07 d7 64 b7 4e
+1794812758.348260: WPA: 02:00:00:00:08:00 WPA_PTK_GROUP entering state REKEYESTABLISHED
+1794812758.348260: 1794812758.348260: wlan7: STA 02:00:00:00:08:00 WPA: group key handshake completed (RSN)
+1794812758.348266: WPA: group state machine entering state SETKEYSDONE (VLAN-ID 0)
+1794812758.348266: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=8 addr=0x55000024a0de key_idx=1 set_tx=1 seq_len=0 key_len=32 key_flag=0x1a link_id=0
+1794812758.348267: nl80211: NEW_KEY
+1794812758.348267: nl80211: KEY_DATA - hexdump(len=32): 38 57 5f c4 65 39 af b6 7f 58 a3 34 c1 bf 64 b6 31 1e c5 df 9b f1 a1 46 51 a4 e4 f1 79 2d b9 dc
+1794812758.348267:    broadcast key
+1794812758.348267: nl80211: Link ID 0
+1794812758.348268: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.348268: nl80211: set_key default - Link ID 0
+1794812758.348268: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=4 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=0
+1794812758.348268: nl80211: NEW_KEY
+1794812758.348269: nl80211: KEY_DATA - hexdump(len=16): ab 58 9f 4e 24 05 79 28 8c 5a 34 11 0a 69 6b 5d
+1794812758.348269:    broadcast key
+1794812758.348269: nl80211: Link ID 0
+1794812758.348269: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.348270: nl80211: set_key default - Link ID 0
+1794812758.348270: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=6 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=0
+1794812758.348270: nl80211: NEW_KEY
+1794812758.348271: nl80211: KEY_DATA - hexdump(len=16): 47 01 5f 1e f8 b0 58 0d c3 70 75 d3 8f 27 87 f3
+1794812758.348271:    broadcast key
+1794812758.348271: nl80211: Link ID 0
+1794812758.348271: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.348272: nl80211: set_key default - Link ID 0
+1794812758.348272: WPA: group state machine entering state SETKEYSDONE (VLAN-ID 0)
+1794812758.348272: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=8 addr=0x55000024a0de key_idx=1 set_tx=1 seq_len=0 key_len=32 key_flag=0x1a link_id=1
+1794812758.348272: nl80211: NEW_KEY
+1794812758.348273: nl80211: KEY_DATA - hexdump(len=32): 19 c7 5a b1 e9 ab 2b 5c ca eb ab 5d 67 95 41 af 33 41 e6 e8 da 2a 73 43 af c7 11 2d b3 e7 86 31
+1794812758.348273:    broadcast key
+1794812758.348273: nl80211: Link ID 1
+1794812758.348273: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.348274: nl80211: set_key default - Link ID 1
+1794812758.348274: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=4 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=1
+1794812758.348274: nl80211: NEW_KEY
+1794812758.348274: nl80211: KEY_DATA - hexdump(len=16): 70 08 e6 dc 56 2c c2 33 ee df da e2 80 5b b9 d7
+1794812758.348275:    broadcast key
+1794812758.348275: nl80211: Link ID 1
+1794812758.348275: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.348275: nl80211: set_key default - Link ID 1
+1794812758.348276: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=4 addr=0x55000024a0de key_idx=6 set_tx=1 seq_len=0 key_len=16 key_flag=0x1a link_id=1
+1794812758.348276: nl80211: NEW_KEY
+1794812758.348276: nl80211: KEY_DATA - hexdump(len=16): d3 aa f1 71 2a 45 40 51 fc 2c dc b5 7c a9 23 70
+1794812758.348276:    broadcast key
+1794812758.348277: nl80211: Link ID 1
+1794812758.348277: nl80211: NL80211_CMD_SET_KEY - default key
+1794812758.348277: nl80211: set_key default - Link ID 1
+1794812758.348277: WPA: 02:00:00:00:08:00 WPA_PTK_GROUP entering state IDLE
+1794812758.448465: RX ctrl_iface - hexdump_ascii(len=18):
+     44 41 54 41 5f 54 45 53 54 5f 43 4f 4e 46 49 47   DATA_TEST_CONFIG
+     20 31                                              1              
+1794812758.448465: wlan7: test data: Enabled
+1794812758.448475: l2_packet_receive: src=02:00:00:00:08:00 len=1500
+1794812758.448475: wlan7: DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00
+1794812758.448475: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.448493: l2_packet_receive: src=02:00:00:00:08:00 len=1500
+1794812758.448493: wlan7: DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00
+1794812758.448493: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.448498: RX ctrl_iface - hexdump_ascii(len=50):
+     44 41 54 41 5f 54 45 53 54 5f 54 58 20 30 32 3a   DATA_TEST_TX 02:
+     30 30 3a 30 30 3a 30 30 3a 30 38 3a 30 30 20 30   00:00:00:08:00 0
+     32 3a 30 30 3a 30 30 3a 30 30 3a 30 37 3a 30 30   2:00:00:00:07:00
+     20 30                                              0              
+1794812758.448499: wlan7: test data: TX dst=02:00:00:00:08:00 src=02:00:00:00:07:00 tos=0x0
+1794812758.448517: RX ctrl_iface - hexdump_ascii(len=50):
+     44 41 54 41 5f 54 45 53 54 5f 54 58 20 66 66 3a   DATA_TEST_TX ff:
+     66 66 3a 66 66 3a 66 66 3a 66 66 3a 66 66 20 30   ff:ff:ff:ff:ff 0
+     32 3a 30 30 3a 30 30 3a 30 30 3a 30 37 3a 30 30   2:00:00:00:07:00
+     20 30                                              0              
+1794812758.448517: wlan7: test data: TX dst=ff:ff:ff:ff:ff:ff src=02:00:00:00:07:00 tos=0x0
+1794812758.448529: RX ctrl_iface - hexdump_ascii(len=18):
+     44 41 54 41 5f 54 45 53 54 5f 43 4f 4e 46 49 47   DATA_TEST_CONFIG
+     20 30                                              0              
+1794812758.448530: wlan7: test data: Disabled
+1794812758.448532: RTM_NEWLINK: ifi_index=13 ifname=wlan8 wext ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794812758.448533: RTM_NEWLINK: ifi_index=13 ifname=wlan8 operstate=2 linkmode=1 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448534: nl80211: Event message available
+1794812758.448534: nl80211: Ignored event 20 (NL80211_CMD_DEL_STATION) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.448534: nl80211: Event message available
+1794812758.448535: nl80211: BSS Event 59 (NL80211_CMD_FRAME) received for wlan7
+1794812758.448535: nl80211: MLME event 59 (NL80211_CMD_FRAME) on wlan7(02:00:00:00:07:00) A1=02:00:00:00:07:00 A2=02:00:00:00:08:00 on link_id=0
+1794812758.448535: nl80211: MLME event frame - hexdump(len=26): c0 40 00 00 02 00 00 00 07 00 02 00 00 00 08 00 02 00 00 00 07 00 40 00 03 00
+1794812758.448535: nl80211: Frame event
+1794812758.448536: nl80211: RX frame da=02:00:00:00:07:00 sa=02:00:00:00:08:00 bssid=02:00:00:00:07:00 freq=2412 ssi_signal=-50 fc=0x40c0 seq_ctrl=0x40 stype=12 (WLAN_FC_STYPE_DEAUTH) len=26
+1794812758.448536: wlan7: Event RX_MGMT (18) received
+1794812758.448536: wlan7: mgmt::deauth
+1794812758.448536: Flush PTKSA cache entry for 02:00:00:00:08:00
+1794812758.448537: wlan7: deauthentication: STA=02:00:00:00:08:00 reason_code=3
+1794812758.448537: wlan7: AP-STA-DISCONNECTED 02:00:00:00:08:00
+1794812758.448537: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-31\x00
+1794812758.448538: hostapd_set_sta_flags: Do not update link station flags (02:00:00:00:08:00)
+1794812758.448538: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.448538: nl80211: DEL_KEY
+1794812758.448538:    addr=02:00:00:00:08:00
+1794812758.448539:    pairwise key
+1794812758.448620: WPA: 02:00:00:00:08:00 WPA_PTK entering state DISCONNECTED
+1794812758.448620: WPA: 02:00:00:00:08:00 WPA_PTK entering state INITIALIZE
+1794812758.448620: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.448620: nl80211: DEL_KEY
+1794812758.448621:    addr=02:00:00:00:08:00
+1794812758.448621:    pairwise key
+1794812758.448621: nl80211: Set STA flags - ifname=wlan7 addr=02:00:00:00:08:00 total_flags=0x6e flags_or=0x0 flags_and=0xfffffffe authorized=0
+1794812758.448621: wlan7: AP-STA-DISCONNECTED 02:00:00:00:08:00
+1794812758.448622: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.448622: hostapd_set_authorized: Do not update link station flags (02:00:00:00:08:00)
+1794812758.448622: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.448623: nl80211: DEL_KEY
+1794812758.448623:    addr=02:00:00:00:08:00
+1794812758.448623:    pairwise key
+1794812758.448623: hostapd_set_sta_flags: Do not update link station flags (02:00:00:00:08:00)
+1794812758.448624: nl80211: link_sta_remove -> REMOVE_LINK_STA on link_id 1 from MLD STA 02:00:00:00:08:00, from wlan7 --> 0 (Success)
+1794812758.448624: hostapd_ht_operation_update current operation mode=0x0
+1794812758.448624: hostapd_ht_operation_update new operation mode=0x0 changes=0
+1794812758.448624: ap_free_sta: cancel ap_handle_timer for 02:00:00:00:08:00
+1794812758.448625: wlan7: deauthentication: STA=02:00:00:00:08:00 reason_code=3
+1794812758.448625: nl80211: Set STA flags - ifname=wlan7 addr=02:00:00:00:08:00 total_flags=0xe flags_or=0xe flags_and=0xfffffffe authorized=0
+1794812758.448625: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.448625: nl80211: DEL_KEY
+1794812758.448626:    addr=02:00:00:00:08:00
+1794812758.448626:    pairwise key
+1794812758.448626: WPA: 02:00:00:00:08:00 WPA_PTK entering state DISCONNECTED
+1794812758.448626: WPA: 02:00:00:00:08:00 WPA_PTK entering state INITIALIZE
+1794812758.448627: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.448627: nl80211: DEL_KEY
+1794812758.448627:    addr=02:00:00:00:08:00
+1794812758.448627:    pairwise key
+1794812758.448628: nl80211: Set STA flags - ifname=wlan7 addr=02:00:00:00:08:00 total_flags=0xe flags_or=0x0 flags_and=0xfffffffe authorized=0
+1794812758.448628: wpa_driver_nl80211_set_key: ifindex=12 (wlan7) alg=0 addr=0x5500002dd480 key_idx=0 set_tx=1 seq_len=0 key_len=0 key_flag=0x20 link_id=-1
+1794812758.448628: nl80211: DEL_KEY
+1794812758.448628:    addr=02:00:00:00:08:00
+1794812758.448629:    pairwise key
+1794812758.448629: nl80211: Set STA flags - ifname=wlan7 addr=02:00:00:00:08:00 total_flags=0xe flags_or=0xe flags_and=0xfffffffe authorized=0
+1794812758.448629: nl80211: sta_remove -> DEL_STATION wlan7 02:00:00:00:08:00 --> 0 (Success)
+1794812758.448629: hostapd_ht_operation_update current operation mode=0x0
+1794812758.448630: hostapd_ht_operation_update new operation mode=0x0 changes=0
+1794812758.448630: ap_free_sta: cancel ap_handle_timer for 02:00:00:00:08:00
+1794812758.448630: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794812758.448630: VLAN: vlan_newlink(wlan8)
+1794812758.448631: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x1043 ([UP][RUNNING])
+1794812758.448631: VLAN: vlan_newlink(wlan8)
+1794812758.448632: RTM_DELLINK: ifi_index=13 ifname=wlan8 operstate=2 linkmode=1 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448633: RTM_DELLINK: Interface 'wlan8' removed
+1794812758.448726: nl80211: Event message available
+1794812758.448726: nl80211: Ignored event 39 (NL80211_CMD_DEAUTHENTICATE) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.448727: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448727: VLAN: vlan_newlink(wlan8)
+1794812758.448727: VLAN: RTM_NEWLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448727: VLAN: vlan_newlink(wlan8)
+1794812758.448729: RTM_NEWLINK: ifi_index=12 ifname=wlan7 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448730: nl80211: Interface down (/wlan7)
+1794812758.448731: wlan7: Event INTERFACE_DISABLED (26) received
+1794812758.448731: wlan7: INTERFACE-DISABLED 
+1794812758.448731: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-27\x00
+1794812758.448731: wlan7: INTERFACE-DISABLED 
+1794812758.448732: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-31\x00
+1794812758.448740: nl80211: Interface wlan7 does not exist - ignore RTM_NEWLINK
+1794812758.448740: RTM_DELLINK: ifi_index=12 ifname=wlan7 operstate=2 linkmode=0 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448740: RTM_DELLINK: Interface 'wlan7' removed - mark if_removed=1
+1794812758.448741: wlan7: Event INTERFACE_STATUS (5) received
+1794812758.448741: Unknown event 5
+1794812758.448749: nl80211: Event message available
+1794812758.448749: nl80211: Ignored event 48 (NL80211_CMD_DISCONNECT) for foreign interface (ifindex 13 wdev 0x0 wiphy -1)
+1794812758.448750: VLAN: RTM_DELLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448751: VLAN: vlan_dellink(wlan8)
+1794812758.448760: VLAN: RTM_DELLINK: ifi_index=13 ifname=wlan8 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448760: VLAN: vlan_dellink(wlan8)
+1794812758.448762: nl80211: Event message available
+1794812758.448762: nl80211: Drv Event 20 (NL80211_CMD_DEL_STATION) received for wlan7
+1794812758.448762: nl80211: Delete station 02:00:00:00:08:00
+1794812758.448762: VLAN: RTM_NEWLINK: ifi_index=12 ifname=wlan7 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448763: VLAN: vlan_newlink(wlan7)
+1794812758.448763: VLAN: RTM_NEWLINK: ifi_index=12 ifname=wlan7 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448763: VLAN: vlan_newlink(wlan7)
+1794812758.448765: nl80211: Event message available
+1794812758.448765: nl80211: Drv Event 16 (NL80211_CMD_STOP_AP) received for wlan7
+1794812758.448765: nl80211: STOP_AP event on link 0
+1794812758.448765: nl80211: Update link (ifindex=12 link_id=0 STOP_AP)
+1794812758.448766: nl80211: Remove beacon (ifindex=12)
+1794812758.448766: nl80211: MLD: stop beaconing on link=0
+1794812758.448766: wlan7: Event INTERFACE_UNAVAILABLE (28) received
+1794812758.448766: Interface wlan7 is unavailable -- stopped
+1794812758.448767: MLD: EML Capabilities=0x81
+1794812758.448767: MLD: MLD Capabilities and Operations=0x2001
+1794812758.448767: MLD: Reconfiguration ML
+1794812758.448767: MLD: Reconfiguration ML: 0
+1794812758.448768: MLD: Reconfiguration ML: 0
+1794812758.448768: nl80211: Set beacon (beacon_set=1)
+1794812758.448768: nl80211: Beacon head - hexdump(len=63): 80 00 00 00 ff ff ff ff ff ff 02 00 00 2a 56 4a 02 00 00 2a 56 4a 00 00 00 00 00 00 00 00 00 00 64 00 11 04 00 0c 65 78 70 6c 6f 72 65 72 5f 6d 6c 64 01 08 82 84 8b 96 0c 12 18 24 03 01 06
+1794812758.448768: nl80211: Beacon tail - hexdump(len=225): 2a 01 04 32 04 30 48 60 6c 30 14 01 00 00 0f ac 09 01 00 00 0f ac 09 01 00 00 0f ac 12 cc 00 3b 02 51 00 2d 1a 0c 00 1b ff ff 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 3d 16 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7f 0b 04 00 00 02 00 00 00 c0 01 40 10 ff 16 23 01 78 c8 1a 40 00 02 bf ce 00 00 00 00 00 00 00 00 fa ff fa ff ff 07 24 f0 3f 00 b0 fc ff ff 10 6b b0 01 0d 02 00 00 00 07 00 01 01 81 00 01 20 ff 11 6c 07 00 1c 00 00 fe ff ff 7f 01 00 88 88 88 00 00 ff 06 6a 40 11 00 00 00 ff 13 6d 02 ff 01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 dd 18 00 50 f2 02 01 01 01 00 03 a4 00 00 27 a4 00 00 42 43 5e 00 62 32 2f 00
+1794812758.448769: nl80211: ifindex=12
+1794812758.448769: nl80211: beacon_int=100
+1794812758.448769: nl80211: beacon_rate=0
+1794812758.448769: nl80211: rate_type=0
+1794812758.448770: nl80211: dtim_period=2
+1794812758.448770: nl80211: ssid=explorer_mld
+1794812758.448770:   * beacon_int=100
+1794812758.448770:   * dtim_period=2
+1794812758.448771: nl80211: link_id=1
+1794812758.448771: nl80211: hidden SSID not in use
+1794812758.448771: nl80211: privacy=2
+1794812758.448772: nl80211: auth_algs=0x3
+1794812758.448772: nl80211: wpa_version=0x2
+1794812758.448772: nl80211: key_mgmt_suites=0x400000
+1794812758.448772: nl80211: pairwise_ciphers=0x100
+1794812758.448773: nl80211: group_cipher=0x100
+1794812758.448773: nl80211: beacon_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.448773: nl80211: proberesp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.448773: nl80211: assocresp_ies - hexdump(len=13): 7f 0b 04 00 00 02 00 00 00 c0 01 40 10
+1794812758.448774:   * freq=2437
+1794812758.448774:   * eht_enabled=1
+1794812758.448774:   * he_enabled=1
+1794812758.448774:   * vht_enabled=0
+1794812758.448775:   * ht_enabled=1
+1794812758.448775:   * radar_background=0
+1794812758.448775:   * sec_channel_offset=0
+1794812758.448775:   * channel_type=1
+1794812758.448776: nl80211: Beacon set failed: -19 (No such device)
+1794812758.448776: Failed to set beacon parameters
+1794812758.448777: nl80211: Event message available
+1794812758.448778: nl80211: Drv Event 16 (NL80211_CMD_STOP_AP) received for wlan7
+1794812758.448778: nl80211: STOP_AP event on link 1
+1794812758.448778: nl80211: Update link (ifindex=12 link_id=1 STOP_AP)
+1794812758.448778: nl80211: Remove beacon (ifindex=12)
+1794812758.448779: nl80211: MLD: stop beaconing on link=1
+1794812758.448779: wlan7: Event INTERFACE_UNAVAILABLE (28) received
+1794812758.448779: Interface wlan7 is unavailable -- stopped
+1794812758.448866: VLAN: RTM_DELLINK: ifi_index=12 ifname=wlan7 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448866: VLAN: vlan_dellink(wlan7)
+1794812758.448928: VLAN: RTM_DELLINK: ifi_index=12 ifname=wlan7 ifi_family=0 ifi_flags=0x1002 ()
+1794812758.448929: VLAN: vlan_dellink(wlan7)
+1794812758.448930: nl80211: Event message available
+1794812758.448930: nl80211: Ignored event 36 (NL80211_CMD_REG_CHANGE) for foreign interface (ifindex -1 wdev 0x0 wiphy 0)
+1794812758.448932: nl80211: Event message available
+1794812758.448932: nl80211: Ignored event 36 (NL80211_CMD_REG_CHANGE) for foreign interface (ifindex -1 wdev 0x0 wiphy 0)
+1794812758.449160: RX ctrl_iface - hexdump_ascii(len=6):
+     44 45 54 41 43 48                                 DETACH          
+1794812758.449161: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-27\x00
+1794812758.449164: RX ctrl_iface - hexdump_ascii(len=6):
+     44 45 54 41 43 48                                 DETACH          
+1794812758.449164: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-31\x00
+1794812758.449415: Global ctrl_iface command: ATTACH
+1794812758.449415: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-36\x00
+1794812758.449419: Global ctrl_iface command: FLUSH
+1794812758.449422: Global ctrl_iface command: INTERFACES
+1794812758.449426: Global ctrl_iface command: REMOVE wlan7
+1794812758.449426: Remove interface 'wlan7'
+1794812758.449426: hostapd_interface_deinit_free(0x5500002df1c0)
+1794812758.449427: hostapd_interface_deinit_free: num_bss=1 conf->num_bss=1
+1794812758.449427: hostapd_interface_deinit(0x5500002df1c0)
+1794812758.449427: wlan7: interface state ENABLED->DISABLED
+1794812758.449427: hostapd_bss_deinit: deinit bss wlan7
+1794812758.449428: wlan7: Deauthenticate all stations
+1794812758.449428: nl80211: send_mlme - da=ff:ff:ff:ff:ff:ff sa=02:00:00:38:65:ef bssid=02:00:00:38:65:ef noack=0 freq=0 no_cck=0 offchanok=0 wait_time=0 no_encrypt=0 fc=0xc0 (WLAN_FC_STYPE_DEAUTH) nlmode=3
+1794812758.449428: nl80211: send_mlme - Use bss->freq=0
+1794812758.449428: nl80211: send_mlme -> send_frame_cmd
+1794812758.449429: nl80211: CMD_FRAME freq=0 wait=0 no_cck=0 no_ack=0 offchanok=0
+1794812758.449429: CMD_FRAME - hexdump(len=26): c0 00 00 00 ff ff ff ff ff ff 02 00 00 38 65 ef 02 00 00 38 65 ef 00 00 03 00
+1794812758.449429: nl80211: Frame command failed: ret=-19 (No such device) (freq=0 wait=0)
+1794812758.449429: wlan7: AP-DISABLED 
+1794812758.449430: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-36\x00
+1794812758.449430: AP MLD wlan7: Link ID 0 removed. num_links: 1
+1794812758.449430: AP MLD wlan7: First link BSS set to 0x550000319870
+1794812758.449430: hostapd_cleanup(hapd=0x5500002e2300 (wlan7))
+1794812758.449431: wlan7: CTRL-EVENT-TERMINATING 
+1794812758.449431: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-36\x00
+1794812758.449432: Control interface directory not empty - leaving it behind
+1794812758.449432: hostapd_free_hapd_data(wlan7)
+1794812758.449433: PTKSA: Deinit. n_ptksa=0
+1794812758.449433: MLD: Deinit IEEE 802.1X state machine of a non-first BSS
+1794812758.449434: MLD: Deinit auth_serv of a non-first BSS
+1794812758.449434: hostapd_interface_deinit_free: driver=0x5500002d22a0 drv_priv=0x5500002e4b00 -> hapd_deinit
+1794812758.449434: nl80211: Teardown AP(wlan7) link 0 (type=2 ifname=wlan7 links=0x3)
+1794812758.449434: nl80211: Remove link (ifindex=12 link_id=0)
+1794812758.449435: nl80211: Update link (ifindex=12 link_id=0 STOP_AP)
+1794812758.449435: nl80211: MLD: Update link: Link not found
+1794812758.449435: nl80211: remove link (0) failed. ret=-19 (No such device)
+1794812758.449435: hostapd_interface_free(0x5500002df1c0)
+1794812758.449436: hostapd_interface_free: free hapd 0x5500002e2300
+1794812758.449436: hostapd_cleanup_iface(0x5500002df1c0)
+1794812758.449436: hostapd_cleanup_iface_partial(0x5500002df1c0)
+1794812758.449436: hostapd_cleanup_iface: free iface=0x5500002df1c0
+1794812758.449440: Global ctrl_iface command: REMOVE wlan7
+1794812758.449440: Remove interface 'wlan7'
+1794812758.449440: hostapd_interface_deinit_free(0x5500003175a0)
+1794812758.449441: hostapd_interface_deinit_free: num_bss=1 conf->num_bss=1
+1794812758.449441: hostapd_interface_deinit(0x5500003175a0)
+1794812758.449441: wlan7: interface state ENABLED->DISABLED
+1794812758.449441: hostapd_bss_deinit: deinit bss wlan7
+1794812758.449442: wlan7: Deauthenticate all stations
+1794812758.449442: nl80211: send_mlme - da=ff:ff:ff:ff:ff:ff sa=02:00:00:2a:56:4a bssid=02:00:00:2a:56:4a noack=0 freq=0 no_cck=0 offchanok=0 wait_time=0 no_encrypt=0 fc=0xc0 (WLAN_FC_STYPE_DEAUTH) nlmode=3
+1794812758.449442: nl80211: send_mlme - Use bss->freq=0
+1794812758.449442: nl80211: send_mlme -> send_frame_cmd
+1794812758.449443: nl80211: CMD_FRAME freq=0 wait=0 no_cck=0 no_ack=0 offchanok=0
+1794812758.449443: CMD_FRAME - hexdump(len=26): c0 00 00 00 ff ff ff ff ff ff 02 00 00 2a 56 4a 02 00 00 2a 56 4a 00 00 03 00
+1794812758.449443: nl80211: Frame command failed: ret=-19 (No such device) (freq=0 wait=0)
+1794812758.449444: wlan7: AP-DISABLED 
+1794812758.449444: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-36\x00
+1794812758.449444: AP MLD wlan7: Link ID 1 removed. num_links: 0
+1794812758.449444: AP MLD wlan7: First link BSS set to (nil)
+1794812758.449445: hostapd_cleanup(hapd=0x550000319870 (wlan7))
+1794812758.449445: wlan7: CTRL-EVENT-TERMINATING 
+1794812758.449445: CTRL_IFACE monitor send /tmp/wpa_ctrl_459-36\x00
+1794812758.449446: Control interface directory not empty - leaving it behind
+1794812758.449447: hostapd_free_hapd_data(wlan7)
+1794812758.449447: PTKSA: Deinit. n_ptksa=0
+1794812758.449447: hostapd_interface_deinit_free: driver=0x5500002d22a0 drv_priv=0x5500002e4b00 -> hapd_deinit
+1794812758.449447: nl80211: deinit ifname=wlan7 disabled_11b_rates=0
+1794812758.449448: nl80211: Remove link (ifindex=12 link_id=1)
+1794812758.449448: nl80211: Update link (ifindex=12 link_id=1 STOP_AP)
+1794812758.449448: nl80211: MLD: Update link: Link not found
+1794812758.449448: nl80211: remove link (1) failed. ret=-19 (No such device)
+1794812758.449449: netlink: Operstate: ifindex=12 linkmode=0 (kernel-control), operstate=6 (IF_OPER_UP)
+1794812758.449450: Could not read interface wlan7 flags: No such device
+1794812758.449450: nl80211: Set mode ifindex 12 iftype 2 (STATION)
+1794812758.449450: nl80211: Failed to set interface 12 to mode 2: -19 (No such device)
+1794812758.449451: nl80211: Unsubscribe mgmt frames handle 0x8888dd8888a6c9a9 (deinit)
+1794812758.449451: hostapd_interface_free(0x5500003175a0)
+1794812758.449451: hostapd_interface_free: free hapd 0x550000319870
+1794812758.449451: hostapd_cleanup_iface(0x5500003175a0)
+1794812758.449452: hostapd_cleanup_iface_partial(0x5500003175a0)
+1794812758.449452: hostapd_cleanup_iface: free iface=0x5500003175a0
+1794812758.449453: MLD control interface directory not empty - leaving it behind
+1794812758.449453: AP MLD wlan7: Freed
+1794812758.449459: Global ctrl_iface command: REMOVE as-erp
+1794812758.449460: Removing interface as-erp failed
+1794812758.449463: Global ctrl_iface command: DETACH
+1794812758.449464: CTRL_IFACE monitor detached /tmp/wpa_ctrl_459-36\x00
+1794812758.449627: Global ctrl_iface command: ATTACH
+1794812758.449627: CTRL_IFACE monitor attached /tmp/wpa_ctrl_459-41\x00
+1794812758.449631: Global ctrl_iface command: RELOG
