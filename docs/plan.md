@@ -37,7 +37,7 @@ P4 (contrasts and minimization) is Weeks 4–5.
 | `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `config_space.py` (the static settings as a ConfigSpace space, each constraint tagged with its rule), `cache.py` (experiment cache: key, SQLite store, `run_cached`), `campaign.py` (runs a plan, the pruning funnel and rejected-cases table), `mcp_server.py` (MCP tools). `minimize.py` (Picire wrapper) is still a placeholder |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
-| `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache) |
+| `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache). Rerun it whenever `docker/` changes, including after pulling: `run_candidate` and `run_campaign` refuse an image whose harness files differ from the repo's (`runner.stale_harness`) |
 | `.mcp.json` | Registers the MCP server (`wifi7-explorer`) for Claude Code |
 | `baseline/README.md` | Pinned versions and the baseline runs that show the environment is reproducible |
 | `runs/baseline/` | The three official baseline runs (committed evidence) |
@@ -45,14 +45,14 @@ P4 (contrasts and minimization) is Weeks 4–5.
 | `docker/test_eht_client_bp.py` | Our `_client_bp` wrappers: hostap's tests with client beacon protection on |
 | `docker/test_explorer_candidate.py` | Our adapter test: runs one candidate's plan (from `adapter.build_plan`) with hostap's own helpers |
 | `scripts/build_model_json.py`, `scripts/plan_campaign.py` | Regenerate `model.json`, and `campaign_plan.json` + `pairwise_coverage.json` (`--seed N`, `--budget N`) |
-| `scripts/run_campaign.py` | Runs `campaign_plan.json` (each candidate in a fresh guest through the cache; `--id`, `--retries`) and writes `campaigns/<id>/` and `pruning_counts.json` |
+| `scripts/run_campaign.py` | Runs `campaign_plan.json` (each candidate in a fresh guest through the cache; `--id`, `--retries`) and writes `campaigns/<id>/` and `pruning_counts.json`; the MCP tool `run_campaign` does the same for a plan from `plan_campaign` |
 | `scripts/smoke_dimensions.py` | Runs the smoke candidates for the dimensions admitted through the adapter (`--check` validates only) |
 | `scripts/reproduce-scenarios.py` | Runs each rule-passing hostap scenario through the adapter and lists the facts that differ from its committed runs |
 | `runs/smoke/` | Runs showing each smoke-tested setting value executes (committed evidence; `surface_candidates.csv`'s `smoke_runs` column points here) |
 | `runs/anchors/` | Extra runs so each anchor family in `anchor_coverage.csv` has 3 independent passing runs (committed evidence) |
 | `runs/rejected/` | Runs of rule-passing candidates that hostapd / wpa_supplicant refused (P3 `REJECTED`), kept as labeled evidence of the refusal, never as smoke values (`runs/rejected/README.md`) |
-| `campaigns/` | Committed campaign runs, one folder per campaign (`seed0-2026-11-13/`, `seed0-topup-2026-11-13/`: run folders, `campaign_plan.json`, `pruning_counts.json`, `results.json`, `rejected_cases.csv`, `README.md`). `ACCEPTED` runs count as P2 evidence; `REJECTED` ones as recorded refusals |
-| `pruning_counts.json` | The latest campaign's funnel (each campaign folder keeps its own copy, with the plan it ran): enumerated → P0 → ConfigSpace / P1 → P2 → planned → P3 statuses, guest boots, cache hits, retries. Written by `scripts/run_campaign.py` |
+| `campaigns/` | Committed campaign runs, one folder per campaign (`seed0-2026-11-13/`, `seed0-topup-2026-11-13/`, `seed1-fresh-2026-11-15/` (run over MCP): run folders, `campaign_plan.json`, `pruning_counts.json`, `results.json`, `rejected_cases.csv`, `README.md`). `ACCEPTED` runs count as P2 evidence; `REJECTED` ones as recorded refusals |
+| `pruning_counts.json` | The latest campaign's funnel (each campaign folder keeps its own copy, with the plan it ran): enumerated → P0 → ConfigSpace / P1 → P2 → planned → P3 statuses, guest boots, cache hits, retries. Written by `scripts/run_campaign.py` or the MCP tool `run_campaign` |
 | `runs/cache.sqlite` | The experiment cache's index (git-ignored): run outcomes by cache key. The run folders are the evidence; `explorer.cache.Cache().rebuild()` re-indexes the committed ones |
 | `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
 | `docs/` | This plan; `references.md` (the standards, and the coverage matrix's legend); `research/` (the rule research `rules.yaml` is transcribed from); `dimensions.md` (below); Checkpoint 1's `demo.md` (script), `demo-transcript.md` and `demo-transcript-terminal.txt` (transcripts) and `checkpoint1-report.md` |
@@ -313,9 +313,9 @@ on the board. Work lands on `week3-4` first; its issues close when it merges to 
 | `model.json` | ✅ `scripts/build_model_json.py` |
 | `campaign_plan.json` | ✅ Seed 0; the plans each campaign ran are in its folder (16, then 4); the repo root's is the next one, empty: nothing runnable is left uncovered |
 | `pairwise_coverage.json` | ✅ 250 feasible pairs after P1, 249 after P2; 249 covered by committed runs (1.0 of runnable, 0.996 of allowed) |
-| `pruning_counts.json` (P0 → P1 → P2 → P3) | ✅ Latest (top-up): 4608 → 1152 pass P1 → 864 runnable (288 `UNSUPPORTED_IMPLEMENTATION`, 21 already run) → 4 planned → 4 `ACCEPTED`; the first campaign's (16 → 12 / 4) is in its folder |
+| `pruning_counts.json` (P0 → P1 → P2 → P3) | ✅ Latest (`seed1-fresh-2026-11-15`, a fresh seed-1 design over MCP): 4608 → 1152 pass P1 → 864 runnable (288 `UNSUPPORTED_IMPLEMENTATION`; 25 `SUPPORTED`, 839 probes) → 17 planned → 17 `ACCEPTED`; the earlier campaigns' (16 → 12 / 4, then the 4-candidate top-up → 4 / 0) are in their folders |
 | Table of rejected cases with rule IDs | ✅ Each campaign's `rejected_cases.csv`: P1 rejections grouped by rule IDs (count and an example) and its `REJECTED` runs with their reason (the 4 in `seed0-2026-11-13`) |
-| ~20 distinct legal uncached runs | ✅ 20 (16 + a 4-candidate top-up), out of 864 runnable candidates. We stopped at 20 because they cover every runnable value pair (pairwise strength 2), not because fewer candidates were legal |
+| ~20 distinct legal uncached runs | ✅ 20 (16 + a 4-candidate top-up), out of 864 runnable candidates; `seed1-fresh-2026-11-15` (#69) then ran 17 more over a fresh seed-1 design, all `ACCEPTED`. We stopped at 20 because they cover every runnable value pair (pairwise strength 2), not because fewer candidates were legal |
 
 ### Coverage summary
 

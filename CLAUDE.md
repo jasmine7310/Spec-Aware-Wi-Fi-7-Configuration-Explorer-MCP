@@ -86,7 +86,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   and actions for `docker/test_explorer_candidate.py`), `run_candidate(candidate)` (fresh
   guest, P3 status `ACCEPTED` / `REJECTED` / `SETUP_FAIL` / `TIMEOUT`), `unsupported()`,
   `compare_signatures()`. MCP tool `run_candidate` validates first. Changing the adapter
-  test means rebuilding the image.
+  test means rebuilding the image; so does pulling anyone's change to `docker/`. `run_candidate` and
+  `run_campaign` refuse a stale image (`runner.stale_harness`) until `scripts/build-env.sh` reruns.
 - `model.json` (repo root): the machine-readable candidate space (P0 schema, admitted
   dimensions with typed values and smoke runs, constraints by rule ID, actions, pinned
   versions, `model_digest`), built by `explorer.model_json.build()`. Regenerate it with
