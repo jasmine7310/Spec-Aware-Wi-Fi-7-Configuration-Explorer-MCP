@@ -41,6 +41,7 @@ docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: clie
 .venv/bin/python scripts/smoke_dimensions.py --check         # validate the dimension smoke candidates
 .venv/bin/python scripts/run_campaign.py                     # run campaign_plan.json (Docker; slow)
 .venv/bin/python scripts/find_contrasts.py                   # regenerate contrasts/contrasts.json
+.venv/bin/python scripts/check_consistency.py                # spec/rules/runs checks + rules/validation.json
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
@@ -128,6 +129,15 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `reproduced` needs 3 runs per side. `scripts/find_contrasts.py` writes
   `contrasts/contrasts.json` (a test fails when it's stale); write-ups go in
   `contrasts/README.md`.
+- `explorer.consistency`: spec / rules / runs consistency (#76), run by
+  `tests/test_consistency.py`. Passing runs in the evidence folders must pass today's
+  rules unless labeled negative: `negative_experiment: true`, or one of hostap's own tests
+  breaking only a rule in `NEGATIVE_BY_DESIGN`. Runs cited as evidence (smoke runs, anchor
+  runs, contrast sides) get no exemption. Labeled negatives stay out of the evidence
+  folders. A new rule that turns a committed run into a violation fails these tests: move
+  the run to `runs/experiments/` as a labeled negative, or revisit the rule.
+  `scripts/check_consistency.py` writes `rules/validation.json` (each rule's experimental
+  validation; rules with none are flagged), and a test fails when it's stale.
 - `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
   `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
   on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
