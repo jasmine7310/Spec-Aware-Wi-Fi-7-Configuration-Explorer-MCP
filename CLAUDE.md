@@ -146,7 +146,9 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   was calibrated on), `runs/smoke/` (runs showing a setting value executes),
   `runs/anchors/` (extra runs so each anchor family has 3), `runs/rejected/` (runs of
   rule-passing candidates the implementation refused, kept as labeled refusals, never as
-  smoke values), `campaigns/` (committed campaign runs, #68), `runs/hwsim-logs/`
+  smoke values), `runs/experiments/` (labeled experiment runs that answer a spec or
+  implementation question, e.g. #95's RSNXE run; never P2 evidence), `campaigns/`
+  (committed campaign runs, #68), `runs/hwsim-logs/`
   (git-ignored trials), `runs/cache.sqlite` (the cache's git-ignored
   index). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

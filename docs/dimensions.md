@@ -68,8 +68,9 @@ summarized here so the record is in one place.
 - **Typed values:** `ApLink.akms`, `StaConfig.akms` = `["SAE-EXT-KEY"]` / `["OWE"]`.
 - **Spec-rule status:** `SEC.EHT_SAE_AKM` (802.11be §12.12.9, shall) rules out plain SAE
   (AKM 8) between EHT devices; `SEC.MLD_COMMON_SUITES` / `SEC.MLD_CLIENT_COMMON_AKM`
-  (§12.6.2, §12.6.3.1) need an AKM common to every link. Which of several usable AKMs is
-  negotiated is `UND.AKM_PREFERENCE`.
+  (§12.6.2, §12.6.3.1) need an AKM common to every link, and `SEC.MLD_SAME_RSNXE` (§12.6.2,
+  #95) needs every link's AKM list to give the same RSNXE (it can't fire here: every link
+  gets the same AKM). Which of several usable AKMs is negotiated is `UND.AKM_PREFERENCE`.
 - **Tested alternatives:** plain SAE runs (`1793690818`) but is a labeled negative experiment.
 - **Prerequisites:** SAE / OWE capability in the guest (`check_sae_capab`, `check_owe_capab`).
 

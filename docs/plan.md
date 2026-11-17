@@ -1,4 +1,4 @@
-# Project plan: Weeks 1–3
+# Project plan: Weeks 1–4
 
 Shared context for the team and for coding agents. The GitHub issue board tracks
 individual tasks and their status; this file holds the big picture and the decisions
@@ -16,7 +16,7 @@ every rejection says which stage and which sourced rule rejected it:
 | Stage | Component | Question it answers | Status |
 |---|---|---|---|
 | P0 | Format checker | Is the request well formed? (types, allowed values, action syntax) | ✅ Settings model (`model.Config`), action model (`model.Candidate`: config + ordered actions) and readable `P0.*` errors (`validate.parse_candidate`) |
-| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | ✅ Rule registry (`rules.yaml` + `rules.load_rules()`); 7 security/setting rules coded (`validate.run_p1_checks`, applied to hostap tests by `run_hwsim_test`; all reviewed since the #64 audit), all 9 action-order rules (`validate.check_action_order`) and 3 open questions that give `SPEC_UNDETERMINED`, chained by `validate.validate_candidate` |
+| P1 | Rule checker | Does it break one of our audited Wi-Fi rules? (≥4 rules, each with a cited source) | ✅ Rule registry (`rules.yaml` + `rules.load_rules()`); 8 security/setting rules coded (`validate.run_p1_checks`, applied to hostap tests by `run_hwsim_test`; all reviewed: since the #64 audit, and `SEC.MLD_SAME_RSNXE` since #95), all 9 action-order rules (`validate.check_action_order`) and 3 open questions that give `SPEC_UNDETERMINED`, chained by `validate.validate_candidate` |
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | 🟡 `support.check_support`: `SUPPORTED` for an exact match to a tested scenario or to a committed legal adapter run on the pinned commits; otherwise `UNRESOLVED` with per-value run evidence and `all_values_evidenced` (a support probe), plus recorded refusals (#80) |
 | – | Campaign planner and runner | Which legal, runnable candidates cover every pair of admitted values, and what happens when they run? | ✅ `planner.plan` (`campaign_plan.json`, `pairwise_coverage.json`), `cache.run_cached`, `campaign.run` (`campaigns/`, `pruning_counts.json`). Over MCP: `plan_campaign`, `run_campaign`, `list_campaigns`, `get_campaign` |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()`; any candidate the adapter supports runs through `adapter.run_candidate()` (ACCEPTED / REJECTED / SETUP_FAIL / TIMEOUT) |
@@ -50,6 +50,7 @@ P4 (contrasts and minimization) is Weeks 4–5.
 | `runs/smoke/` | Runs showing each smoke-tested setting value executes (committed evidence; `surface_candidates.csv`'s `smoke_runs` column points here) |
 | `runs/anchors/` | Extra runs so each anchor family in `anchor_coverage.csv` has 3 independent passing runs (committed evidence) |
 | `runs/rejected/` | Runs of rule-passing candidates that hostapd / wpa_supplicant refused (P3 `REJECTED`), kept as labeled evidence of the refusal, never as smoke values (`runs/rejected/README.md`) |
+| `runs/experiments/` | Labeled experiment runs that answer a question about the spec or the implementation (`runs/experiments/README.md`; #95's RSNXE run). Not P2 evidence: not in `support.EVIDENCE_DIRS` |
 | `campaigns/` | Committed campaign runs, one folder per campaign (`seed0-2026-11-13/`, `seed0-topup-2026-11-13/`, `seed1-fresh-2026-11-15/` (run over MCP): run folders, `campaign_plan.json`, `pruning_counts.json`, `results.json`, `rejected_cases.csv`, `README.md`). `ACCEPTED` runs count as P2 evidence; `REJECTED` ones as recorded refusals |
 | `pruning_counts.json` | The latest campaign's funnel (each campaign folder keeps its own copy, with the plan it ran): enumerated → P0 → ConfigSpace / P1 → P2 → planned → P3 statuses, guest boots, cache hits, retries. Written by `scripts/run_campaign.py` or the MCP tool `run_campaign` |
 | `runs/cache.sqlite` | The experiment cache's index (git-ignored): run outcomes by cache key. The run folders are the evidence; `explorer.cache.Cache().rebuild()` re-indexes the committed ones |
@@ -334,6 +335,15 @@ RSNXEs" (from the rule audit), an experiment rather than a deliverable.
   admitted values, 11 infeasible under the modeled rules; 250 feasible after P1, 249 after
   P2 (`link_remove` with `DISABLE_MLD` is `UNSUPPORTED_IMPLEMENTATION`). Covered by committed
   `ACCEPTED` runs: 249 (all runnable pairs; 126 before the campaigns).
+
+## Week 4 status
+
+Parent issue "Week 4: Find contrasts and minimize them (Checkpoint 2)"; sub-issues on the
+board. Each issue merges to `main` through its own PR.
+
+| Issue | Area | Status |
+|---|---|---|
+| Check whether per-link AKM lists give different RSNXEs | Rules | ✅ Done 2026-11-16. They do: run `1794875139` (`runs/experiments/`; link 0 `[SAE-EXT-KEY, OWE]`, link 1 `[OWE]`, client `OWE`, `ACCEPTED`) shows RSNXE `0x20` (SAE hash-to-element) in link 0's Beacons and responses and no RSNXE on link 1, whose per-STA profile marks element 244 as not inherited. Michelle re-read 802.11be §12.6.2 (PDF p. 411, shall) and chose the strict reading of "RSNXE if included": once one link includes it, every link advertises the same one. New rule `SEC.MLD_SAME_RSNXE` (`validate.check_mld_same_rsnxe`, computing each link's bit as hostapd does, `src/ap/wpa_auth_ie.c:549-557, 601-611`), with fixtures, a `config_space.PREDICATE_ONLY` entry (every link gets the same AKM in the campaign space, so it can't fire there) and the §12.6.2 matrix row. It also fires on hostap's `eht_mld_no_common_key_mgmt` (plain SAE without `sae_pwe` on link 0). Reviewed: Michelle accepted the hostap lines, which the run bears out |
 
 ## Checkpoint 1
 
