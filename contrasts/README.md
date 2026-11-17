@@ -117,6 +117,15 @@ runs are C1's PTK-rekey side.
 
 **Reproduced:** yes, 3 vs 3.
 
+## Minimized: `c1/` (#73)
+
+`c1/` minimizes a wider contrast: a failing campaign run 8 inputs away from the clean OWE
+side (`1794812749` vs `1794557032` and its repeats). The minimizer reduces the 8 inputs
+to one, `ptk_rekey_interval_s` 5 → unset, and both final sides reproduce 3/3
+(`1794952238`, `1794952257`, `1794952274` vs `1794952292`, `1794952308`, `1794952325`).
+The write-up and the full trace are in `c1/README.md`. Those 6 runs are in `runs/`, so
+`contrasts.json` also lists the pair as a reproduced contrast.
+
 ## Two harnesses
 
 The adapter changed after the first runs (see the caveat below), so `contrasts.json` lists

@@ -439,20 +439,27 @@ class Minimizer:
                     cache_hit=ran is None, independent=ran is not None and outcome.independent)
         if outcome.status != "ACCEPTED":
             return Probe(**base, status=outcome.status, stage="P3", reason=outcome.reason)
-        observed = contrasts.facts(outcome.signature) if outcome.signature else {}
-        values, matched, differing, unknown = {}, [], [], []
-        for fact, wanted in self.target.items():
-            value = observed.get(fact, UNKNOWN)
-            values[fact] = value
-            if value == UNKNOWN:
-                unknown.append(fact)
-            elif value == wanted:
-                matched.append(fact)
-            else:
-                differing.append(fact)
+        values, matched, differing, unknown = _compare(outcome.signature, self.target)
         status = "NOT_INTERESTING" if differing else "UNKNOWN" if unknown else "INTERESTING"
         return Probe(**base, status=status, stage="facts", facts=values, matched=matched,
                      differing=differing, unknown=unknown)
+
+
+def _compare(signature: dict | None, target: dict[str, Any]):
+    """(values, matched, differing, unknown) of a run's facts against the target facts. A
+    fact the run didn't measure (``UNKNOWN``) is neither a match nor a difference."""
+    observed = contrasts.facts(signature) if signature else {}
+    values, matched, differing, unknown = {}, [], [], []
+    for fact, wanted in target.items():
+        value = observed.get(fact, UNKNOWN)
+        values[fact] = value
+        if value == UNKNOWN:
+            unknown.append(fact)
+        elif value == wanted:
+            matched.append(fact)
+        else:
+            differing.append(fact)
+    return values, matched, differing, unknown
 
 
 def minimize(a: dict, b: dict, target: dict[str, Any], **kwargs) -> Reduction:
@@ -507,3 +514,83 @@ def _reduction(m: Minimizer, status: str, minimal: list[int]) -> Reduction:
         trace=m.trace, counts=dict(Counter(p.status for p in m.trace)),
         guest_runs=sum(not a.cache_hit for p in m.trace for a in p.attempts),
         cache_hits=sum(p.cache_hit for p in m.trace))
+
+
+# --- reproducing the final sides (#73) -------------------------------------------------
+
+class SideRun(BaseModel):
+    """One run of a final side, made for the reproduction (never served from the cache)."""
+    run_id: str | None
+    status: str
+    reason: str | None = None
+    facts: dict[str, Any] = {}
+    """The run's value of each target fact (ACCEPTED only)."""
+    matches_target: bool | None = None
+    """True: every target fact measured and equal to B's. False: a measured target fact
+    differs. None: not ACCEPTED, or a target fact unmeasured (UNKNOWN)."""
+
+
+class Verification(BaseModel):
+    """The minimized contrast's two final sides, each run ``runs`` times in fresh guests:
+    A as it was (``baseline``: every run must differ from the target) and A with the
+    minimal deltas (``minimal``: every run must match it)."""
+    label: Literal["MINIMIZED", "PENDING_VERIFICATION"]
+    """MINIMIZED only when both sides gave ``runs`` ACCEPTED runs that all came out as
+    expected; otherwise PENDING_VERIFICATION, never minimized."""
+    runs: int
+    baseline: list[SideRun]
+    minimal: list[SideRun]
+    """Every attempt, reruns included (a SETUP_FAIL / TIMEOUT attempt is rerun once)."""
+    note: str
+
+
+def verify(reduction: Reduction, runs: int = contrasts.REPRODUCE_RUNS, *, cache=None,
+           runner: Callable = _default_runner, retries: int = 1,
+           context: dict | None = None, **run_kwargs) -> Verification:
+    """Run both final sides of a MINIMIZED reduction ``runs`` times each in fresh guests
+    (``force``: never a cache hit) and check every run reproduces its side (#73)."""
+    from explorer.validate import parse_candidate
+    if reduction.status != "MINIMIZED":
+        raise ValueError(f"nothing to verify: the reduction is {reduction.status}")
+    if cache is None and runner is _default_runner:
+        from explorer.cache import Cache
+        cache = Cache()
+    sides = {"baseline": (reduction.candidate_a, False),
+             "minimal": (reduction.minimal_candidate, True)}
+    results: dict[str, list[SideRun]] = {}
+    complete = True
+    for side, (data, expected) in sides.items():
+        candidate, malformed = parse_candidate(data)
+        if candidate is None:
+            raise ValueError(f"{side} side isn't well-formed: {malformed}")
+        results[side], finals = [], []
+        for slot in range(runs):
+            for attempt in range(1, retries + 2):
+                outcome, ran = runner(candidate, cache, force=True,
+                                      context={**(context or {}), "verify_side": side,
+                                               "repeat": slot + 1, "attempt": attempt},
+                                      **run_kwargs)
+                if ran is None or not outcome.independent:
+                    raise ValueError("verify needs fresh runs, got a cache hit")
+                run = SideRun(run_id=outcome.run_id, status=outcome.status,
+                              reason=outcome.reason)
+                if outcome.status == "ACCEPTED":
+                    values, _, differing, unknown = _compare(outcome.signature,
+                                                             reduction.target)
+                    run.facts = values
+                    run.matches_target = (False if differing else None if unknown
+                                          else True)
+                results[side].append(run)
+                if outcome.status not in RETRY_ON:
+                    break
+            finals.append(run)   # the slot's last attempt
+        accepted = [r for r in finals if r.status == "ACCEPTED"]
+        complete &= (len(accepted) == runs
+                     and all(r.matches_target is expected for r in accepted))
+    label = "MINIMIZED" if complete else "PENDING_VERIFICATION"
+    note = (f"Both sides reproduced {runs}/{runs}: the baseline differs from the target "
+            "in every run, the minimal candidate matches it in every run." if complete else
+            "Not every run of both sides was ACCEPTED and came out as expected; see the "
+            "runs. Not minimized until both sides reproduce.")
+    return Verification(label=label, runs=runs, baseline=results["baseline"],
+                        minimal=results["minimal"], note=note)
