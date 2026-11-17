@@ -40,6 +40,7 @@ docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: clie
 .venv/bin/python scripts/plan_campaign.py --seed 0           # campaign_plan.json + pairwise_coverage.json
 .venv/bin/python scripts/smoke_dimensions.py --check         # validate the dimension smoke candidates
 .venv/bin/python scripts/run_campaign.py                     # run campaign_plan.json (Docker; slow)
+.venv/bin/python scripts/find_contrasts.py                   # regenerate contrasts/contrasts.json
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
@@ -117,6 +118,16 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `scripts/run_campaign.py --id <id>` writes `campaigns/<id>/` (with the plan it ran) and
   `pruning_counts.json`; then regenerate the plan files: plans build on committed runs,
   so the next plan covers only what's left.
+- `explorer.contrasts`: accepted-vs-accepted contrasts (#71). `find(group(accepted_runs()))`
+  pairs candidates at most `max_inputs` inputs apart (`input_diff` / `distance`) whose runs
+  are `ACCEPTED`, not negative experiments, pass today's rules and ran on the pinned
+  commits. Both sides must be P2 `SUPPORTED` and ran under the same harness (`run_harness`:
+  recorded with the cache key, or from the run's repo commit); repeats share a harness too,
+  and a contrast on an older harness is marked `current_harness: false`. It claims a fact only when it's measured on both sides (never `UNKNOWN`) and the
+  same in every repeat of each side, with the log lines it was read from (`evidence`).
+  `reproduced` needs 3 runs per side. `scripts/find_contrasts.py` writes
+  `contrasts/contrasts.json` (a test fails when it's stale); write-ups go in
+  `contrasts/README.md`.
 - `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
   `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
   on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
@@ -148,7 +159,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   rule-passing candidates the implementation refused, kept as labeled refusals, never as
   smoke values), `runs/experiments/` (labeled experiment runs that answer a spec or
   implementation question, e.g. #95's RSNXE run; never P2 evidence), `campaigns/`
-  (committed campaign runs, #68), `runs/hwsim-logs/`
+  (committed campaign runs, #68), `contrasts/runs/` (extra legal runs so each contrast
+  side has 3, #71; P2 evidence), `runs/hwsim-logs/`
   (git-ignored trials), `runs/cache.sqlite` (the cache's git-ignored
   index). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

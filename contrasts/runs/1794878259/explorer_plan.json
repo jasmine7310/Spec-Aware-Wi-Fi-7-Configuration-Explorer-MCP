@@ -1,0 +1,137 @@
+{
+  "actions": [
+    {
+      "action": "associate"
+    },
+    {
+      "action": "link_remove",
+      "count": 4,
+      "link_id": 1
+    }
+  ],
+  "ap_links": [
+    {
+      "link_id": 0,
+      "params": {
+        "beacon_prot": "1",
+        "channel": "1",
+        "group_mgmt_cipher": "AES-128-CMAC",
+        "hw_mode": "g",
+        "ieee80211ax": "1",
+        "ieee80211be": "1",
+        "ieee80211n": "1",
+        "ieee80211w": "2",
+        "rsn_pairwise": "CCMP",
+        "ssid": "explorer_mld",
+        "wpa": "2",
+        "wpa_key_mgmt": "OWE",
+        "wpa_ptk_rekey": "5"
+      }
+    },
+    {
+      "link_id": 1,
+      "params": {
+        "beacon_prot": "1",
+        "channel": "6",
+        "group_mgmt_cipher": "AES-128-CMAC",
+        "hw_mode": "g",
+        "ieee80211ax": "1",
+        "ieee80211be": "1",
+        "ieee80211n": "1",
+        "ieee80211w": "2",
+        "mld_indicate_disabled": "1",
+        "rsn_pairwise": "CCMP",
+        "ssid": "explorer_mld",
+        "wpa": "2",
+        "wpa_key_mgmt": "OWE",
+        "wpa_ptk_rekey": "5"
+      }
+    }
+  ],
+  "ap_shared": {
+    "beacon_prot": "1",
+    "group_mgmt_cipher": "AES-128-CMAC",
+    "hw_mode": "g",
+    "ieee80211ax": "1",
+    "ieee80211be": "1",
+    "ieee80211n": "1",
+    "ieee80211w": "2",
+    "ssid": "explorer_mld",
+    "wpa": "2",
+    "wpa_ptk_rekey": "5"
+  },
+  "explorer": {
+    "candidate": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": null,
+          "links": [
+            {
+              "akms": [
+                "OWE"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "OWE"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": 5,
+          "sae_pwe": null
+        },
+        "sta": {
+          "akms": [
+            "OWE"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": null
+        }
+      }
+    },
+    "model_digest": "sha256:165b97e91c9d013bd502a5811b6e3555370f3c344a877ab7f5a65c2d3acdf9c4",
+    "negative_experiment": false,
+    "schema_version": 2,
+    "timeout_s": 600,
+    "validation": {
+      "p2": "SUPPORTED",
+      "rule_ids": [],
+      "status": "PASSES_MODELED_RULES"
+    }
+  },
+  "needs_owe": true,
+  "needs_sae": false,
+  "ssid": "explorer_mld",
+  "sta": {
+    "connect": {
+      "beacon_prot": "1",
+      "ieee80211w": "2",
+      "key_mgmt": "OWE",
+      "scan_freq": "2412 2437"
+    },
+    "sae_groups": "",
+    "sae_pwe": ""
+  }
+}

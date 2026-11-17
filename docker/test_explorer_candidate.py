@@ -11,6 +11,9 @@
 #   itself refuses (e.g. removing a link twice), the reason starts with "adapter:";
 # - traffic, link and rekey results are observations, logged through the same helpers
 #   hostap's EHT tests use, so explorer.signatures reads them; they never fail the test.
+# - each observation reads the client's real state (wpa_state COMPLETED or not), since
+#   the AP can disconnect it without any action doing so (e.g. a 4-way handshake
+#   timeout, reason 15); the label and the expected traffic result follow that state.
 #
 # Helpers and line numbers are tests/hwsim/test_eht.py at the pinned commit 43ee60e1.
 # Not part of hostap. The Dockerfile copies this next to test_eht.py.
@@ -41,13 +44,36 @@ def _reject(where, reason):
     raise Rejected("%s: %s" % (where, reason))
 
 
+def observed_state(intended, wpa_state):
+    """The label for an observation and whether the client is associated, from what the
+    actions intend (``intended``) and wpa_supplicant's own ``wpa_state``. The client's
+    state wins: an AP-initiated disconnect changes it without any action."""
+    associated = wpa_state == "COMPLETED"
+    if associated == intended:
+        return ("associated" if associated else "not associated"), associated
+    if intended:
+        return ("not associated: wpa_state=%s, no disconnect requested by the adapter"
+                % wpa_state), associated
+    return "associated, though the adapter disconnected it", associated
+
+
+def traffic_checks(associated, link_ids, removed, active):
+    """(link_id, expected) for each traffic test of one observation. Associated: the
+    links still in use, expecting delivery. Not associated: every link, expecting none,
+    as hostap's test checks after removing the last link (test_eht.py:1424-1425)."""
+    if not associated:
+        return [(link_id, False) for link_id in sorted(link_ids)]
+    return [(link_id, True) for link_id in sorted(link_ids)
+            if link_id not in removed and active & (1 << link_id)]
+
+
 class _Run:
     def __init__(self, plan, wpas, hapds):
         self.plan = plan
         self.wpas = wpas
         self.hapds = hapds          # link_id -> hostapd for that affiliated AP
         self.removed = set()        # link IDs removed by link_remove
-        self.associated = False
+        self.associated = False     # what the actions intend; observe() reads the real state
         self.ap_enabled = True      # False between DISABLE_MLD and ENABLE_MLD
         self.mld_restarted = False  # ENABLE_MLD ran since the last (re)connection
 
@@ -71,28 +97,21 @@ class _Run:
         return active
 
     def observe(self, after):
-        logger.info("EXPLORER-OBSERVE after %s (%s)" %
-                    (after, "associated" if self.associated else "not associated"))
         time.sleep(0.1)
+        status = self.wpas.get_status()
+        label, associated = observed_state(self.associated, status.get("wpa_state"))
+        logger.info("EXPLORER-OBSERVE after %s (%s)" % (after, label))
         active = self.links()
         # Same line as eht_verify_wifi_version() (test_eht.py:25-27), without asserting;
         # logged when not associated too, so the record ends with the final state.
-        logger.info("station status: " + str(self.wpas.get_status()))
+        logger.info("station status: " + str(status))
         if not self.ap_enabled:
             # Whether the STA is still associated while the AP MLD is disabled is an open
             # question (UND.STA_STATE_WHILE_MLD_DISABLED); hostap's test doesn't send
             # traffic then either (test_eht.py:728-740), so neither do we.
             logger.info("EXPLORER-OBSERVE AP MLD disabled: no traffic test")
             return
-        for link_id in sorted(self.hapds):
-            if self.associated:
-                if link_id in self.removed or not active & (1 << link_id):
-                    continue
-                expected = True
-            else:
-                # After a disconnect or the last link's removal, traffic should fail, as
-                # hostap's test checks after removing the last link (test_eht.py:1424-1425).
-                expected = False
+        for link_id, expected in traffic_checks(associated, self.hapds, self.removed, active):
             try:
                 _eht.traffic_test(self.wpas, self.hapds[link_id], success=expected)
             except Exception as e:

@@ -32,7 +32,9 @@ import hashlib
 import json
 import re
 import sqlite3
+import subprocess
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -70,6 +72,22 @@ def environment_digest(dockerfile: Path = DOCKERFILE) -> str:
 def harness_digest(files=HARNESS_FILES) -> str:
     return _sha256(_canonical({Path(f).name: _sha256(Path(f).read_bytes())
                                for f in files}).encode())
+
+
+@lru_cache(maxsize=None)
+def harness_digest_at(commit: str) -> str | None:
+    """``harness_digest`` of the harness files as committed at ``commit``, for runs made
+    before runs recorded it. None when git can't show them (e.g. a shallow clone, or a
+    file that didn't exist yet)."""
+    digests = {}
+    for f in HARNESS_FILES:
+        rel = Path(f).relative_to(REPO_ROOT).as_posix()
+        shown = subprocess.run(["git", "-C", str(REPO_ROOT), "show", f"{commit}:{rel}"],
+                               capture_output=True)
+        if shown.returncode != 0:
+            return None
+        digests[Path(f).name] = _sha256(shown.stdout)
+    return _sha256(_canonical(digests).encode())
 
 
 def key_parts(candidate: Candidate, dockerfile: Path = DOCKERFILE,

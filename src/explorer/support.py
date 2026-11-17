@@ -66,10 +66,11 @@ from explorer.scenarios import TEST_CANDIDATES
 REPO_ROOT = Path(__file__).resolve().parents[2]
 # Committed run evidence; runs/hwsim-logs/ holds git-ignored trial runs and is skipped.
 # campaigns/ holds committed campaign runs (#68), possibly one folder per campaign, so run
-# folders are found at any depth.
+# folders are found at any depth. contrasts/runs/ holds legal ACCEPTED adapter runs made so
+# each contrast side has 3 (#71); a contrast's sides must be SUPPORTED.
 EVIDENCE_DIRS = (REPO_ROOT / "runs" / "baseline", REPO_ROOT / "runs" / "calibration",
                  REPO_ROOT / "runs" / "smoke", REPO_ROOT / "runs" / "anchors",
-                 REPO_ROOT / "campaigns")
+                 REPO_ROOT / "campaigns", REPO_ROOT / "contrasts" / "runs")
 # Committed runs of rule-passing candidates the implementation refused; never evidence.
 REJECTED_DIR = REPO_ROOT / "runs" / "rejected"
 # Campaign runs; their REJECTED runs are refusals too (rejected_runs).
