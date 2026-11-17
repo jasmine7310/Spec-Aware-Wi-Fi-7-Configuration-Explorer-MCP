@@ -214,8 +214,9 @@ def test_explain_a_normative_rule():
 
 
 def test_every_rule_is_reviewed_except_new_drafts():
-    # SEC.MLD_SAME_RSNXE (#95) was reviewed 2026-11-16; #75's rule waits for a person.
-    drafts = {"SEC.MLO_PASSWORD_NEEDS_WPA3"}
+    # SEC.MLD_SAME_RSNXE (#95) was reviewed 2026-11-16, SEC.MLO_PASSWORD_NEEDS_WPA3 (#75)
+    # on 2026-11-17.
+    drafts = set()
     for rule in load_rules().rules:
         expected = "draft" if rule.id in drafts else "reviewed"
         assert _explain(rule.id).structured_content["status"] == expected, rule.id

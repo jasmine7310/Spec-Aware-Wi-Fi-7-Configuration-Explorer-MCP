@@ -226,7 +226,7 @@ means the client allows an SAE-family AKM.
 | **Rule candidate** | If a WPA2 password AKM is offered on every link and allowed by the client, an SAE-family AKM is also offered on every link. |
 | **Candidates** | `ap_akm`, `sta_akm` (P0 values `WPA-PSK`, `WPA-PSK-SHA256`; neither is an admitted value, so the campaigns can't reach it) |
 | **Run evidence** | None yet. A labeled negative experiment (WPA-PSK alone on both links) would show whether the pinned hostapd accepts it. |
-| **Status** | **Draft.** Read by Claude in the PDF text, 2026-11-17. A person has to check §3.2 and Tables 5 and 8 in the PDF, and whether the guide's "network" means the AP MLD here. |
+| **Status** | **Verified.** Read by Claude in the PDF text, 2026-11-17; Michelle checked §3.2 (p. 29, body text, not a NOTE) and Tables 5 and 8 in the PDF (2026-11-17). Table 8's footnote (\*\*) (pp. 18–19) lets SAE (:8) be left off in an all-EHT network, but SAE-GDH (:24) stays MAND, so the rule holds. "The network" is read per link: the tables give requirements per BSS, and each link of an AP MLD is its own BSS. |
 
 ## What this changes for the smoke test
 

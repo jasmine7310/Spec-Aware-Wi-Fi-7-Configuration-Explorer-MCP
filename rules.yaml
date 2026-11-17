@@ -570,7 +570,7 @@ rules:
   - id: SEC.MLO_PASSWORD_NEEDS_WPA3
     title: An ML association that uses a password needs WPA3 enabled on the AP MLD
     kind: guidance
-    status: draft
+    status: reviewed
     applies_to: [ap_akm, sta_akm]
     meaning: >-
       The Wi-Fi Alliance guide notes that EHT or MLO associations using password-based
@@ -594,7 +594,7 @@ rules:
           After recommending against disabling WPA3 to work around legacy clients, the
           guide notes that EHT or MLO associations using password-based authentication
           require WPA3 to be enabled on the network.
-        checked: "Claude (AI agent), PDF text, 2026-11-17; not yet checked by a person"
+        checked: "Michelle, in the PDF, 2026-11-17; Claude (AI agent), PDF text, 2026-11-17"
       - doc: WFA-WPA3
         strength: guidance
         location: "Tables 5 and 8 (AKM Suite rows)"
@@ -602,8 +602,10 @@ rules:
         says: >-
           Per mode, for an AP with EHT enabled: in WPA3-Personal Transition Mode the PSK
           AKMs sit next to the mandatory SAE-family ones; in WPA3-Personal Only Mode PSK is
-          DISALLOW. Neither mode has WPA2-Personal alone on an EHT AP.
-        checked: "Claude (AI agent), PDF text, 2026-11-17; not yet checked by a person"
+          DISALLOW. Neither mode has WPA2-Personal alone on an EHT AP. Table 8's footnote
+          (**) (pp. 18-19) lets SAE (:8) be left off when every AP and STA supports EHT;
+          SAE-GDH (:24, SAE-EXT-KEY) stays MAND, so the rule is unaffected.
+        checked: "Michelle, in the PDF, 2026-11-17; Claude (AI agent), PDF text, 2026-11-17"
     examples:
       allowed:
         - "SAE-EXT-KEY on both links, client SAE-EXT-KEY (F02)."
@@ -614,7 +616,8 @@ rules:
         - "WPA-PSK-SHA256 on both links, client WPA-PSK-SHA256."
     notes:
       - "Coded as explorer.validate.check_mlo_password_needs_wpa3 (#75)."
-      - "Draft: Claude read §3.2 and Tables 5 and 8 in the PDF text (2026-11-17); a person still has to check the reading, and whether the guide's 'network' means the AP MLD here."
+      - "Reviewed 2026-11-17: Michelle checked §3.2 (p. 29, body text, not a NOTE) and Tables 5 (p. 14) and 8 (p. 18) in the PDF."
+      - "'The network': §3.2 doesn't define it. Tables 5 and 8 give their requirements per BSS, and each link of an AP MLD is its own BSS, so the rule reads it per link: every link that offers a WPA2 password AKM also offers an SAE-family AKM."
       - "No admitted value reaches it (ap_akm and sta_akm are SAE-EXT-KEY or OWE), so the campaigns can't hit it (config_space.PREDICATE_ONLY). No committed run breaks it yet: rules/validation.json lists it as unvalidated."
 
   # --- Action order (docs/research/action-order.md) --------------------------------

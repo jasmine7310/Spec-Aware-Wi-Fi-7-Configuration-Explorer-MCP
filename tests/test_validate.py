@@ -108,7 +108,7 @@ def test_mld_same_rsnxe_rejects(name):
     assert "different RSNXEs" in violations[0].reason
 
 
-# --- SEC.MLO_PASSWORD_NEEDS_WPA3 (WFA guide §3.2, guidance, draft; #75) ---
+# --- SEC.MLO_PASSWORD_NEEDS_WPA3 (WFA guide §3.2, guidance, reviewed 2026-11-17; #75) ---
 
 PASSWORD_PASSES = {
     "sae_ext_key": _config({"akms": ["SAE-EXT-KEY"]}, {"akms": ["SAE-EXT-KEY"]}, ["SAE-EXT-KEY"]),
