@@ -69,8 +69,10 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `.signature()` gives the comparable facts.
 - `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`,
   `run_hwsim_test`, `run_candidate`, the campaign tools `plan_campaign`, `run_campaign`,
-  `list_campaigns`, `get_campaign`, and `why_pruned` / `permitted_alternatives` (#74, over
-  `explorer.pruning`). Add new tools
+  `list_campaigns`, `get_campaign`, and the agent chain `why_pruned` /
+  `permitted_alternatives` (#74, over `explorer.pruning`) and `minimize_contrast` (#74, over
+  `explorer.minimize`; a contrast index or two run IDs, `facts`, `max_guest_runs` ≤ 40;
+  `MINIMIZE_RUNNER` is swapped in tests). Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
@@ -138,7 +140,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `NOT_INTERESTING` stay separate in `Reduction.trace`; only `INTERESTING` (every target fact measured
   and equal to B's) counts. `from_contrast(facts=[...])` targets behavior facts, not config echoes such
   as `station_status`; the result has `needed_for_validity` and `minimal_p2`. Pass `runner=` /
-  `support=` fakes in tests; a cache hit isn't independent.
+  `support=` fakes in tests; a cache hit isn't independent. `max_guest_runs` stops a reduction
+  with `BUDGET_EXHAUSTED` before the run that would exceed it.
 - `explorer.pruning`: the agent chain's first two steps (#74). `why_pruned(data)` gives the
   planner's role for a candidate (`malformed` / `pruned` / `undetermined` / `unsupported` /
   `not_run` are pruned; `probe` / `supported` are executable), the stage, and per finding

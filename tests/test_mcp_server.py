@@ -55,7 +55,7 @@ def test_pinned_versions_come_from_the_dockerfile():
 def test_implemented_stages():
     stages = {s["stage"].split()[0]: s for s in _get_model()["stages"]}
     assert {k: s["implemented"] for k, s in stages.items()} == {
-        "P0": True, "P1": True, "P2": True, "P3": True, "Campaign": True, "P4": False}
+        "P0": True, "P1": True, "P2": True, "P3": True, "Campaign": True, "P4": True}
     assert "not full 802.11be" in stages["P1"]["note"]
     assert stages["P2"]["note"].startswith("Basic")
 
@@ -134,7 +134,8 @@ def test_server_starts_the_way_mcp_json_launches_it():
     tools, result = _call(params, "get_model")
 
     assert sorted(tools) == ["explain_rule", "get_campaign", "get_model", "list_campaigns",
-                             "permitted_alternatives", "plan_campaign", "run_campaign",
+                             "minimize_contrast", "permitted_alternatives", "plan_campaign",
+                             "run_campaign",
                              "run_candidate", "run_hwsim_test", "validate_candidate",
                              "why_pruned"]
     assert not result.is_error
