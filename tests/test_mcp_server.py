@@ -91,12 +91,14 @@ def test_uncalibrated_facts_are_flagged():
 
 
 def test_recorded_runs_are_committed_evidence_only():
+    from explorer.support import EVIDENCE_DIRS, REPO_ROOT
+    committed = tuple(f"{d.relative_to(REPO_ROOT).as_posix()}/" for d in EVIDENCE_DIRS)
     runs = _get_model()["recorded_runs"]
     by_test = {}
     for run in runs:
         by_test.setdefault(run["test"], []).append(run)
-        assert run["evidence"].startswith(
-            ("runs/baseline/", "runs/calibration/", "runs/smoke/", "runs/anchors/"))
+        assert run["evidence"].startswith(committed)
+        assert not run["evidence"].startswith("runs/hwsim-logs/")
 
     baseline = [r for r in by_test["eht_mld_sae_two_links"]
                 if r["evidence"].startswith("runs/baseline/")]

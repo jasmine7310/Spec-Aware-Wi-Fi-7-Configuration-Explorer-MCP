@@ -121,7 +121,9 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 - `explorer.contrasts`: accepted-vs-accepted contrasts (#71). `find(group(accepted_runs()))`
   pairs candidates at most `max_inputs` inputs apart (`input_diff` / `distance`) whose runs
   are `ACCEPTED`, not negative experiments, pass today's rules and ran on the pinned
-  commits; it claims a fact only when it's measured on both sides (never `UNKNOWN`) and the
+  commits. Both sides must be P2 `SUPPORTED` and ran under the same harness (`run_harness`:
+  recorded with the cache key, or from the run's repo commit); repeats share a harness too,
+  and a contrast on an older harness is marked `current_harness: false`. It claims a fact only when it's measured on both sides (never `UNKNOWN`) and the
   same in every repeat of each side, with the log lines it was read from (`evidence`).
   `reproduced` needs 3 runs per side. `scripts/find_contrasts.py` writes
   `contrasts/contrasts.json` (a test fails when it's stale); write-ups go in
@@ -156,7 +158,7 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `runs/anchors/` (extra runs so each anchor family has 3), `runs/rejected/` (runs of
   rule-passing candidates the implementation refused, kept as labeled refusals, never as
   smoke values), `campaigns/` (committed campaign runs, #68), `contrasts/runs/` (extra
-  legal runs so each contrast side has 3, #71; not P2 evidence), `runs/hwsim-logs/`
+  legal runs so each contrast side has 3, #71; P2 evidence), `runs/hwsim-logs/`
   (git-ignored trials), `runs/cache.sqlite` (the cache's git-ignored
   index). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

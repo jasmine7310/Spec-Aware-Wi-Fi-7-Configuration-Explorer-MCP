@@ -11,9 +11,11 @@ them up. Regenerate the JSON with `.venv/bin/python scripts/find_contrasts.py`
   - be `ACCEPTED`, so infrastructure failures (`SETUP_FAIL`, `TIMEOUT`) and refusals (`REJECTED`) are never sides;
   - not be a negative experiment;
   - still pass today's modeled rules;
-  - have run on the pinned hostap and kernel commits.
+  - have run on the pinned hostap and kernel commits;
+  - have a known harness (`run_harness`): the hash of the adapter test and run script in `docker/`. It's the one recorded with the run's cache key or, for a run that didn't record one, the hash of `docker/` at the repo commit it ran from (only if `docker/` was unmodified).
 
-  Today that's 40 runs of 32 distinct candidates. Runs of the same candidate are repeats.
+  Both sides' candidates must be P2 `SUPPORTED` (`support.check_support`).
+- **Repeats.** Runs of the same candidate under the same harness are repeats. Two groups are compared only if they ran under the same harness, since a harness change can change what a run logs (see "Two harnesses" below).
 - **Inputs.** Each differing config value counts as one input, and so does each action step only one side performs. The JSON lists contrasts at most 1 input apart (`--max-inputs`).
 - **Facts.** Facts are the behavior record's signature without the test name, plus `disconnect_reasons`: the set of (reason, locally generated). A fact is claimed only if it is:
   - measured on both sides (never `UNKNOWN`);
@@ -21,11 +23,17 @@ them up. Regenerate the JSON with `.venv/bin/python scripts/find_contrasts.py`
   - different between the two sides.
 
   Each claimed fact comes with the log lines it was read from.
-- **Reproduced** means at least 3 independent runs per side, each in a fresh guest. Cache hits don't count, and none of these runs went through the cache.
+- **Reproduced** means at least 3 independent runs per side, each in a fresh guest. Cache hits don't count, and none of these runs was served from the cache.
 
-`contrasts/runs/` holds the 7 runs made for this issue (2026-11-16, Docker Desktop on
-macOS), so that each side has 3 runs. They're legal `ACCEPTED` adapter runs. They aren't in
-`support.EVIDENCE_DIRS`, so P2 and the planner don't count them yet.
+Today that's 49 accepted runs in 35 groups of repeats.
+
+`contrasts/runs/` holds the 16 runs made for this issue so that each side has 3, all
+`ACCEPTED`, on Docker Desktop on macOS:
+- 9 on today's harness (2026-11-17), which are the evidence below;
+- 7 on the earlier harness (2026-11-16).
+
+They're in `support.EVIDENCE_DIRS`, so they count as P2 evidence: each side's candidate is
+`SUPPORTED` by exact-match committed runs.
 
 ## Shared base candidate
 
@@ -34,25 +42,26 @@ Both contrasts vary one input of the same base:
 - **Client:** OWE with beacon protection on.
 - **Actions:** `associate`, optionally followed by `link_remove` (link 1, count 4).
 
+Runs on today's harness:
+
 | | `link_remove` | no `link_remove` |
 |---|---|---|
-| `ptk_rekey_interval_s` unset | `1794557032`, `1794878319`, `1794878408` | (not used) |
-| `ptk_rekey_interval_s` 5 | `1794812777`, `1794878187`, `1794878259` | `1794878480`, `1794878597`, `1794878721` |
+| `ptk_rekey_interval_s` unset | `1794933586`, `1794933644`, `1794933694` | (not used) |
+| `ptk_rekey_interval_s` 5 | `1794933558`, `1794933622`, `1794933677` | `1794933604`, `1794933660`, `1794933709` |
 
-`1794557032` is in `campaigns/seed0-2026-11-13/` and `1794812777` in
-`campaigns/seed1-fresh-2026-11-15/`; the rest are in `contrasts/runs/`.
+All are in `contrasts/runs/`.
 
 ## C1: a 5 s PTK rekey after `link_remove` (reproduced, 3 vs 3)
 
-**Inputs that differ:** `config.ap.ptk_rekey_interval_s`, unset (A) vs 5 (B). Same
-actions: `associate`, `link_remove`.
+**Input that differs:** `config.ap.ptk_rekey_interval_s`, unset vs 5. Same actions:
+`associate`, `link_remove`.
 
 **Facts that changed**: all stable across the 3 repeats of each side.
 
-| Fact | A: no PTK rekey | B: PTK rekey every 5 s |
+| Fact | No PTK rekey | PTK rekey every 5 s |
 |---|---|---|
 | `disconnect_reasons` | {(3, local)} | {(3, local), (15, from the AP)} |
-| `disconnects` | reason 3 (local, at teardown) | reason 15 from the AP twice, then reason 3 (local) |
+| `disconnects` | reason 3 (local, at teardown) | reason 15 from the AP three times, then reason 3 (local) |
 | `station_status` (last) | `wpa_state` `COMPLETED`, `bigtk_set` 1 | `wpa_state` `4WAY_HANDSHAKE`, no `bigtk_set` |
 
 Reason 15 is "4-way handshake timeout" (802.11 reason codes). The test result is `PASS` on
@@ -60,61 +69,77 @@ both sides. The adapter test records observations and doesn't assert them
 (`src/explorer/adapter.py`), so no assertion separates the sides. The difference is in the
 facts.
 
-**Supporting log lines.** From `contrasts.json`, B side, `1794812777`'s `explorer_candidate.log`:
+**Supporting log lines.** From `contrasts.json`, PTK-rekey side, `1794933558`'s
+`explorer_candidate.log`:
 
 ```
 :141  wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15
-:202  wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15
-:218  wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1
+:200  wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15
+:247  wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15
+:264  wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1
 ```
 
-The A side (`1794557032`) logs only the teardown line (`:138`, reason 3,
-`locally_generated=1`). The adapter's own lines agree, on every B run and on no A run:
+The no-rekey side (`1794933586`) logs only the teardown line (`:138`, reason 3,
+`locally_generated=1`). The adapter's own lines agree, on every PTK-rekey run and on no
+run of the other side:
 - `EXPLORER-NO-EVENT PTK rekey within 10.0 s`;
-- `EXPLORER-TRAFFIC-FAILED link 0: dev1->dev2 unicast data delivery failed`.
+- `EXPLORER-OBSERVE after PTK rekey (not associated: wpa_state=4WAY_HANDSHAKE, no disconnect requested by the adapter)`.
 
 These lines aren't record facts; they're quoted here as log evidence.
 
-**Reproduced:** yes. 3 independent runs per side: two were campaign runs on different days
-and seeds, and four were run for this issue.
+**Reproduced:** yes, 3 independent runs per side.
 
 ## C2: the same 5 s PTK rekey with and without `link_remove` (reproduced, 3 vs 3)
 
-**Inputs that differ:** one action step. A performs `link_remove` (link 1, count 4) after
-`associate`; B doesn't. Same config: `ptk_rekey_interval_s` 5.
+**Input that differs:** one action step. One side performs `link_remove` (link 1, count
+4) after `associate`; the other doesn't. Same config: `ptk_rekey_interval_s` 5.
 
 **Facts that changed**: all stable across the 3 repeats of each side.
 
-| Fact | A: `link_remove` | B: no `link_remove` |
+| Fact | `link_remove` | no `link_remove` |
 |---|---|---|
 | `ptk_rekeys_completed` | 0 | 1 |
 | `four_way_handshakes_completed` | 1 | 2 |
 | `disconnect_reasons` | {(3, local), (15, from the AP)} | {(3, local)} |
-| `disconnects` | 15, 15, 3 | 3 |
+| `disconnects` | 15, 15, 15, 3 | 3 |
 | `station_status` (last) | `4WAY_HANDSHAKE`, no `bigtk_set` | `COMPLETED`, `bigtk_set` 1 |
 | `valid_links` (last) | `0x1` | `0x3` |
 | `link_reconfig_valid_links` | [`0x1`] | [] |
 
 The last two follow directly from removing link 1. The others are the rekey: without
 `link_remove` it completes 5 s after association (`WPA: Key negotiation completed` at
-+5.0 s in `1794878480`), and the traffic check after it passes. One fact differs but isn't
++5.0 s in `1794933604`), and the traffic check after it passes. One fact differs but isn't
 claimed: traffic after the last rekey (`data_test_rx_after_last_rekey_ap_links`) is
-`UNKNOWN` on A, because no rekey ever completes there.
+`UNKNOWN` on the `link_remove` side, because no rekey ever completes there.
 
-**Supporting log lines:** the B side's are in `contrasts.json`. For A, see C1's B side
-(the same runs).
+**Supporting log lines:** both sides' are in `contrasts.json`. The `link_remove` side's
+runs are C1's PTK-rekey side.
 
 **Reproduced:** yes, 3 vs 3.
 
+## Two harnesses
+
+The adapter changed after the first runs (see the caveat below), so `contrasts.json` lists
+each contrast twice:
+- on today's harness (`current_harness: true`), with the runs above;
+- on the earlier harness (`current_harness: false`), with campaign runs plus the 7 runs from 2026-11-16:
+  - C1: `1794557032`, `1794878319`, `1794878408` vs `1794812777`, `1794878187`, `1794878259`;
+  - C2: `1794812777`, `1794878187`, `1794878259` vs `1794878480`, `1794878597`, `1794878721`.
+
+Both harnesses give the same claimed facts, with one difference: on the earlier harness the
+`link_remove` + PTK-rekey side logs reason 15 twice, not three times (`disconnects` 15,
+15, 3). `disconnect_reasons` is the same on both.
+
 ## Across every accepted run
 
-The pattern holds beyond the two contrasts. Across all 40 accepted runs:
+The pattern holds beyond the two contrasts. Across all 49 accepted runs, under both
+harnesses:
 
 | `ptk_rekey_interval_s` | `link_remove` | Runs with a reason-15 disconnect from the AP |
 |---|---|---|
-| 5 | yes | **14 / 14** |
-| 5 | no | 0 / 8 |
-| unset | yes | 0 / 11 |
+| 5 | yes | **17 / 17** |
+| 5 | no | 0 / 11 |
+| unset | yes | 0 / 14 |
 | unset | no | 0 / 7 |
 
 The other campaign runs in the first row also differ in AKM, cipher, `sae_pwe` and other
@@ -122,14 +147,18 @@ actions. So the combination fails across those settings, not just in the base ab
 
 ## What the logs show, and what they don't
 
-All of the following holds in each of the 3 B runs of C1, checked in their
-`explorer_candidate.hostapd` and `explorer_candidate.log5` (the client's wpa_supplicant):
+All of the following holds in each of the 3 `link_remove` + PTK-rekey runs on today's
+harness. It was checked in their `explorer_candidate.hostapd` and `explorer_candidate.log5`
+(the client's wpa_supplicant):
 
-- Before `LINK_REMOVE`, hostapd receives 2 EAPOL frames (`NL80211_CMD_CONTROL_PORT_FRAME`), the initial handshake's 2/4 and 4/4. After `LINK_REMOVE` it receives none for the rest of the run.
-- When the rekey timer fires, hostapd sends message 1/4 five times (`PTKSTART`, retry counters 1–4 and then a final try). It then disconnects the client with reason 15 (`wpa_sta_disconnect ... (reason 15)`).
-- The client logs `RX message 1 of 4-Way Handshake` and `Sending EAPOL-Key 2/4` for each 1/4 it receives. Across the run it sends 2/4 12 times: once in the initial handshake (received) and 11 times after the rekey starts (none received).
-- After the first reason-15 disconnect, the client reassociates on link 0. That association's initial 4-way handshake fails the same way, which explains the second reason-15 disconnect. The last `station status` is taken during that second handshake (`4WAY_HANDSHAKE`).
-- With no `link_remove` (C2's B side), hostapd receives 4 EAPOL frames: the 2/4 and 4/4 of both handshakes.
+- **hostapd receives EAPOL only before `LINK_REMOVE`.** Before it, hostapd receives 2 EAPOL frames (`NL80211_CMD_CONTROL_PORT_FRAME`): the initial handshake's 2/4 and 4/4. After it, hostapd receives none for the rest of the run.
+- **The rekey times out.** When the rekey timer fires, hostapd sends message 1/4 five times (`PTKSTART`). It then disconnects the client with reason 15 (`wpa_sta_disconnect ... (reason 15)`).
+- **The client keeps replying.** It logs `RX message 1 of 4-Way Handshake` and `Sending EAPOL-Key 2/4` for each 1/4 it receives. Across the run it sends 2/4 17 times: once in the initial handshake (received) and 16 times after the rekey starts (none received).
+- **Reassociation fails the same way.** After a reason-15 disconnect, the client reassociates on link 0. That association's initial 4-way handshake fails the same way, so the run logs three reason-15 disconnects before teardown. The last `station status` is taken during one of those handshakes (`4WAY_HANDSHAKE`).
+- **The control.** With no `link_remove` (C2's other side), hostapd receives 4 EAPOL frames: the 2/4 and 4/4 of both handshakes.
+
+The runs on the earlier harness show the same pattern, ending after two reason-15
+disconnects (the client sends 2/4 12 times).
 
 So after `link_remove`, the client's EAPOL-Key frames stop reaching hostapd. The logs
 don't show where they're lost (radio, kernel or hostapd), and this write-up makes no claim
@@ -140,9 +169,11 @@ here.
 
 ## Caveats
 
-- **The adapter's association label (fixed after these runs).** When these runs were made, `docker/test_explorer_candidate.py` tracked association only through its own actions. So after the AP's reason-15 disconnect, their logs still say `EXPLORER-OBSERVE after PTK rekey (associated)`, and the traffic check that follows expected success and logged `EXPLORER-TRAFFIC-FAILED`. No record fact depends on that label: the record reads events. The adapter now reads the client's `wpa_state` at each observation, for both the label and the expected traffic result (`observed_state` / `traffic_checks`, tested in `tests/test_explorer_candidate_state.py`).
-  - **Checked** in trial run `1794885303` (2026-11-16, not committed): it logs `(not associated: wpa_state=4WAY_HANDSHAKE, no disconnect requested by the adapter)` and no `EXPLORER-TRAFFIC-FAILED`.
-  - **Side effect:** its not-associated traffic check covers both links, so that run lasted about 5 s longer and had one more failed handshake: `disconnects` lists reason 15 three times instead of twice. Every other fact matched `1794878187`, including `disconnect_reasons`. So runs of this candidate from before and after the fix agree on `disconnect_reasons` but not on the exact `disconnects`. Mixed as repeats, `disconnects` would be reported as unstable and claim nothing.
-  - **Cache:** the change gives a new harness hash, so earlier runs are cache misses.
+- **The adapter's association label (fixed between the two harnesses).** On the earlier harness, `docker/test_explorer_candidate.py` tracked association only through its own actions.
+  - So after the AP's reason-15 disconnect, those runs' logs still say `EXPLORER-OBSERVE after PTK rekey (associated)`. The traffic check that follows expected success and logged `EXPLORER-TRAFFIC-FAILED`.
+  - No record fact depends on that label: the record reads events.
+  - The adapter now reads the client's `wpa_state` at each observation, for both the label and the expected traffic result (`observed_state` / `traffic_checks`, tested in `tests/test_explorer_candidate_state.py`).
+  - Its not-associated traffic check covers both links, so a run lasts longer. That leaves time for a third failed handshake, hence `disconnects` 15, 15, 15, 3 instead of 15, 15, 3.
+  - This is why repeats and sides must share a harness: mixed as repeats, `disconnects` would be reported as unstable.
 - **Final values.** The record keeps each fact's last value (`station_status`, `valid_links`), so it shows where a run ended, not every intermediate state.
 - **Distance is in the modeled inputs only.** The adapter derives hostapd parameters from the candidate (`adapter.build_plan`). One input here means one modeled setting or action step.

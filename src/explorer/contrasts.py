@@ -7,12 +7,15 @@ Sides are committed adapter runs (``campaigns/`` and ``contrasts/runs/``) that
   failures (``SETUP_FAIL`` / ``TIMEOUT``) and refusals (``REJECTED``) are never sides;
 - aren't negative experiments and still pass today's modeled rules
   (``support.passes_current_rules``), so a spec-forbidden candidate is never a side;
-- ran on the pinned hostap / kernel commits under a compatible schema version.
+- ran on the pinned hostap / kernel commits under a compatible schema version;
+- ran under a known harness (``run_harness``: the adapter test and run script in
+  ``docker/``), since a harness change can change what a run logs.
 
-Runs of the same candidate are grouped: they're repeats. A contrast is a pair of
-candidates at most ``max_inputs`` inputs apart (``input_diff`` / ``distance``: each
-differing config value and each action step only one side performs counts once) with at
-least one **claimable** fact difference:
+Runs of the same candidate under the same harness are grouped: they're repeats. A
+contrast is a pair of such groups, under the same harness and both P2 ``SUPPORTED``
+(``support.check_support``), at most ``max_inputs`` inputs apart (``input_diff`` /
+``distance``: each differing config value and each action step only one side performs
+counts once) with at least one **claimable** fact difference:
 
 - measured on both sides: never ``UNKNOWN`` (``signatures`` sets a fact to ``UNKNOWN``
   when the log doesn't show it);
@@ -26,6 +29,7 @@ Facts are the behavior record's signature without the test name
 or order of identical disconnects varies between repeats. Each claimed fact comes with the
 log lines it was read from (``evidence``), so no claim goes beyond what the logs show.
 ``reproduced`` is true only when both sides have at least ``REPRODUCE_RUNS`` runs.
+``current_harness`` says whether the runs used today's harness (``cache.harness_digest``).
 """
 
 from __future__ import annotations
@@ -33,6 +37,8 @@ from __future__ import annotations
 import itertools
 import json
 import re
+from collections.abc import Callable
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -70,12 +76,15 @@ class Run(BaseModel):
     folder: str
     """Repo-relative run folder."""
     facts: dict[str, Any]
+    harness: str | None = None
+    """The harness hash the run ran under (``run_harness``)."""
 
 
 class Group(BaseModel):
-    """Every accepted run of one candidate."""
+    """Every accepted run of one candidate under one harness."""
     candidate: dict
     runs: list[Run]
+    harness: str | None = None
 
 
 class FactDiff(BaseModel):
@@ -98,6 +107,10 @@ class Contrast(BaseModel):
     """Facts that differ between repeats of one side; nothing is claimed about them."""
     reproduced: bool
     """Both sides have at least REPRODUCE_RUNS runs (and the claimed facts held in each)."""
+    harness: str | None
+    """The harness hash both sides ran under."""
+    current_harness: bool
+    """That harness is today's (``cache.harness_digest()``)."""
     candidate_a: dict
     candidate_b: dict
 
@@ -116,6 +129,20 @@ def _folder(path: Path) -> str:
     return str(path.relative_to(REPO_ROOT)) if path.is_relative_to(REPO_ROOT) else str(path)
 
 
+def run_harness(manifest: dict) -> str | None:
+    """The harness hash a run ran under: the one recorded with its cache key or, for a
+    run that didn't record one, that of the repo commit it ran from, if ``docker/`` was
+    unmodified then. None when neither is known."""
+    from explorer.cache import harness_digest_at
+    parts = manifest.get("explorer_plan", {}).get("explorer", {}).get("cache_key_parts") or {}
+    if parts.get("harness"):
+        return parts["harness"]
+    versions = manifest.get("versions", {})
+    if versions.get("repo_commit") and versions.get("repo_docker_dir_modified") is False:
+        return harness_digest_at(versions["repo_commit"])
+    return None
+
+
 def accepted_runs(dirs=SIDE_DIRS) -> list[tuple[dict, Run]]:
     """(candidate, run) for every committed adapter run that may be a side (module
     docstring)."""
@@ -130,6 +157,9 @@ def accepted_runs(dirs=SIDE_DIRS) -> list[tuple[dict, Run]]:
             if not meta or meta.get("negative_experiment"):
                 continue
             if not any(r["test"] == ADAPTER_TEST for r in manifest["results"]):
+                continue
+            harness = run_harness(manifest)
+            if harness is None:
                 continue
             run_dir = manifest_path.parent
             versions = manifest.get("versions", {})
@@ -149,17 +179,32 @@ def accepted_runs(dirs=SIDE_DIRS) -> list[tuple[dict, Run]]:
                 continue
             out.append((meta["candidate"], Run(run_id=manifest["run_id"],
                                                folder=_folder(run_dir),
-                                               facts=facts(comparable_signature(record)))))
+                                               facts=facts(comparable_signature(record)),
+                                               harness=harness)))
     return out
 
 
 def group(runs: list[tuple[dict, Run]]) -> list[Group]:
-    """Runs grouped by identical candidate, in first-seen order."""
+    """Runs grouped by identical candidate and harness, in first-seen order."""
     groups: dict[str, Group] = {}
     for candidate, run in runs:
-        key = json.dumps(candidate, sort_keys=True)
-        groups.setdefault(key, Group(candidate=candidate, runs=[])).runs.append(run)
+        key = json.dumps([candidate, run.harness], sort_keys=True)
+        groups.setdefault(key, Group(candidate=candidate, runs=[],
+                                     harness=run.harness)).runs.append(run)
     return list(groups.values())
+
+
+@lru_cache(maxsize=None)
+def _supported(candidate_json: str) -> bool:
+    from explorer.model import Candidate
+    from explorer.support import check_support
+    candidate = Candidate.model_validate(json.loads(candidate_json))
+    return check_support(candidate).status == "SUPPORTED"
+
+
+def p2_supported(candidate: dict) -> bool:
+    """Whether P2 (``support.check_support``) says ``SUPPORTED`` for the candidate."""
+    return _supported(json.dumps(candidate, sort_keys=True))
 
 
 def _flatten(value: Any, path: str = "") -> dict[str, Any]:
@@ -242,23 +287,31 @@ def compare(a: Group, b: Group) -> tuple[list[FactDiff], list[str]]:
     return diffs, unstable
 
 
-def find(groups: list[Group], max_inputs: int = 1) -> list[Contrast]:
-    """Every pair of candidates at most ``max_inputs`` inputs apart with a claimable fact
-    difference, the most-repeated pairs first."""
+def find(groups: list[Group], max_inputs: int = 1,
+         supported: Callable[[dict], bool] = p2_supported) -> list[Contrast]:
+    """Every pair of groups under the same harness, both ``supported``, at most
+    ``max_inputs`` inputs apart with a claimable fact difference: today's harness first,
+    then the most-repeated pairs."""
+    from explorer.cache import harness_digest
+    current = harness_digest()
     out = []
     for a, b in itertools.combinations(groups, 2):
+        if a.harness != b.harness:
+            continue
         diff = input_diff(a.candidate, b.candidate)
         if not 0 < distance(diff) <= max_inputs:
             continue
         facts_, unstable = compare(a, b)
-        if not facts_:
+        if not facts_ or not (supported(a.candidate) and supported(b.candidate)):
             continue
         out.append(Contrast(
             a_runs=[r.run_id for r in a.runs], b_runs=[r.run_id for r in b.runs],
             input_diff=diff, facts=facts_, unstable=unstable,
             reproduced=min(len(a.runs), len(b.runs)) >= REPRODUCE_RUNS,
+            harness=a.harness, current_harness=a.harness == current,
             candidate_a=a.candidate, candidate_b=b.candidate))
-    return sorted(out, key=lambda c: (-min(len(c.a_runs), len(c.b_runs)),
+    return sorted(out, key=lambda c: (not c.current_harness,
+                                      -min(len(c.a_runs), len(c.b_runs)),
                                       distance(c.input_diff), c.a_runs[0], c.b_runs[0]))
 
 
@@ -272,11 +325,14 @@ def build(max_inputs: int = DEFAULT_MAX_INPUTS, dirs=SIDE_DIRS) -> dict:
     runs = accepted_runs(dirs)
     groups = group(runs)
     found = find(groups, max_inputs)
+    from explorer.cache import harness_digest
     return {
         "description": ("Accepted-vs-accepted contrasts (issue #71), generated by "
-                        "scripts/find_contrasts.py from committed adapter runs. Only facts "
+                        "scripts/find_contrasts.py from committed adapter runs. Both sides "
+                        "are P2 SUPPORTED and ran under the same harness; only facts "
                         "measured on both sides and stable across each side's repeats are "
                         "claimed; contrasts/README.md writes the chosen ones up."),
+        "current_harness": harness_digest(),
         "max_inputs": max_inputs,
         "reproduce_runs": REPRODUCE_RUNS,
         "side_dirs": [_folder(Path(d)) for d in dirs],

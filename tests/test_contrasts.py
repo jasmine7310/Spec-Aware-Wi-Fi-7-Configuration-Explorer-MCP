@@ -19,14 +19,19 @@ def _candidate(ptk=None, actions=(ASSOC,)):
             "actions": list(actions)}
 
 
-def _run(run_id, **facts):
+def _run(run_id, harness="h1", **facts):
     base = {"test_result": "PASS", "disconnects": [], "disconnect_reasons": [],
             "valid_links": "0x3", "ptk_rekeys_completed": 0}
-    return C.Run(run_id=run_id, folder=f"nowhere/{run_id}", facts={**base, **facts})
+    return C.Run(run_id=run_id, folder=f"nowhere/{run_id}", facts={**base, **facts},
+                 harness=harness)
 
 
 def _group(candidate, *runs):
-    return C.Group(candidate=candidate, runs=list(runs))
+    return C.Group(candidate=candidate, runs=list(runs), harness=runs[0].harness)
+
+
+def _any(candidate):
+    return True
 
 
 # --- facts --------------------------------------------------------------------------
@@ -93,8 +98,8 @@ def test_find_respects_max_inputs_and_needs_a_difference():
     far = _candidate(actions=(ASSOC, LINK_REMOVE, {**LINK_REMOVE, "link_id": 0}))
     groups = [base, _group(far, _run("2", ptk_rekeys_completed=1)),
               _group(_candidate(ptk=5), _run("3"))]       # 1 input from base, same facts
-    assert C.find(groups, max_inputs=1) == []
-    found = C.find(groups, max_inputs=2)
+    assert C.find(groups, max_inputs=1, supported=_any) == []
+    found = C.find(groups, max_inputs=2, supported=_any)
     assert [(c.a_runs, c.b_runs) for c in found] == [(["1"], ["2"])]
     assert not found[0].reproduced
 
@@ -102,9 +107,36 @@ def test_find_respects_max_inputs_and_needs_a_difference():
 def test_reproduced_needs_three_runs_per_side():
     a = _group(_candidate(), *[_run(str(i)) for i in range(3)])
     b = _group(_candidate(ptk=5), *[_run(str(i), ptk_rekeys_completed=1) for i in (4, 5, 6)])
-    (contrast,) = C.find([a, b])
+    (contrast,) = C.find([a, b], supported=_any)
     assert contrast.reproduced
     assert contrast.a_runs == ["0", "1", "2"]
+
+
+def test_repeats_and_sides_share_a_harness():
+    runs = [(_candidate(), _run("1", harness="old")), (_candidate(), _run("2", harness="new")),
+            (_candidate(ptk=5), _run("3", harness="old", ptk_rekeys_completed=1))]
+    groups = C.group(runs)
+    assert [[r.run_id for r in g.runs] for g in groups] == [["1"], ["2"], ["3"]]
+    (contrast,) = C.find(groups, supported=_any)       # "2" has no same-harness partner
+    assert (contrast.a_runs, contrast.b_runs, contrast.harness) == (["1"], ["3"], "old")
+    assert not contrast.current_harness
+
+
+def test_both_sides_must_be_supported():
+    a = _group(_candidate(), _run("1"))
+    b = _group(_candidate(ptk=5), _run("2", ptk_rekeys_completed=1))
+    assert C.find([a, b], supported=lambda c: c["config"]["ap"]["ptk_rekey_interval_s"]) == []
+
+
+def test_run_harness_recorded_or_from_the_repo_commit():
+    from explorer.cache import harness_digest_at
+    recorded = {"explorer_plan": {"explorer": {"cache_key_parts": {"harness": "abc"}}}}
+    assert C.run_harness(recorded) == "abc"
+    commit = "149f78ed94d54262b01c1cc0634dd8001c286d55"
+    clean = {"versions": {"repo_commit": commit, "repo_docker_dir_modified": False}}
+    assert C.run_harness(clean) == harness_digest_at(commit) is not None
+    assert C.run_harness({"versions": {"repo_commit": commit,
+                                       "repo_docker_dir_modified": True}}) is None
 
 
 # --- the committed runs ------------------------------------------------------------------
@@ -139,9 +171,10 @@ def test_committed_contrasts_json_is_current():
 
 
 def test_at_least_two_reproduced_contrasts():
-    # Issue #71's "done when": >= 2 contrasts with real run IDs.
+    # Issue #71's "done when": >= 2 contrasts with real run IDs, on today's harness.
     data = json.loads(C.CONTRASTS_JSON.read_text())
-    reproduced = [c for c in data["contrasts"] if c["reproduced"]]
+    reproduced = [c for c in data["contrasts"] if c["reproduced"] and c["current_harness"]]
     assert len(reproduced) >= 2
     for c in reproduced:
         assert c["facts"] and all(UNKNOWN not in (f["a"], f["b"]) for f in c["facts"])
+        assert C.p2_supported(c["candidate_a"]) and C.p2_supported(c["candidate_b"])
