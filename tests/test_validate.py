@@ -6,6 +6,7 @@ from explorer.scenarios import CLIENT_BP_SUFFIX, TEST_CONFIGS
 from explorer.validate import (CONFIG_QUESTIONS, P1_CHECKS, Finding, check_eht_beacon_prot,
                                check_eht_sae_akm, check_eht_sae_h2e, check_mld_client_common_akm,
                                check_mld_common_suites, check_mld_same_rsnxe,
+                               check_mlo_password_needs_wpa3,
                                check_sae_h2e_only_needs_sta_h2e,
                                check_sae_pwe_needs_sae, find_undetermined, p1_status,
                                rsnxe_h2e, run_p1_checks, validate_candidate)
@@ -107,6 +108,43 @@ def test_mld_same_rsnxe_rejects(name):
     assert "different RSNXEs" in violations[0].reason
 
 
+# --- SEC.MLO_PASSWORD_NEEDS_WPA3 (WFA guide §3.2, guidance, reviewed 2026-11-17; #75) ---
+
+PASSWORD_PASSES = {
+    "sae_ext_key": _config({"akms": ["SAE-EXT-KEY"]}, {"akms": ["SAE-EXT-KEY"]}, ["SAE-EXT-KEY"]),
+    "owe_no_password": _config({"akms": ["OWE"]}, {"akms": ["OWE"]}, ["OWE"]),
+    # eht_mld_ptk_rekey: SAE-EXT-KEY, SAE, WPA-PSK and WPA-PSK-SHA256 on both links.
+    "eht_mld_ptk_rekey": TEST_CONFIGS["eht_mld_ptk_rekey"],
+    # Transition mode: WPA3 is enabled, so a WPA-PSK-only client still passes.
+    "transition_psk_client": _config({"akms": ["SAE-EXT-KEY", "WPA-PSK"]},
+                                     {"akms": ["SAE-EXT-KEY", "WPA-PSK"]}, ["WPA-PSK"]),
+    # hostap's eht_mld_invalid_link: no AKM common to both links, so no ML association to
+    # judge here (SEC.MLD_COMMON_SUITES reports it).
+    "eht_mld_invalid_link": AP_REJECTED["eht_mld_invalid_link"][0],
+}
+
+PASSWORD_REJECTED = {
+    "wpa_psk_only": _config({"akms": ["WPA-PSK"]}, {"akms": ["WPA-PSK"]}, ["WPA-PSK"]),
+    "wpa_psk_sha256_only": _config({"akms": ["WPA-PSK-SHA256"]}, {"akms": ["WPA-PSK-SHA256"]},
+                                   ["WPA-PSK-SHA256"]),
+    # SAE-EXT-KEY on link 0 only isn't usable for the ML association.
+    "wpa3_on_one_link": _config({"akms": ["SAE-EXT-KEY", "WPA-PSK"]}, {"akms": ["WPA-PSK"]},
+                                ["SAE-EXT-KEY", "WPA-PSK"]),
+}
+
+
+@pytest.mark.parametrize("name", PASSWORD_PASSES)
+def test_mlo_password_needs_wpa3_passes(name):
+    assert check_mlo_password_needs_wpa3(PASSWORD_PASSES[name]) == []
+
+
+@pytest.mark.parametrize("name", PASSWORD_REJECTED)
+def test_mlo_password_needs_wpa3_rejects(name):
+    violations = check_mlo_password_needs_wpa3(PASSWORD_REJECTED[name])
+    assert [v.rule_id for v in violations] == ["SEC.MLO_PASSWORD_NEEDS_WPA3"]
+    assert "WPA3 isn't enabled" in violations[0].reason
+
+
 def test_rsnxe_h2e_follows_hostapd():
     # src/ap/wpa_auth_ie.c:549-557: an SAE-family AKM, and SAE-EXT-KEY or sae_pwe set.
     config = _config({"akms": ["SAE"]}, {"akms": ["SAE-EXT-KEY"]}, ["SAE-EXT-KEY"])
@@ -189,8 +227,10 @@ def test_only_the_client_beacon_protection_wrappers_pass_modeled_rules():
 
 def test_every_check_has_a_rule_in_the_registry():
     registry = load_rules()
+    # docs/plan.md ("How dependencies are represented"): setting rules are normative,
+    # dependency or guidance (SEC.MLO_PASSWORD_NEEDS_WPA3, #75); AO.* are checked apart.
     for rule_id in P1_CHECKS:
-        assert registry.get(rule_id).kind in {"normative", "dependency"}, rule_id
+        assert registry.get(rule_id).kind in {"normative", "dependency", "guidance"}, rule_id
     for question_id in CONFIG_QUESTIONS:
         assert question_id in {q.id for q in registry.undetermined}
 

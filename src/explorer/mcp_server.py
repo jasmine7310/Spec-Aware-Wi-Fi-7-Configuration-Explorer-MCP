@@ -17,7 +17,9 @@ candidate. ``validate_candidate`` checks any candidate (configuration plus order
 actions) through P0 and P1 without booting a guest, and ``explain_rule`` returns the
 full registry entry behind any finding. ``plan_campaign`` / ``run_campaign`` plan and run
 a bounded pairwise campaign (issue #69, over ``explorer.planner`` and ``explorer.campaign``);
-``list_campaigns`` / ``get_campaign`` give the details. Contrast tools come with P4.
+``list_campaigns`` / ``get_campaign`` give the details. ``why_pruned`` and
+``permitted_alternatives`` are the first two steps of the roadmap's agent chain (#74,
+``explorer.pruning``); ``minimize_contrast`` is the third, over ``explorer.minimize`` (#72).
 """
 
 from __future__ import annotations
@@ -34,7 +36,7 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from pydantic import BaseModel
 
-from explorer import adapter, campaign, model_json, planner, validate
+from explorer import adapter, campaign, model_json, planner, pruning, validate
 from explorer.cache import DEFAULT_DB, Cache, run_cached
 from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test, stale_harness
@@ -195,7 +197,7 @@ STAGES = [
                 note="validate_candidate checks a candidate against the settings and action "
                      "models and reports readable P0.* errors."),
     StageStatus(stage="P1 specification rules", implemented=True,
-                note="A modeled subset, not full 802.11be: seven security/setting rules, nine "
+                note="A modeled subset, not full 802.11be: ten security/setting rules, nine "
                      "action-order rules and three open questions (SPEC_UNDETERMINED), all "
                      "applied by validate_candidate and explained by explain_rule. A rule "
                      "whose status is draft (explain_rule shows it) still waits for a person "
@@ -218,8 +220,13 @@ STAGES = [
                      "assignment before anything boots); run_campaign re-checks each "
                      "candidate at launch and runs it through the experiment cache; "
                      "list_campaigns / get_campaign give the results."),
-    StageStatus(stage="P4 compare and minimize", implemented=False,
-                note="Planned for Weeks 3-5."),
+    StageStatus(stage="P4 compare and minimize", implemented=True,
+                note="Accepted-vs-accepted contrasts are in contrasts/contrasts.json (#71). "
+                     "why_pruned explains a pruned candidate with its rule evidence, "
+                     "permitted_alternatives lists nearby candidates that pass the modeled "
+                     "rules, and minimize_contrast reduces a contrast to its 1-minimal "
+                     "changes with Picire (one run per probe). A minimized contrast "
+                     "reproduced 3/3 per side is #73."),
 ]
 
 
@@ -317,7 +324,9 @@ def get_model() -> ModelInfo:
                 "(validate_candidate), and approved hostap tests or any candidate the "
                 "adapter supports run in fresh guests (run_hwsim_test, run_candidate). "
                 "Bounded pairwise campaigns can be planned and run (plan_campaign, "
-                "run_campaign, list_campaigns, get_campaign). Contrasts (P4) aren't built yet."),
+                "run_campaign, list_campaigns, get_campaign). why_pruned explains a pruned "
+                "candidate, permitted_alternatives lists nearby legal ones, and "
+                "minimize_contrast reduces an accepted contrast (P4)."),
         model=model_version(),
         pinned_versions=pinned_versions(),
         stages=STAGES,
@@ -380,6 +389,207 @@ def explain_rule(rule_id: str) -> RuleExplanation:
         title=entry.title, meaning=entry.meaning, predicate=getattr(entry, "predicate", None),
         exceptions=getattr(entry, "exceptions", []), sources=entry.sources,
         examples=getattr(entry, "examples", None), notes=entry.notes)
+
+
+@server.tool()
+def why_pruned(candidate: dict[str, Any]) -> pruning.PruneExplanation:
+    """Why the campaign would prune this candidate (same JSON as validate_candidate), with
+    the evidence. Nothing is booted.
+
+    role is the planner's: malformed (P0), pruned (a modeled rule rejects it, P1),
+    undetermined (an open question; held for review, P1), unsupported (an implementation
+    limit with recorded refusals, P2), not_run (some value has no passing committed run,
+    P2), probe or supported (executable: not pruned). Each finding gives the rule ID, what
+    the candidate does, the rule's predicate, every cited source (section, page, strength,
+    who checked it), how ConfigSpace encodes it, and its experimental validation: committed
+    runs that break the rule (runs_breaking_it) and runs its spec-coverage rows cite. AO.*
+    and other harness/policy rules aren't Wi-Fi spec rules. campaign_assignment gives its
+    dimension labels when it's one of the campaign space's assignments. Next step:
+    permitted_alternatives."""
+    return pruning.why_pruned(candidate)
+
+
+@server.tool()
+def permitted_alternatives(candidate: dict[str, Any], max_changes: int = 1,
+                           limit: int = 10) -> pruning.AlternativesResult:
+    """Candidates near this one (same JSON as validate_candidate) that pass the modeled
+    rules: up to max_changes (1-3) of model.json's admitted dimensions changed on the
+    candidate itself, everything else kept. Nothing is booted; takes about a second.
+
+    Only minimal alternatives are listed (no superset of a smaller permitted change),
+    ranked by fewest changes, then P2 SUPPORTED (a committed run did exactly this; run_ids
+    to rerun it with run_candidate), then support probes, then fewest changed inputs. Each
+    gives the changes (old -> new label), the exact inputs that differ, P2's status and the
+    full candidate. Passing the modeled rules is never full 802.11be compliance, and only a
+    SUPPORTED alternative has run. Raises for a malformed candidate: fix it first."""
+    try:
+        return pruning.permitted_alternatives(candidate, max_changes=max_changes,
+                                              limit=limit)
+    except ValueError as exc:
+        raise ToolError(str(exc)) from None
+
+
+# --- Minimize a contrast (#74, step 3, over explorer.minimize from #72) ---------------
+
+MAX_MINIMIZE_RUNS = 40
+"""Most new guest runs one minimize_contrast call may make (about 30 s each)."""
+MINIMIZE_RUNNER = run_cached
+"""How a minimization probe runs (cache lookup, else a fresh guest); tests replace it."""
+
+
+class MinimizeSide(BaseModel):
+    run_ids: list[str]
+    """The committed ACCEPTED runs of this side's candidate."""
+    candidate: dict
+
+
+class MinimizeProbe(BaseModel):
+    config_id: str
+    """Picire's ID for the test, or target (all deltas) / baseline (none)."""
+    deltas: list[int]
+    status: str
+    """INTERESTING (reproduces every target fact), NOT_INTERESTING, INVALID, SPEC_UNDETERMINED,
+    UNSUPPORTED, UNRESOLVED, UNKNOWN, REJECTED, SETUP_FAIL or TIMEOUT. Only INTERESTING
+    counts as evidence."""
+    stage: str | None
+    rule_ids: list[str]
+    run_ids: list[str]
+    cache_hit: bool
+    """Served from the cache: evidence of an earlier run, not a new one."""
+    differing: list[str]
+    unknown: list[str]
+
+
+class MinimizeReport(BaseModel):
+    status: str
+    """MINIMIZED, TARGET_NOT_INTERESTING (B's candidate didn't reproduce the target),
+    BASELINE_INTERESTING (A already shows it) or BUDGET_EXHAUSTED (max_guest_runs reached
+    first; no result)."""
+    side_a: MinimizeSide
+    side_b: MinimizeSide
+    target: dict[str, Any]
+    """B's value of each fact a probe must reproduce."""
+    deltas: list[str]
+    """Every typed change from A to B, as 'id: label'."""
+    minimal: list[str]
+    """The 1-minimal changes that still reproduce the target (MINIMIZED only)."""
+    minimal_candidate: dict | None
+    minimal_p2: str | None
+    """P2 for the minimal candidate: UNRESOLVED means it ran once as a support probe and has
+    no committed runs yet."""
+    needed_for_validity: list[str]
+    """Minimal changes whose removal gave an INVALID / SPEC_UNDETERMINED probe: kept to keep
+    the candidate legal, not shown to change the behavior."""
+    probes: list[MinimizeProbe]
+    """Every probe, in order, with its run IDs: the exact evidence behind the result."""
+    counts: dict[str, int]
+    guest_runs: int
+    cache_hits: int
+    note: str
+
+
+def _minimize_sides(contrast: int | None, run_a: str | None, run_b: str | None,
+                    facts: list[str] | None):
+    """(candidate A, runs A, candidate B, runs B, target facts) for the request."""
+    from explorer import contrasts
+    if (contrast is None) == (run_a is None and run_b is None):
+        raise ToolError("give either contrast (an index into contrasts/contrasts.json) or "
+                        "both run_a and run_b (committed ACCEPTED runs), not both")
+    if contrast is not None:
+        found = json.loads(contrasts.CONTRASTS_JSON.read_text())["contrasts"]
+        if not 0 <= contrast < len(found):
+            raise ToolError(f"contrast must be 0-{len(found) - 1} (contrasts/contrasts.json "
+                            f"has {len(found)})")
+        entry = found[contrast]
+        claimed = {f["fact"]: f["b"] for f in entry["facts"]}
+        return (entry["candidate_a"], entry["a_runs"], entry["candidate_b"], entry["b_runs"],
+                _pick_facts(claimed, facts, "claimed by this contrast"))
+    if run_a is None or run_b is None:
+        raise ToolError("give both run_a and run_b")
+    runs = {run.run_id: (candidate, run) for candidate, run in contrasts.accepted_runs()}
+    missing = [r for r in (run_a, run_b) if r not in runs]
+    if missing:
+        raise ToolError(f"not a committed ACCEPTED, rule-passing run on the pinned versions: "
+                        f"{missing} (contrasts.accepted_runs)")
+    (cand_a, a), (cand_b, b) = runs[run_a], runs[run_b]
+    differing = {f: v for f, v in b.facts.items()
+                 if v != UNKNOWN and a.facts.get(f, UNKNOWN) != UNKNOWN and a.facts[f] != v}
+    if not differing:
+        raise ToolError(f"runs {run_a} and {run_b} differ in no measured fact: nothing to "
+                        "minimize")
+    return cand_a, [run_a], cand_b, [run_b], _pick_facts(
+        differing, facts, f"measured on both runs and different")
+
+
+def _pick_facts(available: dict[str, Any], facts: list[str] | None, what: str) -> dict:
+    if facts is None:
+        return available
+    if not facts:
+        raise ToolError("facts is empty: pick at least one fact")
+    if bad := [f for f in facts if f not in available]:
+        raise ToolError(f"not {what}: {bad}; choose from {sorted(available)}")
+    return {f: available[f] for f in facts}
+
+
+@server.tool()
+def minimize_contrast(contrast: int | None = None, run_a: str | None = None,
+                      run_b: str | None = None, facts: list[str] | None = None,
+                      max_guest_runs: int = 20) -> MinimizeReport:
+    """Minimize an accepted contrast: the smallest set of typed changes from side A's
+    candidate towards side B's that still reproduces B's behavior. Boots guests: about 30 s
+    per new run, at most max_guest_runs (1-40); probes the cache already holds cost
+    nothing.
+
+    Pick the pair with contrast (an index into contrasts/contrasts.json, whose sides are
+    reproduced 3/3) or run_a and run_b (any two committed ACCEPTED runs, e.g. a campaign
+    pair several inputs apart). facts chooses which of B's facts to reproduce: by default
+    every fact the contrast claims, or every fact measured on both runs that differs.
+    Prefer behavior facts (disconnect_reasons, ptk_rekeys_completed, ...): a fact that echoes
+    the configuration (station_status's key_mgmt and ciphers) makes the minimizer keep
+    config changes just to reproduce it.
+
+    Every probe passes P0, P1, action order, P2 and the adapter before it can boot
+    anything; only a probe whose run reproduces every target fact (INTERESTING) counts.
+    The result lists every probe with its status and exact run IDs. One run per probe:
+    the minimal change still needs 3 independent runs per side before it's a reproduced,
+    minimized contrast (#73). New runs are trials in runs/hwsim-logs/ (git-ignored)."""
+    from explorer import minimize
+    if not 1 <= max_guest_runs <= MAX_MINIMIZE_RUNS:
+        raise ToolError(f"max_guest_runs must be 1-{MAX_MINIMIZE_RUNS}")
+    cand_a, runs_a, cand_b, runs_b, target = _minimize_sides(contrast, run_a, run_b, facts)
+    _require_current_image()
+    context = {"minimize": f"{'+'.join(runs_a)} -> {'+'.join(runs_b)}"}
+    try:
+        result = minimize.minimize(cand_a, cand_b, target, cache=Cache(CACHE_DB),
+                                   runner=MINIMIZE_RUNNER, max_guest_runs=max_guest_runs,
+                                   context=context)
+    except RunnerError as exc:
+        raise ToolError(f"simulation environment unavailable: {exc}") from exc
+    labels = {d.id: f"{d.id}: {d.label}" for d in result.deltas}
+    notes = {
+        "MINIMIZED": ("1-minimal for the target with one run per probe. Not yet a reproduced "
+                      "minimized contrast: run each final side 3 times in fresh guests (#73)."),
+        "TARGET_NOT_INTERESTING": ("B's candidate didn't reproduce the target in this run "
+                                   "(see the target probe); nothing was reduced."),
+        "BASELINE_INTERESTING": "A already shows the target: there's nothing to explain.",
+        "BUDGET_EXHAUSTED": (f"Stopped before guest run {max_guest_runs + 1}; no result. "
+                             "Probes already run are cached, so a call with a larger "
+                             "max_guest_runs resumes cheaply."),
+    }
+    return MinimizeReport(
+        status=result.status,
+        side_a=MinimizeSide(run_ids=runs_a, candidate=result.candidate_a),
+        side_b=MinimizeSide(run_ids=runs_b, candidate=result.candidate_b),
+        target=result.target, deltas=list(labels.values()),
+        minimal=[labels[i] for i in result.minimal],
+        minimal_candidate=result.minimal_candidate, minimal_p2=result.minimal_p2,
+        needed_for_validity=[labels[i] for i in result.needed_for_validity],
+        probes=[MinimizeProbe(config_id=p.config_id, deltas=p.deltas, status=p.status,
+                              stage=p.stage, rule_ids=p.rule_ids, run_ids=p.run_ids,
+                              cache_hit=p.cache_hit, differing=p.differing, unknown=p.unknown)
+                for p in result.trace],
+        counts=result.counts, guest_runs=result.guest_runs, cache_hits=result.cache_hits,
+        note=notes[result.status])
 
 
 @server.tool()

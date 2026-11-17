@@ -22,7 +22,8 @@ What stays a P1 predicate (``PREDICATE_ONLY``, with the reason), because ConfigS
 categorical hyperparameters can't express it or because no value in this space reaches
 it: per-link AKM lists, their intersection (``SEC.MLD_COMMON_SUITES``) and the RSNXE
 each one gives (``SEC.MLD_SAME_RSNXE``), plain SAE
-(``SEC.EHT_SAE_AKM``, ``SEC.EHT_SAE_H2E``: not an admitted value), PMF off (``SEC.PMF``:
+(``SEC.EHT_SAE_AKM``, ``SEC.EHT_SAE_H2E``: not an admitted value), WPA2-Personal alone
+(``SEC.MLO_PASSWORD_NEEDS_WPA3``: not an admitted value either), PMF off (``SEC.PMF``:
 P0 has no such value), the link layout (P0: at most two links on different channels), the
 action-order rules and the open questions. ``tests/test_config_space.py`` checks that
 ConfigSpace and the P1 predicates agree on every combination of these hyperparameters, so
@@ -84,6 +85,9 @@ PREDICATE_ONLY = {
     "SEC.EHT_SAE_AKM": "plain SAE (AKM 8) isn't an admitted value; P1 checks other candidates",
     "SEC.EHT_SAE_H2E": "fires only with plain SAE, which isn't an admitted value; P1 checks it",
     "SEC.PMF": "PMF off isn't a value P0 accepts; nothing for ConfigSpace to forbid",
+    "SEC.MLO_PASSWORD_NEEDS_WPA3": (
+        "fires only with a WPA2 password AKM (WPA-PSK, WPA-PSK-SHA256), which isn't an "
+        "admitted value of ap_akm or sta_akm; P1 checks it"),
     "AO.*": "action order: actions stay out of ConfigSpace; validate.check_action_order",
     "UND.*": "open questions (SPEC_UNDETERMINED): validate.find_undetermined",
     "P0 link layout": "at most two links on different channels: model.ApConfig's validators",

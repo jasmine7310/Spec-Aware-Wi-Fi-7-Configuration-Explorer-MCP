@@ -1,0 +1,497 @@
+{
+  "counts": {
+    "broken_in_a_run": 4,
+    "cited_runs_only": 6,
+    "none": 12
+  },
+  "description": "Experimental validation of each rule and open question in rules.yaml (#76). broken_in_a_run: a committed run breaks it under today's rules, showing what the pinned implementation does then (result PASS: it accepted the candidate). cited_runs_only: only spec_coverage.csv's run_evidence, which shows the legal side executing. none: no experimental validation yet (flagged). Written by scripts/check_consistency.py.",
+  "rules": [
+    {
+      "broken_in_runs": [],
+      "cited_runs": [
+        "1793897820",
+        "1794875139"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "exception": 1,
+        "negative": 2,
+        "positive": 1
+      },
+      "id": "SEC.MLD_COMMON_SUITES",
+      "kind": "normative",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a712.6.2",
+        "WFA-WPA3 \u00a73.1.4.1 (NOTE)"
+      ],
+      "validation": "cited_runs_only"
+    },
+    {
+      "broken_in_runs": [
+        {
+          "result": "PASS",
+          "run": "runs/experiments/1794875139",
+          "test": "explorer_candidate"
+        }
+      ],
+      "cited_runs": [
+        "1793897820",
+        "1794875139"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "exception": 1,
+        "negative": 2,
+        "positive": 3
+      },
+      "id": "SEC.MLD_SAME_RSNXE",
+      "kind": "normative",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a712.6.2"
+      ],
+      "validation": "broken_in_a_run"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [
+        "1793897820"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "exception": 1,
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "SEC.MLD_CLIENT_COMMON_AKM",
+      "kind": "normative",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a712.6.3.1",
+        "WFA-WPA3 \u00a72.1.1",
+        "WFA-WPA3 Table 3 (Pairwise Cipher Suite row)"
+      ],
+      "validation": "cited_runs_only"
+    },
+    {
+      "broken_in_runs": [
+        {
+          "result": "PASS",
+          "run": "runs/calibration/1793402046",
+          "test": "eht_mld_ptk_rekey"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/calibration/1793402120",
+          "test": "eht_mld_gtk_rekey"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/smoke/1793690831",
+          "test": "eht_mld_sae_ext_two_links"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/smoke/1793690841",
+          "test": "eht_mld_owe_two_links"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/smoke/1793690854",
+          "test": "eht_mld_ptk_rekey"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/smoke/1793690867",
+          "test": "eht_mld_gtk_rekey"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/smoke/1793690878",
+          "test": "eht_mld_owe_two_links_one_disabled"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/smoke/1793690892",
+          "test": "eht_mld_link_removal"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/anchors/1793694450",
+          "test": "eht_mld_sae_ext_two_links"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/anchors/1793694455",
+          "test": "eht_mld_sae_ext_two_links"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/anchors/1793694461",
+          "test": "eht_mld_ptk_rekey"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/anchors/1793694467",
+          "test": "eht_mld_gtk_rekey"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/anchors/1793694474",
+          "test": "eht_mld_link_removal"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/anchors/1793694480",
+          "test": "eht_mld_link_removal"
+        }
+      ],
+      "cited_runs": [
+        "1793897820"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "negative": 2,
+        "positive": 1
+      },
+      "id": "SEC.EHT_BEACON_PROT",
+      "kind": "normative",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a79.4.2.25, Table 9-192 (bit 84)",
+        "IEEE-802.11be-2024 \u00a712.12.9",
+        "WFA-WPA3 Table 4"
+      ],
+      "validation": "broken_in_a_run"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [
+        "1793897917",
+        "1793897930",
+        "1793897820",
+        "1793897854"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "exception": 1,
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "SEC.PMF",
+      "kind": "normative",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a712.12.9 (NOTE)",
+        "IEEE-802.11-2024 \u00a711.52",
+        "WFA-WPA3 Table 5",
+        "WFA-WPA3 Table 8",
+        "WFA-WPA3 Table 15"
+      ],
+      "validation": "cited_runs_only"
+    },
+    {
+      "broken_in_runs": [
+        {
+          "result": "PASS",
+          "run": "runs/baseline/1793298094",
+          "test": "eht_mld_sae_two_links"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/baseline/1793298125",
+          "test": "eht_mld_sae_two_links"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/baseline/1793298146",
+          "test": "eht_mld_sae_two_links"
+        },
+        {
+          "result": "PASS",
+          "run": "runs/smoke/1793690818",
+          "test": "eht_mld_sae_two_links"
+        }
+      ],
+      "cited_runs": [
+        "1793690818",
+        "1793897820",
+        "1793897917",
+        "1793897930"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "exception": 2,
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "SEC.EHT_SAE_AKM",
+      "kind": "normative",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a712.12.9",
+        "WFA-WPA3 Table 5",
+        "WFA-WPA3 Table 8"
+      ],
+      "validation": "broken_in_a_run"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [
+        "1793897820",
+        "1793897917",
+        "1793897930"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "negative": 2,
+        "positive": 2
+      },
+      "id": "SEC.EHT_SAE_H2E",
+      "kind": "normative",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a712.12.9",
+        "WFA-WPA3 Table 5",
+        "WFA-WPA3 Table 8"
+      ],
+      "validation": "cited_runs_only"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": true,
+      "fixtures": {
+        "negative": 2,
+        "positive": 1
+      },
+      "id": "SEC.SAE_PWE_NEEDS_SAE",
+      "kind": "dependency",
+      "matrix_rows": [
+        "IEEE-802.11-2024 \u00a79.4.2.240, Table 9-373 (bit 5)",
+        "IEEE-802.11-2024 \u00a712.4.4.2.3; \u00a712.4.4.3.3",
+        "WFA-WPA3 Table 3 (SAE Hash-to-Element row)"
+      ],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [
+        {
+          "result": "FAIL",
+          "run": "runs/rejected/1794384673",
+          "test": "explorer_candidate"
+        }
+      ],
+      "cited_runs": [
+        "1794548583",
+        "1794548598"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "negative": 1,
+        "positive": 2
+      },
+      "id": "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E",
+      "kind": "dependency",
+      "matrix_rows": [
+        "IEEE-802.11-2024 \u00a79.4.2.3, Table 9-131 (value 123)",
+        "IEEE-802.11-2024 \u00a711.1.4.6",
+        "WFA-WPA3 Table 3 (SAE Hash-to-Element row)"
+      ],
+      "validation": "broken_in_a_run"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": true,
+      "fixtures": {
+        "exception": 2,
+        "negative": 3,
+        "positive": 2
+      },
+      "id": "SEC.MLO_PASSWORD_NEEDS_WPA3",
+      "kind": "guidance",
+      "matrix_rows": [
+        "WFA-WPA3 \u00a73.2"
+      ],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 2,
+        "positive": 1
+      },
+      "id": "AO.ASSOC_REQUIRED",
+      "kind": "harness",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 2,
+        "positive": 1
+      },
+      "id": "AO.ML_PROBE_STATE",
+      "kind": "harness",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "AO.LINK_MUST_EXIST",
+      "kind": "harness",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [
+        "1793897945",
+        "1793897892"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "negative": 2,
+        "positive": 1
+      },
+      "id": "AO.NO_LINKS_LEFT",
+      "kind": "harness",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a735.3.6.3",
+        "IEEE-802.11be-2024 \u00a735.3.7.5.2"
+      ],
+      "validation": "cited_runs_only"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "AO.RECONFIG_DELETE_ACTIVE",
+      "kind": "harness",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 2,
+        "positive": 1
+      },
+      "id": "AO.RECONFIG_ADD_ABSENT",
+      "kind": "harness",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "AO.RECONNECT_AFTER_DISCONNECT",
+      "kind": "harness",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 2,
+        "positive": 1
+      },
+      "id": "AO.ENABLE_AFTER_DISABLE",
+      "kind": "harness",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "AO.BSS_TM_NEEDS_BSS_TRANSITION",
+      "kind": "harness",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": true,
+      "fixtures": {
+        "exception": 1,
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "UND.AKM_PREFERENCE",
+      "kind": "open_question",
+      "matrix_rows": [
+        "WFA-WPA3 Table 3 (AKM Suite row)"
+      ],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
+      "cites_standard": false,
+      "fixtures": {
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "UND.STA_STATE_WHILE_MLD_DISABLED",
+      "kind": "open_question",
+      "matrix_rows": [],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [
+        "1793897945"
+      ],
+      "cites_standard": true,
+      "fixtures": {
+        "negative": 1,
+        "positive": 1
+      },
+      "id": "UND.ASSOC_WITHOUT_AP_LINKS",
+      "kind": "open_question",
+      "matrix_rows": [
+        "IEEE-802.11be-2024 \u00a735.3.6.3"
+      ],
+      "validation": "cited_runs_only"
+    }
+  ],
+  "unvalidated": [
+    "SEC.SAE_PWE_NEEDS_SAE",
+    "SEC.MLO_PASSWORD_NEEDS_WPA3",
+    "AO.ASSOC_REQUIRED",
+    "AO.ML_PROBE_STATE",
+    "AO.LINK_MUST_EXIST",
+    "AO.RECONFIG_DELETE_ACTIVE",
+    "AO.RECONFIG_ADD_ABSENT",
+    "AO.RECONNECT_AFTER_DISCONNECT",
+    "AO.ENABLE_AFTER_DISABLE",
+    "AO.BSS_TM_NEEDS_BSS_TRANSITION",
+    "UND.AKM_PREFERENCE",
+    "UND.STA_STATE_WHILE_MLD_DISABLED"
+  ]
+}

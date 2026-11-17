@@ -405,6 +405,36 @@ def test_a_target_that_does_not_reproduce_stops_the_reduction():
     assert result.minimal == [] and result.minimal_candidate is None
 
 
+@pytest.mark.parametrize("budget", [0, 1, 3])
+def test_a_spent_budget_stops_the_reduction_before_the_next_run(budget):
+    # #74: an MCP call must not boot an unbounded number of guests.
+    a = _candidate(links=(LINK0,))
+    b = _candidate(actions=(ASSOC, LINK_REMOVE_1), ptk_rekey_interval_s=5,
+                   gtk_rekey_interval_s=5, bss_transition=True)
+    runner = FakeRunner()
+    result = M.minimize(a, b, TARGET, runner=runner, support=_support(),
+                        max_guest_runs=budget)
+    assert result.status == "BUDGET_EXHAUSTED"
+    assert result.guest_runs == len(runner.calls) == budget
+    assert result.minimal == [] and result.minimal_candidate is None
+    assert sum(result.counts.values()) == len(result.trace)
+
+
+def test_a_budget_large_enough_changes_nothing():
+    a = _candidate(links=(LINK0,))
+    b = _candidate(actions=(ASSOC, LINK_REMOVE_1), ptk_rekey_interval_s=5)
+    unbounded = M.minimize(a, b, TARGET, runner=FakeRunner(), support=_support())
+    bounded = M.minimize(a, b, TARGET, runner=FakeRunner(), support=_support(),
+                         max_guest_runs=unbounded.guest_runs)
+    assert bounded.status == "MINIMIZED" and bounded.minimal == unbounded.minimal
+
+
+def test_a_negative_budget_is_refused():
+    with pytest.raises(ValueError, match="can't be negative"):
+        M.Minimizer(_candidate(), _candidate(ptk_rekey_interval_s=5), TARGET,
+                    runner=FakeRunner(), support=_support(), max_guest_runs=-1)
+
+
 def test_a_baseline_that_already_shows_the_target_stops_the_reduction():
     a = _candidate(actions=(ASSOC, LINK_REMOVE_1), ptk_rekey_interval_s=5)
     b = _candidate(actions=(ASSOC, LINK_REMOVE_1), ptk_rekey_interval_s=5, bss_transition=True)

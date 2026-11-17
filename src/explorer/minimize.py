@@ -59,6 +59,12 @@ Before reducing, A (no deltas) and B (all deltas) are probed: if B isn't ``INTER
 the reduction stops (``TARGET_NOT_INTERESTING``), and if A already is, there's nothing to
 explain (``BASELINE_INTERESTING``).
 
+**Budget.** ``max_guest_runs`` caps the new guest runs (each about 30 s). Before a run that
+would go past it, the reduction stops with ``BUDGET_EXHAUSTED``: no ``minimal``, and the
+trace holds every probe made so far. The check comes before the cache lookup, so once
+the budget is spent even a probe the cache could answer isn't made (#74: an MCP call
+can't boot an unbounded number of guests).
+
 **Choosing the target.** The minimizer keeps whatever deltas the target facts need, so
 target behavior, not configuration. ``from_contrast`` targets every fact the contrast
 claims by default; pass ``facts=`` to pick some. A fact that echoes the config, such as
@@ -167,7 +173,8 @@ class Probe(BaseModel):
 
 
 class Reduction(BaseModel):
-    status: Literal["MINIMIZED", "TARGET_NOT_INTERESTING", "BASELINE_INTERESTING"]
+    status: Literal["MINIMIZED", "TARGET_NOT_INTERESTING", "BASELINE_INTERESTING",
+                    "BUDGET_EXHAUSTED"]
     candidate_a: dict
     candidate_b: dict
     target: dict[str, Any]
@@ -317,6 +324,10 @@ def _norm_value(value: Any) -> Any:
     return json.loads(json.dumps(value))
 
 
+class BudgetExhausted(Exception):
+    """Raised before a guest run that would go past ``max_guest_runs``."""
+
+
 class Minimizer:
     """The interestingness wrapper (module docstring). Callable as a Picire test:
     ``minimizer(config, config_id)`` with ``config`` a list of delta IDs."""
@@ -326,7 +337,12 @@ class Minimizer:
                  support: Callable = _support,
                  unsupported: Callable | None = None,
                  retries: int = 1, run_support_probes: bool = True,
-                 context: dict | None = None, **run_kwargs):
+                 context: dict | None = None, max_guest_runs: int | None = None,
+                 **run_kwargs):
+        if max_guest_runs is not None and max_guest_runs < 0:
+            raise ValueError("max_guest_runs can't be negative")
+        self.max_guest_runs = max_guest_runs
+        self.guest_runs = 0
         if not target:
             raise ValueError("no target facts: nothing for a probe to reproduce")
         if bad := [f for f, v in target.items() if v == UNKNOWN]:
@@ -408,10 +424,13 @@ class Minimizer:
         attempts = []
         outcome = ran = None
         for attempt in range(1, self.retries + 2):
+            if self.max_guest_runs is not None and self.guest_runs >= self.max_guest_runs:
+                raise BudgetExhausted(f"{self.guest_runs} guest runs used")
             context = {**self.context, "minimize_probe": base["index"],
                        "deltas": base["deltas"], "attempt": attempt}
             outcome, ran = self.runner(candidate, self.cache, context=context,
                                        **self.run_kwargs)
+            self.guest_runs += ran is not None
             attempts.append(Attempt(run_id=outcome.run_id, status=outcome.status,
                                     reason=outcome.reason, cache_hit=ran is None))
             if outcome.status not in RETRY_ON:
@@ -450,14 +469,16 @@ def minimize(a: dict, b: dict, target: dict[str, Any], **kwargs) -> Reduction:
     ``log_dir``)."""
     m = Minimizer(a, b, target, **kwargs)
     everything = [d.id for d in m.delta_set.deltas]
-    target_probe = m.probe(everything, "target")
     status, minimal = "MINIMIZED", []
-    if not target_probe.interesting:
-        status = "TARGET_NOT_INTERESTING"
-    elif m.probe([], "baseline").interesting:
-        status = "BASELINE_INTERESTING"
-    else:
-        minimal = sorted(DD(m)(everything))
+    try:
+        if not m.probe(everything, "target").interesting:
+            status = "TARGET_NOT_INTERESTING"
+        elif m.probe([], "baseline").interesting:
+            status = "BASELINE_INTERESTING"
+        else:
+            minimal = sorted(DD(m)(everything))
+    except BudgetExhausted:
+        status, minimal = "BUDGET_EXHAUSTED", []
     return _reduction(m, status, minimal)
 
 

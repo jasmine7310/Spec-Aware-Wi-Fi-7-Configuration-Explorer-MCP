@@ -16,9 +16,12 @@ COLUMNS = ["document", "clause", "page", "requirement_summary", "strength", "sta
 STANDARDS = {"IEEE-802.11be-2024", "IEEE-802.11-2024", "WFA-WPA3"}
 # The rules.yaml strength vocabulary, minus "code": the matrix covers the standards.
 STRENGTHS = {"shall", "note", "unclassified", "guidance"}
-STATUSES = {"RULE", "UND", "OUT_OF_SCOPE", "TODO"}
+# NO_RULE: read, but it states nothing a candidate can break (a permission, a
+# recommendation, a description, or a requirement on how the implementation behaves).
+STATUSES = {"RULE", "UND", "NO_RULE", "OUT_OF_SCOPE", "TODO"}
 RUN_DIRS = [REPO_ROOT / "runs" / d for d in ("baseline", "calibration", "smoke", "anchors",
-                                              "experiments")]
+                                              "experiments")] + [
+    REPO_ROOT / "campaigns", REPO_ROOT / "contrasts" / "runs"]
 # Clause and table numbers in a location, e.g. "§12.4.4.2.3 (ECC)" or "Table 9-373, bit 5"
 CLAUSE_TOKEN = re.compile(r"§\s?\d+(?:\.\d+)*|Table \d+(?:-\d+)?")
 # Long verbatim text from the licensed PDFs must not be committed; summaries are ours.
@@ -68,8 +71,8 @@ def test_status_matches_rule_ids(row):
         assert ids and all(i.startswith("UND.") for i in ids)
     else:
         assert not ids, f"a {row['status']} row names no rule"
-    if row["status"] in {"OUT_OF_SCOPE", "TODO"}:
-        assert row["notes"], "say why it's out of scope, or what's left to do"
+    if row["status"] in {"OUT_OF_SCOPE", "TODO", "NO_RULE"}:
+        assert row["notes"], "say why it's out of scope, what's left to do, or why no rule"
 
 
 @pytest.mark.parametrize("row", [r for r in _rows() if r["fixtures"]], ids=_row_id)
@@ -85,7 +88,8 @@ def test_fixtures_exist(row):
 @pytest.mark.parametrize("row", [r for r in _rows() if r["run_evidence"]], ids=_row_id)
 def test_run_evidence_is_committed(row):
     for run_id in _split(row["run_evidence"]):
-        assert any((d / run_id / "manifest.json").is_file() for d in RUN_DIRS), run_id
+        assert any((d / run_id / "manifest.json").is_file() or any(d.glob(f"*/{run_id}/manifest.json"))
+                   for d in RUN_DIRS), run_id
 
 
 def test_every_cited_clause_is_in_the_matrix():

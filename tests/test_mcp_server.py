@@ -55,7 +55,7 @@ def test_pinned_versions_come_from_the_dockerfile():
 def test_implemented_stages():
     stages = {s["stage"].split()[0]: s for s in _get_model()["stages"]}
     assert {k: s["implemented"] for k, s in stages.items()} == {
-        "P0": True, "P1": True, "P2": True, "P3": True, "Campaign": True, "P4": False}
+        "P0": True, "P1": True, "P2": True, "P3": True, "Campaign": True, "P4": True}
     assert "not full 802.11be" in stages["P1"]["note"]
     assert stages["P2"]["note"].startswith("Basic")
 
@@ -65,7 +65,8 @@ def test_get_model_lists_every_rule_and_question():
     assert rules["SEC.MLD_COMMON_SUITES"]["kind"] == "normative"
     assert rules["AO.ASSOC_REQUIRED"]["kind"] == "harness"
     assert rules["UND.AKM_PREFERENCE"]["kind"] == "open_question"
-    assert len(rules) == 18 + 3   # rules.yaml: 18 rules + 3 open questions
+    assert rules["SEC.MLO_PASSWORD_NEEDS_WPA3"]["kind"] == "guidance"
+    assert len(rules) == 19 + 3   # rules.yaml: 19 rules + 3 open questions
 
 
 def test_get_model_matches_model_json():
@@ -133,8 +134,10 @@ def test_server_starts_the_way_mcp_json_launches_it():
     tools, result = _call(params, "get_model")
 
     assert sorted(tools) == ["explain_rule", "get_campaign", "get_model", "list_campaigns",
-                             "plan_campaign", "run_campaign", "run_candidate", "run_hwsim_test",
-                             "validate_candidate"]
+                             "minimize_contrast", "permitted_alternatives", "plan_campaign",
+                             "run_campaign",
+                             "run_candidate", "run_hwsim_test", "validate_candidate",
+                             "why_pruned"]
     assert not result.is_error
     assert result.structured_content["stages"][3]["implemented"] is True
 
@@ -211,7 +214,9 @@ def test_explain_a_normative_rule():
 
 
 def test_every_rule_is_reviewed_except_new_drafts():
-    drafts = set()  # SEC.MLD_SAME_RSNXE (#95) was the last; reviewed 2026-11-16
+    # SEC.MLD_SAME_RSNXE (#95) was reviewed 2026-11-16, SEC.MLO_PASSWORD_NEEDS_WPA3 (#75)
+    # on 2026-11-17.
+    drafts = set()
     for rule in load_rules().rules:
         expected = "draft" if rule.id in drafts else "reviewed"
         assert _explain(rule.id).structured_content["status"] == expected, rule.id

@@ -43,6 +43,7 @@ docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: clie
 .venv/bin/python scripts/find_contrasts.py                   # regenerate contrasts/contrasts.json
 .venv/bin/python scripts/minimize_contrast.py minimize --a RUN --b RUN --facts F --out contrasts/cN  # Docker
 .venv/bin/python scripts/minimize_contrast.py verify --out contrasts/cN   # 3/3 per final side (Docker)
+.venv/bin/python scripts/check_consistency.py                # spec/rules/runs checks + rules/validation.json
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
@@ -69,8 +70,11 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 - `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
   `.signature()` gives the comparable facts.
 - `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`,
-  `run_hwsim_test`, `run_candidate` and the campaign tools `plan_campaign`, `run_campaign`,
-  `list_campaigns`, `get_campaign`. Add new tools
+  `run_hwsim_test`, `run_candidate`, the campaign tools `plan_campaign`, `run_campaign`,
+  `list_campaigns`, `get_campaign`, and the agent chain `why_pruned` /
+  `permitted_alternatives` (#74, over `explorer.pruning`) and `minimize_contrast` (#74, over
+  `explorer.minimize`; a contrast index or two run IDs, `facts`, `max_guest_runs` ≤ 40;
+  `MINIMIZE_RUNNER` is swapped in tests). Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
@@ -138,10 +142,27 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `NOT_INTERESTING` stay separate in `Reduction.trace`; only `INTERESTING` (every target fact measured
   and equal to B's) counts. `from_contrast(facts=[...])` targets behavior facts, not config echoes such
   as `station_status`; the result has `needed_for_validity` and `minimal_p2`. Pass `runner=` /
-  `support=` fakes in tests; a cache hit isn't independent. `verify(reduction)` (#73) runs both
+  `support=` fakes in tests; a cache hit isn't independent. `max_guest_runs` stops a reduction
+  with `BUDGET_EXHAUSTED` before the run that would exceed it. `verify(reduction)` (#73) runs both
   final sides (A, and A with the minimal deltas) 3 times each in fresh guests: `MINIMIZED` only when
   every run reproduces its side, else `PENDING_VERIFICATION`. `scripts/minimize_contrast.py` runs both
   steps and writes `contrasts/<id>/reduction.json`; `contrasts/c1/` is the first one.
+- `explorer.pruning`: the agent chain's first two steps (#74). `why_pruned(data)` gives the
+  planner's role for a candidate (`malformed` / `pruned` / `undetermined` / `unsupported` /
+  `not_run` are pruned; `probe` / `supported` are executable), the stage, and per finding
+  the rule's sources, ConfigSpace encoding and experimental validation (#76).
+  `permitted_alternatives(data, max_changes, limit)` changes up to 3 admitted dimensions on
+  the candidate itself and returns the minimal rule-passing results, `SUPPORTED` first.
+  `current_label` / `set_label` read and set a dimension by its model.json label.
+- `explorer.consistency`: spec / rules / runs consistency (#76), run by
+  `tests/test_consistency.py`. Passing runs in the evidence folders must pass today's
+  rules unless labeled negative: `negative_experiment: true`, or one of hostap's own tests
+  breaking only a rule in `NEGATIVE_BY_DESIGN`. Runs cited as evidence (smoke runs, anchor
+  runs, contrast sides) get no exemption. Labeled negatives stay out of the evidence
+  folders. A new rule that turns a committed run into a violation fails these tests: move
+  the run to `runs/experiments/` as a labeled negative, or revisit the rule.
+  `scripts/check_consistency.py` writes `rules/validation.json` (each rule's experimental
+  validation; rules with none are flagged), and a test fails when it's stale.
 - `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
   `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
   on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
