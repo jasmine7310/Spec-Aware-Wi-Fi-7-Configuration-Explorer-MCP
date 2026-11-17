@@ -57,8 +57,11 @@ that check). IEEE pages are "PDF p. N (printed p. M)"; the printed page is one l
 the model covers (issue #62), one row per requirement: document, clause, PDF page, a
 summary in our own words, strength (the `rules.yaml` vocabulary), status, the rule IDs
 built on it, the unit tests that exercise them and committed runs that show it. Status is
-`RULE` (a rule in `rules.yaml` cites it), `UND` (an open question cites it),
-`OUT_OF_SCOPE` (with a one-line reason) or `TODO` (not read or not modeled yet; clause or
+`RULE` (a rule in `rules.yaml` cites it), `UND` (an open question cites it), `NO_RULE`
+(read, but nothing in it can be broken by a candidate: a permission, a recommendation, a
+description or a requirement on how the implementation behaves; the notes say what it
+means for the model, #75), `OUT_OF_SCOPE` (with a one-line reason) or `TODO` (not read or
+not modeled yet; clause or
 page `TBD` until someone finds it in the PDF). `tests/test_spec_coverage.py` checks that
 every clause `rules.yaml` and the table above cite is in the matrix, and that every `RULE`
 row names an existing rule. Add a row whenever a rule gains a citation.

@@ -757,6 +757,7 @@
       "SEC.EHT_SAE_H2E": "fires only with plain SAE, which isn't an admitted value; P1 checks it",
       "SEC.MLD_COMMON_SUITES": "per-link AKM lists and pairwise ciphers, compared by intersection; categorical hyperparameters can't express list intersection. In this space every link gets the same AKM and cipher (model_json.apply), so it can't fire here; P1 checks it",
       "SEC.MLD_SAME_RSNXE": "compares the RSNXE each link's own AKM list gives; in this space every link gets the same AKM (model_json.apply), so every link advertises the same RSNXE and it can't fire here; P1 checks it",
+      "SEC.MLO_PASSWORD_NEEDS_WPA3": "fires only with a WPA2 password AKM (WPA-PSK, WPA-PSK-SHA256), which isn't an admitted value of ap_akm or sta_akm; P1 checks it",
       "SEC.PMF": "PMF off isn't a value P0 accepts; nothing for ConfigSpace to forbid",
       "UND.*": "open questions (SPEC_UNDETERMINED): validate.find_undetermined"
     },
@@ -875,6 +876,18 @@
       "kind": "dependency",
       "predicate": "If the AP's sae_pwe is 1 (hash_to_element) and some AP link offers only SAE-family AKMs, and the client allows an SAE-family AKM, then the client's sae_pwe is 1 or 2.",
       "role": "dependency",
+      "status": "reviewed"
+    },
+    {
+      "applies_to": [
+        "ap_akm",
+        "sta_akm"
+      ],
+      "coded": true,
+      "id": "SEC.MLO_PASSWORD_NEEDS_WPA3",
+      "kind": "guidance",
+      "predicate": "If the ML association can use a WPA2 password AKM (WPA-PSK or WPA-PSK-SHA256 is offered on every link and allowed by the client), then an SAE-family AKM (SAE or SAE-EXT-KEY) is also offered on every link.",
+      "role": "forbidden",
       "status": "reviewed"
     },
     {
@@ -1002,6 +1015,7 @@
         "SEC.EHT_SAE_H2E",
         "SEC.SAE_PWE_NEEDS_SAE",
         "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E",
+        "SEC.MLO_PASSWORD_NEEDS_WPA3",
         "UND.AKM_PREFERENCE"
       ],
       "side": "ap",
@@ -1031,6 +1045,7 @@
         "SEC.MLD_CLIENT_COMMON_AKM",
         "SEC.EHT_SAE_AKM",
         "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E",
+        "SEC.MLO_PASSWORD_NEEDS_WPA3",
         "UND.AKM_PREFERENCE"
       ],
       "side": "sta",
@@ -1291,7 +1306,7 @@
     }
   ],
   "generated_by": "scripts/build_model_json.py",
-  "model_digest": "sha256:1c5c03685bf242e4fcd454a9b5a47445e7493394ec964616af4a7a7c2e0ce9ac",
+  "model_digest": "sha256:0e3f3145a04bcf05e25946f9497d21e50b443f533c7e818aacb354dd2b46af48",
   "not_admitted": [
     {
       "kind": "config",

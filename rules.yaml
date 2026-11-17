@@ -567,6 +567,59 @@ rules:
       - "Research: docs/research/security-guidance.md. Reviewed 2026-11-13: Michelle checked the IEEE and WFA citations in the PDFs and accepted the hostap lines (PR #92)."
       - "The other direction (WFA Table 3: a STA set to H2E Only doesn't associate unless the AP MLD advertises H2E on all its links) doesn't need a rule here: with SAE-EXT-KEY the AP advertises H2E in the RSNXE even with sae_pwe unset (src/ap/wpa_auth_ie.c:553-557), and client sae_pwe=1 with the AP's unset ran ACCEPTED (runs/smoke/1794548609, campaigns/seed0-2026-11-13/1794557120). It would fail only with plain SAE, which SEC.EHT_SAE_AKM excludes."
 
+  - id: SEC.MLO_PASSWORD_NEEDS_WPA3
+    title: An ML association that uses a password needs WPA3 enabled on the AP MLD
+    kind: guidance
+    status: reviewed
+    applies_to: [ap_akm, sta_akm]
+    meaning: >-
+      The Wi-Fi Alliance guide notes that EHT or MLO associations using password-based
+      authentication require WPA3 to be enabled on the network. Every candidate here is an
+      ML association with an EHT AP MLD, so a password association through WPA2-Personal
+      alone (WPA-PSK or WPA-PSK-SHA256, with no SAE-family AKM on the AP MLD's links) goes
+      against the guide. Deployment guidance, not an IEEE requirement.
+    predicate: >-
+      If the ML association can use a WPA2 password AKM (WPA-PSK or WPA-PSK-SHA256 is
+      offered on every link and allowed by the client), then an SAE-family AKM (SAE or
+      SAE-EXT-KEY) is also offered on every link.
+    exceptions:
+      - "OWE (Enhanced Open) uses no password, so an OWE-only AP MLD isn't affected."
+      - "An AP MLD with WPA3 enabled that also offers WPA-PSK (transition mode) passes: the guide's sentence asks only that WPA3 be enabled. Which AKM each mode allows for EHT is in the guide's mode tables, which aren't coded."
+    sources:
+      - doc: WFA-WPA3
+        strength: guidance
+        location: "§3.2 Troubleshooting and resolving issues with legacy client connectivity to WPA3-Personal networks"
+        page: "p. 29"
+        says: >-
+          After recommending against disabling WPA3 to work around legacy clients, the
+          guide notes that EHT or MLO associations using password-based authentication
+          require WPA3 to be enabled on the network.
+        checked: "Michelle, in the PDF, 2026-11-17; Claude (AI agent), PDF text, 2026-11-17"
+      - doc: WFA-WPA3
+        strength: guidance
+        location: "Tables 5 and 8 (AKM Suite rows)"
+        page: "pp. 14, 18"
+        says: >-
+          Per mode, for an AP with EHT enabled: in WPA3-Personal Transition Mode the PSK
+          AKMs sit next to the mandatory SAE-family ones; in WPA3-Personal Only Mode PSK is
+          DISALLOW. Neither mode has WPA2-Personal alone on an EHT AP. Table 8's footnote
+          (**) (pp. 18-19) lets SAE (:8) be left off when every AP and STA supports EHT;
+          SAE-GDH (:24, SAE-EXT-KEY) stays MAND, so the rule is unaffected.
+        checked: "Michelle, in the PDF, 2026-11-17; Claude (AI agent), PDF text, 2026-11-17"
+    examples:
+      allowed:
+        - "SAE-EXT-KEY on both links, client SAE-EXT-KEY (F02)."
+        - "Both links offer SAE-EXT-KEY, SAE, WPA-PSK and WPA-PSK-SHA256 (eht_mld_ptk_rekey): WPA3 is enabled."
+        - "OWE on both links, client OWE: no password."
+      disallowed:
+        - "WPA-PSK on both links, client WPA-PSK: an ML association with WPA2-Personal only."
+        - "WPA-PSK-SHA256 on both links, client WPA-PSK-SHA256."
+    notes:
+      - "Coded as explorer.validate.check_mlo_password_needs_wpa3 (#75)."
+      - "Reviewed 2026-11-17: Michelle checked §3.2 (p. 29, body text, not a NOTE) and Tables 5 (p. 14) and 8 (p. 18) in the PDF."
+      - "'The network': §3.2 doesn't define it. Tables 5 and 8 give their requirements per BSS, and each link of an AP MLD is its own BSS, so the rule reads it per link: every link that offers a WPA2 password AKM also offers an SAE-family AKM."
+      - "No admitted value reaches it (ap_akm and sta_akm are SAE-EXT-KEY or OWE), so the campaigns can't hit it (config_space.PREDICATE_ONLY). No committed run breaks it yet: rules/validation.json lists it as unvalidated."
+
   # --- Action order (docs/research/action-order.md) --------------------------------
   # Harness and policy rules, not IEEE / Wi-Fi Alliance rules: a violation means the
   # action sequence doesn't make sense for our experiments. Where the standard defines
