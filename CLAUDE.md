@@ -128,6 +128,15 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `reproduced` needs 3 runs per side. `scripts/find_contrasts.py` writes
   `contrasts/contrasts.json` (a test fails when it's stale); write-ups go in
   `contrasts/README.md`.
+- `explorer.minimize`: the Picire interestingness wrapper (#72). `DeltaSet(a, b)` gives whole typed
+  deltas (per config value per link, a one-sided link, a one-sided action step, a reordering) and
+  `apply(subset)`; `minimize(a, b, target)` / `from_contrast(contrast)` run Picire's `DD`. Each probe
+  passes P0, P1, action order, P2 and the adapter before `cache.run_cached`; `INVALID`,
+  `SPEC_UNDETERMINED`, `UNSUPPORTED`, `UNRESOLVED`, `UNKNOWN`, `REJECTED`, `SETUP_FAIL`, `TIMEOUT` and
+  `NOT_INTERESTING` stay separate in `Reduction.trace`; only `INTERESTING` (every target fact measured
+  and equal to B's) counts. `from_contrast(facts=[...])` targets behavior facts, not config echoes such
+  as `station_status`; the result has `needed_for_validity` and `minimal_p2`. Pass `runner=` /
+  `support=` fakes in tests; a cache hit isn't independent.
 - `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
   `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
   on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
