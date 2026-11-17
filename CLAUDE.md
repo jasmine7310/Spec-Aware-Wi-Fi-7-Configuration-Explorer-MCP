@@ -68,8 +68,9 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
 - `explorer.signatures.extract_record(run_dir)`: turns a run folder into a `BehaviorRecord`;
   `.signature()` gives the comparable facts.
 - `explorer.mcp_server`: `MCPServer` with `get_model`, `validate_candidate`, `explain_rule`,
-  `run_hwsim_test`, `run_candidate` and the campaign tools `plan_campaign`, `run_campaign`,
-  `list_campaigns`, `get_campaign`. Add new tools
+  `run_hwsim_test`, `run_candidate`, the campaign tools `plan_campaign`, `run_campaign`,
+  `list_campaigns`, `get_campaign`, and `why_pruned` / `permitted_alternatives` (#74, over
+  `explorer.pruning`). Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
@@ -129,6 +130,13 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `reproduced` needs 3 runs per side. `scripts/find_contrasts.py` writes
   `contrasts/contrasts.json` (a test fails when it's stale); write-ups go in
   `contrasts/README.md`.
+- `explorer.pruning`: the agent chain's first two steps (#74). `why_pruned(data)` gives the
+  planner's role for a candidate (`malformed` / `pruned` / `undetermined` / `unsupported` /
+  `not_run` are pruned; `probe` / `supported` are executable), the stage, and per finding
+  the rule's sources, ConfigSpace encoding and experimental validation (#76).
+  `permitted_alternatives(data, max_changes, limit)` changes up to 3 admitted dimensions on
+  the candidate itself and returns the minimal rule-passing results, `SUPPORTED` first.
+  `current_label` / `set_label` read and set a dimension by its model.json label.
 - `explorer.consistency`: spec / rules / runs consistency (#76), run by
   `tests/test_consistency.py`. Passing runs in the evidence folders must pass today's
   rules unless labeled negative: `negative_experiment: true`, or one of hostap's own tests

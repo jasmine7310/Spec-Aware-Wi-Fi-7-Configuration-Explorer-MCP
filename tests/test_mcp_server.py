@@ -133,8 +133,9 @@ def test_server_starts_the_way_mcp_json_launches_it():
     tools, result = _call(params, "get_model")
 
     assert sorted(tools) == ["explain_rule", "get_campaign", "get_model", "list_campaigns",
-                             "plan_campaign", "run_campaign", "run_candidate", "run_hwsim_test",
-                             "validate_candidate"]
+                             "permitted_alternatives", "plan_campaign", "run_campaign",
+                             "run_candidate", "run_hwsim_test", "validate_candidate",
+                             "why_pruned"]
     assert not result.is_error
     assert result.structured_content["stages"][3]["implemented"] is True
 

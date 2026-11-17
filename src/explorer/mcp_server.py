@@ -17,7 +17,9 @@ candidate. ``validate_candidate`` checks any candidate (configuration plus order
 actions) through P0 and P1 without booting a guest, and ``explain_rule`` returns the
 full registry entry behind any finding. ``plan_campaign`` / ``run_campaign`` plan and run
 a bounded pairwise campaign (issue #69, over ``explorer.planner`` and ``explorer.campaign``);
-``list_campaigns`` / ``get_campaign`` give the details. Contrast tools come with P4.
+``list_campaigns`` / ``get_campaign`` give the details. ``why_pruned`` and
+``permitted_alternatives`` are the first two steps of the roadmap's agent chain (#74,
+``explorer.pruning``); "minimize this accepted contrast" comes with #72.
 """
 
 from __future__ import annotations
@@ -34,7 +36,7 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from pydantic import BaseModel
 
-from explorer import adapter, campaign, model_json, planner, validate
+from explorer import adapter, campaign, model_json, planner, pruning, validate
 from explorer.cache import DEFAULT_DB, Cache, run_cached
 from explorer.rules import Citation, Examples, load_rules
 from explorer.runner import REPO_ROOT, RunnerError, RunStatus, run_test, stale_harness
@@ -219,7 +221,11 @@ STAGES = [
                      "candidate at launch and runs it through the experiment cache; "
                      "list_campaigns / get_campaign give the results."),
     StageStatus(stage="P4 compare and minimize", implemented=False,
-                note="Planned for Weeks 3-5."),
+                note="Partly built: why_pruned explains a pruned candidate with its rule "
+                     "evidence and permitted_alternatives lists nearby candidates that pass "
+                     "the modeled rules. Accepted-vs-accepted contrasts are in "
+                     "contrasts/contrasts.json (#71); minimizing a contrast is still to "
+                     "come (#72, #73)."),
 ]
 
 
@@ -317,7 +323,9 @@ def get_model() -> ModelInfo:
                 "(validate_candidate), and approved hostap tests or any candidate the "
                 "adapter supports run in fresh guests (run_hwsim_test, run_candidate). "
                 "Bounded pairwise campaigns can be planned and run (plan_campaign, "
-                "run_campaign, list_campaigns, get_campaign). Contrasts (P4) aren't built yet."),
+                "run_campaign, list_campaigns, get_campaign). why_pruned explains a pruned "
+                "candidate and permitted_alternatives lists nearby legal ones; minimizing "
+                "a contrast (P4) isn't built yet."),
         model=model_version(),
         pinned_versions=pinned_versions(),
         stages=STAGES,
@@ -380,6 +388,44 @@ def explain_rule(rule_id: str) -> RuleExplanation:
         title=entry.title, meaning=entry.meaning, predicate=getattr(entry, "predicate", None),
         exceptions=getattr(entry, "exceptions", []), sources=entry.sources,
         examples=getattr(entry, "examples", None), notes=entry.notes)
+
+
+@server.tool()
+def why_pruned(candidate: dict[str, Any]) -> pruning.PruneExplanation:
+    """Why the campaign would prune this candidate (same JSON as validate_candidate), with
+    the evidence. Nothing is booted.
+
+    role is the planner's: malformed (P0), pruned (a modeled rule rejects it, P1),
+    undetermined (an open question; held for review, P1), unsupported (an implementation
+    limit with recorded refusals, P2), not_run (some value has no passing committed run,
+    P2), probe or supported (executable: not pruned). Each finding gives the rule ID, what
+    the candidate does, the rule's predicate, every cited source (section, page, strength,
+    who checked it), how ConfigSpace encodes it, and its experimental validation: committed
+    runs that break the rule (runs_breaking_it) and runs its spec-coverage rows cite. AO.*
+    and other harness/policy rules aren't Wi-Fi spec rules. campaign_assignment gives its
+    dimension labels when it's one of the campaign space's assignments. Next step:
+    permitted_alternatives."""
+    return pruning.why_pruned(candidate)
+
+
+@server.tool()
+def permitted_alternatives(candidate: dict[str, Any], max_changes: int = 1,
+                           limit: int = 10) -> pruning.AlternativesResult:
+    """Candidates near this one (same JSON as validate_candidate) that pass the modeled
+    rules: up to max_changes (1-3) of model.json's admitted dimensions changed on the
+    candidate itself, everything else kept. Nothing is booted; takes about a second.
+
+    Only minimal alternatives are listed (no superset of a smaller permitted change),
+    ranked by fewest changes, then P2 SUPPORTED (a committed run did exactly this; run_ids
+    to rerun it with run_candidate), then support probes, then fewest changed inputs. Each
+    gives the changes (old -> new label), the exact inputs that differ, P2's status and the
+    full candidate. Passing the modeled rules is never full 802.11be compliance, and only a
+    SUPPORTED alternative has run. Raises for a malformed candidate: fix it first."""
+    try:
+        return pruning.permitted_alternatives(candidate, max_changes=max_changes,
+                                              limit=limit)
+    except ValueError as exc:
+        raise ToolError(str(exc)) from None
 
 
 @server.tool()
