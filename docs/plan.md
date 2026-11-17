@@ -153,7 +153,9 @@ P4 (contrasts and minimization) is Weeks 4–5.
     dropped. SETUP_FAIL / TIMEOUT say nothing about the candidate: rerun once, never file
     under `runs/rejected/` or use as evidence (#68). Probe pairs count as executed
     coverage only after an ACCEPTED run.
-- **Candidate adapter** (#79, 2026-11-10; **the team should confirm**): any candidate runs
+- **Candidate adapter** (#79, 2026-11-10; merged in PR #86 and built on since by "Admit ≥8
+  executable dimensions", "Model the client's `sae_pwe`" and the campaigns, so it stands):
+  any candidate runs
   through one hwsim test (`docker/test_explorer_candidate.py`) that uses hostap's own
   helpers. It observes the same way after every action (links, station status, traffic on
   each active link; after a disconnect or the last link's removal, that traffic fails) and
