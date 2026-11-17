@@ -1,4 +1,4 @@
-# Project plan: Weeks 1–3
+# Project plan: Weeks 1–4
 
 Shared context for the team and for coding agents. The GitHub issue board tracks
 individual tasks and their status; this file holds the big picture and the decisions
@@ -20,7 +20,7 @@ every rejection says which stage and which sourced rule rejected it:
 | P2 | Support checker | Does our pinned hostap/kernel version actually support it? | 🟡 `support.check_support`: `SUPPORTED` for an exact match to a tested scenario or to a committed legal adapter run on the pinned commits; otherwise `UNRESOLVED` with per-value run evidence and `all_values_evidenced` (a support probe), plus recorded refusals (#80) |
 | – | Campaign planner and runner | Which legal, runnable candidates cover every pair of admitted values, and what happens when they run? | ✅ `planner.plan` (`campaign_plan.json`, `pairwise_coverage.json`), `cache.run_cached`, `campaign.run` (`campaigns/`, `pruning_counts.json`). Over MCP: `plan_campaign`, `run_campaign`, `list_campaigns`, `get_campaign` |
 | P3 | Test runner | What happens when we run it in a fresh simulated network? | ✅ `runner.run_test()` + `signatures.extract_record()`; any candidate the adapter supports runs through `adapter.run_candidate()` (ACCEPTED / REJECTED / SETUP_FAIL / TIMEOUT) |
-| P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | ⬜ |
+| P4 | Difference finder | Which minimal change explains a behavior difference between two accepted runs? (Weeks 3–5) | 🟡 Contrasts: `contrasts.find` pairs accepted, rule-passing runs a few inputs apart and keeps only fact differences measured on both sides and stable across repeats, each with its log lines (`contrasts/contrasts.json`, `contrasts/README.md`). Minimization still to come |
 | – | MCP server | Lets the agent use all of the above in plain English | 🟡 `get_model`, `validate_candidate` (P0 + P1 + basic P2, no guest), `explain_rule` (full registry entry behind any finding) `run_hwsim_test` (runs an approved hostap test; one that breaks a modeled rule only as a labeled negative experiment) and `run_candidate` (runs any candidate the adapter supports, after validating it, with the same negative-experiment rule). `get_model` also reports `model.json`'s versions, admitted dimensions and the dependencies between them. Campaign tools: `plan_campaign`, `run_campaign`, `list_campaigns`, `get_campaign` ("Expose campaign over MCP"); contrast tools come with P4 |
 
 Weeks 1–2 covered P0, P1, basic P2/P3 and MCP (Checkpoint 1). Week 3 adds the admitted
@@ -33,7 +33,7 @@ P4 (contrasts and minimization) is Weeks 4–5.
 
 | Path | What it is |
 |---|---|
-| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `config_space.py` (the static settings as a ConfigSpace space, each constraint tagged with its rule), `cache.py` (experiment cache: key, SQLite store, `run_cached`), `campaign.py` (runs a plan, the pruning funnel and rejected-cases table), `mcp_server.py` (MCP tools). `minimize.py` (Picire wrapper) is still a placeholder |
+| `src/explorer/` | The tool: one module per component. Implemented so far: `model.py` (P0 settings model), `rules.py` (P1 rule registry loader), `validate.py` (P0 errors, P1 rule checks, the pipeline), `scenarios.py` (what each runnable hostap test sets up and does), `support.py` (P2), `runner.py` (P3), `adapter.py` (runs any candidate: candidate → hwsim test plan, P3 status), `signatures.py` (behavior records), `model_json.py` (builds `model.json`; `apply()` turns dimension choices into a candidate), `planner.py` (the pairwise campaign plan and coverage), `config_space.py` (the static settings as a ConfigSpace space, each constraint tagged with its rule), `cache.py` (experiment cache: key, SQLite store, `run_cached`), `campaign.py` (runs a plan, the pruning funnel and rejected-cases table), `contrasts.py` (accepted-vs-accepted contrasts), `mcp_server.py` (MCP tools). `minimize.py` (Picire wrapper) is still a placeholder |
 | `tests/` | pytest tests for `src/` (`WIFI7_DOCKER_TESTS=1` also runs a real simulation test) |
 | `docker/` | Simulation environment: `Dockerfile`, `run-test.sh`, `README.md` |
 | `scripts/build-env.sh` | One command: build the simulation image + smoke test (`--fresh` ignores the cache). Rerun it whenever `docker/` changes, including after pulling: `run_candidate` and `run_campaign` refuse an image whose harness files differ from the repo's (`runner.stale_harness`) |
@@ -45,12 +45,14 @@ P4 (contrasts and minimization) is Weeks 4–5.
 | `docker/test_explorer_candidate.py` | Our adapter test: runs one candidate's plan (from `adapter.build_plan`) with hostap's own helpers |
 | `scripts/build_model_json.py`, `scripts/plan_campaign.py` | Regenerate `model.json`, and `campaign_plan.json` + `pairwise_coverage.json` (`--seed N`, `--budget N`) |
 | `scripts/run_campaign.py` | Runs `campaign_plan.json` (each candidate in a fresh guest through the cache; `--id`, `--retries`) and writes `campaigns/<id>/` and `pruning_counts.json`; the MCP tool `run_campaign` does the same for a plan from `plan_campaign` |
+| `scripts/find_contrasts.py` | Regenerates `contrasts/contrasts.json` from the committed runs (`--max-inputs N`); `tests/test_contrasts.py` fails when it's out of date |
 | `scripts/smoke_dimensions.py` | Runs the smoke candidates for the dimensions admitted through the adapter (`--check` validates only) |
 | `scripts/reproduce-scenarios.py` | Runs each rule-passing hostap scenario through the adapter and lists the facts that differ from its committed runs |
 | `runs/smoke/` | Runs showing each smoke-tested setting value executes (committed evidence; `surface_candidates.csv`'s `smoke_runs` column points here) |
 | `runs/anchors/` | Extra runs so each anchor family in `anchor_coverage.csv` has 3 independent passing runs (committed evidence) |
 | `runs/rejected/` | Runs of rule-passing candidates that hostapd / wpa_supplicant refused (P3 `REJECTED`), kept as labeled evidence of the refusal, never as smoke values (`runs/rejected/README.md`) |
 | `campaigns/` | Committed campaign runs, one folder per campaign (`seed0-2026-11-13/`, `seed0-topup-2026-11-13/`, `seed1-fresh-2026-11-15/` (run over MCP): run folders, `campaign_plan.json`, `pruning_counts.json`, `results.json`, `rejected_cases.csv`, `README.md`). `ACCEPTED` runs count as P2 evidence; `REJECTED` ones as recorded refusals |
+| `contrasts/` | Accepted-vs-accepted contrasts (#71): `contrasts.json` (every contrast `contrasts.find` reports, with run IDs, the inputs that differ, the claimable facts and their log lines), `README.md` (each contrast's write-up) and `runs/` (the extra runs that give each side 3 independent runs; legal `ACCEPTED` adapter runs, not in `support.EVIDENCE_DIRS`) |
 | `pruning_counts.json` | The latest campaign's funnel (each campaign folder keeps its own copy, with the plan it ran): enumerated → P0 → ConfigSpace / P1 → P2 → planned → P3 statuses, guest boots, cache hits, retries. Written by `scripts/run_campaign.py` or the MCP tool `run_campaign` |
 | `runs/cache.sqlite` | The experiment cache's index (git-ignored): run outcomes by cache key. The run folders are the evidence; `explorer.cache.Cache().rebuild()` re-indexes the committed ones |
 | `runs/hwsim-logs/` | Trial runs (git-ignored; the default for `run-test.sh` and `run_test()`) |
@@ -334,6 +336,15 @@ RSNXEs" (from the rule audit), an experiment rather than a deliverable.
   admitted values, 11 infeasible under the modeled rules; 250 feasible after P1, 249 after
   P2 (`link_remove` with `DISABLE_MLD` is `UNSUPPORTED_IMPLEMENTATION`). Covered by committed
   `ACCEPTED` runs: 249 (all runnable pairs; 126 before the campaigns).
+
+## Week 4 status
+
+Parent issue "Week 4: Find contrasts and minimize them (Checkpoint 2)"; sub-issues on the
+board. Each issue merges to `main` through its own PR.
+
+| Issue | Area | Status |
+|---|---|---|
+| Find ≥2 accepted-vs-accepted contrasts | Search | ✅ Done 2026-11-16. `explorer.contrasts` + `scripts/find_contrasts.py` (`contrasts/contrasts.json`, write-up in `contrasts/README.md`). It pairs accepted, rule-passing, non-negative runs on the pinned commits that are a few inputs apart, and claims only facts measured on both sides and stable across each side's repeats, each with its log lines. 7 new runs (`contrasts/runs/`, all `ACCEPTED`) give **2 reproduced contrasts, 3 vs 3 runs, one input apart**. C1: a 5 s PTK rekey after `link_remove` (`1794557032`, `1794878319`, `1794878408` vs `1794812777`, `1794878187`, `1794878259`) adds AP-initiated reason-15 disconnects and ends in `4WAY_HANDSHAKE`. C2: the same rekey without `link_remove` (`1794878480`, `1794878597`, `1794878721`) completes (`ptk_rekeys_completed` 1 vs 0). Across all 40 accepted runs, reason 15 comes in 14/14 with ptk 5 + `link_remove` and 0/26 otherwise. hostapd receives no EAPOL frame after `LINK_REMOVE`, though the client sends 2/4; the cause isn't in the logs and no claim is made. Follow-up: the adapter keeps logging "(associated)" after an AP-initiated disconnect |
 
 ## Checkpoint 1
 
