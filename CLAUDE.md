@@ -41,6 +41,8 @@ docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: clie
 .venv/bin/python scripts/smoke_dimensions.py --check         # validate the dimension smoke candidates
 .venv/bin/python scripts/run_campaign.py                     # run campaign_plan.json (Docker; slow)
 .venv/bin/python scripts/find_contrasts.py                   # regenerate contrasts/contrasts.json
+.venv/bin/python scripts/minimize_contrast.py minimize --a RUN --b RUN --facts F --out contrasts/cN  # Docker
+.venv/bin/python scripts/minimize_contrast.py verify --out contrasts/cN   # 3/3 per final side (Docker)
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
@@ -136,7 +138,10 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `NOT_INTERESTING` stay separate in `Reduction.trace`; only `INTERESTING` (every target fact measured
   and equal to B's) counts. `from_contrast(facts=[...])` targets behavior facts, not config echoes such
   as `station_status`; the result has `needed_for_validity` and `minimal_p2`. Pass `runner=` /
-  `support=` fakes in tests; a cache hit isn't independent.
+  `support=` fakes in tests; a cache hit isn't independent. `verify(reduction)` (#73) runs both
+  final sides (A, and A with the minimal deltas) 3 times each in fresh guests: `MINIMIZED` only when
+  every run reproduces its side, else `PENDING_VERIFICATION`. `scripts/minimize_contrast.py` runs both
+  steps and writes `contrasts/<id>/reduction.json`; `contrasts/c1/` is the first one.
 - `explorer.support.check_support(candidate)`: the P2 check (rules decided in #80).
   `SUPPORTED` for an exact match to a tested scenario, or to a committed legal adapter run
   on the pinned commits; otherwise `UNRESOLVED` with the evidence per value (smoke runs per
@@ -169,7 +174,9 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   smoke values), `runs/experiments/` (labeled experiment runs that answer a spec or
   implementation question, e.g. #95's RSNXE run; never P2 evidence), `campaigns/`
   (committed campaign runs, #68), `contrasts/runs/` (extra legal runs so each contrast
-  side has 3, #71; P2 evidence), `runs/hwsim-logs/`
+  side has 3, #71, and minimized contrasts' 3/3 reproductions, #73; P2 evidence),
+  `contrasts/<id>/probes/` (a minimization's probe runs, the trace's evidence; not P2 evidence),
+  `runs/hwsim-logs/`
   (git-ignored trials), `runs/cache.sqlite` (the cache's git-ignored
   index). Never commit trials as evidence.
 - Keep `docs/plan.md`'s status tables current when an issue is finished.

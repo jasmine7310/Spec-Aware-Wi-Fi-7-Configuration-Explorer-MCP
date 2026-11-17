@@ -1,6 +1,6 @@
 {
-  "accepted_runs": 49,
-  "candidates": 35,
+  "accepted_runs": 55,
+  "candidates": 37,
   "contrasts": [
     {
       "a_runs": [
@@ -476,6 +476,261 @@
             }
           ],
           []
+        ]
+      },
+      "reproduced": true,
+      "unstable": []
+    },
+    {
+      "a_runs": [
+        "1794952238",
+        "1794952257",
+        "1794952274"
+      ],
+      "b_runs": [
+        "1794952292",
+        "1794952308",
+        "1794952325"
+      ],
+      "candidate_a": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": false,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": 5,
+            "sae_pwe": "hash_to_element"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "both"
+          }
+        }
+      },
+      "candidate_b": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": false,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": "hash_to_element"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "both"
+          }
+        }
+      },
+      "current_harness": true,
+      "facts": [
+        {
+          "a": "0x0",
+          "b": "0x1",
+          "evidence_a": [
+            "contrasts/runs/1794952238/explorer_candidate.log:367: 2026-11-17 21:51:20,491 INFO valid_links=0x0"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1794952292/explorer_candidate.log:203: 2026-11-17 21:51:39,245 INFO valid_links=0x1"
+          ],
+          "fact": "valid_links"
+        },
+        {
+          "a": "0x0",
+          "b": "0x1",
+          "evidence_a": [
+            "contrasts/runs/1794952238/explorer_candidate.log:370: 2026-11-17 21:51:20,492 INFO active_links=0x0"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1794952292/explorer_candidate.log:206: 2026-11-17 21:51:39,245 INFO active_links=0x1"
+          ],
+          "fact": "active_links"
+        },
+        {
+          "a": [
+            {
+              "locally_generated": false,
+              "reason": 15
+            },
+            {
+              "locally_generated": false,
+              "reason": 15
+            },
+            {
+              "locally_generated": false,
+              "reason": 15
+            },
+            {
+              "locally_generated": false,
+              "reason": 15
+            },
+            {
+              "locally_generated": false,
+              "reason": 15
+            }
+          ],
+          "b": [
+            {
+              "locally_generated": true,
+              "reason": 3
+            }
+          ],
+          "evidence_a": [
+            "contrasts/runs/1794952238/explorer_candidate.log:171: 2026-11-17 21:50:48,641 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1794952238/explorer_candidate.log:231: 2026-11-17 21:50:55,283 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1794952238/explorer_candidate.log:273: 2026-11-17 21:51:00,288 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1794952238/explorer_candidate.log:290: 2026-11-17 21:51:01,210 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1794952292/explorer_candidate.log:233: 2026-11-17 21:51:39,245 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1"
+          ],
+          "fact": "disconnects"
+        },
+        {
+          "a": {
+            "wpa_state": "SCANNING"
+          },
+          "b": {
+            "bigtk_set": "1",
+            "group_cipher": "CCMP",
+            "key_mgmt": "SAE-EXT-KEY",
+            "mgmt_group_cipher": "BIP",
+            "pairwise_cipher": "CCMP",
+            "pmf": "2",
+            "sae_group": "19",
+            "sae_h2e": "1",
+            "wifi_generation": "7",
+            "wpa_state": "COMPLETED"
+          },
+          "evidence_a": [
+            "contrasts/runs/1794952238/explorer_candidate.log:372: 2026-11-17 21:51:20,492 INFO station status: {'wpa_state': 'SCANNING', 'p2p_device_address': '02:00:00:00:08:00', 'address': '02:00:00:00:08:00', 'uuid': '75a9ac25-8084-5995-9e1a-dd9a7395af8f'}"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1794952292/explorer_candidate.log:208: 2026-11-17 21:51:39,245 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx"
+          ],
+          "fact": "station_status"
+        },
+        {
+          "a": 1,
+          "b": 2,
+          "evidence_a": [
+            "contrasts/runs/1794952238/explorer_candidate.log:166: 2026-11-17 21:50:44,557 DEBUG wlan8: <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=CCMP]"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1794952292/explorer_candidate.log:166: 2026-11-17 21:51:38,644 DEBUG wlan8: <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=CCMP]",
+            "contrasts/runs/1794952292/explorer_candidate.log:199: 2026-11-17 21:51:39,145 DEBUG wlan8: <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=CCMP]"
+          ],
+          "fact": "gtk_rekeys_completed"
+        },
+        {
+          "a": [],
+          "b": [
+            0
+          ],
+          "evidence_a": [],
+          "evidence_b": [],
+          "fact": "data_test_rx_after_last_rekey_ap_links"
+        },
+        {
+          "a": [
+            [
+              15,
+              false
+            ]
+          ],
+          "b": [
+            [
+              3,
+              true
+            ]
+          ],
+          "evidence_a": [
+            "contrasts/runs/1794952238/explorer_candidate.log:171: 2026-11-17 21:50:48,641 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1794952238/explorer_candidate.log:231: 2026-11-17 21:50:55,283 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1794952238/explorer_candidate.log:273: 2026-11-17 21:51:00,288 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1794952238/explorer_candidate.log:290: 2026-11-17 21:51:01,210 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1794952292/explorer_candidate.log:233: 2026-11-17 21:51:39,245 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1"
+          ],
+          "fact": "disconnect_reasons"
+        }
+      ],
+      "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+      "input_diff": {
+        "config.ap.ptk_rekey_interval_s": [
+          5,
+          null
         ]
       },
       "reproduced": true,

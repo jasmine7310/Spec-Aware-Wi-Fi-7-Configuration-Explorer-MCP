@@ -54,7 +54,7 @@ class FakeRunner:
     def __call__(self, candidate, cache, *, context=None, **kwargs):
         key = json.dumps(candidate.model_dump(mode="json"), sort_keys=True)
         self.contexts.append(context)
-        if self.cache_hits and key in self.stored:
+        if self.cache_hits and not kwargs.get("force") and key in self.stored:
             return self.stored[key].model_copy(update={"independent": False}), None
         self.calls.append(candidate)
         status, signature = (self.queue.pop(0) if self.queue
@@ -516,3 +516,99 @@ def test_the_minimal_candidate_s_p2_status_is_recorded():
     stopped = M.minimize(a, b, {"disconnect_reasons": [[3, True]]}, runner=FakeRunner(),
                          support=_support())
     assert stopped.status == "TARGET_NOT_INTERESTING" and stopped.minimal_p2 is None
+
+
+# --- reproducing the final sides (#73) -------------------------------------------------
+
+def _reduced():
+    a = _candidate(actions=(ASSOC, LINK_REMOVE_1))
+    b = _candidate(actions=(ASSOC, LINK_REMOVE_1), ptk_rekey_interval_s=5,
+                   gtk_rekey_interval_s=5)
+    result = M.minimize(a, b, TARGET, runner=FakeRunner(), support=_support())
+    assert result.status == "MINIMIZED" and len(result.minimal) == 1
+    return result
+
+
+def test_verify_runs_each_final_side_fresh_and_labels_it_minimized():
+    reduction = _reduced()
+    runner = FakeRunner()            # would serve hits, but verify forces fresh runs
+    v = M.verify(reduction, runner=runner, context={"why": "test"})
+    assert v.label == "MINIMIZED" and v.runs == 3
+    assert [r.matches_target for r in v.baseline] == [False] * 3
+    assert [r.matches_target for r in v.minimal] == [True] * 3
+    assert len(runner.calls) == 6 and len({r.run_id for r in v.baseline + v.minimal}) == 6
+    assert [c["verify_side"] for c in runner.contexts] == ["baseline"] * 3 + ["minimal"] * 3
+    assert all(c["why"] == "test" for c in runner.contexts)
+
+
+def test_one_run_that_does_not_reproduce_leaves_it_pending():
+    reduction = _reduced()
+    calls = []
+
+    def flaky(candidate):
+        calls.append(candidate)
+        if len(calls) == 5:                      # the minimal side's second run
+            return {"disconnects": [REASON_3], "valid_links": "0x1"}
+        return _behavior(candidate)
+    v = M.verify(reduction, runner=FakeRunner(behavior=flaky))
+    assert v.label == "PENDING_VERIFICATION"
+    assert [r.matches_target for r in v.minimal] == [True, False, True]
+
+
+def test_an_unmeasured_fact_or_a_failed_run_leaves_it_pending():
+    reduction = _reduced()
+    unmeasured = FakeRunner(behavior=lambda c: {"disconnects": UNKNOWN})
+    v = M.verify(reduction, runner=unmeasured)
+    assert v.label == "PENDING_VERIFICATION"
+    assert {r.matches_target for r in v.baseline + v.minimal} == {None}
+    rejected = FakeRunner(queue=[("REJECTED", None)])
+    v = M.verify(reduction, runner=rejected)
+    assert v.label == "PENDING_VERIFICATION" and v.baseline[0].status == "REJECTED"
+
+
+def test_a_setup_fail_is_rerun_once_and_the_rerun_counts():
+    reduction = _reduced()
+    v = M.verify(reduction, runner=FakeRunner(queue=[("SETUP_FAIL", None)]))
+    assert [r.status for r in v.baseline] == ["SETUP_FAIL", "ACCEPTED", "ACCEPTED", "ACCEPTED"]
+    assert v.label == "MINIMIZED"
+    twice = FakeRunner(queue=[("SETUP_FAIL", None), ("TIMEOUT", None)])
+    assert M.verify(reduction, runner=twice).label == "PENDING_VERIFICATION"
+
+
+def test_verify_refuses_an_unminimized_reduction_and_cache_hits():
+    a = _candidate(actions=(ASSOC, LINK_REMOVE_1))
+    not_reduced = M.minimize(a, _candidate(gtk_rekey_interval_s=5, actions=(ASSOC, LINK_REMOVE_1)),
+                             TARGET, runner=FakeRunner(), support=_support())
+    with pytest.raises(ValueError, match="TARGET_NOT_INTERESTING"):
+        M.verify(not_reduced, runner=FakeRunner())
+    def always_hit(candidate, cache, **kwargs):
+        outcome, _ = FakeRunner()(candidate, cache, **kwargs)
+        return outcome.model_copy(update={"independent": False}), None
+    with pytest.raises(ValueError, match="cache hit"):
+        M.verify(_reduced(), runner=always_hit)
+
+
+# --- the committed minimized contrast (#73) --------------------------------------------
+
+def test_committed_c1_is_minimized_and_reread_from_its_runs():
+    from explorer.signatures import extract_record
+    folder = contrasts.CONTRASTS_DIR / "c1"
+    data = json.loads((folder / "reduction.json").read_text())
+    reduction = M.Reduction.model_validate(data["reduction"])
+    verification = M.Verification.model_validate(data["verification"])
+    assert data["label"] == verification.label == reduction.status == "MINIMIZED"
+    assert reduction.minimal_candidate == M.DeltaSet(
+        reduction.candidate_a, reduction.candidate_b).apply(reduction.minimal)
+    for probe in reduction.trace:                 # every probe run is committed
+        for run_id in probe.run_ids:
+            assert (folder / "probes" / run_id / "manifest.json").exists(), run_id
+    runs = verification.baseline + verification.minimal
+    assert len(verification.baseline) == len(verification.minimal) == contrasts.REPRODUCE_RUNS
+    for run in runs:                              # the recorded facts match the logs
+        record = extract_record(contrasts.CONTRASTS_DIR / "runs" / run.run_id,
+                                adapter.ADAPTER_TEST)
+        values, *_ = M._compare(adapter.comparable_signature(record), reduction.target)
+        assert values == run.facts, run.run_id
+    # Both final sides are now P2 SUPPORTED by their committed reproduction runs.
+    assert contrasts.p2_supported(reduction.candidate_a)
+    assert contrasts.p2_supported(reduction.minimal_candidate)
