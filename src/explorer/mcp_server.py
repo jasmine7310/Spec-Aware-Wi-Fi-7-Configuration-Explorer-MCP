@@ -197,7 +197,7 @@ STAGES = [
                 note="validate_candidate checks a candidate against the settings and action "
                      "models and reports readable P0.* errors."),
     StageStatus(stage="P1 specification rules", implemented=True,
-                note="A modeled subset, not full 802.11be: seven security/setting rules, nine "
+                note="A modeled subset, not full 802.11be: ten security/setting rules, nine "
                      "action-order rules and three open questions (SPEC_UNDETERMINED), all "
                      "applied by validate_candidate and explained by explain_rule. A rule "
                      "whose status is draft (explain_rule shows it) still waits for a person "

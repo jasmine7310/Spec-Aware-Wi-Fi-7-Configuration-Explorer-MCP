@@ -325,6 +325,30 @@ def check_sae_h2e_only_needs_sta_h2e(config: Config) -> list[Finding]:
                 f"it skips that AP MLD; set the client's sae_pwe to hash_to_element or both"))]
 
 
+# Password AKMs that aren't WPA3: WPA2-Personal (hostap WPA-PSK, WPA-PSK-SHA256).
+_WPA2_PASSWORD = ("WPA-PSK", "WPA-PSK-SHA256")
+
+
+def check_mlo_password_needs_wpa3(config: Config) -> list[Finding]:
+    """SEC.MLO_PASSWORD_NEEDS_WPA3 (guidance, WFA WPA3 Deployment Guide v1.1 §3.2, p. 29):
+    EHT or MLO associations that use password-based authentication need WPA3 enabled on
+    the network.
+
+    Read literally: the ML association can use a WPA2 password AKM (one is offered on every
+    link and allowed by the client), and no SAE-family AKM is offered on every link, so the
+    AP MLD has no WPA3-Personal for an ML association. An AP MLD with WPA3 enabled that also
+    offers WPA-PSK (transition mode) passes; the guide's mode tables (Tables 5 and 8) say
+    more, per mode, and aren't coded."""
+    usable_password = [akm for akm in _usable_akms(config) if akm in _WPA2_PASSWORD]
+    if not usable_password or any(akm in _SAE_FAMILY for akm in _common_akms(config)):
+        return []
+    return [Finding(
+        rule_id="SEC.MLO_PASSWORD_NEEDS_WPA3",
+        reason=(f"the ML association can only use a password through WPA2 "
+                f"({usable_password}): no SAE-family AKM is offered on every AP MLD link "
+                f"(common to all links: {_common_akms(config)}), so WPA3 isn't enabled"))]
+
+
 P1_CHECKS: dict[str, Callable[[Config], list[Finding]]] = {
     "SEC.MLD_COMMON_SUITES": check_mld_common_suites,
     "SEC.MLD_SAME_RSNXE": check_mld_same_rsnxe,
@@ -334,6 +358,7 @@ P1_CHECKS: dict[str, Callable[[Config], list[Finding]]] = {
     "SEC.EHT_SAE_H2E": check_eht_sae_h2e,
     "SEC.SAE_PWE_NEEDS_SAE": check_sae_pwe_needs_sae,
     "SEC.SAE_H2E_ONLY_NEEDS_STA_H2E": check_sae_h2e_only_needs_sta_h2e,
+    "SEC.MLO_PASSWORD_NEEDS_WPA3": check_mlo_password_needs_wpa3,
 }
 
 

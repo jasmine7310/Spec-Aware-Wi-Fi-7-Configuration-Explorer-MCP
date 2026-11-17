@@ -213,6 +213,21 @@ means the client allows an SAE-family AKM.
 | **Effect** | Rejects AP MLDs whose links differ in whether they offer `SAE-EXT-KEY` (or plain `SAE` with `sae_pwe` set), e.g. `[SAE-EXT-KEY, OWE]` with `[OWE]`. Different AKM lists that agree on the bit stay legal (`[SAE-EXT-KEY, SAE]` with `[SAE-EXT-KEY]`). The campaigns never hit it: every link gets the same AKM there. |
 | **Status** | **Verified.** §12.6.2 wording re-read by Michelle in the PDF and the strict reading chosen (2026-11-16); hostap lines checked by Claude at the pinned commit and accepted by Michelle (2026-11-16), and borne out by run `1794875139` |
 
+### SEC.MLO_PASSWORD_NEEDS_WPA3: an ML association that uses a password needs WPA3
+
+| | |
+|---|---|
+| **Kind** | **Guidance** (issue #75), not an IEEE requirement |
+| **WFA** | WFA-WPA3 §3.2 "Troubleshooting and resolving issues with legacy client connectivity to WPA3-Personal networks", p. 29: after advising against disabling WPA3 to work around legacy clients, the guide notes that EHT or MLO associations using password-based authentication require WPA3 to be enabled on the network. Tables 5 (WPA3-Personal Transition Mode, p. 14) and 8 (WPA3-Personal Only Mode, p. 18), AKM Suite rows for an AP with EHT enabled: the SAE-family AKMs are MAND in both; PSK sits next to them in Transition Mode and is DISALLOW in Only Mode. Neither mode has WPA2-Personal alone on an EHT AP. |
+| **IEEE** | None found. 802.11be §12.12.9 (PDF p. 446) constrains SAE between EHT STAs (SEC.EHT_SAE_AKM, SEC.EHT_SAE_H2E) but doesn't forbid PSK. |
+| **Reading** | Literal: the guide asks that WPA3 be enabled, not that the association use it. So the rule fires only when the ML association can use a WPA2 password AKM and no SAE-family AKM is offered on every link (an AKM on one link only can't be used for an ML association: §12.6.2, and the WFA NOTE on p. 28). The stricter per-mode reading (Table 8: no PSK at all in WPA3-Personal Only) isn't coded, as with the guide's other mode-specific cells. |
+| **Strength** | WFA: guidance |
+| **hostap mapping** | `WPA-PSK` and `WPA-PSK-SHA256` are hostap's names for AKMs 2 and 6 (WPA2-Personal). hostap's EHT tests use them only next to SAE-family AKMs (`eht_mld_ptk_rekey`, `eht_mld_gtk_rekey`) or in deliberate failure tests (`eht_mld_invalid_link`). Whether hostapd itself refuses WPA-PSK alone on an AP MLD hasn't been checked. |
+| **Rule candidate** | If a WPA2 password AKM is offered on every link and allowed by the client, an SAE-family AKM is also offered on every link. |
+| **Candidates** | `ap_akm`, `sta_akm` (P0 values `WPA-PSK`, `WPA-PSK-SHA256`; neither is an admitted value, so the campaigns can't reach it) |
+| **Run evidence** | None yet. A labeled negative experiment (WPA-PSK alone on both links) would show whether the pinned hostapd accepts it. |
+| **Status** | **Draft.** Read by Claude in the PDF text, 2026-11-17. A person has to check §3.2 and Tables 5 and 8 in the PDF, and whether the guide's "network" means the AP MLD here. |
+
 ## What this changes for the smoke test
 
 If the findings above hold:

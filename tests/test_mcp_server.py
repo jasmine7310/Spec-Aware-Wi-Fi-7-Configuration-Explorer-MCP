@@ -65,7 +65,8 @@ def test_get_model_lists_every_rule_and_question():
     assert rules["SEC.MLD_COMMON_SUITES"]["kind"] == "normative"
     assert rules["AO.ASSOC_REQUIRED"]["kind"] == "harness"
     assert rules["UND.AKM_PREFERENCE"]["kind"] == "open_question"
-    assert len(rules) == 18 + 3   # rules.yaml: 18 rules + 3 open questions
+    assert rules["SEC.MLO_PASSWORD_NEEDS_WPA3"]["kind"] == "guidance"
+    assert len(rules) == 19 + 3   # rules.yaml: 19 rules + 3 open questions
 
 
 def test_get_model_matches_model_json():
@@ -212,7 +213,8 @@ def test_explain_a_normative_rule():
 
 
 def test_every_rule_is_reviewed_except_new_drafts():
-    drafts = set()  # SEC.MLD_SAME_RSNXE (#95) was the last; reviewed 2026-11-16
+    # SEC.MLD_SAME_RSNXE (#95) was reviewed 2026-11-16; #75's rule waits for a person.
+    drafts = {"SEC.MLO_PASSWORD_NEEDS_WPA3"}
     for rule in load_rules().rules:
         expected = "draft" if rule.id in drafts else "reviewed"
         assert _explain(rule.id).structured_content["status"] == expected, rule.id

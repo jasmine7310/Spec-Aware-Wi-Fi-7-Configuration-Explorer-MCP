@@ -2,7 +2,7 @@
   "counts": {
     "broken_in_a_run": 4,
     "cited_runs_only": 6,
-    "none": 11
+    "none": 12
   },
   "description": "Experimental validation of each rule and open question in rules.yaml (#76). broken_in_a_run: a committed run breaks it under today's rules, showing what the pinned implementation does then (result PASS: it accepted the candidate). cited_runs_only: only spec_coverage.csv's run_evidence, which shows the legal side executing. none: no experimental validation yet (flagged). Written by scripts/check_consistency.py.",
   "rules": [
@@ -297,6 +297,22 @@
     {
       "broken_in_runs": [],
       "cited_runs": [],
+      "cites_standard": true,
+      "fixtures": {
+        "exception": 2,
+        "negative": 3,
+        "positive": 2
+      },
+      "id": "SEC.MLO_PASSWORD_NEEDS_WPA3",
+      "kind": "guidance",
+      "matrix_rows": [
+        "WFA-WPA3 \u00a73.2"
+      ],
+      "validation": "none"
+    },
+    {
+      "broken_in_runs": [],
+      "cited_runs": [],
       "cites_standard": false,
       "fixtures": {
         "negative": 2,
@@ -466,6 +482,7 @@
   ],
   "unvalidated": [
     "SEC.SAE_PWE_NEEDS_SAE",
+    "SEC.MLO_PASSWORD_NEEDS_WPA3",
     "AO.ASSOC_REQUIRED",
     "AO.ML_PROBE_STATE",
     "AO.LINK_MUST_EXIST",
