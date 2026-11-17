@@ -5,9 +5,10 @@ from explorer.rules import load_rules
 from explorer.scenarios import CLIENT_BP_SUFFIX, TEST_CONFIGS
 from explorer.validate import (CONFIG_QUESTIONS, P1_CHECKS, Finding, check_eht_beacon_prot,
                                check_eht_sae_akm, check_eht_sae_h2e, check_mld_client_common_akm,
-                               check_mld_common_suites, check_sae_h2e_only_needs_sta_h2e,
+                               check_mld_common_suites, check_mld_same_rsnxe,
+                               check_sae_h2e_only_needs_sta_h2e,
                                check_sae_pwe_needs_sae, find_undetermined, p1_status,
-                               run_p1_checks, validate_candidate)
+                               rsnxe_h2e, run_p1_checks, validate_candidate)
 
 
 def _config(link0, link1, sta_akms, sta=None, **ap):
@@ -71,6 +72,48 @@ def test_mld_common_suites_ignores_the_client():
     # §12.6.2 constrains what the AP MLD advertises, not which AKMs the client allows.
     config = _config({"akms": ["SAE-EXT-KEY"]}, {"akms": ["SAE-EXT-KEY"]}, ["SAE"])
     assert check_mld_common_suites(config) == []
+
+
+# --- SEC.MLD_SAME_RSNXE (802.11be §12.6.2, the RSNXE half; issue #95) ---
+
+RSNXE_PASSES = {
+    "same_akm": _config({"akms": ["SAE-EXT-KEY"]}, {"akms": ["SAE-EXT-KEY"]}, ["SAE-EXT-KEY"]),
+    "no_rsnxe_anywhere": _config({"akms": ["OWE"]}, {"akms": ["OWE"]}, ["OWE"]),
+    # Different lists, same bit: only the AKM list differs.
+    "different_lists_same_bit": AP_PASSES["different_lists_shared_akm"],
+    # Plain SAE with sae_pwe unset sets no bit, like OWE.
+    "plain_sae_pwe_unset": _config({"akms": ["SAE", "OWE"]}, {"akms": ["OWE"]}, ["OWE"]),
+}
+
+RSNXE_REJECTED = {
+    # Issue #95, run 1794875139: RSNXE 0x20 on link 0, none on link 1.
+    "sae_ext_on_one_link": _config({"akms": ["SAE-EXT-KEY", "OWE"]}, {"akms": ["OWE"]}, ["OWE"]),
+    "plain_sae_pwe_set_on_one_link": _config({"akms": ["SAE", "OWE"]}, {"akms": ["OWE"]},
+                                             ["OWE"], sae_pwe="hash_to_element"),
+    # test_eht_mld_no_common_key_mgmt also breaks it (link 0 plain SAE, pwe unset).
+    "eht_mld_no_common_key_mgmt": AP_REJECTED["eht_mld_no_common_key_mgmt"][0],
+}
+
+
+@pytest.mark.parametrize("name", RSNXE_PASSES)
+def test_mld_same_rsnxe_passes(name):
+    assert check_mld_same_rsnxe(RSNXE_PASSES[name]) == []
+
+
+@pytest.mark.parametrize("name", RSNXE_REJECTED)
+def test_mld_same_rsnxe_rejects(name):
+    violations = check_mld_same_rsnxe(RSNXE_REJECTED[name])
+    assert [v.rule_id for v in violations] == ["SEC.MLD_SAME_RSNXE"]
+    assert "different RSNXEs" in violations[0].reason
+
+
+def test_rsnxe_h2e_follows_hostapd():
+    # src/ap/wpa_auth_ie.c:549-557: an SAE-family AKM, and SAE-EXT-KEY or sae_pwe set.
+    config = _config({"akms": ["SAE"]}, {"akms": ["SAE-EXT-KEY"]}, ["SAE-EXT-KEY"])
+    links = config.ap.links
+    assert [rsnxe_h2e(config, link) for link in links] == [False, True]
+    with_pwe = _config({"akms": ["SAE"]}, {"akms": ["OWE"]}, ["OWE"], sae_pwe="both")
+    assert [rsnxe_h2e(with_pwe, link) for link in with_pwe.ap.links] == [True, False]
 
 
 def test_reports_cipher_and_akm_problems_together():

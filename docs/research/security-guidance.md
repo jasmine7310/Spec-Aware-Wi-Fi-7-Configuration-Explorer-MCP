@@ -199,6 +199,20 @@ means the client allows an SAE-family AKM.
 | **Effect** | `ap_sae_pwe=1` becomes admissible, paired with a client that has H2E enabled. The client's `sae_pwe` (unset / `1` / `2`) is a setting in its own right, meaningful only with an SAE-family AKM (SEC.SAE_PWE_NEEDS_SAE). |
 | **Status** | **Verified.** Drafted by Claude (AI agent) from the PDF text and the hostap lines at the pinned commit, 2026-11-12. Michelle checked Table 9-131, §11.1.4.6 (heading and pages) and WFA Table 3 in the PDFs and accepted the hostap lines (2026-11-13, PR #92). §11.1.4.6 stays unclassified: its body text (PDF pp. 2463–2464), not only its NOTEs, describes not joining, without a "shall". |
 
+### SEC.MLD_SAME_RSNXE: AP MLD links advertise the same RSNXE
+
+| | |
+|---|---|
+| **IEEE** | IEEE-802.11be-2024 §12.6.2 "RSNA selection", PDF p. 411 (printed p. 410), the same sentence as SEC.MLD_COMMON_SUITES: all APs affiliated with an AP MLD **shall** advertise the same RSNE, and RSNXE if included, except the AKM Suite List field and the MFPR subfield. The only exceptions are those two RSNE fields; nothing in the RSNXE may differ. |
+| **Reading** | "RSNXE if included" is read as covering an AP MLD that includes no RSNXE at all; once one link includes it, every link advertises the same one. A link that leaves the RSNXE out while another includes it therefore breaks the rule. Chosen by Michelle, 2026-11-16 (issue #95), from the clause text in the PDF; the looser reading (each AP decides on its own whether to include it) was considered and set aside because the clause lists its exceptions explicitly. |
+| **Strength** | IEEE "shall" (normative) |
+| **hostap mapping** | hostapd builds each link's RSNXE from that link's own configuration. The SAE hash-to-element bit is set when the link's AKM list has an SAE-family AKM and either it has `SAE-EXT-KEY` or `sae_pwe` is `1` / `2` (`src/ap/wpa_auth_ie.c:549-557`); a link with no RSNXE bits set advertises no RSNXE (`src/ap/wpa_auth_ie.c:601-611`). The other RSNXE bits (secure LTF / RTT, protected range negotiation, SSID protection, SPP A-MSDU) come from settings the model leaves unset on every link. So in the model, two links advertise different RSNXEs exactly when one link's AKM list gives the H2E bit and another's doesn't. |
+| **Run evidence** | Issue #95, run `1794875139` (`runs/experiments/`): link 0 `[SAE-EXT-KEY, OWE]`, link 1 `[OWE]`, client `OWE`, `ACCEPTED`. Link 0's Beacons, Probe Response and Association Response carry an RSNXE `0x20` (H2E); link 1's Beacons carry none, and the Association Response's per-STA profile for link 1 lists the RSNXE (element 244) in a Non-Inheritance element. hostapd accepts the configuration and the client associates; the rule is about what the AP MLD advertises, not whether association works. |
+| **Rule candidate** | Every AP link sets the RSNXE SAE hash-to-element bit the same way, computed as hostapd does. |
+| **Candidates** | `ap_akm`, `link_akm_mismatch`, `ap_sae_pwe` |
+| **Effect** | Rejects AP MLDs whose links differ in whether they offer `SAE-EXT-KEY` (or plain `SAE` with `sae_pwe` set), e.g. `[SAE-EXT-KEY, OWE]` with `[OWE]`. Different AKM lists that agree on the bit stay legal (`[SAE-EXT-KEY, SAE]` with `[SAE-EXT-KEY]`). The campaigns never hit it: every link gets the same AKM there. |
+| **Status** | **Verified.** §12.6.2 wording re-read by Michelle in the PDF and the strict reading chosen (2026-11-16); hostap lines checked by Claude at the pinned commit and accepted by Michelle (2026-11-16), and borne out by run `1794875139` |
+
 ## What this changes for the smoke test
 
 If the findings above hold:
