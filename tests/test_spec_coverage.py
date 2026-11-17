@@ -17,7 +17,8 @@ STANDARDS = {"IEEE-802.11be-2024", "IEEE-802.11-2024", "WFA-WPA3"}
 # The rules.yaml strength vocabulary, minus "code": the matrix covers the standards.
 STRENGTHS = {"shall", "note", "unclassified", "guidance"}
 STATUSES = {"RULE", "UND", "OUT_OF_SCOPE", "TODO"}
-RUN_DIRS = [REPO_ROOT / "runs" / d for d in ("baseline", "calibration", "smoke", "anchors")]
+RUN_DIRS = [REPO_ROOT / "runs" / d for d in ("baseline", "calibration", "smoke", "anchors",
+                                              "experiments")]
 # Clause and table numbers in a location, e.g. "§12.4.4.2.3 (ECC)" or "Table 9-373, bit 5"
 CLAUSE_TOKEN = re.compile(r"§\s?\d+(?:\.\d+)*|Table \d+(?:-\d+)?")
 # Long verbatim text from the licensed PDFs must not be committed; summaries are ours.

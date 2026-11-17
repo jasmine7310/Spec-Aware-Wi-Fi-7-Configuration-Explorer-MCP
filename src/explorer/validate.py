@@ -184,6 +184,36 @@ def check_mld_common_suites(config: Config) -> list[Finding]:
     return findings
 
 
+def rsnxe_h2e(config: Config, link) -> bool:
+    """Whether hostapd sets the RSNXE SAE hash-to-element bit on this AP link, from the
+    link's own AKMs (src/ap/wpa_auth_ie.c:549-557): an SAE-family AKM, and either
+    SAE-EXT-KEY or the AP's sae_pwe set (1 or 2; every modeled value is one of them)."""
+    return "SAE-EXT-KEY" in link.akms or ("SAE" in link.akms and config.ap.sae_pwe is not None)
+
+
+def check_mld_same_rsnxe(config: Config) -> list[Finding]:
+    """SEC.MLD_SAME_RSNXE (802.11be §12.6.2, issue #95): the AP MLD's links advertise the
+    same RSNXE, or none of them includes one.
+
+    The hash-to-element bit is the only RSNXE bit the model varies per link; the others
+    come from settings left unset on every link. A link with no bit set advertises no
+    RSNXE (src/ap/wpa_auth_ie.c:601-611), so links that disagree on the bit advertise
+    different RSNXEs (run 1794875139: 0x20 on link 0, none on link 1).
+    """
+    bits = {link.link_id: rsnxe_h2e(config, link) for link in config.ap.links}
+    if len(set(bits.values())) <= 1:
+        return []
+    with_bit = [link for link in config.ap.links if bits[link.link_id]]
+    without = [link for link in config.ap.links if not bits[link.link_id]]
+    describe = lambda links: ", ".join(  # noqa: E731
+        f"link {link.link_id} {link.akms}" for link in links)
+    return [Finding(
+        rule_id="SEC.MLD_SAME_RSNXE",
+        reason=(f"AP MLD links advertise different RSNXEs: the SAE hash-to-element bit is "
+                f"set on {describe(with_bit)} but not on {describe(without)}, which "
+                f"advertise no RSNXE"))]
+
+
 def check_mld_client_common_akm(config: Config) -> list[Finding]:
     """SEC.MLD_CLIENT_COMMON_AKM (802.11be §12.6.3.1): for an ML association the client
     selects one AKM common to all the AP MLD's links, and declines to associate if it
@@ -297,6 +327,7 @@ def check_sae_h2e_only_needs_sta_h2e(config: Config) -> list[Finding]:
 
 P1_CHECKS: dict[str, Callable[[Config], list[Finding]]] = {
     "SEC.MLD_COMMON_SUITES": check_mld_common_suites,
+    "SEC.MLD_SAME_RSNXE": check_mld_same_rsnxe,
     "SEC.MLD_CLIENT_COMMON_AKM": check_mld_client_common_akm,
     "SEC.EHT_SAE_AKM": check_eht_sae_akm,
     "SEC.EHT_BEACON_PROT": check_eht_beacon_prot,

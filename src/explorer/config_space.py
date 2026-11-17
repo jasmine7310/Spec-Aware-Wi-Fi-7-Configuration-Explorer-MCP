@@ -20,7 +20,8 @@ What ConfigSpace encodes (``CONSTRAINTS``):
 
 What stays a P1 predicate (``PREDICATE_ONLY``, with the reason), because ConfigSpace's
 categorical hyperparameters can't express it or because no value in this space reaches
-it: per-link AKM lists and their intersection (``SEC.MLD_COMMON_SUITES``), plain SAE
+it: per-link AKM lists, their intersection (``SEC.MLD_COMMON_SUITES``) and the RSNXE
+each one gives (``SEC.MLD_SAME_RSNXE``), plain SAE
 (``SEC.EHT_SAE_AKM``, ``SEC.EHT_SAE_H2E``: not an admitted value), PMF off (``SEC.PMF``:
 P0 has no such value), the link layout (P0: at most two links on different channels), the
 action-order rules and the open questions. ``tests/test_config_space.py`` checks that
@@ -76,6 +77,10 @@ PREDICATE_ONLY = {
         "per-link AKM lists and pairwise ciphers, compared by intersection; categorical "
         "hyperparameters can't express list intersection. In this space every link gets the "
         "same AKM and cipher (model_json.apply), so it can't fire here; P1 checks it"),
+    "SEC.MLD_SAME_RSNXE": (
+        "compares the RSNXE each link's own AKM list gives; in this space every link gets the "
+        "same AKM (model_json.apply), so every link advertises the same RSNXE and it can't "
+        "fire here; P1 checks it"),
     "SEC.EHT_SAE_AKM": "plain SAE (AKM 8) isn't an admitted value; P1 checks other candidates",
     "SEC.EHT_SAE_H2E": "fires only with plain SAE, which isn't an admitted value; P1 checks it",
     "SEC.PMF": "PMF off isn't a value P0 accepts; nothing for ConfigSpace to forbid",

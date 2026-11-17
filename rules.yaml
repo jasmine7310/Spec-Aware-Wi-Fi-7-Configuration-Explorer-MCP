@@ -107,7 +107,64 @@ rules:
     notes:
       - "hostap's invalid_link* / no_common_key_mgmt tests are deliberate failure tests and serve as P1 rejection examples."
       - "Coded as explorer.validate.check_mld_common_suites. The client side is SEC.MLD_CLIENT_COMMON_AKM."
-      - "Audit (#64, 2026-11-13): §12.6.2's first 'shall' also requires the same RSNXE on every link, with no exception, and this rule doesn't check that. hostapd sets a link's RSNXE SAE hash-to-element bit from that link's own AKMs (src/ap/wpa_auth_ie.c:553-557), so links whose AKM lists differ in SAE presence (e.g. [SAE-EXT-KEY, OWE] and [OWE]) may advertise different RSNXEs. Not run yet: a follow-up issue (\"Check whether per-link AKM lists give different RSNXEs\") reads each link's beacon RSNXE in a labeled experiment. The campaign never hits it (every link gets the same AKM there)."
+      - "Audit (#64, 2026-11-13): §12.6.2's first 'shall' also requires the same RSNXE on every link, with no exception, and this rule doesn't check that. Answered by \"Check whether per-link AKM lists give different RSNXEs\" (#95, 2026-11-16): they do (run 1794875139), and SEC.MLD_SAME_RSNXE now checks the RSNXE half of the sentence."
+
+  - id: SEC.MLD_SAME_RSNXE
+    title: AP MLD links advertise the same RSNXE
+    kind: normative
+    status: reviewed
+    applies_to: [ap_akm, link_akm_mismatch, ap_sae_pwe]
+    meaning: >-
+      All links of one AP MLD advertise the same RSNXE, or none of them includes one: the
+      RSNXE has no per-link exception, unlike the RSNE's AKM list and MFPR. hostapd builds
+      each link's RSNXE from that link's own AKMs, so links whose AKM lists differ in
+      whether they give the SAE hash-to-element bit advertise different RSNXEs, and a
+      link with no RSNXE bit set advertises none. This constrains the AP MLD's own
+      configuration.
+    predicate: >-
+      Every AP link sets the RSNXE SAE hash-to-element bit the same way, where a link sets
+      it if its AKM list has SAE-EXT-KEY, or has SAE while the AP's sae_pwe is 1 or 2.
+    exceptions:
+      - >-
+        Different AKM lists are fine when they agree on the bit, e.g. [SAE-EXT-KEY, SAE]
+        and [SAE-EXT-KEY]; only the AKM list may differ (SEC.MLD_COMMON_SUITES).
+      - >-
+        Plain SAE with sae_pwe unset sets no bit, so [SAE, OWE] with [OWE] advertises no
+        RSNXE on either link and passes this rule.
+    sources:
+      - doc: IEEE-802.11be-2024
+        strength: shall
+        location: "§12.6.2 RSNA selection"
+        page: "PDF 411 (printed 410)"
+        says: >-
+          The affiliated APs of an AP MLD advertise the same RSNE, and RSNXE if included,
+          apart from the RSNE's AKM Suite List and MFPR. Read as: once any link includes an
+          RSNXE, every link advertises the same one (Michelle's reading, #95).
+        checked: "Michelle, in the PDF, 2026-11-16 (wording re-read and the strict reading chosen for #95); earlier for SEC.MLD_COMMON_SUITES"
+      - doc: hostap
+        strength: code
+        location: "src/ap/wpa_auth_ie.c:549-557"
+        says: "rsnxe_capab() sets the SAE hash-to-element bit when the link's AKMs include an SAE-family AKM and either sae_pwe is 1 or 2, SAE-PK is on, or an AKM is SAE-EXT-KEY."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-16; accepted by Michelle, 2026-11-16"
+      - doc: hostap
+        strength: code
+        location: "src/ap/wpa_auth_ie.c:601-611"
+        says: "wpa_write_rsnxe() computes the bits from the link's own wpa_key_mgmt and writes no RSNXE when none is set."
+        checked: "Claude (AI agent), at the pinned commit, 2026-11-16; accepted by Michelle, 2026-11-16"
+    examples:
+      allowed:
+        - "SAE-EXT-KEY on both links (F02): both advertise RSNXE 0x20."
+        - "OWE on both links: neither advertises an RSNXE."
+        - "Link 0 [SAE-EXT-KEY, SAE], link 1 [SAE-EXT-KEY]: different lists, same RSNXE."
+      disallowed:
+        - "Link 0 [SAE-EXT-KEY, OWE], link 1 [OWE]: RSNXE 0x20 on link 0, none on link 1 (run 1794875139)."
+        - "Link 0 [SAE, OWE], link 1 [OWE] with the AP's sae_pwe=1 or 2."
+    notes:
+      - "Coded as explorer.validate.check_mld_same_rsnxe (issue #95). The RSNE half of the same sentence is SEC.MLD_COMMON_SUITES."
+      - "Run 1794875139 (runs/experiments/, 2026-11-16): link 0 [SAE-EXT-KEY, OWE], link 1 [OWE], client OWE, ACCEPTED. Link 0's Beacons and Probe / Association Responses carry RSNXE 0x20; link 1's Beacons carry no RSNXE, and the Association Response's per-STA profile for link 1 lists element 244 (RSNXE) as not inherited. It ran before this rule existed (its manifest records PASSES_MODELED_RULES); it now breaks the rule and is kept as a labeled negative experiment, never P2 evidence. hostapd accepts the configuration without complaint and the client associates: the rule is about what the AP MLD advertises."
+      - "Only the hash-to-element bit varies in the model: the other RSNXE bits come from settings left unset on every link (secure LTF / RTT, protected range negotiation, SSID protection, SPP A-MSDU; SAE-PK isn't modeled)."
+      - "Research: docs/research/security-guidance.md. Reviewed 2026-11-16: Michelle re-read §12.6.2 in the PDF, chose the strict reading and accepted the hostap lines, which run 1794875139 also bears out (RSNXE 0x20 from the SAE-EXT-KEY branch on link 0; no RSNXE at all on link 1)."
+      - "Alternative reading (review of #98, Jasmine, 2026-11-17): 'RSNXE if included' could apply per link, so each link that includes an RSNXE includes the same one and links without one are fine. The MLO Link KDE carrying an RSNXE per link (802.11be-2024, PDF pp. 416-417) fits that reading. Chosen: the strict reading (Michelle, #95), which takes 'if included' as a condition on the AP MLD as a whole: once any affiliated AP includes an RSNXE, every one advertises the same one. Why the KDE doesn't decide it (802.11be-2024 §12.7.2, PDF p. 416, 'shall'; checked by Michelle in the PDF, 2026-11-17): in 4-way handshake message 3 the Authenticator inserts, for each affiliated AP, an MLO Link KDE with that AP's RSNE and its RSNXE if present, and the Supplicant validates each against the RSNE and RSNXE it received for that AP, treating a mismatch as a modified RSNE / RSNXE and deauthenticating. The per-link RSNXE is there for that check, which needs a per-link field under either reading, so it doesn't by itself mean links may differ. Under the per-link reading this rule would never fire in today's model: the SAE hash-to-element bit is the only RSNXE bit that varies, so two links that both include an RSNXE include the same one, and run 1794875139 would be legal."
 
   - id: SEC.MLD_CLIENT_COMMON_AKM
     title: For an ML association the client selects an AKM offered on every link, or declines
