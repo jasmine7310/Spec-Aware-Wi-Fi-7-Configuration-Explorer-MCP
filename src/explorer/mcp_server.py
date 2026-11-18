@@ -461,10 +461,16 @@ class MinimizeProbe(BaseModel):
 
 
 class MinimizeReport(BaseModel):
-    status: str
-    """MINIMIZED, TARGET_NOT_INTERESTING (B's candidate didn't reproduce the target),
-    BASELINE_INTERESTING (A already shows it) or BUDGET_EXHAUSTED (max_guest_runs reached
-    first; no result)."""
+    label: str | None
+    """The contrast's #73 label: PENDING_VERIFICATION whenever the reduction found a minimal
+    change. This tool never verifies, so it never says MINIMIZED; that label needs both
+    final sides reproduced 3/3 (scripts/minimize_contrast.py verify). None when nothing
+    was reduced."""
+    reduction_status: str
+    """The reduction itself (minimize.Reduction.status): MINIMIZED (a 1-minimal change was
+    found, one run per probe; see label), TARGET_NOT_INTERESTING (B's candidate didn't
+    reproduce the target), BASELINE_INTERESTING (A already shows it) or BUDGET_EXHAUSTED
+    (max_guest_runs reached first; no result)."""
     side_a: MinimizeSide
     side_b: MinimizeSide
     target: dict[str, Any]
@@ -550,9 +556,10 @@ def minimize_contrast(contrast: int | None = None, run_a: str | None = None,
 
     Every probe passes P0, P1, action order, P2 and the adapter before it can boot
     anything; only a probe whose run reproduces every target fact (INTERESTING) counts.
-    The result lists every probe with its status and exact run IDs. One run per probe:
-    the minimal change still needs 3 independent runs per side before it's a reproduced,
-    minimized contrast (#73). New runs are trials in runs/hwsim-logs/ (git-ignored)."""
+    The result lists every probe with its status and exact run IDs. One run per probe, so
+    a found minimal change is labeled PENDING_VERIFICATION, never MINIMIZED: that #73 label
+    needs both final sides reproduced 3/3 in fresh guests (scripts/minimize_contrast.py
+    minimize, then verify). New runs are trials in runs/hwsim-logs/ (git-ignored)."""
     from explorer import minimize
     if not 1 <= max_guest_runs <= MAX_MINIMIZE_RUNS:
         raise ToolError(f"max_guest_runs must be 1-{MAX_MINIMIZE_RUNS}")
@@ -567,8 +574,11 @@ def minimize_contrast(contrast: int | None = None, run_a: str | None = None,
         raise ToolError(f"simulation environment unavailable: {exc}") from exc
     labels = {d.id: f"{d.id}: {d.label}" for d in result.deltas}
     notes = {
-        "MINIMIZED": ("1-minimal for the target with one run per probe. Not yet a reproduced "
-                      "minimized contrast: run each final side 3 times in fresh guests (#73)."),
+        "MINIMIZED": ("PENDING_VERIFICATION: 1-minimal for the target with one run per "
+                      "probe. It becomes a MINIMIZED contrast (#73) only once both final "
+                      "sides reproduce 3/3 in fresh guests: scripts/minimize_contrast.py "
+                      "minimize --a <run> --b <run> --facts ... --out contrasts/<id>, then "
+                      "verify --out contrasts/<id>."),
         "TARGET_NOT_INTERESTING": ("B's candidate didn't reproduce the target in this run "
                                    "(see the target probe); nothing was reduced."),
         "BASELINE_INTERESTING": "A already shows the target: there's nothing to explain.",
@@ -577,7 +587,8 @@ def minimize_contrast(contrast: int | None = None, run_a: str | None = None,
                              "max_guest_runs resumes cheaply."),
     }
     return MinimizeReport(
-        status=result.status,
+        label="PENDING_VERIFICATION" if result.status == "MINIMIZED" else None,
+        reduction_status=result.status,
         side_a=MinimizeSide(run_ids=runs_a, candidate=result.candidate_a),
         side_b=MinimizeSide(run_ids=runs_b, candidate=result.candidate_b),
         target=result.target, deltas=list(labels.values()),
