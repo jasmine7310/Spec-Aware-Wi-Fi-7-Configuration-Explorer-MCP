@@ -74,7 +74,11 @@ def _error(arguments):
 
 def test_minimizes_a_committed_contrast(guest):
     report = _ok({"contrast": C1, "facts": ["disconnect_reasons"]})
-    assert report["status"] == "MINIMIZED"
+    # One run per probe: #73's MINIMIZED label needs the 3/3 verify step, which this tool
+    # doesn't run (the #74 transcript caught it reporting MINIMIZED on its own).
+    assert report["reduction_status"] == "MINIMIZED"
+    assert report["label"] == "PENDING_VERIFICATION"
+    assert "PENDING_VERIFICATION" in report["note"] and "verify" in report["note"]
     assert report["side_a"]["run_ids"] == ["1794933558", "1794933622", "1794933677"]
     assert report["side_b"]["run_ids"] == ["1794933586", "1794933644", "1794933694"]
     assert report["target"] == {"disconnect_reasons": [[3, True]]}
@@ -88,7 +92,8 @@ def test_minimizes_a_committed_contrast(guest):
 
 def test_minimizes_a_pair_of_runs_several_inputs_apart(guest):
     report = _ok({"run_a": PAIR[0], "run_b": PAIR[1], "facts": ["disconnect_reasons"]})
-    assert report["status"] == "MINIMIZED"
+    assert report["reduction_status"] == "MINIMIZED"
+    assert report["label"] == "PENDING_VERIFICATION"
     assert len(report["deltas"]) == 6
     assert [m.split(": ", 1)[1] for m in report["minimal"]] == [
         "config.ap.ptk_rekey_interval_s: 5 -> null"]
@@ -112,7 +117,7 @@ def test_a_repeated_call_is_served_from_the_cache(guest):
 def test_the_budget_stops_before_the_next_guest_run(guest):
     report = _ok({"run_a": PAIR[0], "run_b": PAIR[1], "facts": ["disconnect_reasons"],
                   "max_guest_runs": 1})
-    assert report["status"] == "BUDGET_EXHAUSTED"
+    assert report["reduction_status"] == "BUDGET_EXHAUSTED" and report["label"] is None
     assert report["guest_runs"] == len(guest.runs) == 1
     assert report["minimal"] == [] and report["minimal_candidate"] is None
 

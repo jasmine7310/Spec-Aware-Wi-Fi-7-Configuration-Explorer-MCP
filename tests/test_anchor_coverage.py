@@ -14,7 +14,8 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CSV_PATH = REPO_ROOT / "anchor_coverage.csv"
 CANDIDATES = REPO_ROOT / "surface_candidates.csv"
 COLUMNS = ["family_id", "name", "category", "source_test", "source_helpers",
-           "modeled_dimensions", "run_ids", "observed_signature", "status"]
+           "modeled_dimensions", "run_ids", "observed_signature", "status",
+           "campaign_runs", "campaign_observed"]   # the last two generated (#77)
 STATUSES = {"PLANNED", "IN_PROGRESS", "PASS", "FAIL", "BLOCKED"}
 EVIDENCE_DIRS = [REPO_ROOT / "runs" / d for d in ("baseline", "calibration", "smoke", "anchors")]
 # The roadmap: at least 3 independent clean runs per anchor family.
@@ -110,3 +111,56 @@ def test_helpers_are_called_by_the_pinned_test(row):
     body = _test_function(source, row["source_test"].removesuffix(CLIENT_BP_SUFFIX))
     for helper in (h.strip() for h in row["source_helpers"].split(",")):
         assert f"{helper.split('.')[-1]}(" in body, f"{row['family_id']}: {helper}"
+
+
+# --- campaign evidence per family (#77) ---------------------------------------------------
+
+
+def test_campaign_columns_are_current():
+    from explorer import anchors
+    assert CSV_PATH.read_text() == anchors.render(), (
+        "anchor_coverage.csv's campaign columns are out of date: "
+        "run scripts/update_anchor_coverage.py")
+
+
+@pytest.mark.parametrize("row", _rows(), ids=lambda row: row["family_id"])
+def test_campaign_runs_have_the_family_s_values(row):
+    from explorer import anchors, contrasts
+    from explorer.pruning import current_label
+    accepted = {run.run_id: candidate for candidate, run in contrasts.accepted_runs()}
+    count, _, listed = row["campaign_runs"].partition(" runs: ")
+    run_ids = _split(listed)
+    assert int(count) == len(run_ids) > 0
+    wanted = anchors.family_labels(row)
+    for run_id in run_ids:
+        # Each is a committed accepted, rule-passing adapter run with the family's own
+        # value for every modeled dimension.
+        assert run_id in accepted, run_id
+        assert {d: current_label(accepted[run_id], d) for d in wanted} == wanted, run_id
+    # Every behavior fact of the family is counted over all of those runs.
+    facts = row["campaign_observed"].split("; ")
+    assert [f.split(": ")[0] for f in facts] == list(anchors.FAMILY_FACTS[row["family_id"]])
+    for fact in facts:
+        counts = re.findall(r" x(\d+)(?:,|$)", fact)
+        assert sum(map(int, counts)) == len(run_ids), fact
+
+
+def test_family_values_come_from_the_source_test():
+    from explorer import anchors
+    labels = {row["family_id"]: anchors.family_labels(row) for row in _rows()}
+    assert labels == {
+        "F02": {"ap_akm": "SAE-EXT-KEY", "sta_akm": "SAE-EXT-KEY"},
+        "F08": {"ap_ptk_rekey_interval": "5"},
+        "F09": {"ap_gtk_rekey_interval": "5"},
+        "F06": {"link_remove": "present", "rekey_gtk_now": "present"},
+    }
+
+
+def test_a_station_status_key_is_read_inside_the_fact():
+    from explorer import anchors
+    from explorer.signatures import UNKNOWN
+    facts = {"station_status": {"key_mgmt": "OWE"}, "ptk_rekeys_completed": 1}
+    assert anchors.fact_value(facts, "station_status.key_mgmt") == "OWE"
+    assert anchors.fact_value(facts, "station_status.pmf") == UNKNOWN
+    assert anchors.fact_value({"station_status": UNKNOWN}, "station_status.key_mgmt") == UNKNOWN
+    assert anchors.fact_value(facts, "gtk_rekeys_completed") == UNKNOWN
