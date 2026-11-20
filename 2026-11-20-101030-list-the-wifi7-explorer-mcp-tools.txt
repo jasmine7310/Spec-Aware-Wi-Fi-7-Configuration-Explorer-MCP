@@ -1,0 +1,710 @@
+ ▐▛███▛█   Claude Code v2.1.327
+▝▜██████▀  Opus 5.5 · Claude Pro
+ ▝▝   ▝▝   ~/Spec-Aware-Wi-Fi-7-Configuration-Explorer-MCP
+
+
+❯ List the wifi7-explorer MCP tools                                             
+
+● The wifi7-explorer MCP server has 12 tools. These descriptions come from the
+  server's own tool schemas.
+
+  Model and rules (nothing boots)
+
+  Tool: get_model
+  What it does: Shows the explorer's scope: model.json versions, the admitted
+    dimensions and their smoke-tested values, pinned hostap/kernel, which
+    stages (P0–P4) are implemented, which tests run_hwsim_test accepts, every
+    rule and UND.* question, and how dimensions depend on each other.
+  ────────────────────────────────────────
+  Tool: explain_rule(rule_id)
+  What it does: Shows the full entry for a SEC.*, AO.*, UND.* or P0.* ID: what
+    kind of rule it is, review status, the check, exceptions, cited sources
+    (section, page, strength) and examples.
+  ────────────────────────────────────────
+  Tool: validate_candidate(candidate)
+  What it does: Runs P0 then P1. The status is MALFORMED, SPEC_RULE_VIOLATION,
+    SPEC_UNDETERMINED or PASSES_MODELED_RULES. A passing candidate also gets
+    the P2 result (SUPPORTED or UNRESOLVED, with its evidence).
+
+  Agent chain (#74, nothing boots)
+
+  Tool: why_pruned(candidate)
+  What it does: Gives the planner's role for the candidate (malformed / pruned
+    / undetermined / unsupported / not_run / probe / supported). For each
+    finding it lists the sources, how ConfigSpace encodes the rule, and the
+    runs that test it.
+  ────────────────────────────────────────
+  Tool: permitted_alternatives(candidate, max_changes=1, limit=10)
+  What it does: Finds the smallest rule-passing changes to the candidate,
+    using 1–3 admitted dimensions, with SUPPORTED ones ranked first.
+  ────────────────────────────────────────
+  Tool: minimize_contrast(contrast | run_a+run_b, facts, max_guest_runs=20)
+  What it does: Runs Picire to find the fewest changes that reproduce side B's
+    facts. This one does boot guests (up to 40 runs). A result is labeled
+    PENDING_VERIFICATION until the 3/3 verify step passes.
+
+  Running in simulation (boots fresh UML guests)
+
+  Tool: run_hwsim_test(test, negative_experiment=false)
+  What it does: Runs one of hostap's own runnable tests (about 30 s). A test
+    that breaks a rule is refused unless you run it as a labeled negative
+    experiment.
+  ────────────────────────────────────────
+  Tool: run_candidate(candidate, negative_experiment=false)
+  What it does: Validates the candidate, then runs it through the adapter
+    (about 30–60 s) and returns its P3 status and behavior record.
+
+  Campaigns
+
+  Tool: plan_campaign(seed=0, budget=20, build_on_runs=true)
+  What it does: Builds a pairwise allpairspy plan of executable candidates
+    (nothing boots) and returns a plan_id.
+  ────────────────────────────────────────
+  Tool: run_campaign(plan_id, campaign_id?, retries=1)
+  What it does: Runs each candidate in the plan through the cache or a fresh
+    guest and writes campaigns/<id>/. It refuses to run if the simulation
+    image is older than the harness files.
+  ────────────────────────────────────────
+  Tool: list_campaigns()
+  What it does: Lists the campaigns with their P3 counts.
+  ────────────────────────────────────────
+  Tool: get_campaign(campaign_id, candidate_id?)
+  What it does: Shows one campaign's pruning funnel, rejected-cases table and
+    each candidate's status. With a candidate_id, it also gives that
+    candidate's attempts and behavior signatures.
+
+  Runs from run_hwsim_test, run_candidate and minimize_contrast are trials in
+  the git-ignored runs/hwsim-logs/. run_campaign writes its output to
+  campaigns/<id>/, which only counts as evidence once someone reviews and
+  commits it.
+
+✻ Cooked for 12s · done 9:39 AM
+
+❯ Use get_model and summarize the stages, rules and admitted dimensions.        
+
+  Called wifi7-explorer (ctrl+o to expand)
+
+● get_model reports model.json at schema version 2 and rules version 1, pinned
+  to hostap 43ee60e1 and kernel 21b4248b.
+
+  Stages
+
+  Stage: P0 structure
+  Status: Implemented
+  What's there: Readable P0.* errors against the settings and action models.
+  ────────────────────────────────────────
+  Stage: P1 spec rules
+  Status: Implemented (a subset only)
+  What's there: 10 security/setting rules, 9 action-order rules and 3 open
+    questions. Draft rules still need a person to check their citations.
+  ────────────────────────────────────────
+  Stage: P2 implementation support
+  Status: Implemented (basic)
+  What's there: SUPPORTED only for an exact match to a tested scenario or a
+    committed adapter run. Otherwise UNRESOLVED, with the runs behind each
+    value. Nothing is marked UNSUPPORTED_IMPLEMENTATION without a recorded
+    refusal.
+  ────────────────────────────────────────
+  Stage: P3 execution
+  Status: Implemented
+  What's there: run_hwsim_test and run_candidate, giving ACCEPTED / REJECTED /
+    SETUP_FAIL / TIMEOUT.
+  ────────────────────────────────────────
+  Stage: Campaign
+  Status: Implemented
+  What's there: Pairwise plan over legal, executable candidates, then run
+    through the cache.
+  ────────────────────────────────────────
+  Stage: P4 compare and minimize
+  Status: Implemented
+  What's there: Contrasts, why_pruned, permitted_alternatives and
+    minimize_contrast. A reduction only counts as minimized after the
+    3/3-per-side verify step (#73).
+
+  Rules
+
+  Security and setting rules (10)
+  - Normative (IEEE "shall"):
+    - SEC.MLD_COMMON_SUITES: every link uses the same pairwise cipher, and the
+      links share at least one AKM.
+    - SEC.MLD_SAME_RSNXE: every link sets the hash-to-element bit the same way.
+    - SEC.MLD_CLIENT_COMMON_AKM: the client picks an AKM offered on every link.
+    - SEC.EHT_BEACON_PROT: beacon protection is required with RSN.
+    - SEC.PMF: PMF must be on. This is the only setting rule marked coded: 
+      false.
+    - SEC.EHT_SAE_AKM: SAE between EHT devices uses SAE-EXT-KEY, not SAE.
+    - SEC.EHT_SAE_H2E: SAE between EHT devices uses hash-to-element.
+  - Dependencies:
+    - SEC.SAE_PWE_NEEDS_SAE: sae_pwe only matters with an SAE AKM.
+    - SEC.SAE_H2E_ONLY_NEEDS_STA_H2E: an AP set to H2E-only needs a client with
+      H2E on.
+  - Guidance (WFA):
+    - SEC.MLO_PASSWORD_NEEDS_WPA3: if a WPA2 password AKM is usable on every
+      link, an SAE-family AKM must be offered too.
+
+  Action-order rules (9, AO.*): these are harness rules, not Wi-Fi spec rules.
+  They cover:
+  - association before post-association actions
+  - ML probe state
+  - link existence and removal
+  - losing the last link
+  - link reconfiguration delete/add
+  - RECONNECT only after DISCONNECT
+  - ENABLE_MLD only after DISABLE_MLD
+  - a BSS TM request needs BSS transition advertised
+
+  Open questions (3, give SPEC_UNDETERMINED):
+  - UND.AKM_PREFERENCE
+  - UND.STA_STATE_WHILE_MLD_DISABLED
+  - UND.ASSOC_WITHOUT_AP_LINKS
+
+  get_model doesn't say which rules are still drafts; explain_rule would show
+  that for each one.
+
+  How the runnable tests come out:
+  - The 7 stock hostap tests break a rule. Six fail SEC.EHT_BEACON_PROT (client
+    beacon protection is off), and eht_mld_sae_two_links fails SEC.EHT_SAE_AKM
+    (plain SAE).
+  - The 6 _client_bp wrappers report PASSES_MODELED_RULES.
+
+  Admitted dimensions (11)
+
+  ┌────────────────────────────────────┬───────────────┬──────────────────┐
+  │             Dimension              │   Category    │      Values      │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ ap_akm                             │ security      │ SAE-EXT-KEY, OWE │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ sta_akm                            │ security      │ SAE-EXT-KEY, OWE │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ ap_sae_pwe                         │ security      │ unset, 1, 2      │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ sta_sae_pwe                        │ security      │ unset, 1, 2      │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ ap_pairwise_cipher                 │ security      │ CCMP, GCMP-256   │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ ap_link_indicate_disabled (link 1) │ link          │ 0, 1             │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ ap_ptk_rekey_interval              │ key           │ unset, 5 s       │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ ap_gtk_rekey_interval              │ key           │ unset, 5 s       │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ rekey_gtk_now                      │ key (action)  │ absent, present  │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ link_remove                        │ link (action) │ absent, present  │
+  ├────────────────────────────────────┼───────────────┼──────────────────┤
+  │ disable_enable_mld                 │ link (action) │ absent, present  │
+  └────────────────────────────────────┴───────────────┴──────────────────┘
+
+  Observable facts: 13 are calibrated. ml_probe_handled and btm_request_handled
+  are not calibrated yet, so they stay UNKNOWN.
+
+  Recorded runs: 63 committed runs across baseline, calibration, smoke, anchors
+  and contrasts/runs/, all PASS.
+
+✻ Crunched for 19s · done 9:42 AM
+
+❯ List the campaigns, then show the pruning funnel and the rejected cases of    
+  seed0-2026-11-13.                                                             
+
+  Called wifi7-explorer 2 times (ctrl+o to expand)
+
+● Campaigns
+
+  ┌───────────┬──────┬───────────┬──────────┬──────────┬───────────┬─────────┐
+  │ Campaign  │ Seed │ Started   │ ACCEPTED │ REJECTED │ SETUP_FAI │ TIMEOUT │
+  │           │      │   (UTC)   │          │          │     L     │         │
+  ├───────────┼──────┼───────────┼──────────┼──────────┼───────────┼─────────┤
+  │ seed0-202 │ 0    │ 2026-11-1 │ 12       │ 4        │ 0         │ 0       │
+  │ 6-11-13   │      │ 3 08:03   │          │          │           │         │
+  ├───────────┼──────┼───────────┼──────────┼──────────┼───────────┼─────────┤
+  │ seed0-top │      │ 2026-11-1 │          │          │           │         │
+  │ up-2026-1 │ 0    │ 3 23:19   │ 4        │ 0        │ 0         │ 0       │
+  │ 1-13      │      │           │          │          │           │         │
+  ├───────────┼──────┼───────────┼──────────┼──────────┼───────────┼─────────┤
+  │ seed1-fre │      │ 2026-11-1 │          │          │           │         │
+  │ sh-2026-1 │ 1    │ 6 07:05   │ 17       │ 0        │ 0         │ 0       │
+  │ 1-15      │      │           │          │          │           │         │
+  └───────────┴──────┴───────────┴──────────┴──────────┴───────────┴─────────┘
+
+  seed0-2026-11-13: pruning funnel
+
+  The campaign ran from 08:03:51 to 08:05:31: 16 guests booted, no cache hits,
+  no retries.
+
+  Enumerated              4608
+  P0 well-formed          4608   (0 malformed)
+  ConfigSpace/P1 pass     1152   (3456 rejected, 0 SPEC_UNDETERMINED)
+  P2 executable           1152   (9 SUPPORTED + 1143 probes, 0 unresolved)
+  Planned                   16   (all probes, 0 cut by budget)
+  P3                        16   → 12 ACCEPTED, 4 REJECTED
+
+  Pruning saved 3456 guest boots. Nothing was skipped at launch, either by
+  today's P1 or by the adapter.
+
+  How often each rule fired in P1 (a candidate can break more than one rule, so
+  these add up to more than 3456):
+  - SEC.SAE_PWE_NEEDS_SAE: 2560
+  - SEC.MLD_CLIENT_COMMON_AKM: 2304
+  - SEC.SAE_H2E_ONLY_NEEDS_STA_H2E: 128
+
+  Rejected cases
+
+  P1, SPEC_RULE_VIOLATION (the example shows the dimensions that differ from the
+  all-default assignment):
+
+  ┌─────────────────────────────────────┬───────┬───────────────────────────┐
+  │               Rule(s)               │ Count │          Example          │
+  ├─────────────────────────────────────┼───────┼───────────────────────────┤
+  │ SEC.MLD_CLIENT_COMMON_AKM +         │ 1536  │ AP SAE-EXT-KEY, STA OWE,  │
+  │ SEC.SAE_PWE_NEEDS_SAE               │       │ STA sae_pwe=1             │
+  ├─────────────────────────────────────┼───────┼───────────────────────────┤
+  │ SEC.SAE_PWE_NEEDS_SAE               │ 1024  │ AP OWE, STA OWE, STA      │
+  │                                     │       │ sae_pwe=1                 │
+  ├─────────────────────────────────────┼───────┼───────────────────────────┤
+  │ SEC.MLD_CLIENT_COMMON_AKM           │ 768   │ AP SAE-EXT-KEY, STA OWE   │
+  ├─────────────────────────────────────┼───────┼───────────────────────────┤
+  │                                     │       │ AP and STA SAE-EXT-KEY,   │
+  │ SEC.SAE_H2E_ONLY_NEEDS_STA_H2E      │ 128   │ AP sae_pwe=1, STA sae_pwe │
+  │                                     │       │  unset                    │
+  └─────────────────────────────────────┴───────┴───────────────────────────┘
+
+  P3, REJECTED (every one failed with "DISABLE_MLD failed"):
+
+  ┌───────────┬────────────┬────────────┬───────────────────────────────────┐
+  │ Candidate │    Run     │  Failing   │           Key settings            │
+  │           │            │    step    │                                   │
+  ├───────────┼────────────┼────────────┼───────────────────────────────────┤
+  │           │            │            │ SAE-EXT-KEY, CCMP, link 1 shown   │
+  │ c03       │ 1794557044 │ actions[3] │ as disabled, PTK rekey every 5 s, │
+  │           │            │            │  rekey_gtk_now + link_remove +    │
+  │           │            │            │ disable_enable_mld                │
+  ├───────────┼────────────┼────────────┼───────────────────────────────────┤
+  │           │            │            │ OWE, GCMP-256, link 1 shown as    │
+  │ c05       │ 1794557059 │ actions[3] │ disabled, GTK rekey every 5 s,    │
+  │           │            │            │ rekey_gtk_now + link_remove +     │
+  │           │            │            │ disable_enable_mld                │
+  ├───────────┼────────────┼────────────┼───────────────────────────────────┤
+  │           │            │            │ OWE, CCMP, link 1 not shown as    │
+  │ c07       │ 1794557071 │ actions[3] │ disabled, PTK and GTK rekey every │
+  │           │            │            │  5 s, rekey_gtk_now + link_remove │
+  │           │            │            │  + disable_enable_mld             │
+  ├───────────┼────────────┼────────────┼───────────────────────────────────┤
+  │           │            │            │ SAE-EXT-KEY, CCMP, link 1 shown   │
+  │ c09       │ 1794557082 │ actions[2] │ as disabled, link_remove +        │
+  │           │            │            │ disable_enable_mld (no            │
+  │           │            │            │ rekey_gtk_now)                    │
+  └───────────┴────────────┴────────────┴───────────────────────────────────┘
+
+  What the four refusals share: each has both link_remove and
+  disable_enable_mld, and DISABLE_MLD is the step that fails. That suggests
+  DISABLE_MLD fails after a link has been removed, but this summary doesn't show
+  it. To check, use get_campaign with a candidate_id on the accepted candidates
+  to see whether any of them had both actions, and read the hostapd logs of the
+  rejected runs.
+
+  This campaign ran under an older model. Its model_digest is sha256:698f8e8a…,
+  but the current model.json is sha256:0e3f3145…. Rerunning the funnel on
+  today's model may give different counts.
+
+✻ Baked for 15s · done 9:45 AM
+
+❯ Plan a campaign with seed 0, without running it, and report the funnel and    
+  the pair coverage.                                                            
+
+  Called wifi7-explorer (ctrl+o to expand)
+
+● The plan seed0-b20-runs-bb25e1b5 (seed 0, budget 20, building on committed
+  runs) contains 0 candidates. Committed runs already cover every pair that can
+  be run, so there is nothing to execute. It was planned against the current
+  model.json (sha256:0e3f3145…).
+
+  Funnel
+
+  Enumerated              4608
+  P0 well-formed          4608
+  ConfigSpace/P1 pass     1152   (3456 SPEC_RULE_VIOLATION, 0 in review queue)
+  P2                      1152 → 42 SUPPORTED + 822 probes = 864 executable
+                                 288 UNSUPPORTED, 0 not_run
+  Already run               42
+  Planned                    0   (0 allpairspy rows, 0 top-up rows, 0 cut by 
+  budget)
+
+  P1 rejections by rule are the same as in the 11-13 campaign:
+  - SEC.SAE_PWE_NEEDS_SAE: 2560
+  - SEC.MLD_CLIENT_COMMON_AKM: 2304
+  - SEC.SAE_H2E_ONLY_NEEDS_STA_H2E: 128
+
+  Pair coverage
+
+  ┌─────────────────────────┬──────────────┬──────────────────────┬─────────┐
+  │       Denominator       │  Feasible    │ Covered by committed │ Planned │
+  │                         │    pairs     │         runs         │         │
+  ├─────────────────────────┼──────────────┼──────────────────────┼─────────┤
+  │ Allowed by the modeled  │ 250          │ 249                  │ 0       │
+  │ rules                   │              │                      │         │
+  ├─────────────────────────┼──────────────┼──────────────────────┼─────────┤
+  │ Executable (after P2)   │ 249          │ 249 (100%)           │ 0       │
+  └─────────────────────────┴──────────────┴──────────────────────┴─────────┘
+
+  There are also 11 infeasible pairs that no legal candidate can contain.
+
+  What changed since the 11-13 campaign
+
+  P2 now marks 288 candidates UNSUPPORTED, where the 11-13 funnel had none. A
+  candidate only gets that status from an implementation limit with recorded
+  refusals, so this most likely comes from that campaign's four "DISABLE_MLD
+  failed" runs. 288 is exactly a quarter of 1152, which is what you'd get if
+  every candidate with both link_remove and disable_enable_mld present were
+  excluded. The one rule-allowed pair that can't be run (250 vs 249) would then
+  be that action pair itself. I haven't confirmed this. Running why_pruned on
+  one such candidate would show the exact limit and the refusals it cites.
+
+  To get a fresh design instead of an empty plan, rerun with build_on_runs=false
+  or a different seed. Candidates that have already run would then come from
+  the cache without booting a guest.
+
+✻ Worked for 17s · done 9:48 AM
+
+❯ Why is this candidate pruned? {"config": {"ap": {"links": [{"link_id": 0,     
+  "channel": 1, "akms": ["SAE-EXT-KEY"]}, {"link_id": 1, "channel": 6, "akms":  
+  ["OWE"]}]}, "sta": {"akms": ["SAE-EXT-KEY"], "beacon_protection": true}},     
+  "actions": [{"action": "associate"}]}                                         
+
+  Called wifi7-explorer (ctrl+o to expand)
+
+● The candidate is pruned at P1 with status SPEC_RULE_VIOLATION. Two normative
+  rules reject it, and both come from the links having different security
+  setups: link 0 uses SAE-EXT-KEY and link 1 uses OWE.
+
+  1. SEC.MLD_COMMON_SUITES: the links share no AKM
+
+  - Why it fires: link 0 offers ['SAE-EXT-KEY'] and link 1 offers ['OWE'], so no
+    AKM is offered on both. A multi-link association needs at least one AKM in
+    common.
+  - Source: IEEE 802.11be-2024 §12.6.2 RSNA selection, PDF p. 411 (printed 410),
+    shall. The affiliated APs of an AP MLD must have the same RSNE apart from
+    the AKM Suite List and MFPR, and must have at least one AKM in common. The
+    WFA WPA3 guide §3.1.4.1 (p. 28) repeats this as a NOTE, which is guidance
+    only.
+  - Experimental validation: cited_runs_only. No committed run breaks this rule;
+    its coverage rows cite runs 1793897820 and 1794875139.
+
+  2. SEC.MLD_SAME_RSNXE: the links' RSNXEs differ
+
+  - Why it fires: hostapd sets the SAE hash-to-element bit on link 0 because it
+    uses SAE-EXT-KEY. Link 1, with OWE only, advertises no RSNXE at all.
+  - Source: the same §12.6.2, PDF p. 411, shall. Every link must advertise the
+    same RSNXE, if one is included. The project uses the strict reading Michelle
+    chose for #95: once any link includes an RSNXE, every link must advertise
+    the same one.
+  - hostap code at the pinned commit:
+    - src/ap/wpa_auth_ie.c:549-557: rsnxe_capab() sets the bit when a link has
+      SAE-EXT-KEY.
+    - src/ap/wpa_auth_ie.c:601-611: wpa_write_rsnxe() writes no RSNXE when no
+      bit is set.
+  - Experimental validation: broken_in_a_run. The labeled negative experiment
+    runs/experiments/1794875139 breaks this rule, and the explorer candidate
+    still PASSed. So hostap at the pinned commit doesn't enforce this rule
+    itself; the explorer prunes the candidate on the spec rule.
+
+  The campaign could never produce this candidate. model_json.apply gives every
+  link the same AKM and cipher, so neither rule can fire there; ConfigSpace
+  doesn't encode them and P1 checks them instead. That's why campaign_assignment
+  is null.
+
+  The likely fix is to give link 1 SAE-EXT-KEY as well; that matches the
+  client's AKM list. permitted_alternatives on this candidate would list the
+  nearby versions that pass the rules, with any SUPPORTED ones first.
+
+✻ Crunched for 14s · done 9:50 AM
+
+❯ Show permitted alternatives for it, with up to 3 changes.                     
+
+  Called wifi7-explorer (ctrl+o to expand)
+
+● The tool tried 343 candidates within 3 changes, and only 2 pass the modeled 
+  rules. Both are minimal: no other permitted candidate is a superset of either
+  change. Both can be run.
+
+  1. Make link 1 SAE-EXT-KEY (1 change), SUPPORTED
+
+  - Change: ap_akm from mixed ([SAE-EXT-KEY], [OWE]) to SAE-EXT-KEY.
+  - Input that differs: config.ap.links[1].akms, from ["OWE"] to
+    ["SAE-EXT-KEY"].
+  - Runs that did exactly this: 1793897820, 1793897968 and 1793898029. These are
+    the smoke run and the anchor runs of eht_mld_sae_ext_two_links_client_bp,
+    so you can rerun it with run_hwsim_test.
+  - Full candidate:
+    - AP: both links SAE-EXT-KEY with CCMP, PMF required, beacon protection on,
+      every other setting left at its default.
+    - Client: SAE-EXT-KEY with beacon protection on.
+    - Actions: associate.
+
+  2. Use OWE on both links and the client (2 changes), UNRESOLVED (a support 
+  probe)
+
+  - Changes: ap_akm to OWE and sta_akm to OWE.
+  - Inputs that differ: config.ap.links[0].akms, from ["SAE-EXT-KEY"] to
+    ["OWE"], and config.sta.akms, from ["SAE-EXT-KEY"] to ["OWE"].
+  - Why it's still a probe: no committed run matches this exact candidate. Every
+    value in it has a passing legal run (missing: []), so a campaign may run
+    it. It has not run yet.
+
+  The first alternative is the obvious fix. It is the smallest change, it
+  matches what the client already offers, and it has run 3/3 before. Passing the
+  modeled rules still isn't full 802.11be compliance.
+
+✻ Crunched for 9s · done 9:53 AM
+
+❯ Read contrasts/contrasts.json and summarize the contrasts on today's harness. 
+
+  Ran 4 shell commands (ctrl+o to expand)
+
+● contrasts/contrasts.json lists 5 contrasts: 3 on today's harness (5c0fe724…)
+  and 2 on an older one (39ac2c3e…). Each is between two candidates exactly 1
+  input apart. All 3 current ones are reproduced: each side ran 3 times, and
+  every claimed fact was the same in all three repeats (unstable is empty). The
+  file was built from 55 accepted runs covering 37 candidates.
+
+  Contrast 0: PTK rekey interval, OWE with link removal
+
+  - Shared setup: OWE on both links, CCMP, link 1 shown as disabled. Actions:
+    associate, then link_remove of link 1 (count 4).
+  - Difference: ap.ptk_rekey_interval_s: A = 5 s, B = unset.
+  - Runs: A = 1794933558, 1794933622, 1794933677; B = 1794933586, 1794933644,
+    1794933694.
+
+  ┌──────────────────────────┬──────────────────────────────┬───────────────┐
+  │           Fact           │   A (PTK rekey every 5 s)    │  B (no PTK    │
+  │                          │                              │    rekey)     │
+  ├──────────────────────────┼──────────────────────────────┼───────────────┤
+  │ disconnect_reasons       │ reason 15 (from the AP) ×3,  │ reason 3      │
+  │                          │ then reason 3 (local)        │ (local) only  │
+  ├──────────────────────────┼──────────────────────────────┼───────────────┤
+  │ station_status.wpa_state │ 4WAY_HANDSHAKE               │ COMPLETED     │
+  │                          │                              │ (BIGTK set)   │
+  └──────────────────────────┴──────────────────────────────┴───────────────┘
+
+  Contrast 1: link removal on or off, same OWE setup with PTK rekey every 5 s
+
+  - Shared setup: contrast 0's side A configuration, so both sides here have PTK
+    rekey every 5 s.
+  - Difference: A performs the link_remove step; B doesn't.
+  - Runs: A is contrast 0's side A; B = 1794933604, 1794933660, 1794933709.
+
+  ┌───────────────────────────────┬────────────────────────┬────────────────┐
+  │             Fact              │    A (link removed)    │ B (no removal) │
+  ├───────────────────────────────┼────────────────────────┼────────────────┤
+  │ valid_links                   │ 0x1                    │ 0x3            │
+  ├───────────────────────────────┼────────────────────────┼────────────────┤
+  │ link_reconfig_valid_links     │ ["0x1"]                │ []             │
+  ├───────────────────────────────┼────────────────────────┼────────────────┤
+  │ four_way_handshakes_completed │ 1                      │ 2              │
+  ├───────────────────────────────┼────────────────────────┼────────────────┤
+  │ ptk_rekeys_completed          │ 0                      │ 1              │
+  ├───────────────────────────────┼────────────────────────┼────────────────┤
+  │ disconnect_reasons            │ reason 15 ×3, then     │ reason 3       │
+  │                               │ reason 3 (local)       │ (local) only   │
+  ├───────────────────────────────┼────────────────────────┼────────────────┤
+  │ wpa_state                     │ 4WAY_HANDSHAKE         │ COMPLETED      │
+  └───────────────────────────────┴────────────────────────┴────────────────┘
+
+  Contrast 2: PTK rekey interval, SAE-EXT-KEY with GTK rekey and link removal
+
+  - Shared setup: SAE-EXT-KEY on both links, AP sae_pwe=hash_to_element, client
+    sae_pwe=both, GTK rekey every 5 s. Actions: associate, then link_remove of
+    link 1 (count 4).
+  - Difference: ap.ptk_rekey_interval_s: A = 5 s, B = unset.
+  - Runs: A = 1794952238, 1794952257, 1794952274; B = 1794952292, 1794952308,
+    1794952325.
+
+  ┌────────────────────────────────────────┬───────────────┬────────────────┐
+  │                  Fact                  │ A (PTK rekey  │   B (no PTK    │
+  │                                        │  every 5 s)   │     rekey)     │
+  ├────────────────────────────────────────┼───────────────┼────────────────┤
+  │ valid_links / active_links             │ 0x0 / 0x0     │ 0x1 / 0x1      │
+  ├────────────────────────────────────────┼───────────────┼────────────────┤
+  │                                        │ reason 15     │ reason 3       │
+  │ disconnect_reasons                     │ (from the AP) │ (local) only   │
+  │                                        │  ×5           │                │
+  ├────────────────────────────────────────┼───────────────┼────────────────┤
+  │                                        │               │ COMPLETED (SAE │
+  │ wpa_state                              │ SCANNING      │  group 19,     │
+  │                                        │               │ H2E)           │
+  ├────────────────────────────────────────┼───────────────┼────────────────┤
+  │ gtk_rekeys_completed                   │ 1             │ 2              │
+  ├────────────────────────────────────────┼───────────────┼────────────────┤
+  │ data_test_rx_after_last_rekey_ap_links │ []            │ [0]            │
+  └────────────────────────────────────────┴───────────────┴────────────────┘
+
+  What they show together
+
+  In all three contrasts, a PTK rekey every 5 s combined with removing link 1
+  leads to repeated AP-side disconnects with reason 15, and the station never
+  reaches COMPLETED. Contrast 1 shows that the rekey alone, without the link
+  removal, completes cleanly. In the SAE case (contrast 2), the station loses
+  every link and ends up scanning.
+
+  These contrasts only show that the behaviors differ. They don't show why, and
+  they don't say which side is correct. Two details are my additions, not
+  something the file states:
+  - In IEEE 802.11 reason codes, 15 means "4-Way Handshake timeout". That fits
+    the stuck 4WAY_HANDSHAKE state, but I haven't checked it against the
+    standard's PDF.
+  - Both sides include station_status, which partly echoes the configuration
+    (key_mgmt, ciphers). Here its wpa_state field differs, which is real
+    behavior.
+
+  The two older-harness contrasts (3 and 4) cover the same OWE pattern as
+  contrasts 0 and 1, with A and B swapped in contrast 3. contrasts/c1/ holds the
+  one minimized contrast so far.
+
+✻ Brewed for 31s · done 9:55 AM
+
+❯ Minimize the difference between runs 1794812749 and 1794557032, targeting     
+  disconnect_reasons.                                                           
+
+  Called wifi7-explorer (ctrl+o to expand)
+
+● The minimization ran and found one change that is enough: setting 
+  ap.ptk_rekey_interval_s from 5 back to unset. It's labeled
+  PENDING_VERIFICATION, not MINIMIZED, because each probe ran only once and the
+  3/3 check in fresh guests hasn't been done.
+
+  The two runs:
+  - A (1794812749): SAE-EXT-KEY on both links, AP sae_pwe=hash_to_element,
+    client sae_pwe=both, PTK and GTK rekey every 5 s. Actions: associate, then
+    link_remove of link 1 (count 4).
+  - B (1794557032, c01 of the 11-13 campaign): OWE on both links, link 1 shown
+    as disabled, no rekey intervals, same actions.
+  - Target: B's disconnect_reasons = [[3, true]], meaning only the client's own
+    reason-3 disconnect.
+
+  There were 8 typed differences between them:
+  - 0: GTK rekey interval
+  - 1, 2: each link's AKMs
+  - 3: link 1's indicate_disabled
+  - 4: PTK rekey interval
+  - 5: AP sae_pwe
+  - 6: client AKMs
+  - 7: client sae_pwe
+
+  Probe trace
+
+  ┌──────────┬──────────┬────────────────────────────────────┬─────────────┐
+  │  Probe   │ Changes  │               Status               │     Run     │
+  │          │ applied  │                                    │             │
+  ├──────────┼──────────┼────────────────────────────────────┼─────────────┤
+  │ target   │ all 8    │ INTERESTING                        │ 1795044573  │
+  │          │          │                                    │ (cache)     │
+  ├──────────┼──────────┼────────────────────────────────────┼─────────────┤
+  │ baseline │ none     │ NOT_INTERESTING                    │ 1795044591  │
+  │          │          │ (disconnect_reasons differs)       │ (cache)     │
+  ├──────────┼──────────┼────────────────────────────────────┼─────────────┤
+  │          │          │ INVALID at P1:                     │             │
+  │ r0/s0    │ 0–3      │ SEC.MLD_CLIENT_COMMON_AKM,         │ —           │
+  │          │          │ SEC.SAE_PWE_NEEDS_SAE              │             │
+  ├──────────┼──────────┼────────────────────────────────────┼─────────────┤
+  │ r0/s1    │ 4–7      │ INVALID at P1:                     │ —           │
+  │          │          │ SEC.MLD_CLIENT_COMMON_AKM          │             │
+  ├──────────┼──────────┼────────────────────────────────────┼─────────────┤
+  │          │          │ INVALID at P1:                     │             │
+  │ r1/s0    │ 0, 1     │ SEC.MLD_COMMON_SUITES,             │ —           │
+  │          │          │ SEC.MLD_SAME_RSNXE                 │             │
+  ├──────────┼──────────┼────────────────────────────────────┼─────────────┤
+  │ r1/s1    │ 2, 3     │ INVALID at P1: same two rules      │ —           │
+  ├──────────┼──────────┼────────────────────────────────────┼─────────────┤
+  │ r1/s2    │ 4, 5     │ INTERESTING                        │ 1795044604  │
+  │          │          │                                    │ (cache)     │
+  ├──────────┼──────────┼────────────────────────────────────┼─────────────┤
+  │ r2/s0    │ 4        │ INTERESTING                        │ 1795044618  │
+  │          │          │                                    │ (cache)     │
+  └──────────┴──────────┴────────────────────────────────────┴─────────────┘
+
+  Totals: 3 INTERESTING, 1 NOT_INTERESTING, 4 INVALID. The four INVALID probes
+  were stopped at P1 and never booted.
+
+  Result
+
+  - Minimal change: delta 4 only. needed_for_validity is empty, meaning no extra
+    change had to be kept just to make the result pass the rules.
+  - Minimal candidate: side A with PTK rekey unset, keeping SAE-EXT-KEY, H2E,
+    the GTK rekey every 5 s and the link removal. It is P2 SUPPORTED.
+  - This agrees with contrast 2 in contrasts.json, where the same SAE setup
+    differs only in PTK rekey.
+
+  Caveats
+
+  - No guests booted. All 4 runs came from the cache: earlier trials in the
+    git-ignored runs/hwsim-logs/. Cache hits aren't independent repeats, and
+    none of these runs is committed evidence.
+  - To make it MINIMIZED, reproduce both final sides 3/3 in fresh guests. This
+    boots about 6 guests and writes contrasts/c2/. I haven't run it; tell me if
+    you want me to:
+  .venv/bin/python scripts/minimize_contrast.py minimize --a 1794812749 --b
+  1794557032 --facts disconnect_reasons --out contrasts/c2
+  .venv/bin/python scripts/minimize_contrast.py verify --out contrasts/c2
+
+✻ Crunched for 19s · done 9:57 AM
+
+※ recap: We're exploring the Wi-Fi 7 explorer's MCP tools, most recently minimizing the 1794812749 vs 1794557032 contrast, where turning off the 5-second PTK rekey alone was enough (pending verification). Next, run the minimize and verify scripts into contrasts/c2 if you want it confirmed. (turn off recaps in /config)
+
+❯ Run this candidate:{"config": {"ap": {"links": [{"link_id": 0, "channel": 1,  
+  "akms": ["SAE-EXT-KEY"]}, {"link_id": 1, "channel": 6, "akms":                
+  ["SAE-EXT-KEY"]}], "sae_pwe": "hash_to_element", "gtk_rekey_interval_s": 5},  
+  "sta": {"akms": ["SAE-EXT-KEY"], "sae_pwe": "both", "beacon_protection":      
+  true}}, "actions": [{"action": "associate"}, {"action": "link_remove",        
+  "link_id": 1, "count": 4}]}                                                   
+
+  Called wifi7-explorer (ctrl+o to expand)
+
+● The candidate was ACCEPTED: run 1795197868, hostap test result PASS. This is
+  the minimal candidate from the reduction: side A with the PTK rekey interval
+  left unset.
+
+  Checks before it booted:
+  - P1: PASSES_MODELED_RULES, no findings. That means no modeled rule objects,
+    not full 802.11be compliance.
+  - P2: SUPPORTED. The committed adapter runs 1794952292, 1794952308 and
+    1794952325 ran exactly this candidate; they are side B of contrast 2.
+
+  What the run showed:
+
+  ┌─────────────────────┬───────────────────────────────────────────────────┐
+  │        Fact         │                       Value                       │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ Association         │ succeeded with SAE-EXT-KEY, SAE group 19, H2E on, │
+  │                     │  BIGTK set, wpa_state=COMPLETED                   │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ Links before        │ data received on AP links [0, 1]                  │
+  │ removal             │                                                   │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ Links after removal │ link_reconfig_valid_links=["0x1"], final          │
+  │                     │ valid_links/active_links=0x1                      │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ Handshakes and      │ one 4-way handshake, 0 PTK rekeys, 2 GTK rekeys   │
+  │ rekeys              │                                                   │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ After the last      │ data still received on link 0                     │
+  │ rekey               │                                                   │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ disconnect_reasons  │ [[3, true]], only the client's own reason-3       │
+  │                     │ disconnect at the end                             │
+  ├─────────────────────┼───────────────────────────────────────────────────┤
+  │ ML probe / BTM      │ UNKNOWN (not calibrated)                          │
+  └─────────────────────┴───────────────────────────────────────────────────┘
+
+  What this means for the reduction: the run reproduces the target fact,
+  disconnect_reasons = [[3, true]]. Every fact listed above matches contrast 2's
+  side B: links 0x1, 2 GTK rekeys, data after the last rekey on [0], COMPLETED.
+  So without the 5 s PTK rekey, this setup completes cleanly instead of failing
+  with repeated reason-15 disconnects.
+
+  This is one fresh run of one side. It isn't the #73 verification, which needs
+  both final sides run 3/3 through minimize_contrast.py verify. The run is a
+  trial in the git-ignored runs/hwsim-logs/1795197868, so it isn't committed
+  evidence.
+
+✻ Cooked for 29s · done 10:04 AM
+
+※ recap: You're exploring Wi-Fi 7 configurations, and dropping the 5-second PTK rekey alone stopped the repeated disconnects after link removal: the minimal candidate ran and was accepted. Next, verify it 3/3 with `scripts/minimize_contrast.py minimize` then `verify` into `contrasts/c2/`. (turn off recaps in /config)
