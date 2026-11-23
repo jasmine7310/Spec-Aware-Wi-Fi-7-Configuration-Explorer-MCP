@@ -1,0 +1,1052 @@
+{
+  "contrast": {
+    "a_runs": [
+      "1794952292",
+      "1794952308",
+      "1794952325"
+    ],
+    "b_runs": [
+      "1794933586",
+      "1794933644",
+      "1794933694"
+    ],
+    "claimed_facts": [
+      "data_test_rx_ap_links",
+      "gtk_rekeys_completed",
+      "station_status"
+    ],
+    "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+    "input_diff": {
+      "config.ap.gtk_rekey_interval_s": [
+        5,
+        null
+      ],
+      "config.ap.links[0].akms": [
+        [
+          "SAE-EXT-KEY"
+        ],
+        [
+          "OWE"
+        ]
+      ],
+      "config.ap.links[1].akms": [
+        [
+          "SAE-EXT-KEY"
+        ],
+        [
+          "OWE"
+        ]
+      ],
+      "config.ap.links[1].indicate_disabled": [
+        false,
+        true
+      ],
+      "config.ap.sae_pwe": [
+        "hash_to_element",
+        null
+      ],
+      "config.sta.akms": [
+        [
+          "SAE-EXT-KEY"
+        ],
+        [
+          "OWE"
+        ]
+      ],
+      "config.sta.sae_pwe": [
+        "both",
+        null
+      ]
+    },
+    "unstable": []
+  },
+  "description": "Minimized contrast c2, written by scripts/minimize_contrast.py. Probe runs are in probes/; the final sides' reproduction runs are in contrasts/runs/.",
+  "label": "MINIMIZED",
+  "reduction": {
+    "cache_hits": 0,
+    "candidate_a": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": 5,
+          "links": [
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 6,
+              "indicate_disabled": false,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": "hash_to_element"
+        },
+        "sta": {
+          "akms": [
+            "SAE-EXT-KEY"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": "both"
+        }
+      }
+    },
+    "candidate_b": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": null,
+          "links": [
+            {
+              "akms": [
+                "OWE"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "OWE"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": null
+        },
+        "sta": {
+          "akms": [
+            "OWE"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": null
+        }
+      }
+    },
+    "counts": {
+      "INTERESTING": 3,
+      "INVALID": 3,
+      "NOT_INTERESTING": 2
+    },
+    "deltas": [
+      {
+        "a": 5,
+        "b": null,
+        "id": 0,
+        "kind": "config",
+        "label": "config.ap.gtk_rekey_interval_s: 5 -> null",
+        "path": "config.ap.gtk_rekey_interval_s"
+      },
+      {
+        "a": [
+          "SAE-EXT-KEY"
+        ],
+        "b": [
+          "OWE"
+        ],
+        "id": 1,
+        "kind": "config",
+        "label": "config.ap.links[0].akms: [\"SAE-EXT-KEY\"] -> [\"OWE\"]",
+        "path": "config.ap.links[0].akms"
+      },
+      {
+        "a": [
+          "SAE-EXT-KEY"
+        ],
+        "b": [
+          "OWE"
+        ],
+        "id": 2,
+        "kind": "config",
+        "label": "config.ap.links[1].akms: [\"SAE-EXT-KEY\"] -> [\"OWE\"]",
+        "path": "config.ap.links[1].akms"
+      },
+      {
+        "a": false,
+        "b": true,
+        "id": 3,
+        "kind": "config",
+        "label": "config.ap.links[1].indicate_disabled: false -> true",
+        "path": "config.ap.links[1].indicate_disabled"
+      },
+      {
+        "a": "hash_to_element",
+        "b": null,
+        "id": 4,
+        "kind": "config",
+        "label": "config.ap.sae_pwe: \"hash_to_element\" -> null",
+        "path": "config.ap.sae_pwe"
+      },
+      {
+        "a": [
+          "SAE-EXT-KEY"
+        ],
+        "b": [
+          "OWE"
+        ],
+        "id": 5,
+        "kind": "config",
+        "label": "config.sta.akms: [\"SAE-EXT-KEY\"] -> [\"OWE\"]",
+        "path": "config.sta.akms"
+      },
+      {
+        "a": "both",
+        "b": null,
+        "id": 6,
+        "kind": "config",
+        "label": "config.sta.sae_pwe: \"both\" -> null",
+        "path": "config.sta.sae_pwe"
+      }
+    ],
+    "guest_runs": 5,
+    "minimal": [
+      3
+    ],
+    "minimal_candidate": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": 5,
+          "links": [
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": "hash_to_element"
+        },
+        "sta": {
+          "akms": [
+            "SAE-EXT-KEY"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": "both"
+        }
+      }
+    },
+    "minimal_p2": "UNRESOLVED",
+    "needed_for_validity": [],
+    "status": "MINIMIZED",
+    "target": {
+      "data_test_rx_ap_links": [
+        0
+      ]
+    },
+    "trace": [
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795473021",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": null,
+              "links": [
+                {
+                  "akms": [
+                    "OWE"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "OWE"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": null
+            },
+            "sta": {
+              "akms": [
+                "OWE"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": null
+            }
+          }
+        },
+        "config_id": "target",
+        "deltas": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "differing": [],
+        "facts": {
+          "data_test_rx_ap_links": [
+            0
+          ]
+        },
+        "independent": true,
+        "index": 0,
+        "matched": [
+          "data_test_rx_ap_links"
+        ],
+        "p2": "SUPPORTED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795473021"
+        ],
+        "stage": "facts",
+        "status": "INTERESTING",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795473037",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": false,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "baseline",
+        "deltas": [],
+        "differing": [
+          "data_test_rx_ap_links"
+        ],
+        "facts": {
+          "data_test_rx_ap_links": [
+            0,
+            1
+          ]
+        },
+        "independent": true,
+        "index": 1,
+        "matched": [],
+        "p2": "SUPPORTED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795473037"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": null,
+              "links": [
+                {
+                  "akms": [
+                    "OWE"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "OWE"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": false,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r0 / s0",
+        "deltas": [
+          0,
+          1,
+          2
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 2,
+        "matched": [],
+        "p2": null,
+        "reason": "SEC.MLD_CLIENT_COMMON_AKM: none of the client's AKMs ['SAE-EXT-KEY'] is offered on every AP MLD link (common to all links: ['OWE']); a conforming client declines the ML association; SEC.SAE_PWE_NEEDS_SAE: the AP's sae_pwe=hash_to_element is set but no AP link offers SAE or SAE-EXT-KEY, so it has no effect",
+        "rule_ids": [
+          "SEC.MLD_CLIENT_COMMON_AKM",
+          "SEC.SAE_PWE_NEEDS_SAE"
+        ],
+        "run_ids": [],
+        "stage": "P1",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": null
+            },
+            "sta": {
+              "akms": [
+                "OWE"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": null
+            }
+          }
+        },
+        "config_id": "r0 / s1",
+        "deltas": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 3,
+        "matched": [],
+        "p2": null,
+        "reason": "SEC.MLD_CLIENT_COMMON_AKM: none of the client's AKMs ['OWE'] is offered on every AP MLD link (common to all links: ['SAE-EXT-KEY']); a conforming client declines the ML association",
+        "rule_ids": [
+          "SEC.MLD_CLIENT_COMMON_AKM"
+        ],
+        "run_ids": [],
+        "stage": "P1",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795473047",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": null,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": false,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / s0",
+        "deltas": [
+          0
+        ],
+        "differing": [
+          "data_test_rx_ap_links"
+        ],
+        "facts": {
+          "data_test_rx_ap_links": [
+            0,
+            1
+          ]
+        },
+        "independent": true,
+        "index": 4,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795473047"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "OWE"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "OWE"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": false,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / s1",
+        "deltas": [
+          1,
+          2
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 5,
+        "matched": [],
+        "p2": null,
+        "reason": "SEC.MLD_CLIENT_COMMON_AKM: none of the client's AKMs ['SAE-EXT-KEY'] is offered on every AP MLD link (common to all links: ['OWE']); a conforming client declines the ML association; SEC.SAE_PWE_NEEDS_SAE: the AP's sae_pwe=hash_to_element is set but no AP link offers SAE or SAE-EXT-KEY, so it has no effect",
+        "rule_ids": [
+          "SEC.MLD_CLIENT_COMMON_AKM",
+          "SEC.SAE_PWE_NEEDS_SAE"
+        ],
+        "run_ids": [],
+        "stage": "P1",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795473058",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": null
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / s2",
+        "deltas": [
+          3,
+          4
+        ],
+        "differing": [],
+        "facts": {
+          "data_test_rx_ap_links": [
+            0
+          ]
+        },
+        "independent": true,
+        "index": 6,
+        "matched": [
+          "data_test_rx_ap_links"
+        ],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795473058"
+        ],
+        "stage": "facts",
+        "status": "INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795473068",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / s0",
+        "deltas": [
+          3
+        ],
+        "differing": [],
+        "facts": {
+          "data_test_rx_ap_links": [
+            0
+          ]
+        },
+        "independent": true,
+        "index": 7,
+        "matched": [
+          "data_test_rx_ap_links"
+        ],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795473068"
+        ],
+        "stage": "facts",
+        "status": "INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      }
+    ]
+  },
+  "target_facts": [
+    "data_test_rx_ap_links"
+  ],
+  "verification": {
+    "baseline": [
+      {
+        "facts": {
+          "data_test_rx_ap_links": [
+            0,
+            1
+          ]
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795473107",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "data_test_rx_ap_links": [
+            0,
+            1
+          ]
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795473128",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "data_test_rx_ap_links": [
+            0,
+            1
+          ]
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795473143",
+        "status": "ACCEPTED"
+      }
+    ],
+    "label": "MINIMIZED",
+    "minimal": [
+      {
+        "facts": {
+          "data_test_rx_ap_links": [
+            0
+          ]
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795473160",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "data_test_rx_ap_links": [
+            0
+          ]
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795473183",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "data_test_rx_ap_links": [
+            0
+          ]
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795473195",
+        "status": "ACCEPTED"
+      }
+    ],
+    "note": "Both sides reproduced 3/3: the baseline differs from the target in every run, the minimal candidate matches it in every run.",
+    "runs": 3
+  }
+}

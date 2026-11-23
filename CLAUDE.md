@@ -147,7 +147,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   with `BUDGET_EXHAUSTED` before the run that would exceed it. `verify(reduction)` (#73) runs both
   final sides (A, and A with the minimal deltas) 3 times each in fresh guests: `MINIMIZED` only when
   every run reproduces its side, else `PENDING_VERIFICATION`. `scripts/minimize_contrast.py` runs both
-  steps and writes `contrasts/<id>/reduction.json`; `contrasts/c1/` is the first one.
+  steps and writes `contrasts/<id>/reduction.json`; `contrasts/c1/` (key) and `contrasts/c2/` (link)
+  are the first two.
 - `explorer.pruning`: the agent chain's first two steps (#74). `why_pruned(data)` gives the
   planner's role for a candidate (`malformed` / `pruned` / `undetermined` / `unsupported` /
   `not_run` are pruned; `probe` / `supported` are executable), the stage, and per finding

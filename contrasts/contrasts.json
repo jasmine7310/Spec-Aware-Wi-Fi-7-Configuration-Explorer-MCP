@@ -1,6 +1,6 @@
 {
-  "accepted_runs": 55,
-  "candidates": 37,
+  "accepted_runs": 61,
+  "candidates": 38,
   "contrasts": [
     {
       "a_runs": [
@@ -490,7 +490,10 @@
       "b_runs": [
         "1794952292",
         "1794952308",
-        "1794952325"
+        "1794952325",
+        "1795473107",
+        "1795473128",
+        "1795473143"
       ],
       "candidate_a": {
         "actions": [
@@ -731,6 +734,155 @@
         "config.ap.ptk_rekey_interval_s": [
           5,
           null
+        ]
+      },
+      "reproduced": true,
+      "unstable": []
+    },
+    {
+      "a_runs": [
+        "1794952292",
+        "1794952308",
+        "1794952325",
+        "1795473107",
+        "1795473128",
+        "1795473143"
+      ],
+      "b_runs": [
+        "1795473160",
+        "1795473183",
+        "1795473195"
+      ],
+      "candidate_a": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": false,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": "hash_to_element"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "both"
+          }
+        }
+      },
+      "candidate_b": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": true,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": "hash_to_element"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "both"
+          }
+        }
+      },
+      "current_harness": true,
+      "facts": [
+        {
+          "a": [
+            0,
+            1
+          ],
+          "b": [
+            0
+          ],
+          "evidence_a": [
+            "contrasts/runs/1794952292/explorer_candidate.log:97: 2026-11-17 21:51:33,824 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1794952292/explorer_candidate.log:101: 2026-11-17 21:51:33,824 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00",
+            "contrasts/runs/1794952292/explorer_candidate.log:119: 2026-11-17 21:51:33,824 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1794952292/explorer_candidate.log:123: 2026-11-17 21:51:33,824 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1795473160/explorer_candidate.log:97: 2026-11-23 22:32:42,352 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1795473160/explorer_candidate.log:101: 2026-11-23 22:32:42,352 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00",
+            "contrasts/runs/1795473160/explorer_candidate.log:130: 2026-11-23 22:32:42,797 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1795473160/explorer_candidate.log:134: 2026-11-23 22:32:42,797 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00"
+          ],
+          "fact": "data_test_rx_ap_links"
+        }
+      ],
+      "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+      "input_diff": {
+        "config.ap.links[1].indicate_disabled": [
+          false,
+          true
         ]
       },
       "reproduced": true,

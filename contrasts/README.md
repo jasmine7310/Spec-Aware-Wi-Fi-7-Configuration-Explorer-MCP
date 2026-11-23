@@ -25,12 +25,15 @@ them up. Regenerate the JSON with `.venv/bin/python scripts/find_contrasts.py`
   Each claimed fact comes with the log lines it was read from.
 - **Reproduced** means at least 3 independent runs per side, each in a fresh guest. Cache hits don't count, and none of these runs was served from the cache.
 
-Today that's 49 accepted runs in 35 groups of repeats.
+Today that's 61 accepted runs in 38 groups of repeats.
 
-`contrasts/runs/` holds the 16 runs made for this issue so that each side has 3, all
-`ACCEPTED`, on Docker Desktop on macOS:
+`contrasts/runs/` holds 28 runs, all `ACCEPTED`, on Docker Desktop on macOS. 16 were made
+for this issue so that each side has 3:
 - 9 on today's harness (2026-11-17), which are the evidence below;
 - 7 on the earlier harness (2026-11-16).
+
+The other 12 are the 3/3 reproductions of the minimized contrasts, 6 from `c1/` (#73) and 6
+from `c2/` (#106), on today's harness (see "Minimized contrasts" below).
 
 They're in `support.EVIDENCE_DIRS`, so they count as P2 evidence: each side's candidate is
 `SUPPORTED` by exact-match committed runs.
@@ -117,14 +120,23 @@ runs are C1's PTK-rekey side.
 
 **Reproduced:** yes, 3 vs 3.
 
-## Minimized: `c1/` (#73)
+## Minimized contrasts
 
-`c1/` minimizes a wider contrast: a failing campaign run 8 inputs away from the clean OWE
-side (`1794812749` vs `1794557032` and its repeats). The minimizer reduces the 8 inputs
-to one, `ptk_rekey_interval_s` 5 → unset, and both final sides reproduce 3/3
-(`1794952238`, `1794952257`, `1794952274` vs `1794952292`, `1794952308`, `1794952325`).
-The write-up and the full trace are in `c1/README.md`. Those 6 runs are in `runs/`, so
-`contrasts.json` also lists the pair as a reproduced contrast.
+The folders `c1/` and `c2/` are reductions by `scripts/minimize_contrast.py`, each verified
+3/3 per side. They aren't the C1 / C2 above, though `c1/` also points at the PTK rekey.
+Their category is the category of their target facts, as in `anchor_coverage.csv`'s
+`category` column (#105).
+
+| Folder | Category | Target fact | Inputs → minimal | Minimal cause | Label |
+|---|---|---|---|---|---|
+| `c1/` (#73) | `key` | `disconnect_reasons` | 8 → 1 | `ptk_rekey_interval_s` 5 → unset (a key setting) | `MINIMIZED` |
+| `c2/` (#106) | `link` | `data_test_rx_ap_links` | 7 → 1 | link 1 `indicate_disabled` false → true (a link setting) | `MINIMIZED` |
+
+- **`c1/`** minimizes a failing campaign run 8 inputs away from the clean OWE side (`1794812749` vs `1794557032` and its repeats). Both final sides reproduce 3/3: `1794952238`, `1794952257`, `1794952274` vs `1794952292`, `1794952308`, `1794952325`.
+- **`c2/`** starts from `c1/`'s clean side (SAE-EXT-KEY, both links active) and targets the OWE side whose link 1 is advertised as disabled (`1794933586` and its repeats). Neither side rekeys the PTK, so its cause is a different one. Both final sides reproduce 3/3: `1795473107`, `1795473128`, `1795473143` vs `1795473160`, `1795473183`, `1795473195`. With link 1 advertised as disabled, the client sets up both links but activates only link 0, as hostap's own test expects.
+
+Each folder's `README.md` has the write-up and the full trace. Their reproduction runs are in
+`runs/`, so `contrasts.json` also lists each final pair as a reproduced contrast.
 
 ## Two harnesses
 
@@ -141,14 +153,14 @@ Both harnesses give the same claimed facts, with one difference: on the earlier 
 
 ## Across every accepted run
 
-The pattern holds beyond the two contrasts. Across all 49 accepted runs, under both
+The pattern holds beyond the two contrasts. Across all 61 accepted runs, under both
 harnesses:
 
 | `ptk_rekey_interval_s` | `link_remove` | Runs with a reason-15 disconnect from the AP |
 |---|---|---|
-| 5 | yes | **17 / 17** |
+| 5 | yes | **20 / 20** |
 | 5 | no | 0 / 11 |
-| unset | yes | 0 / 14 |
+| unset | yes | 0 / 23 |
 | unset | no | 0 / 7 |
 
 The other campaign runs in the first row also differ in AKM, cipher, `sae_pwe` and other
