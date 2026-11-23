@@ -1,0 +1,231 @@
+{
+  "run_id": "1795474277",
+  "tests_requested": [
+    "explorer_candidate"
+  ],
+  "overall": "PASS",
+  "results": [
+    {
+      "test": "explorer_candidate",
+      "result": "PASS",
+      "duration_s": 0.487545
+    }
+  ],
+  "started_at": "2026-11-23T22:51:17Z",
+  "finished_at": "2026-11-23T22:51:28Z",
+  "wall_seconds": 11,
+  "versions": {
+    "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",
+    "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda",
+    "image": "wifi7-env",
+    "image_id": "sha256:6823a26083b992c20ea1152b2a5d4dcbed67bd3a08e676e6f9aaeb677e2faaf0",
+    "repo_commit": "75aa5d8e400fcbb833c02f5fca48e4a5f830046a",
+    "repo_docker_dir_modified": false
+  },
+  "environment": {
+    "host_os": "macOS 15.8.1",
+    "host_kernel": "Darwin 24.6.0 x86_64",
+    "docker_server_version": "27.4.0",
+    "docker_vm_os": "Docker Desktop",
+    "docker_vm_kernel": "6.10.14-linuxkit",
+    "docker_vm_cpus": 6,
+    "docker_vm_memory_bytes": 5154578432
+  },
+  "docker_run_settings": [
+    "--cpuset-cpus=0",
+    "--tmpfs /umltmp:rw,exec,size=1g",
+    "-e TMPDIR=/umltmp",
+    "-e HWSIM_TEST_LOG_DIR=/tmp/hwsim-test-logs"
+  ],
+  "packet_captures": [
+    {
+      "file": "explorer_candidate.hwsim0.dec.pcapng",
+      "bytes": 35444
+    },
+    {
+      "file": "explorer_candidate.hwsim0.pcapng",
+      "bytes": 21628
+    },
+    {
+      "file": "hwsim0.pcapng",
+      "bytes": 48
+    }
+  ],
+  "explorer_plan": {
+    "actions": [
+      {
+        "action": "associate"
+      },
+      {
+        "action": "disable_enable_mld",
+        "command": "DISABLE_MLD"
+      },
+      {
+        "action": "sta_disconnect_reconnect",
+        "command": "DISCONNECT"
+      },
+      {
+        "action": "disable_enable_mld",
+        "command": "ENABLE_MLD"
+      }
+    ],
+    "ap_links": [
+      {
+        "link_id": 0,
+        "params": {
+          "beacon_prot": "1",
+          "channel": "1",
+          "group_mgmt_cipher": "AES-128-CMAC",
+          "hw_mode": "g",
+          "ieee80211ax": "1",
+          "ieee80211be": "1",
+          "ieee80211n": "1",
+          "ieee80211w": "2",
+          "rsn_pairwise": "CCMP",
+          "sae_pwe": "1",
+          "ssid": "explorer_mld",
+          "wpa": "2",
+          "wpa_group_rekey": "5",
+          "wpa_key_mgmt": "SAE-EXT-KEY",
+          "wpa_passphrase": "qwertyuiop"
+        }
+      },
+      {
+        "link_id": 1,
+        "params": {
+          "beacon_prot": "1",
+          "channel": "6",
+          "group_mgmt_cipher": "AES-128-CMAC",
+          "hw_mode": "g",
+          "ieee80211ax": "1",
+          "ieee80211be": "1",
+          "ieee80211n": "1",
+          "ieee80211w": "2",
+          "mld_indicate_disabled": "1",
+          "rsn_pairwise": "CCMP",
+          "sae_pwe": "1",
+          "ssid": "explorer_mld",
+          "wpa": "2",
+          "wpa_group_rekey": "5",
+          "wpa_key_mgmt": "SAE-EXT-KEY",
+          "wpa_passphrase": "qwertyuiop"
+        }
+      }
+    ],
+    "ap_shared": {
+      "beacon_prot": "1",
+      "group_mgmt_cipher": "AES-128-CMAC",
+      "hw_mode": "g",
+      "ieee80211ax": "1",
+      "ieee80211be": "1",
+      "ieee80211n": "1",
+      "ieee80211w": "2",
+      "sae_pwe": "1",
+      "ssid": "explorer_mld",
+      "wpa": "2",
+      "wpa_group_rekey": "5"
+    },
+    "explorer": {
+      "cache_key": "sha256:3644d142d91114dc643243109c90ca0d41a139abcdec8be173c6db0bb3e9589e",
+      "cache_key_parts": {
+        "environment": "50c5722e3260e56555f60e4aff2ed13ecaa7bc92e4523377dd1b15d4f49495f9",
+        "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+        "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",
+        "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda",
+        "model_digest": "sha256:0e3f3145a04bcf05e25946f9497d21e50b443f533c7e818aacb354dd2b46af48",
+        "schema_version": 2
+      },
+      "candidate": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "DISABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "ENABLE_MLD"
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": true,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": "hash_to_element"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "both"
+          }
+        }
+      },
+      "context": {
+        "attempt": 1,
+        "deltas": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "minimize_probe": 17,
+        "purpose": "minimization of contrasts/c3"
+      },
+      "model_digest": "sha256:0e3f3145a04bcf05e25946f9497d21e50b443f533c7e818aacb354dd2b46af48",
+      "negative_experiment": false,
+      "schema_version": 2,
+      "timeout_s": 600,
+      "validation": {
+        "p2": "UNRESOLVED",
+        "rule_ids": [],
+        "status": "PASSES_MODELED_RULES"
+      }
+    },
+    "needs_owe": false,
+    "needs_sae": true,
+    "ssid": "explorer_mld",
+    "sta": {
+      "connect": {
+        "beacon_prot": "1",
+        "ieee80211w": "2",
+        "key_mgmt": "SAE-EXT-KEY",
+        "sae_password": "qwertyuiop",
+        "scan_freq": "2412 2437"
+      },
+      "sae_groups": "",
+      "sae_pwe": "2"
+    }
+  }
+}

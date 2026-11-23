@@ -84,7 +84,7 @@ link state, traffic after the last rekey and `station_status` differ too.
 ## What this shows, and what it doesn't
 
 - **Among these 8 inputs**, the 5 s PTK rekey is the one whose removal removes the reason-15 disconnects, for this candidate (SAE-EXT-KEY, 5 s GTK rekeys, `link_remove`). It's 1-minimal: removing the one delta brings the failure back (the baseline).
-- **`link_remove` wasn't tested here:** both sides perform it. `contrasts/README.md`'s C2 and its table across every accepted run (20/20 vs 0/41 since #106) show the failure also needs `link_remove`.
+- **`link_remove` wasn't tested here:** both sides perform it. `contrasts/README.md`'s C2 and its table across every accepted run (20/20 vs 0/50 since #107) show the failure also needs `link_remove`.
 - **The cause isn't shown.** The logs don't say why the rekey fails after `link_remove` (`contrasts/README.md`, "What the logs show"). No claim is made about that, or about what the standard requires.
 - **Single-run probes.** Each probe is one run, so a noisy fact could steer a reduction. The 3/3 reproduction of both final sides is what makes the result count.
 

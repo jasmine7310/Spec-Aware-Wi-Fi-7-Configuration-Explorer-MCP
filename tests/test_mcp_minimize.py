@@ -7,15 +7,18 @@ import json
 import pytest
 from mcp import Client
 
-from explorer import mcp_server
+from explorer import contrasts, mcp_server
 from explorer.cache import CachedOutcome
 from explorer.mcp_server import server
 
 REASON_15 = {"reason": 15, "locally_generated": False}
 REASON_3 = {"reason": 3, "locally_generated": True}
-# Contrast C1 on today's harness (contrasts/contrasts.json, contrast 0): A has a 5 s PTK
-# rekey with link_remove, B the same without the rekey.
-C1 = 0
+# Contrast C1 on today's harness: A has a 5 s PTK rekey with link_remove, B the same
+# without the rekey. Its index in contrasts/contrasts.json moves as runs are committed,
+# so it's looked up by its sides' first runs.
+C1 = next(i for i, c in enumerate(json.loads(
+    (contrasts.CONTRASTS_DIR / "contrasts.json").read_text())["contrasts"])
+    if c["a_runs"][0] == "1794933558" and c["b_runs"][0] == "1794933586")
 # The 6-input pair from PR #101: A (seed-1 campaign, SAE-EXT-KEY, ptk 5, gtk 5) and B
 # (C1's B side, OWE, link 1 indicate_disabled), both with link_remove.
 PAIR = ("1794812824", "1794933586")

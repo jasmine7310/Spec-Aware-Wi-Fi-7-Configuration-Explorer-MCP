@@ -25,15 +25,17 @@ them up. Regenerate the JSON with `.venv/bin/python scripts/find_contrasts.py`
   Each claimed fact comes with the log lines it was read from.
 - **Reproduced** means at least 3 independent runs per side, each in a fresh guest. Cache hits don't count, and none of these runs was served from the cache.
 
-Today that's 61 accepted runs in 38 groups of repeats.
+Today that's 70 accepted runs in 40 groups of repeats.
 
-`contrasts/runs/` holds 28 runs, all `ACCEPTED`, on Docker Desktop on macOS. 16 were made
+`contrasts/runs/` holds 37 runs, all `ACCEPTED`, on Docker Desktop on macOS. 16 were made
 for this issue so that each side has 3:
 - 9 on today's harness (2026-11-17), which are the evidence below;
 - 7 on the earlier harness (2026-11-16).
 
-The other 12 are the 3/3 reproductions of the minimized contrasts, 6 from `c1/` (#73) and 6
-from `c2/` (#106), on today's harness (see "Minimized contrasts" below).
+The other 21 are for the minimized contrasts, on today's harness (see "Minimized contrasts"
+below):
+- their 3/3 reproductions, 6 each from `c1/` (#73), `c2/` (#106) and `c3/` (#107);
+- 3 runs of `c3/`'s B side (#107), which had only run under the earlier harness.
 
 They're in `support.EVIDENCE_DIRS`, so they count as P2 evidence: each side's candidate is
 `SUPPORTED` by exact-match committed runs.
@@ -122,8 +124,8 @@ runs are C1's PTK-rekey side.
 
 ## Minimized contrasts
 
-The folders `c1/` and `c2/` are reductions by `scripts/minimize_contrast.py`, each verified
-3/3 per side. They aren't the C1 / C2 above, though `c1/` also points at the PTK rekey.
+The folders `c1/`, `c2/` and `c3/` are reductions by `scripts/minimize_contrast.py`, each
+verified 3/3 per side. They aren't the C1 / C2 above, though `c1/` also points at the PTK rekey.
 Their category is the category of their target facts, as in `anchor_coverage.csv`'s
 `category` column (#105).
 
@@ -131,12 +133,18 @@ Their category is the category of their target facts, as in `anchor_coverage.csv
 |---|---|---|---|---|---|
 | `c1/` (#73) | `key` | `disconnect_reasons` | 8 → 1 | `ptk_rekey_interval_s` 5 → unset (a key setting) | `MINIMIZED` |
 | `c2/` (#106) | `link` | `data_test_rx_ap_links` | 7 → 1 | link 1 `indicate_disabled` false → true (a link setting) | `MINIMIZED` |
+| `c3/` (#107) | `security` | `four_way_handshakes_completed` | 9 → 5 | the AP MLD restart and client reconnect (`DISABLE_MLD`, `DISCONNECT`, `ENABLE_MLD`, `RECONNECT`), with `link_remove` dropped (an action sequence) | `MINIMIZED` |
 
 - **`c1/`** minimizes a failing campaign run 8 inputs away from the clean OWE side (`1794812749` vs `1794557032` and its repeats). Both final sides reproduce 3/3: `1794952238`, `1794952257`, `1794952274` vs `1794952292`, `1794952308`, `1794952325`.
 - **`c2/`** starts from `c1/`'s clean side (SAE-EXT-KEY, both links active) and targets the OWE side whose link 1 is advertised as disabled (`1794933586` and its repeats). Neither side rekeys the PTK, so its cause is a different one. Both final sides reproduce 3/3: `1795473107`, `1795473128`, `1795473143` vs `1795473160`, `1795473183`, `1795473195`. With link 1 advertised as disabled, the client sets up both links but activates only link 0, as hostap's own test expects.
+- **`c3/`** starts from `c2/`'s minimal side (one association) and targets a SAE-EXT-KEY candidate that restarts the AP MLD and reconnects the client (`1795474122` and its repeats, B of campaign run `1794812770` run again on today's harness). Neither side rekeys the PTK, and both advertise link 1 as disabled. The 4 config deltas (cipher, `sae_pwe`) don't matter. Of the 5 minimal deltas, only removing `RECONNECT` was run, and it lost the second handshake. `DISABLE_MLD`, `DISCONNECT` and `ENABLE_MLD` are kept by action-order rules, and dropping `link_remove` by an implementation limit (`P2.DISABLE_MLD_AFTER_LINK_REMOVE`). Both final sides reproduce 3/3: `1795474332`, `1795474355`, `1795474380` (1 handshake) vs `1795474393`, `1795474434`, `1795474453` (2). This is what hostap's own disable/enable test does (`test_eht.py:728-761`).
+
+Together they cover three categories (`key`, `link`, `security`) and three kinds of minimal
+cause: a key setting, a link setting and an action sequence.
 
 Each folder's `README.md` has the write-up and the full trace. Their reproduction runs are in
-`runs/`, so `contrasts.json` also lists each final pair as a reproduced contrast.
+`runs/`. `c1/`'s and `c2/`'s final pairs are one input apart, so `contrasts.json` also lists
+them as reproduced contrasts. `c3/`'s are 5 apart, so it doesn't.
 
 ## Two harnesses
 
@@ -153,15 +161,15 @@ Both harnesses give the same claimed facts, with one difference: on the earlier 
 
 ## Across every accepted run
 
-The pattern holds beyond the two contrasts. Across all 61 accepted runs, under both
+The pattern holds beyond the two contrasts. Across all 70 accepted runs, under both
 harnesses:
 
 | `ptk_rekey_interval_s` | `link_remove` | Runs with a reason-15 disconnect from the AP |
 |---|---|---|
 | 5 | yes | **20 / 20** |
 | 5 | no | 0 / 11 |
-| unset | yes | 0 / 23 |
-| unset | no | 0 / 7 |
+| unset | yes | 0 / 26 |
+| unset | no | 0 / 13 |
 
 The other campaign runs in the first row also differ in AKM, cipher, `sae_pwe` and other
 actions. So the combination fails across those settings, not just in the base above.
