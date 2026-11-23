@@ -620,9 +620,10 @@ def test_verify_refuses_an_unminimized_reduction_and_cache_hits():
 
 # --- the committed minimized contrast (#73) --------------------------------------------
 
-def test_committed_c1_is_minimized_and_reread_from_its_runs():
+@pytest.mark.parametrize("name", ["c1", "c2"])
+def test_committed_contrast_is_minimized_and_reread_from_its_runs(name):
     from explorer.signatures import extract_record
-    folder = contrasts.CONTRASTS_DIR / "c1"
+    folder = contrasts.CONTRASTS_DIR / name
     data = json.loads((folder / "reduction.json").read_text())
     reduction = M.Reduction.model_validate(data["reduction"])
     verification = M.Verification.model_validate(data["verification"])
