@@ -1,0 +1,996 @@
+{
+  "contrast": {
+    "a_runs": [
+      "1795473160",
+      "1795473183",
+      "1795473195",
+      "1795474332",
+      "1795474355",
+      "1795474380"
+    ],
+    "b_runs": [
+      "1795480398",
+      "1795480414",
+      "1795480426"
+    ],
+    "claimed_facts": [
+      "disconnects",
+      "four_way_handshakes_completed",
+      "link_reconfig_valid_links",
+      "station_status",
+      "valid_links"
+    ],
+    "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+    "input_diff": {
+      "actions": [
+        [
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        [
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
+          }
+        ]
+      ]
+    },
+    "unstable": []
+  },
+  "description": "Minimized contrast c3, written by scripts/minimize_contrast.py. Probe runs are in probes/; the final sides' reproduction runs are in contrasts/runs/.",
+  "label": "MINIMIZED",
+  "reduction": {
+    "cache_hits": 5,
+    "candidate_a": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": 5,
+          "links": [
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": "hash_to_element"
+        },
+        "sta": {
+          "akms": [
+            "SAE-EXT-KEY"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": "both"
+        }
+      }
+    },
+    "candidate_b": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "sta_disconnect_reconnect",
+          "command": "DISCONNECT"
+        },
+        {
+          "action": "sta_disconnect_reconnect",
+          "command": "RECONNECT"
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": 5,
+          "links": [
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": "hash_to_element"
+        },
+        "sta": {
+          "akms": [
+            "SAE-EXT-KEY"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": "both"
+        }
+      }
+    },
+    "counts": {
+      "INTERESTING": 1,
+      "INVALID": 2,
+      "NOT_INTERESTING": 5
+    },
+    "deltas": [
+      {
+        "a": {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        },
+        "b": null,
+        "id": 0,
+        "kind": "action",
+        "label": "- actions[1] link_remove {\"count\": 4, \"link_id\": 1} (A)",
+        "path": null
+      },
+      {
+        "a": null,
+        "b": {
+          "action": "sta_disconnect_reconnect",
+          "command": "DISCONNECT"
+        },
+        "id": 1,
+        "kind": "action",
+        "label": "+ actions[1] sta_disconnect_reconnect {\"command\": \"DISCONNECT\"} (B)",
+        "path": null
+      },
+      {
+        "a": null,
+        "b": {
+          "action": "sta_disconnect_reconnect",
+          "command": "RECONNECT"
+        },
+        "id": 2,
+        "kind": "action",
+        "label": "+ actions[2] sta_disconnect_reconnect {\"command\": \"RECONNECT\"} (B)",
+        "path": null
+      }
+    ],
+    "guest_runs": 1,
+    "minimal": [
+      0,
+      1,
+      2
+    ],
+    "minimal_candidate": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "sta_disconnect_reconnect",
+          "command": "DISCONNECT"
+        },
+        {
+          "action": "sta_disconnect_reconnect",
+          "command": "RECONNECT"
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": 5,
+          "links": [
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": "hash_to_element"
+        },
+        "sta": {
+          "akms": [
+            "SAE-EXT-KEY"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": "both"
+        }
+      }
+    },
+    "minimal_p2": "SUPPORTED",
+    "needed_for_validity": [
+      1
+    ],
+    "status": "MINIMIZED",
+    "target": {
+      "four_way_handshakes_completed": 2
+    },
+    "trace": [
+      {
+        "attempts": [
+          {
+            "cache_hit": true,
+            "reason": null,
+            "run_id": "1795480398",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": true,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "target",
+        "deltas": [
+          0,
+          1,
+          2
+        ],
+        "differing": [],
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "independent": false,
+        "index": 0,
+        "matched": [
+          "four_way_handshakes_completed"
+        ],
+        "p2": "SUPPORTED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795480398"
+        ],
+        "stage": "facts",
+        "status": "INTERESTING",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": true,
+            "reason": null,
+            "run_id": "1795473068",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": true,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "baseline",
+        "deltas": [],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": false,
+        "index": 1,
+        "matched": [],
+        "p2": "SUPPORTED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795473068"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": true,
+            "reason": null,
+            "run_id": "1795474228",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": true,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r0 / s0",
+        "deltas": [
+          0
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": false,
+        "index": 2,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474228"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": true,
+            "reason": null,
+            "run_id": "1795480438",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": true,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r0 / s1",
+        "deltas": [
+          1,
+          2
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": false,
+        "index": 3,
+        "matched": [],
+        "p2": "SUPPORTED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795480438"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": true,
+            "reason": null,
+            "run_id": "1795474245",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": true,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / s1",
+        "deltas": [
+          1
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": false,
+        "index": 4,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474245"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / s2",
+        "deltas": [
+          2
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 5,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.RECONNECT_AFTER_DISCONNECT: actions[2] (sta_disconnect_reconnect RECONNECT): RECONNECT only has an effect after DISCONNECT",
+        "rule_ids": [
+          "AO.RECONNECT_AFTER_DISCONNECT"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / c1",
+        "deltas": [
+          0,
+          2
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 6,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.RECONNECT_AFTER_DISCONNECT: actions[1] (sta_disconnect_reconnect RECONNECT): RECONNECT only has an effect after DISCONNECT",
+        "rule_ids": [
+          "AO.RECONNECT_AFTER_DISCONNECT"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795480492",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / c2",
+        "deltas": [
+          0,
+          1
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": true,
+        "index": 7,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795480492"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      }
+    ]
+  },
+  "target_facts": [
+    "four_way_handshakes_completed"
+  ],
+  "verification": {
+    "baseline": [
+      {
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795480526",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795480537",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795480546",
+        "status": "ACCEPTED"
+      }
+    ],
+    "label": "MINIMIZED",
+    "minimal": [
+      {
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795480556",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795480567",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795480580",
+        "status": "ACCEPTED"
+      }
+    ],
+    "note": "Both sides reproduced 3/3: the baseline differs from the target in every run, the minimal candidate matches it in every run.",
+    "runs": 3
+  }
+}

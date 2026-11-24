@@ -620,7 +620,7 @@ def test_verify_refuses_an_unminimized_reduction_and_cache_hits():
 
 # --- the committed minimized contrast (#73) --------------------------------------------
 
-@pytest.mark.parametrize("name", ["c1", "c2"])
+@pytest.mark.parametrize("name", ["c1", "c2", "c3"])
 def test_committed_contrast_is_minimized_and_reread_from_its_runs(name):
     from explorer.signatures import extract_record
     folder = contrasts.CONTRASTS_DIR / name
@@ -632,7 +632,10 @@ def test_committed_contrast_is_minimized_and_reread_from_its_runs(name):
         reduction.candidate_a, reduction.candidate_b).apply(reduction.minimal)
     for probe in reduction.trace:                 # every probe run is committed
         for run_id in probe.run_ids:
-            assert (folder / "probes" / run_id / "manifest.json").exists(), run_id
+            if probe.cache_hit:                   # an earlier run, committed where it ran
+                assert any(contrasts.CONTRASTS_DIR.rglob(f"{run_id}/manifest.json")), run_id
+            else:
+                assert (folder / "probes" / run_id / "manifest.json").exists(), run_id
     runs = verification.baseline + verification.minimal
     assert len(verification.baseline) == len(verification.minimal) == contrasts.REPRODUCE_RUNS
     for run in runs:                              # the recorded facts match the logs

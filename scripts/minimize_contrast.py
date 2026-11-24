@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Minimize one accepted-vs-accepted contrast with real probes, then reproduce its final
-sides (issues #73, #106). Needs Docker and a current image (scripts/build-env.sh).
+sides (issues #73, #106, #107). Needs Docker and a current image (scripts/build-env.sh).
 
     # 1. Reduce: probes run in fresh guests through the cache, into <out>/probes/
     .venv/bin/python scripts/minimize_contrast.py minimize --a 1794812749 --b 1794557032 \\

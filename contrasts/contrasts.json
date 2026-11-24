@@ -1,7 +1,162 @@
 {
-  "accepted_runs": 61,
-  "candidates": 38,
+  "accepted_runs": 82,
+  "candidates": 42,
   "contrasts": [
+    {
+      "a_runs": [
+        "1794952292",
+        "1794952308",
+        "1794952325",
+        "1795473107",
+        "1795473128",
+        "1795473143"
+      ],
+      "b_runs": [
+        "1795473160",
+        "1795473183",
+        "1795473195",
+        "1795474332",
+        "1795474355",
+        "1795474380",
+        "1795480526",
+        "1795480537",
+        "1795480546"
+      ],
+      "candidate_a": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": false,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": "hash_to_element"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "both"
+          }
+        }
+      },
+      "candidate_b": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": 5,
+            "links": [
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "SAE-EXT-KEY"
+                ],
+                "channel": 6,
+                "indicate_disabled": true,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": null,
+            "sae_pwe": "hash_to_element"
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": "both"
+          }
+        }
+      },
+      "current_harness": true,
+      "facts": [
+        {
+          "a": [
+            0,
+            1
+          ],
+          "b": [
+            0
+          ],
+          "evidence_a": [
+            "contrasts/runs/1794952292/explorer_candidate.log:97: 2026-11-17 21:51:33,824 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1794952292/explorer_candidate.log:101: 2026-11-17 21:51:33,824 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00",
+            "contrasts/runs/1794952292/explorer_candidate.log:119: 2026-11-17 21:51:33,824 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1794952292/explorer_candidate.log:123: 2026-11-17 21:51:33,824 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1795473160/explorer_candidate.log:97: 2026-11-23 22:32:42,352 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1795473160/explorer_candidate.log:101: 2026-11-23 22:32:42,352 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00",
+            "contrasts/runs/1795473160/explorer_candidate.log:130: 2026-11-23 22:32:42,797 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1795473160/explorer_candidate.log:134: 2026-11-23 22:32:42,797 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00"
+          ],
+          "fact": "data_test_rx_ap_links"
+        }
+      ],
+      "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+      "input_diff": {
+        "config.ap.links[1].indicate_disabled": [
+          false,
+          true
+        ]
+      },
+      "reproduced": true,
+      "unstable": []
+    },
     {
       "a_runs": [
         "1794933558",
@@ -741,17 +896,17 @@
     },
     {
       "a_runs": [
-        "1794952292",
-        "1794952308",
-        "1794952325",
-        "1795473107",
-        "1795473128",
-        "1795473143"
+        "1795480398",
+        "1795480414",
+        "1795480426",
+        "1795480556",
+        "1795480567",
+        "1795480580"
       ],
       "b_runs": [
-        "1795473160",
-        "1795473183",
-        "1795473195"
+        "1795480438",
+        "1795480449",
+        "1795480460"
       ],
       "candidate_a": {
         "actions": [
@@ -759,9 +914,12 @@
             "action": "associate"
           },
           {
-            "action": "link_remove",
-            "count": 4,
-            "link_id": 1
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
           }
         ],
         "config": {
@@ -784,7 +942,7 @@
                   "SAE-EXT-KEY"
                 ],
                 "channel": 6,
-                "indicate_disabled": false,
+                "indicate_disabled": true,
                 "link_id": 1,
                 "pairwise_cipher": "CCMP"
               }
@@ -812,6 +970,14 @@
             "action": "link_remove",
             "count": 4,
             "link_id": 1
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
           }
         ],
         "config": {
@@ -856,33 +1022,163 @@
       "current_harness": true,
       "facts": [
         {
-          "a": [
-            0,
-            1
-          ],
-          "b": [
-            0
-          ],
+          "a": "0x3",
+          "b": "0x1",
           "evidence_a": [
-            "contrasts/runs/1794952292/explorer_candidate.log:97: 2026-11-17 21:51:33,824 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
-            "contrasts/runs/1794952292/explorer_candidate.log:101: 2026-11-17 21:51:33,824 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00",
-            "contrasts/runs/1794952292/explorer_candidate.log:119: 2026-11-17 21:51:33,824 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
-            "contrasts/runs/1794952292/explorer_candidate.log:123: 2026-11-17 21:51:33,824 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00"
+            "contrasts/runs/1795480398/explorer_candidate.log:238: 2026-11-24 00:33:29,408 INFO valid_links=0x3"
           ],
           "evidence_b": [
-            "contrasts/runs/1795473160/explorer_candidate.log:97: 2026-11-23 22:32:42,352 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
-            "contrasts/runs/1795473160/explorer_candidate.log:101: 2026-11-23 22:32:42,352 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00",
-            "contrasts/runs/1795473160/explorer_candidate.log:130: 2026-11-23 22:32:42,797 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
-            "contrasts/runs/1795473160/explorer_candidate.log:134: 2026-11-23 22:32:42,797 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00"
+            "contrasts/runs/1795480438/explorer_candidate.log:246: 2026-11-24 00:34:15,798 INFO valid_links=0x1"
           ],
-          "fact": "data_test_rx_ap_links"
+          "fact": "valid_links"
+        },
+        {
+          "a": 2,
+          "b": 1,
+          "evidence_a": [
+            "contrasts/runs/1795480398/explorer_candidate.log:93: 2026-11-24 00:33:19,487 DEBUG wlan7_link0: <3>EAPOL-4WAY-HS-COMPLETED 02:00:00:00:08:00",
+            "contrasts/runs/1795480398/explorer_candidate.log:183: 2026-11-24 00:33:19,777 DEBUG wlan7_link0: <3>EAPOL-4WAY-HS-COMPLETED 02:00:00:00:08:00"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1795480438/explorer_candidate.log:93: 2026-11-24 00:34:00,157 DEBUG wlan7_link0: <3>EAPOL-4WAY-HS-COMPLETED 02:00:00:00:08:00"
+          ],
+          "fact": "four_way_handshakes_completed"
+        },
+        {
+          "a": [
+            {
+              "locally_generated": true,
+              "reason": 3
+            },
+            {
+              "locally_generated": true,
+              "reason": 3
+            }
+          ],
+          "b": [
+            {
+              "locally_generated": true,
+              "reason": 3
+            },
+            {
+              "locally_generated": false,
+              "reason": 15
+            },
+            {
+              "locally_generated": false,
+              "reason": 15
+            },
+            {
+              "locally_generated": false,
+              "reason": 15
+            },
+            {
+              "locally_generated": false,
+              "reason": 15
+            }
+          ],
+          "evidence_a": [
+            "contrasts/runs/1795480398/explorer_candidate.log:112: 2026-11-24 00:33:19,488 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1",
+            "contrasts/runs/1795480398/explorer_candidate.log:271: 2026-11-24 00:33:29,409 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1795480438/explorer_candidate.log:145: 2026-11-24 00:34:00,603 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1",
+            "contrasts/runs/1795480438/explorer_candidate.log:192: 2026-11-24 00:34:04,790 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1795480438/explorer_candidate.log:209: 2026-11-24 00:34:08,980 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1795480438/explorer_candidate.log:226: 2026-11-24 00:34:13,170 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15"
+          ],
+          "fact": "disconnects"
+        },
+        {
+          "a": {
+            "bigtk_set": "1",
+            "group_cipher": "CCMP",
+            "key_mgmt": "SAE-EXT-KEY",
+            "mgmt_group_cipher": "BIP",
+            "pairwise_cipher": "CCMP",
+            "pmf": "2",
+            "wifi_generation": "7",
+            "wpa_state": "COMPLETED"
+          },
+          "b": {
+            "group_cipher": "CCMP",
+            "key_mgmt": "SAE-EXT-KEY",
+            "mgmt_group_cipher": "BIP",
+            "pairwise_cipher": "CCMP",
+            "pmf": "2",
+            "wifi_generation": "7",
+            "wpa_state": "4WAY_HANDSHAKE"
+          },
+          "evidence_a": [
+            "contrasts/runs/1795480398/explorer_candidate.log:243: 2026-11-24 00:33:29,408 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1795480438/explorer_candidate.log:251: 2026-11-24 00:34:15,798 INFO station status: {'bssid': '02:00:00:00:07:00', 'freq': '2412', 'ssid': 'explorer_mld', 'id': '0', 'mode': 'station', 'wifi_generation': '7', 'max_nss_rx': '2', 'max_nss_tx"
+          ],
+          "fact": "station_status"
+        },
+        {
+          "a": 2,
+          "b": 0,
+          "evidence_a": [
+            "contrasts/runs/1795480398/explorer_candidate.log:201: 2026-11-24 00:33:24,308 DEBUG wlan8: <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=CCMP]",
+            "contrasts/runs/1795480398/explorer_candidate.log:234: 2026-11-24 00:33:29,308 DEBUG wlan8: <3>MLO RSN: Group rekeying completed with 02:00:00:00:07:00 [GTK=CCMP]"
+          ],
+          "evidence_b": [],
+          "fact": "gtk_rekeys_completed"
+        },
+        {
+          "a": [],
+          "b": [
+            "0x1"
+          ],
+          "evidence_a": [],
+          "evidence_b": [
+            "contrasts/runs/1795480438/explorer_candidate.log:112: 2026-11-24 00:34:00,502 DEBUG wlan8: <3>CTRL-EVENT-LINK-RECONFIG valid_links=0x1"
+          ],
+          "fact": "link_reconfig_valid_links"
+        },
+        {
+          "a": [
+            [
+              3,
+              true
+            ]
+          ],
+          "b": [
+            [
+              3,
+              true
+            ],
+            [
+              15,
+              false
+            ]
+          ],
+          "evidence_a": [
+            "contrasts/runs/1795480398/explorer_candidate.log:112: 2026-11-24 00:33:19,488 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1",
+            "contrasts/runs/1795480398/explorer_candidate.log:271: 2026-11-24 00:33:29,409 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1795480438/explorer_candidate.log:145: 2026-11-24 00:34:00,603 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=3 locally_generated=1",
+            "contrasts/runs/1795480438/explorer_candidate.log:192: 2026-11-24 00:34:04,790 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1795480438/explorer_candidate.log:209: 2026-11-24 00:34:08,980 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15",
+            "contrasts/runs/1795480438/explorer_candidate.log:226: 2026-11-24 00:34:13,170 DEBUG wlan8: <3>CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:07:00 reason=15"
+          ],
+          "fact": "disconnect_reasons"
         }
       ],
       "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
       "input_diff": {
-        "config.ap.links[1].indicate_disabled": [
-          false,
-          true
+        "actions": [
+          [],
+          [
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ]
         ]
       },
       "reproduced": true,
