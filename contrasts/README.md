@@ -25,17 +25,17 @@ them up. Regenerate the JSON with `.venv/bin/python scripts/find_contrasts.py`
   Each claimed fact comes with the log lines it was read from.
 - **Reproduced** means at least 3 independent runs per side, each in a fresh guest. Cache hits don't count, and none of these runs was served from the cache.
 
-Today that's 70 accepted runs in 40 groups of repeats.
+Today that's 82 accepted runs in 42 groups of repeats.
 
-`contrasts/runs/` holds 37 runs, all `ACCEPTED`, on Docker Desktop on macOS. 16 were made
+`contrasts/runs/` holds 49 runs, all `ACCEPTED`, on Docker Desktop on macOS. 16 were made
 for this issue so that each side has 3:
 - 9 on today's harness (2026-11-17), which are the evidence below;
 - 7 on the earlier harness (2026-11-16).
 
-The other 21 are for the minimized contrasts, on today's harness (see "Minimized contrasts"
+The other 33 are for the minimized contrasts, on today's harness (see "Minimized contrasts"
 below):
-- their 3/3 reproductions, 6 each from `c1/` (#73), `c2/` (#106) and `c3/` (#107);
-- 3 runs of `c3/`'s B side (#107), which had only run under the earlier harness.
+- their 3/3 reproductions: 6 each from `c1/` (#73) and `c2/` (#106), and 12 from `c3/` (#107), 6 per reduction;
+- 9 runs of `c3/`'s candidates (#107): 3 of the first reduction's B side, which had only run under the earlier harness, 3 of the reconnect-only side and 3 of `link_remove` followed by a reconnect.
 
 They're in `support.EVIDENCE_DIRS`, so they count as P2 evidence: each side's candidate is
 `SUPPORTED` by exact-match committed runs.
@@ -133,18 +133,18 @@ Their category is the category of their target facts, as in `anchor_coverage.csv
 |---|---|---|---|---|---|
 | `c1/` (#73) | `key` | `disconnect_reasons` | 8 → 1 | `ptk_rekey_interval_s` 5 → unset (a key setting) | `MINIMIZED` |
 | `c2/` (#106) | `link` | `data_test_rx_ap_links` | 7 → 1 | link 1 `indicate_disabled` false → true (a link setting) | `MINIMIZED` |
-| `c3/` (#107) | `security` | `four_way_handshakes_completed` | 9 → 5 | the AP MLD restart and client reconnect (`DISABLE_MLD`, `DISCONNECT`, `ENABLE_MLD`, `RECONNECT`), with `link_remove` dropped (an action sequence) | `MINIMIZED` |
+| `c3/` (#107) | `security` | `four_way_handshakes_completed` | 3 → 3 | the client's `DISCONNECT` + `RECONNECT`, with `link_remove` absent (an action sequence) | `MINIMIZED` |
 
 - **`c1/`** minimizes a failing campaign run 8 inputs away from the clean OWE side (`1794812749` vs `1794557032` and its repeats). Both final sides reproduce 3/3: `1794952238`, `1794952257`, `1794952274` vs `1794952292`, `1794952308`, `1794952325`.
 - **`c2/`** starts from `c1/`'s clean side (SAE-EXT-KEY, both links active) and targets the OWE side whose link 1 is advertised as disabled (`1794933586` and its repeats). Neither side rekeys the PTK, so its cause is a different one. Both final sides reproduce 3/3: `1795473107`, `1795473128`, `1795473143` vs `1795473160`, `1795473183`, `1795473195`. With link 1 advertised as disabled, the client sets up both links but activates only link 0, as hostap's own test expects.
-- **`c3/`** starts from `c2/`'s minimal side (one association) and targets a SAE-EXT-KEY candidate that restarts the AP MLD and reconnects the client (`1795474122` and its repeats, B of campaign run `1794812770` run again on today's harness). Neither side rekeys the PTK, and both advertise link 1 as disabled. The 4 config deltas (cipher, `sae_pwe`) don't matter. Of the 5 minimal deltas, only removing `RECONNECT` was run, and it lost the second handshake. `DISABLE_MLD`, `DISCONNECT` and `ENABLE_MLD` are kept by action-order rules, and dropping `link_remove` by an implementation limit (`P2.DISABLE_MLD_AFTER_LINK_REMOVE`). Both final sides reproduce 3/3: `1795474332`, `1795474355`, `1795474380` (1 handshake) vs `1795474393`, `1795474434`, `1795474453` (2). This is what hostap's own disable/enable test does (`test_eht.py:728-761`).
+- **`c3/`** starts from `c2/`'s minimal side (one association, `link_remove`) and targets the same config with a client reconnect instead (`associate`, `DISCONNECT`, `RECONNECT`; `1795480398` and its repeats). Neither side rekeys the PTK. All 3 action deltas are needed: without `RECONNECT` there's no second association, and with `link_remove` kept the reconnect's handshake times out with reason 15 (`1795480438`, `1795480449`, `1795480460`). Both final sides reproduce 3/3: `1795480526`, `1795480537`, `1795480546` (1 handshake) vs `1795480556`, `1795480567`, `1795480580` (2). A first reduction (`c3/first-attempt/`) went to a B that also restarts the AP MLD and wrongly kept the restart as part of the cause. Jasmine's trials on PR #121 showed the reconnect alone is enough.
 
 Together they cover three categories (`key`, `link`, `security`) and three kinds of minimal
 cause: a key setting, a link setting and an action sequence.
 
 Each folder's `README.md` has the write-up and the full trace. Their reproduction runs are in
 `runs/`. `c1/`'s and `c2/`'s final pairs are one input apart, so `contrasts.json` also lists
-them as reproduced contrasts. `c3/`'s are 5 apart, so it doesn't.
+them as reproduced contrasts. `c3/`'s are 3 apart, so it doesn't; its reconnect-only side and the `link_remove` + reconnect candidate are one apart, so that pair is listed.
 
 ## Two harnesses
 
@@ -161,18 +161,24 @@ Both harnesses give the same claimed facts, with one difference: on the earlier 
 
 ## Across every accepted run
 
-The pattern holds beyond the two contrasts. Across all 70 accepted runs, under both
+The pattern holds beyond the two contrasts. Across all 82 accepted runs, under both
 harnesses:
 
 | `ptk_rekey_interval_s` | `link_remove` | Runs with a reason-15 disconnect from the AP |
 |---|---|---|
 | 5 | yes | **20 / 20** |
 | 5 | no | 0 / 11 |
-| unset | yes | 0 / 26 |
-| unset | no | 0 / 13 |
+| unset | yes | 3 / 32 |
+| unset | no | 0 / 19 |
 
 The other campaign runs in the first row also differ in AKM, cipher, `sae_pwe` and other
 actions. So the combination fails across those settings, not just in the base above.
+
+The 3 in the third row are `c3/`'s `link_remove` + reconnect runs (`1795480438`, `1795480449`,
+`1795480460`, #107): no PTK rekey, but the client reconnects after `link_remove`, and that
+association's initial handshake fails with reason 15. So what fails is a 4-way handshake
+after `link_remove`, whether a PTK rekey or a reconnect starts it. Every other run with
+`link_remove` and no PTK rekey runs no handshake after the removal.
 
 ## What the logs show, and what they don't
 
@@ -188,6 +194,10 @@ harness. It was checked in their `explorer_candidate.hostapd` and `explorer_cand
 
 The runs on the earlier harness show the same pattern, ending after two reason-15
 disconnects (the client sends 2/4 12 times).
+
+`c3/`'s `link_remove` + reconnect runs show the same pattern without a rekey: hostapd
+receives no EAPOL after `LINK_REMOVE`, and the reconnect's handshake times out
+(`c3/README.md`, "With `link_remove`, the reconnect fails").
 
 So after `link_remove`, the client's EAPOL-Key frames stop reaching hostapd. The logs
 don't show where they're lost (radio, kernel or hostapd), and this write-up makes no claim

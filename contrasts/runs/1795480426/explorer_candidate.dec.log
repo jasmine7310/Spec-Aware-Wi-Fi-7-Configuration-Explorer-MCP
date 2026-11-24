@@ -1,0 +1,27 @@
+BSS 02:00:00:4d:bc:05 - RSN IE stored
+BSS 02:00:00:4d:bc:05 proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=rsn_capab=MFPR MFPC 
+BSS 02:00:00:51:ca:fe - RSN IE stored
+BSS 02:00:00:51:ca:fe proto=WPA2 pairwise=CCMP group=CCMP mgmt_group_cipher=BIP key_mgmt=rsn_capab=MFPR MFPC 
+STA 36:17:7d:f3:07:71 proto=WPA2 pairwise=CCMP key_mgmt=SAE-EXT-KEY rsn_capab=MFPR MFPC 
+MLO association - AP MLD: 02:00:00:00:07:00  STA MLD: 02:00:00:00:08:00
+  Link 0 - AP: 02:00:00:4d:bc:05  STA: 36:17:7d:f3:07:71
+  Link 1 - AP: 02:00:00:51:ca:fe  STA: c2:e5:5c:c6:38:d0
+Derived PTK for STA 36:17:7d:f3:07:71 (MLD 02:00:00:00:08:00) BSSID 02:00:00:4d:bc:05 (MLD 02:00:00:00:07:00)
+STA b2:ae:f7:71:93:33 proto=WPA2 pairwise=CCMP key_mgmt=SAE-EXT-KEY rsn_capab=MFPR MFPC 
+MLO association - AP MLD: 02:00:00:00:07:00  STA MLD: 02:00:00:00:08:00
+  Link 0 - AP: 02:00:00:4d:bc:05  STA: b2:ae:f7:71:93:33
+  Link 1 - AP: 02:00:00:51:ca:fe  STA: 46:f5:ac:ad:76:c2
+Derived PTK for STA b2:ae:f7:71:93:33 (MLD 02:00:00:00:08:00) BSSID 02:00:00:4d:bc:05 (MLD 02:00:00:00:07:00)
+BIP replay detected: SA=02:00:00:51:ca:fe RX BIPN 0x1 <= 0x30
+Invalid MME MIC in a Beacon frame from 02:00:00:51:ca:fe
+BIP replay detected: SA=02:00:00:4d:bc:05 RX BIPN 0x1 <= 0x30
+Invalid MME MIC in a Beacon frame from 02:00:00:4d:bc:05
+replay detected: A1=ff:ff:ff:ff:ff:ff A2=02:00:00:4d:bc:05 A3=02:00:00:00:08:00 seq=20 frag=0 keyid=2 #335 000000000001<=00000000000f
+Invalid CCMP MIC in frame: A1=ff:ff:ff:ff:ff:ff A2=02:00:00:4d:bc:05 A3=02:00:00:00:08:00 seq=20 frag=0
+replay detected: A1=ff:ff:ff:ff:ff:ff A2=02:00:00:51:ca:fe A3=02:00:00:00:08:00 seq=20 frag=0 keyid=2 #336 000000000001<=00000000000f
+Invalid CCMP MIC in frame: A1=ff:ff:ff:ff:ff:ff A2=02:00:00:51:ca:fe A3=02:00:00:00:08:00 seq=20 frag=0
+replay detected: A1=ff:ff:ff:ff:ff:ff A2=02:00:00:4d:bc:05 A3=02:00:00:00:07:00 seq=21 frag=0 keyid=2 #339 000000000002<=00000000000f
+Invalid CCMP MIC in frame: A1=ff:ff:ff:ff:ff:ff A2=02:00:00:4d:bc:05 A3=02:00:00:00:07:00 seq=21 frag=0
+replay detected: A1=ff:ff:ff:ff:ff:ff A2=02:00:00:51:ca:fe A3=02:00:00:00:07:00 seq=21 frag=0 keyid=2 #340 000000000002<=00000000000f
+Invalid CCMP MIC in frame: A1=ff:ff:ff:ff:ff:ff A2=02:00:00:51:ca:fe A3=02:00:00:00:07:00 seq=21 frag=0
+Processed: rx_mgmt=220 rx_ctrl=48 rx_data=74 fcs_error=0
