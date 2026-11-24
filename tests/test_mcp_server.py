@@ -133,9 +133,10 @@ def test_server_starts_the_way_mcp_json_launches_it():
                                    cwd=str(REPO_ROOT))
     tools, result = _call(params, "get_model")
 
-    assert sorted(tools) == ["explain_rule", "get_campaign", "get_model", "list_campaigns",
+    assert sorted(tools) == ["explain_rule", "get_campaign", "get_contrast", "get_model",
+                             "list_campaigns", "list_contrasts",
                              "minimize_contrast", "permitted_alternatives", "plan_campaign",
-                             "run_campaign",
+                             "replay_contrast", "run_campaign",
                              "run_candidate", "run_hwsim_test", "validate_candidate",
                              "why_pruned"]
     assert not result.is_error
