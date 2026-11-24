@@ -235,7 +235,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   smoke values), `runs/experiments/` (labeled experiment runs that answer a spec or
   implementation question, e.g. #95's RSNXE run; never P2 evidence), `campaigns/`
   (committed campaign runs, #68), `contrasts/runs/` (extra legal runs so each contrast
-  side has 3, #71, and minimized contrasts' 3/3 reproductions, #73; P2 evidence),
+  side has 3, #71, minimized contrasts' 3/3 reproductions, #73, and `c1/`'s sides with
+  GCMP-256, F13; P2 evidence),
   `contrasts/<id>/probes/` (a minimization's probe runs, the trace's evidence; not P2 evidence),
   `runs/hwsim-logs/`
   (git-ignored trials), `runs/cache.sqlite` (the cache's git-ignored
