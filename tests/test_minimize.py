@@ -646,3 +646,23 @@ def test_committed_contrast_is_minimized_and_reread_from_its_runs(name):
     # Both final sides are now P2 SUPPORTED by their committed reproduction runs.
     assert contrasts.p2_supported(reduction.candidate_a)
     assert contrasts.p2_supported(reduction.minimal_candidate)
+
+
+def test_only_the_listed_contrasts_are_current_and_nested_reductions_are_superseded():
+    # contrasts/<id>/reduction.json is a minimized contrast; a reduction in a nested folder
+    # (e.g. c3/first-attempt/) is a superseded attempt, kept as a record, and must say which
+    # contrast replaced it so that tools listing contrasts don't count it (PR #121).
+    current, nested = [], []
+    for path in sorted(contrasts.CONTRASTS_DIR.rglob("reduction.json")):
+        depth = len(path.relative_to(contrasts.CONTRASTS_DIR).parts)
+        data = json.loads(path.read_text())
+        if depth == 2:
+            assert "superseded_by" not in data, path
+            current.append(path.parent.name)
+        else:
+            nested.append(path)
+            target = contrasts.CONTRASTS_DIR / data.get("superseded_by", "")
+            assert data.get("superseded_by") and (target / "reduction.json").exists(), path
+            assert data.get("superseded_reason"), path
+    assert current == ["c1", "c2", "c3"]
+    assert nested == [contrasts.CONTRASTS_DIR / "c3" / "first-attempt" / "reduction.json"]

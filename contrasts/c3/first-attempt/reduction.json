@@ -65,7 +65,7 @@
     },
     "unstable": []
   },
-  "description": "Minimized contrast c3, written by scripts/minimize_contrast.py. Probe runs are in probes/; the final sides' reproduction runs are in contrasts/runs/.",
+  "description": "First reduction of contrast c3, written by scripts/minimize_contrast.py and superseded by contrasts/c3/ (see superseded_by). Probe runs are in probes/; the final sides' reproduction runs are in contrasts/runs/.",
   "label": "MINIMIZED",
   "reduction": {
     "cache_hits": 2,
@@ -1904,6 +1904,8 @@
       }
     ]
   },
+  "superseded_by": "c3",
+  "superseded_reason": "Its minimal set kept the AP MLD restart, which isn't needed: a client reconnect alone gives the second handshake, with link_remove absent (contrasts/c3/README.md). The reduction and its 3/3 verification are kept as a record; don't count it as a separate minimized contrast.",
   "target_facts": [
     "four_way_handshakes_completed"
   ],

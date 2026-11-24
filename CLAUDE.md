@@ -148,7 +148,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   final sides (A, and A with the minimal deltas) 3 times each in fresh guests: `MINIMIZED` only when
   every run reproduces its side, else `PENDING_VERIFICATION`. `scripts/minimize_contrast.py` runs both
   steps and writes `contrasts/<id>/reduction.json`; `contrasts/c1/` (key), `contrasts/c2/` (link)
-  and `contrasts/c3/` (security) are the first three.
+  and `contrasts/c3/` (security) are the first three. A `reduction.json` in a nested folder
+  (`contrasts/c3/first-attempt/`) is a superseded attempt with `superseded_by`; don't count it.
 - `explorer.pruning`: the agent chain's first two steps (#74). `why_pruned(data)` gives the
   planner's role for a candidate (`malformed` / `pruned` / `undetermined` / `unsupported` /
   `not_run` are pruned; `probe` / `supported` are executable), the stage, and per finding
