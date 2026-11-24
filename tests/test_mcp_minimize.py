@@ -13,9 +13,9 @@ from explorer.mcp_server import server
 
 REASON_15 = {"reason": 15, "locally_generated": False}
 REASON_3 = {"reason": 3, "locally_generated": True}
-# Contrast C1 on today's harness (contrasts/contrasts.json, contrast 0): A has a 5 s PTK
-# rekey with link_remove, B the same without the rekey.
-C1 = 0
+# Contrast C1 on today's harness (contrasts/contrasts.json, by its stable ID, #111): A has
+# a 5 s PTK rekey with link_remove, B the same without the rekey.
+C1 = "x8dc0b42566"
 # The 6-input pair from PR #101: A (seed-1 campaign, SAE-EXT-KEY, ptk 5, gtk 5) and B
 # (C1's B side, OWE, link 1 indicate_disabled), both with link_remove.
 PAIR = ("1794812824", "1794933586")
@@ -133,7 +133,8 @@ def test_default_target_is_every_differing_fact(guest):
     ({}, "give either contrast"),
     ({"contrast": C1, "run_a": PAIR[0], "run_b": PAIR[1]}, "give either contrast"),
     ({"run_a": PAIR[0]}, "give both run_a and run_b"),
-    ({"contrast": 99}, "contrast must be 0-"),
+    ({"contrast": "x0000000000"}, "no contrast 'x0000000000'"),
+    ({"contrast": "c1"}, "that's a minimized contrast"),
     ({"run_a": "1", "run_b": PAIR[1]}, "not a committed ACCEPTED"),
     ({"run_a": PAIR[0], "run_b": PAIR[0]}, "differ in no measured fact"),
     ({"contrast": C1, "facts": ["valid_links"]}, "not claimed by this contrast"),

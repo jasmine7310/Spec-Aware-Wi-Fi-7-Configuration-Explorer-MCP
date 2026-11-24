@@ -74,8 +74,11 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `run_hwsim_test`, `run_candidate`, the campaign tools `plan_campaign`, `run_campaign`,
   `list_campaigns`, `get_campaign`, and the agent chain `why_pruned` /
   `permitted_alternatives` (#74, over `explorer.pruning`) and `minimize_contrast` (#74, over
-  `explorer.minimize`; a contrast index or two run IDs, `facts`, `max_guest_runs` ≤ 40;
-  `MINIMIZE_RUNNER` is swapped in tests). Add new tools
+  `explorer.minimize`; a contrast ID or two run IDs, `facts`, `max_guest_runs` ≤ 40;
+  `MINIMIZE_RUNNER` is swapped in tests), and the contrast tools `list_contrasts`,
+  `get_contrast` and `replay_contrast` (#111; a minimized contrast's two final sides through
+  `minimize.verify`, ≤ 12 forced guest runs, never changes the committed label;
+  `REPLAY_RUNNER` is swapped in tests). Add new tools
   here with `@server.tool()`; raise `ToolError` for expected failures (any other exception
   reaches the agent only as "Error executing tool").
 - `explorer.model.Config`: P0 settings model; `explorer.model.Candidate`: a `Config` plus
@@ -132,7 +135,9 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   recorded with the cache key, or from the run's repo commit); repeats share a harness too,
   and a contrast on an older harness is marked `current_harness: false`. It claims a fact only when it's measured on both sides (never `UNKNOWN`) and the
   same in every repeat of each side, with the log lines it was read from (`evidence`).
-  `reproduced` needs 3 runs per side. `scripts/find_contrasts.py` writes
+  `reproduced` needs 3 runs per side. Each contrast has a stable `id` (`contrast_id`: a hash
+  of both candidates and the harness, #111); a minimized one's ID is its folder (`c1`).
+  `scripts/find_contrasts.py` writes
   `contrasts/contrasts.json` (a test fails when it's stale); write-ups go in
   `contrasts/README.md`.
 - `explorer.minimize`: the Picire interestingness wrapper (#72). `DeltaSet(a, b)` gives whole typed
@@ -155,6 +160,11 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `permitted_alternatives(data, max_changes, limit)` changes up to 3 admitted dimensions on
   the candidate itself and returns the minimal rule-passing results, `SUPPORTED` first.
   `current_label` / `set_label` read and set a dimension by its model.json label.
+- `explorer.counterexamples`: the roadmap's counterexample suite (#108). `CASES` point at a
+  fixture or committed run (plus an optional `mutate`) and pin status, stage, rule IDs,
+  `why_pruned`'s role and P2 where it matters; `evaluate()` checks them, run by
+  `tests/test_counterexamples.py` (also over MCP); walk-through in `docs/counterexamples.md`.
+  Every `UND.*` entry needs a case.
 - `explorer.anchors`: campaign evidence for the anchor families (#77). `anchor_coverage.csv`'s
   `campaign_runs` (committed accepted campaign and contrast runs with the family's own value
   for every modeled dimension) and `campaign_observed` (value counts of `FAMILY_FACTS` over

@@ -20,6 +20,8 @@ a bounded pairwise campaign (issue #69, over ``explorer.planner`` and ``explorer
 ``list_campaigns`` / ``get_campaign`` give the details. ``why_pruned`` and
 ``permitted_alternatives`` are the first two steps of the roadmap's agent chain (#74,
 ``explorer.pruning``); ``minimize_contrast`` is the third, over ``explorer.minimize`` (#72).
+``list_contrasts`` / ``get_contrast`` / ``replay_contrast`` list and inspect contrasts by
+stable ID and rerun a minimized one's final sides in fresh guests (#111).
 """
 
 from __future__ import annotations
@@ -226,7 +228,9 @@ STAGES = [
                      "permitted_alternatives lists nearby candidates that pass the modeled "
                      "rules, and minimize_contrast reduces a contrast to its 1-minimal "
                      "changes with Picire (one run per probe). A minimized contrast "
-                     "reproduced 3/3 per side is #73."),
+                     "reproduced 3/3 per side is #73. list_contrasts / get_contrast give "
+                     "contrasts by stable ID with their runs, facts and log lines; "
+                     "replay_contrast reruns a minimized one's final sides."),
 ]
 
 
@@ -325,8 +329,9 @@ def get_model() -> ModelInfo:
                 "adapter supports run in fresh guests (run_hwsim_test, run_candidate). "
                 "Bounded pairwise campaigns can be planned and run (plan_campaign, "
                 "run_campaign, list_campaigns, get_campaign). why_pruned explains a pruned "
-                "candidate, permitted_alternatives lists nearby legal ones, and "
-                "minimize_contrast reduces an accepted contrast (P4)."),
+                "candidate, permitted_alternatives lists nearby legal ones, "
+                "minimize_contrast reduces an accepted contrast, and list_contrasts / "
+                "get_contrast / replay_contrast give and rerun contrasts (P4)."),
         model=model_version(),
         pinned_versions=pinned_versions(),
         stages=STAGES,
@@ -494,19 +499,20 @@ class MinimizeReport(BaseModel):
     note: str
 
 
-def _minimize_sides(contrast: int | None, run_a: str | None, run_b: str | None,
+def _minimize_sides(contrast: str | None, run_a: str | None, run_b: str | None,
                     facts: list[str] | None):
     """(candidate A, runs A, candidate B, runs B, target facts) for the request."""
     from explorer import contrasts
     if (contrast is None) == (run_a is None and run_b is None):
-        raise ToolError("give either contrast (an index into contrasts/contrasts.json) or "
-                        "both run_a and run_b (committed ACCEPTED runs), not both")
+        raise ToolError("give either contrast (a contrast ID from list_contrasts) or both "
+                        "run_a and run_b (committed ACCEPTED runs), not both")
     if contrast is not None:
-        found = json.loads(contrasts.CONTRASTS_JSON.read_text())["contrasts"]
-        if not 0 <= contrast < len(found):
-            raise ToolError(f"contrast must be 0-{len(found) - 1} (contrasts/contrasts.json "
-                            f"has {len(found)})")
-        entry = found[contrast]
+        entry = _found_contrasts().get(contrast)
+        if entry is None:
+            hint = (" (that's a minimized contrast: get_contrast shows its reduction, "
+                    "replay_contrast reruns it)" if contrast in _minimized_dirs() else "")
+            raise ToolError(f"no contrast {contrast!r} in contrasts/contrasts.json{hint}; "
+                            f"known: {sorted(_found_contrasts())}")
         claimed = {f["fact"]: f["b"] for f in entry["facts"]}
         return (entry["candidate_a"], entry["a_runs"], entry["candidate_b"], entry["b_runs"],
                 _pick_facts(claimed, facts, "claimed by this contrast"))
@@ -538,7 +544,7 @@ def _pick_facts(available: dict[str, Any], facts: list[str] | None, what: str) -
 
 
 @server.tool()
-def minimize_contrast(contrast: int | None = None, run_a: str | None = None,
+def minimize_contrast(contrast: str | None = None, run_a: str | None = None,
                       run_b: str | None = None, facts: list[str] | None = None,
                       max_guest_runs: int = 20) -> MinimizeReport:
     """Minimize an accepted contrast: the smallest set of typed changes from side A's
@@ -546,8 +552,8 @@ def minimize_contrast(contrast: int | None = None, run_a: str | None = None,
     per new run, at most max_guest_runs (1-40); probes the cache already holds cost
     nothing.
 
-    Pick the pair with contrast (an index into contrasts/contrasts.json, whose sides are
-    reproduced 3/3) or run_a and run_b (any two committed ACCEPTED runs, e.g. a campaign
+    Pick the pair with contrast (a contrast ID from list_contrasts, e.g. "x8dc0b42566";
+    its sides are reproduced 3/3) or run_a and run_b (any two committed ACCEPTED runs, e.g. a campaign
     pair several inputs apart). facts chooses which of B's facts to reproduce: by default
     every fact the contrast claims, or every fact measured on both runs that differs.
     Prefer behavior facts (disconnect_reasons, ptk_rekeys_completed, ...): a fact that echoes
@@ -601,6 +607,362 @@ def minimize_contrast(contrast: int | None = None, run_a: str | None = None,
                 for p in result.trace],
         counts=result.counts, guest_runs=result.guest_runs, cache_hits=result.cache_hits,
         note=notes[result.status])
+
+
+# --- Contrasts: list, inspect and replay (#111) ---------------------------------------
+
+MAX_REPLAY_RUNS = 12
+"""Most guest runs one replay_contrast call may make: 2 sides x 3 runs, each rerun once on
+SETUP_FAIL / TIMEOUT."""
+REPLAY_RUNNER = run_cached
+"""How a replay run boots (always forced: never a cache hit); tests replace it."""
+
+
+def _found_contrasts() -> dict[str, dict]:
+    """contrasts/contrasts.json's contrasts by ID."""
+    from explorer import contrasts
+    return {c["id"]: c for c in json.loads(contrasts.CONTRASTS_JSON.read_text())["contrasts"]}
+
+
+def _minimized_dirs() -> dict[str, Path]:
+    """Minimized contrasts (contrasts/<id>/reduction.json, #73) by folder name."""
+    from explorer import contrasts
+    return {d.name: d for d in sorted(contrasts.CONTRASTS_DIR.iterdir())
+            if (d / "reduction.json").is_file()}
+
+
+def _run_folder(run_id: str | None) -> str | None:
+    """Where a committed run's folder is: contrasts/runs/, a campaign, or a minimization's
+    probes. None when it isn't committed."""
+    from explorer import contrasts
+    if not run_id:
+        return None
+    for parent in (contrasts.CONTRASTS_DIR / "runs", *sorted(campaign.CAMPAIGNS.glob("*")),
+                   *sorted(contrasts.CONTRASTS_DIR.glob("*/probes"))):
+        if (parent / run_id / "manifest.json").is_file():
+            return _folder(parent / run_id)
+    return None
+
+
+class ContrastListing(BaseModel):
+    id: str
+    """Stable: a contrasts.json ID ("x..."), or a minimized contrast's folder ("c1")."""
+    kind: Literal["contrast", "minimized"]
+    """contrast: found by explorer.contrasts (#71), not reduced. minimized: reduced and
+    verified by scripts/minimize_contrast.py (#73), with its own folder."""
+    a_runs: list[str]
+    b_runs: list[str]
+    inputs: list[str]
+    """The inputs that differ (contrast), or every typed delta from A to B (minimized)."""
+    facts: list[str]
+    """Claimed fact differences (contrast), or the target facts (minimized)."""
+    reproduced: bool
+    """contrast: >= 3 runs per side. minimized: label MINIMIZED (both final sides 3/3)."""
+    current_harness: bool | None
+    """contrast: both sides ran under today's harness. None for minimized (see get_contrast)."""
+    label: str | None
+    """minimized only: MINIMIZED or PENDING_VERIFICATION."""
+    minimal: list[str]
+    """minimized only: the 1-minimal changes."""
+
+
+@server.tool()
+def list_contrasts() -> list[ContrastListing]:
+    """Every accepted-vs-accepted contrast: those in contrasts/contrasts.json (kind
+    contrast, ID "x" + 10 hex digits, each pair at most one input apart) and the minimized
+    ones (kind minimized, ID the folder name, e.g. "c1"). IDs are stable: they don't
+    shift when contrasts are added. get_contrast gives one with its runs, facts and log
+    lines; replay_contrast reruns a minimized one; minimize_contrast reduces a contrast."""
+    listing = []
+    for cid, c in _found_contrasts().items():
+        listing.append(ContrastListing(
+            id=cid, kind="contrast", a_runs=c["a_runs"], b_runs=c["b_runs"],
+            inputs=sorted(c["input_diff"]), facts=[f["fact"] for f in c["facts"]],
+            reproduced=c["reproduced"], current_harness=c["current_harness"], label=None,
+            minimal=[]))
+    for cid, d in _minimized_dirs().items():
+        data = json.loads((d / "reduction.json").read_text())
+        red = data["reduction"]
+        labels = {x["id"]: x["label"] for x in red["deltas"]}
+        listing.append(ContrastListing(
+            id=cid, kind="minimized", a_runs=data["contrast"]["a_runs"],
+            b_runs=data["contrast"]["b_runs"], inputs=list(labels.values()),
+            facts=data["target_facts"], reproduced=data["label"] == "MINIMIZED",
+            current_harness=None, label=data["label"],
+            minimal=[labels[i] for i in red["minimal"]]))
+    return listing
+
+
+class EvidencedRun(BaseModel):
+    run_id: str
+    folder: str | None
+    """Repo-relative run folder (logs, plan, manifest); None if it isn't committed."""
+
+
+class ContrastFact(BaseModel):
+    fact: str
+    a: Any
+    b: Any
+    evidence_a: list[str]
+    """Log lines A's value was read from ("folder/file:line: text")."""
+    evidence_b: list[str]
+
+
+class ContrastEntry(BaseModel):
+    """A contrasts.json contrast in full."""
+    a_runs: list[EvidencedRun]
+    b_runs: list[EvidencedRun]
+    input_diff: dict[str, list[Any]]
+    """Candidate path -> [A's value, B's value]."""
+    facts: list[ContrastFact]
+    unstable: list[str]
+    """Facts that differ between repeats of one side; nothing is claimed about them."""
+    reproduced: bool
+    harness: str | None
+    current_harness: bool
+    candidate_a: dict
+    candidate_b: dict
+
+
+class ReplayableRun(BaseModel):
+    run_id: str | None
+    status: str
+    facts: dict[str, Any]
+    """The run's value of each target fact."""
+    matches_target: bool | None
+    """True: matches B's value of every target fact; False: a measured one differs."""
+    folder: str | None
+    evidence: list[str]
+    """Log lines the target facts were read from."""
+
+
+class MinimizedEntry(BaseModel):
+    """A minimized contrast (contrasts/<id>/reduction.json) in full."""
+    folder: str
+    label: str
+    """MINIMIZED only when both final sides reproduced 3/3 in fresh guests."""
+    a_runs: list[EvidencedRun]
+    b_runs: list[EvidencedRun]
+    """The original contrast's sides."""
+    harness: str
+    input_diff: dict[str, list[Any]]
+    target: dict[str, Any]
+    """B's value of each target fact."""
+    deltas: list[str]
+    minimal: list[str]
+    """The 1-minimal changes from A that reproduce the target."""
+    needed_for_validity: list[str]
+    candidate_a: dict
+    """The baseline side."""
+    minimal_candidate: dict | None
+    """The minimal side: A with the minimal changes."""
+    reduction_status: str
+    probes: list[MinimizeProbe]
+    """The reduction trace: every probe with its status and run IDs (contrasts/<id>/probes/)."""
+    counts: dict[str, int]
+    baseline_runs: list[ReplayableRun]
+    """The verification's runs of A (each must differ from the target)."""
+    minimal_runs: list[ReplayableRun]
+    """The verification's runs of the minimal candidate (each must match it)."""
+    readme: str | None
+    """Repo-relative path of the write-up."""
+
+
+class ContrastDetails(BaseModel):
+    id: str
+    kind: Literal["contrast", "minimized"]
+    contrast: ContrastEntry | None
+    minimized: MinimizedEntry | None
+    note: str
+
+
+def _evidenced(run_ids: list[str]) -> list[EvidencedRun]:
+    return [EvidencedRun(run_id=r, folder=_run_folder(r)) for r in run_ids]
+
+
+def _side_runs(side: list[dict], facts: list[str]) -> list[ReplayableRun]:
+    from explorer import contrasts
+    out = []
+    for run in side:
+        folder = _run_folder(run.get("run_id"))
+        evidence = ([line for f in facts for line in contrasts.evidence(folder, f)]
+                    if folder else [])
+        out.append(ReplayableRun(run_id=run.get("run_id"), status=run["status"],
+                                 facts=run.get("facts") or {},
+                                 matches_target=run.get("matches_target"), folder=folder,
+                                 evidence=evidence))
+    return out
+
+
+def _minimized_entry(d: Path) -> MinimizedEntry:
+    data = json.loads((d / "reduction.json").read_text())
+    red, verification = data["reduction"], data.get("verification") or {}
+    labels = {x["id"]: x["label"] for x in red["deltas"]}
+    facts = data["target_facts"]
+    readme = d / "README.md"
+    return MinimizedEntry(
+        folder=_folder(d), label=data["label"],
+        a_runs=_evidenced(data["contrast"]["a_runs"]),
+        b_runs=_evidenced(data["contrast"]["b_runs"]),
+        harness=data["contrast"]["harness"], input_diff=data["contrast"]["input_diff"],
+        target=red["target"], deltas=list(labels.values()),
+        minimal=[labels[i] for i in red["minimal"]],
+        needed_for_validity=[labels[i] for i in red["needed_for_validity"]],
+        candidate_a=red["candidate_a"], minimal_candidate=red["minimal_candidate"],
+        reduction_status=red["status"],
+        probes=[MinimizeProbe(config_id=p["config_id"], deltas=p["deltas"], status=p["status"],
+                              stage=p.get("stage"), rule_ids=p.get("rule_ids", []),
+                              run_ids=p.get("run_ids", []), cache_hit=p.get("cache_hit", False),
+                              differing=p.get("differing", []), unknown=p.get("unknown", []))
+                for p in red["trace"]],
+        counts=red["counts"],
+        baseline_runs=_side_runs(verification.get("baseline", []), facts),
+        minimal_runs=_side_runs(verification.get("minimal", []), facts),
+        readme=_folder(readme) if readme.is_file() else None)
+
+
+@server.tool()
+def get_contrast(contrast_id: str) -> ContrastDetails:
+    """One contrast from list_contrasts, with its evidence. Nothing is booted.
+
+    A contrast (ID "x..."): both sides' run IDs and folders, the differing inputs, each
+    claimed fact with A's and B's value and the log lines it was read from, and the facts
+    that were unstable between repeats (nothing is claimed about those).
+
+    A minimized contrast (ID e.g. "c1"): the original sides, the target facts, every typed
+    delta, the 1-minimal changes, the reduction trace (every probe with its status and run
+    IDs), and the 3/3 verification runs of both final sides with their facts, folders and
+    log lines. replay_contrast reruns those two sides."""
+    found = _found_contrasts()
+    if contrast_id in found:
+        c = found[contrast_id]
+        entry = ContrastEntry(
+            a_runs=_evidenced(c["a_runs"]), b_runs=_evidenced(c["b_runs"]),
+            input_diff=c["input_diff"],
+            facts=[ContrastFact(**{k: f[k] for k in ContrastFact.model_fields})
+                   for f in c["facts"]],
+            unstable=c["unstable"], reproduced=c["reproduced"], harness=c["harness"],
+            current_harness=c["current_harness"], candidate_a=c["candidate_a"],
+            candidate_b=c["candidate_b"])
+        return ContrastDetails(
+            id=contrast_id, kind="contrast", contrast=entry, minimized=None,
+            note=("Found among committed ACCEPTED runs (contrasts/contrasts.json); claimed "
+                  "facts are measured on both sides and stable in every repeat. Not reduced: "
+                  "minimize_contrast(contrast=...) finds its minimal change."))
+    minimized = _minimized_dirs()
+    if contrast_id in minimized:
+        return ContrastDetails(
+            id=contrast_id, kind="minimized", contrast=None,
+            minimized=_minimized_entry(minimized[contrast_id]),
+            note=("Reduced with Picire and verified by scripts/minimize_contrast.py. Only "
+                  "probes with status INTERESTING are evidence of the target behavior; "
+                  "replay_contrast reruns both final sides in fresh guests."))
+    raise ToolError(f"no contrast {contrast_id!r}; known: {sorted([*found, *minimized])}")
+
+
+class ReplayReport(BaseModel):
+    id: str
+    committed_label: str
+    """The committed verification's label; a replay never changes it."""
+    replay: Literal["REPRODUCED", "NOT_REPRODUCED"]
+    """REPRODUCED when every replay run of both sides came back ACCEPTED and as expected
+    (the baseline differs from the target, the minimal candidate matches it)."""
+    runs: int
+    """Runs per side."""
+    target: dict[str, Any]
+    baseline_runs: list[ReplayableRun]
+    minimal_runs: list[ReplayableRun]
+    """Every attempt, reruns after SETUP_FAIL / TIMEOUT included."""
+    same_facts_as_committed: bool
+    """Every ACCEPTED replay run has the same target facts as the committed runs of its side."""
+    guest_runs: int
+    cache_hits: int
+    """Always 0: replay runs are forced fresh, never served from the cache."""
+    note: str
+
+
+@server.tool()
+def replay_contrast(contrast_id: str, runs: int = 3, retries: int = 1) -> ReplayReport:
+    """Rerun a minimized contrast (ID from list_contrasts, e.g. "c1") and compare it with
+    the committed result: its two final sides, A as it was (the baseline) and A with the
+    minimal changes, each `runs` times (1-3) in fresh guests. Boots guests: about 30 s per
+    run, at most 2 x runs x (retries + 1) (retries 0-1 per run, on SETUP_FAIL / TIMEOUT
+    only), never more than 12. Every run is forced fresh: none is a cache hit.
+
+    REPRODUCED means every run came back ACCEPTED and as expected: the baseline differs
+    from the target in every run, the minimal candidate matches it in every run.
+    same_facts_as_committed says whether the facts also equal the committed runs'. The
+    replay runs are trials in runs/hwsim-logs/ (git-ignored); the committed label and
+    files are never changed. Refused if the simulation image is older than the repo's
+    harness files (rebuild with scripts/build-env.sh)."""
+    from explorer import minimize
+    minimized = _minimized_dirs()
+    if contrast_id not in minimized:
+        hint = (" (not minimized yet: minimize_contrast reduces it)"
+                if contrast_id in _found_contrasts() else "")
+        raise ToolError(f"no minimized contrast {contrast_id!r}{hint}; minimized: "
+                        f"{sorted(minimized)}")
+    if not 1 <= runs <= 3:
+        raise ToolError("runs must be 1-3")
+    if not 0 <= retries <= 1:
+        raise ToolError("retries must be 0 or 1")
+    data = json.loads((minimized[contrast_id] / "reduction.json").read_text())
+    reduction = minimize.Reduction.model_validate(data["reduction"])
+    if reduction.status != "MINIMIZED":
+        raise ToolError(f"{contrast_id}'s reduction is {reduction.status}: nothing to replay")
+    _require_current_image()
+    folders: dict[str, str | None] = {}
+
+    def runner(candidate, cache, **kwargs):
+        outcome, ran = REPLAY_RUNNER(candidate, cache, **kwargs)
+        if outcome.run_id:
+            folders[outcome.run_id] = (_folder(Path(outcome.run_dir)) if outcome.run_dir
+                                       else None)
+        return outcome, ran
+
+    cache = Cache(CACHE_DB)
+    try:
+        result = minimize.verify(reduction, runs, cache=cache, runner=runner,
+                                 retries=retries, context={"replay": contrast_id})
+    except RunnerError as exc:
+        raise ToolError(f"simulation environment unavailable: {exc}") from exc
+    except ValueError as exc:
+        raise ToolError(str(exc)) from exc
+    finally:
+        cache.close()
+    committed = data.get("verification") or {}
+    expected = {side: [r["facts"] for r in committed.get(side, []) if r["status"] == "ACCEPTED"]
+                for side in ("baseline", "minimal")}
+    facts = data["target_facts"]
+
+    def replayed(side_runs) -> list[ReplayableRun]:
+        from explorer import contrasts
+        out = []
+        for r in side_runs:
+            folder = folders.get(r.run_id)
+            evidence = ([line for f in facts for line in contrasts.evidence(folder, f)]
+                        if folder and not Path(folder).is_absolute() else [])
+            out.append(ReplayableRun(run_id=r.run_id, status=r.status, facts=r.facts,
+                                     matches_target=r.matches_target, folder=folder,
+                                     evidence=evidence))
+        return out
+
+    same = all(r.facts in expected[side]
+               for side, side_runs in (("baseline", result.baseline),
+                                       ("minimal", result.minimal))
+               for r in side_runs if r.status == "ACCEPTED")
+    reproduced = result.label == "MINIMIZED"
+    return ReplayReport(
+        id=contrast_id, committed_label=data["label"],
+        replay="REPRODUCED" if reproduced else "NOT_REPRODUCED", runs=runs,
+        target=reduction.target, baseline_runs=replayed(result.baseline),
+        minimal_runs=replayed(result.minimal), same_facts_as_committed=same,
+        guest_runs=len(result.baseline) + len(result.minimal), cache_hits=0,
+        note=(("Both sides reproduced: " if reproduced else
+               "Not reproduced: not every run came back ACCEPTED and as expected; ") +
+              f"{runs} fresh run(s) per side. The committed label ({data['label']}) and "
+              "files are unchanged; replay runs are trials in runs/hwsim-logs/ (git-ignored), "
+              "not evidence until a person commits them."))
 
 
 @server.tool()

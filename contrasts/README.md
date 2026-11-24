@@ -5,6 +5,11 @@ Two legal candidates whose runs both came back `ACCEPTED` but behaved differentl
 them up. Regenerate the JSON with `.venv/bin/python scripts/find_contrasts.py`
 (`tests/test_contrasts.py` fails when it's stale).
 
+Each contrast has a stable `id` ("x" + 10 hex digits, a hash of its two candidates and
+harness, #111): it doesn't shift when contrasts are added or a side gets more repeats. A
+minimized contrast's ID is its folder name (`c1`). Over MCP, `list_contrasts`,
+`get_contrast` and `replay_contrast` use these IDs (see "Over MCP" below).
+
 **How a contrast is found** (`src/explorer/contrasts.py`):
 
 - **Sides.** Committed adapter runs from `campaigns/` and `contrasts/runs/`. Each run must:
@@ -51,7 +56,7 @@ Runs on today's harness:
 
 All are in `contrasts/runs/`.
 
-## C1: a 5 s PTK rekey after `link_remove` (reproduced, 3 vs 3)
+## C1: a 5 s PTK rekey after `link_remove` (reproduced, 3 vs 3; ID `x8dc0b42566`)
 
 **Input that differs:** `config.ap.ptk_rekey_interval_s`, unset vs 5. Same actions:
 `associate`, `link_remove`.
@@ -89,7 +94,7 @@ These lines aren't record facts; they're quoted here as log evidence.
 
 **Reproduced:** yes, 3 independent runs per side.
 
-## C2: the same 5 s PTK rekey with and without `link_remove` (reproduced, 3 vs 3)
+## C2: the same 5 s PTK rekey with and without `link_remove` (reproduced, 3 vs 3; ID `x861c3cc852`)
 
 **Input that differs:** one action step. One side performs `link_remove` (link 1, count
 4) after `associate`; the other doesn't. Same config: `ptk_rekey_interval_s` 5.
@@ -124,7 +129,32 @@ side (`1794812749` vs `1794557032` and its repeats). The minimizer reduces the 8
 to one, `ptk_rekey_interval_s` 5 → unset, and both final sides reproduce 3/3
 (`1794952238`, `1794952257`, `1794952274` vs `1794952292`, `1794952308`, `1794952325`).
 The write-up and the full trace are in `c1/README.md`. Those 6 runs are in `runs/`, so
-`contrasts.json` also lists the pair as a reproduced contrast.
+`contrasts.json` also lists the pair as a reproduced contrast (ID `x829bf3a8d9`).
+
+## Over MCP (#111)
+
+- `list_contrasts`: every contrast in `contrasts.json` (kind `contrast`) and every
+  minimized one (kind `minimized`, from `contrasts/<id>/reduction.json`), by ID.
+- `get_contrast(contrast_id)`: a contrast's runs with their folders, the differing inputs
+  and each claimed fact with both values and its log lines; a minimized one's target,
+  deltas, minimal changes, reduction trace and both final sides' verification runs with
+  their facts, folders and log lines. Nothing boots.
+- `replay_contrast(contrast_id, runs=3, retries=1)`: reruns a minimized contrast's two
+  final sides (A, and A with the minimal changes) `runs` times each in fresh guests, at
+  most 12 guest runs, every one forced (never a cache hit), through `minimize.verify`.
+  `REPRODUCED` when every run is `ACCEPTED` and as expected; `same_facts_as_committed`
+  compares the facts with the committed runs. The committed label and files never change;
+  replay runs are git-ignored trials in `runs/hwsim-logs/`.
+- `minimize_contrast(contrast=...)` now takes a contrast ID instead of a list index.
+
+Walk-through, 2026-11-24 (WSL2, current image, through an in-process MCP client on this
+repo's server; trial runs, not committed): `list_contrasts` gave the 5 contrasts and `c1`
+(`MINIMIZED`); `get_contrast("c1")` gave the minimal change `ptk_rekey_interval_s: 5 ->
+null`, the 8 probes and the 6 committed verification runs with their log lines;
+`replay_contrast("c1")` came back `REPRODUCED` in 42 s, 6 guest runs, 0 cache hits, the
+same facts as committed: baseline `1795545830`, `1795545836`, `1795545844` (reason 15,
+from the AP) and minimal `1795545850`, `1795545857`, `1795545863` (only the local reason
+3). A direct call before it (`1795545767`–`1795545802`) gave the same.
 
 ## Two harnesses
 

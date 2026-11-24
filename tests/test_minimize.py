@@ -447,6 +447,7 @@ def test_from_contrast_targets_b_s_claimed_facts():
     a = _candidate(actions=(ASSOC, LINK_REMOVE_1))
     b = _candidate(actions=(ASSOC, LINK_REMOVE_1), ptk_rekey_interval_s=5)
     contrast = contrasts.Contrast(
+        id="xtest",
         a_runs=["1"], b_runs=["2"], input_diff=contrasts.input_diff(a, b),
         facts=[contrasts.FactDiff(fact="disconnect_reasons", a=[[3, True]],
                                   b=[[3, True], [15, False]], evidence_a=[], evidence_b=[])],
@@ -483,6 +484,7 @@ def _wide_contrast():
     b = _sae_candidate(ptk_rekey_interval_s=5, gtk_rekey_interval_s=5)
     status = lambda akm: {"key_mgmt": akm, "wpa_state": "COMPLETED"}
     return contrasts.Contrast(
+        id="xtest",
         a_runs=["1"], b_runs=["2"], input_diff=contrasts.input_diff(a, b),
         facts=[contrasts.FactDiff(fact="disconnect_reasons", a=[[3, True]],
                                   b=[[3, True], [15, False]], evidence_a=[], evidence_b=[]),
