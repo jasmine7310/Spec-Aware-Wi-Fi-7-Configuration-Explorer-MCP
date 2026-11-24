@@ -1,0 +1,11 @@
+kind,id,name,source,runs,passing_runs,frozen_runs,harnesses,status,reference
+anchor,F02,Multi-link SAE-EXT-KEY association,eht_mld_sae_ext_two_links_client_bp,3 runs: 1793897820; 1793897968; 1793898029,3,0,unknown x3,RERUN,current repo (no freeze.json yet)
+anchor,F08,PTK rekey,eht_mld_ptk_rekey_client_bp,3 runs: 1793897917; 1793897981; 1793898055,3,0,unknown x3,RERUN,current repo (no freeze.json yet)
+anchor,F09,GTK rekey,eht_mld_gtk_rekey_client_bp,3 runs: 1793897930; 1793897995; 1793898073,3,0,unknown x3,RERUN,current repo (no freeze.json yet)
+anchor,F06,Link removal,eht_mld_link_removal_client_bp,3 runs: 1793897945; 1793898008; 1793898088,3,0,unknown x3,RERUN,current repo (no freeze.json yet)
+contrast_side,c1:A,c1 side A (differs from target disconnect_reasons),reduction.json verification.baseline,3 runs: 1794952238; 1794952257; 1794952274,3,3,5c0fe724a689 x3,VERIFIED,current repo (no freeze.json yet)
+contrast_side,c1:B,c1 side B (matches target disconnect_reasons),reduction.json verification.minimal,3 runs: 1794952292; 1794952308; 1794952325,3,3,5c0fe724a689 x3,VERIFIED,current repo (no freeze.json yet)
+contrast_side,c2:A,c2 side A (differs from target data_test_rx_ap_links),reduction.json verification.baseline,3 runs: 1795473107; 1795473128; 1795473143,3,3,5c0fe724a689 x3,VERIFIED,current repo (no freeze.json yet)
+contrast_side,c2:B,c2 side B (matches target data_test_rx_ap_links),reduction.json verification.minimal,3 runs: 1795473160; 1795473183; 1795473195,3,3,5c0fe724a689 x3,VERIFIED,current repo (no freeze.json yet)
+contrast_side,c3:A,c3 side A (differs from target four_way_handshakes_completed),reduction.json verification.baseline,3 runs: 1795480526; 1795480537; 1795480546,3,3,5c0fe724a689 x3,VERIFIED,current repo (no freeze.json yet)
+contrast_side,c3:B,c3 side B (matches target four_way_handshakes_completed),reduction.json verification.minimal,3 runs: 1795480556; 1795480567; 1795480580,3,3,5c0fe724a689 x3,VERIFIED,current repo (no freeze.json yet)

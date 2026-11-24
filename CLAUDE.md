@@ -46,6 +46,7 @@ docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: clie
 .venv/bin/python scripts/check_consistency.py                # spec/rules/runs checks + rules/validation.json
 .venv/bin/python scripts/update_anchor_coverage.py           # anchor_coverage.csv's campaign columns
 .venv/bin/python scripts/update_dimension_coverage.py        # dimension_coverage.csv
+.venv/bin/python scripts/update_verification.py             # final_verification.csv (#116)
 ```
 
 Claude Code starts the MCP server itself from `.mcp.json` (server name `wifi7-explorer`)
@@ -180,6 +181,12 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   that value, how many ran on today's harness, and `status` (`COVERED` / `SMOKE_ONLY` /
   `RUNS_ONLY` / `GAP`). Rerun it after committing runs or changing `model.json`, or
   `tests/test_dimension_coverage.py` fails; it also fails if a value isn't `COVERED`.
+- `explorer.verification`: the final verification table (#116). `final_verification.csv` (generated
+  by `scripts/update_verification.py`): per anchor family every committed run of its hostap test,
+  per side of c1–c3 its reproduction runs, how many passed and how many ran on the frozen versions
+  (`freeze.json` when committed, else today's pins and `cache.harness_digest`), and `VERIFIED` /
+  `RERUN` / `FAILED`. Rerun it after committing runs, committing `freeze.json` or changing
+  `docker/`, or `tests/test_verification.py` fails.
 - `explorer.consistency`: spec / rules / runs consistency (#76), run by
   `tests/test_consistency.py`. Passing runs in the evidence folders must pass today's
   rules unless labeled negative: `negative_experiment: true`, or one of hostap's own tests
