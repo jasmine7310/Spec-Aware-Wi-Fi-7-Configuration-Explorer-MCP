@@ -13,8 +13,9 @@ from explorer.mcp_server import server
 
 REASON_15 = {"reason": 15, "locally_generated": False}
 REASON_3 = {"reason": 3, "locally_generated": True}
-# Contrast C1 on today's harness (contrasts/contrasts.json, by its stable ID, #111): A has
-# a 5 s PTK rekey with link_remove, B the same without the rekey.
+# contrasts/README.md's contrast C1 on today's harness (contrasts.json, by its stable ID,
+# #111; not the minimized contrasts/c1/): A has a 5 s PTK rekey with link_remove, B the
+# same without the rekey.
 C1 = "x8dc0b42566"
 # The 6-input pair from PR #101: A (seed-1 campaign, SAE-EXT-KEY, ptk 5, gtk 5) and B
 # (C1's B side, OWE, link 1 indicate_disabled), both with link_remove.

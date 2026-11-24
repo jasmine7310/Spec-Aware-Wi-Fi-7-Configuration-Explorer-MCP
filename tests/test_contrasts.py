@@ -100,7 +100,8 @@ def test_find_respects_max_inputs_and_needs_a_difference():
               _group(_candidate(ptk=5), _run("3"))]       # 1 input from base, same facts
     assert C.find(groups, max_inputs=1, supported=_any) == []
     found = C.find(groups, max_inputs=2, supported=_any)
-    assert [(c.a_runs, c.b_runs) for c in found] == [(["1"], ["2"])]
+    # Sides in canonical order (A's candidate JSON sorts first), not in list order.
+    assert [(c.a_runs, c.b_runs) for c in found] == [(["2"], ["1"])]
     assert not found[0].reproduced
 
 
@@ -109,7 +110,7 @@ def test_reproduced_needs_three_runs_per_side():
     b = _group(_candidate(ptk=5), *[_run(str(i), ptk_rekeys_completed=1) for i in (4, 5, 6)])
     (contrast,) = C.find([a, b], supported=_any)
     assert contrast.reproduced
-    assert contrast.a_runs == ["0", "1", "2"]
+    assert contrast.a_runs == ["4", "5", "6"]   # ptk 5 sorts first ("5" < "null")
 
 
 def test_repeats_and_sides_share_a_harness():
@@ -118,7 +119,7 @@ def test_repeats_and_sides_share_a_harness():
     groups = C.group(runs)
     assert [[r.run_id for r in g.runs] for g in groups] == [["1"], ["2"], ["3"]]
     (contrast,) = C.find(groups, supported=_any)       # "2" has no same-harness partner
-    assert (contrast.a_runs, contrast.b_runs, contrast.harness) == (["1"], ["3"], "old")
+    assert (contrast.a_runs, contrast.b_runs, contrast.harness) == (["3"], ["1"], "old")
     assert not contrast.current_harness
 
 

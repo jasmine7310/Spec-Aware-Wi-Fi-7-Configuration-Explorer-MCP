@@ -873,8 +873,9 @@ class ReplayReport(BaseModel):
     baseline_runs: list[ReplayableRun]
     minimal_runs: list[ReplayableRun]
     """Every attempt, reruns after SETUP_FAIL / TIMEOUT included."""
-    same_facts_as_committed: bool
-    """Every ACCEPTED replay run has the same target facts as the committed runs of its side."""
+    same_facts_as_committed: bool | None
+    """True: every ACCEPTED replay run has the same target facts as the committed runs of its
+    side. None when a side has no ACCEPTED replay run (nothing to compare)."""
     guest_runs: int
     cache_hits: int
     """Always 0: replay runs are forced fresh, never served from the cache."""
@@ -906,6 +907,9 @@ def replay_contrast(contrast_id: str, runs: int = 3, retries: int = 1) -> Replay
         raise ToolError("runs must be 1-3")
     if not 0 <= retries <= 1:
         raise ToolError("retries must be 0 or 1")
+    if 2 * runs * (retries + 1) > MAX_REPLAY_RUNS:
+        raise ToolError(f"runs={runs} with retries={retries} could need "
+                        f"{2 * runs * (retries + 1)} guest runs; the cap is {MAX_REPLAY_RUNS}")
     data = json.loads((minimized[contrast_id] / "reduction.json").read_text())
     reduction = minimize.Reduction.model_validate(data["reduction"])
     if reduction.status != "MINIMIZED":
@@ -947,10 +951,11 @@ def replay_contrast(contrast_id: str, runs: int = 3, retries: int = 1) -> Replay
                                      evidence=evidence))
         return out
 
-    same = all(r.facts in expected[side]
-               for side, side_runs in (("baseline", result.baseline),
-                                       ("minimal", result.minimal))
-               for r in side_runs if r.status == "ACCEPTED")
+    accepted = {side: [r for r in side_runs if r.status == "ACCEPTED"]
+                for side, side_runs in (("baseline", result.baseline),
+                                        ("minimal", result.minimal))}
+    same = (None if not all(accepted.values()) else
+            all(r.facts in expected[side] for side, rs in accepted.items() for r in rs))
     reproduced = result.label == "MINIMIZED"
     return ReplayReport(
         id=contrast_id, committed_label=data["label"],

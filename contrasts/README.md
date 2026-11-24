@@ -6,7 +6,9 @@ them up. Regenerate the JSON with `.venv/bin/python scripts/find_contrasts.py`
 (`tests/test_contrasts.py` fails when it's stale).
 
 Each contrast has a stable `id` ("x" + 10 hex digits, a hash of its two candidates and
-harness, #111): it doesn't shift when contrasts are added or a side gets more repeats. A
+harness, #111): it doesn't shift when contrasts are added or a side gets more repeats.
+Each pair has a fixed orientation: side A is the candidate whose canonical JSON sorts
+first, so the order the run folders are read in never swaps the sides or changes the ID. A
 minimized contrast's ID is its folder name (`c1`). Over MCP, `list_contrasts`,
 `get_contrast` and `replay_contrast` use these IDs (see "Over MCP" below).
 
@@ -60,6 +62,9 @@ Runs on today's harness:
 | `ptk_rekey_interval_s` 5 | `1794933558`, `1794933622`, `1794933677` | `1794933604`, `1794933660`, `1794933709` |
 
 All are in `contrasts/runs/`.
+
+_C1 and C2 below are contrasts from `contrasts.json` (`x8dc0b42566`, `x861c3cc852`), not the
+minimized `c1/` and `c2/` further down, which are different pairs._
 
 ## C1: a 5 s PTK rekey after `link_remove` (reproduced, 3 vs 3; ID `x8dc0b42566`)
 

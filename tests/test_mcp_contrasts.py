@@ -95,6 +95,27 @@ def test_an_extra_repeat_or_a_new_contrast_keeps_the_ids():
     assert "1899999999" in next(c for c in after if c.id == first).a_runs
 
 
+def test_the_read_order_never_swaps_sides_or_changes_ids():
+    # A folder that sorts first (e.g. a Week 6 campaigns/heldout-...) can make a side's
+    # repeats be read first: the ID and which side is A must not depend on that.
+    groups = contrasts.group(contrasts.accepted_runs())
+
+    def found(gs):
+        return {c.id: (c.a_runs[0], c.b_runs[0], json.dumps(c.candidate_a, sort_keys=True))
+                for c in contrasts.find(gs)}
+
+    assert found(groups) == found(list(reversed(groups)))
+    for c in contrasts.find(groups):
+        assert json.dumps(c.candidate_a, sort_keys=True) < json.dumps(c.candidate_b,
+                                                                      sort_keys=True)
+
+
+def test_contrast_id_ignores_the_side_order():
+    a, b = {"config": {"x": 1}}, {"config": {"x": 2}}
+    assert contrasts.contrast_id(a, b, "h") == contrasts.contrast_id(b, a, "h")
+    assert contrasts.contrast_id(a, b, "h") != contrasts.contrast_id(a, b, "other")
+
+
 # --- list and get -----------------------------------------------------------------------
 
 def test_list_contrasts_gives_both_kinds_by_id():
@@ -182,6 +203,8 @@ def test_a_setup_fail_without_retries_doesnt_reproduce(guest):
     guest.statuses = ["SETUP_FAIL"]
     report = _ok("replay_contrast", {"contrast_id": "c1", "runs": 1, "retries": 0})
     assert report["replay"] == "NOT_REPRODUCED" and report["guest_runs"] == 2
+    # The baseline has no ACCEPTED run: nothing to compare, so not "same facts".
+    assert report["same_facts_as_committed"] is None
 
 
 @pytest.mark.parametrize("arguments, message", [
@@ -196,8 +219,12 @@ def test_bad_replays_boot_nothing(guest, arguments, message):
     assert guest.runs == []
 
 
-def test_the_budget_never_exceeds_the_cap():
+def test_the_budget_never_exceeds_the_cap(guest, monkeypatch):
     assert 2 * 3 * (1 + 1) <= mcp_server.MAX_REPLAY_RUNS
+    # Checked in code, so a lower cap (or higher limits) can't be exceeded silently.
+    monkeypatch.setattr(mcp_server, "MAX_REPLAY_RUNS", 6)
+    assert "the cap is 6" in _error("replay_contrast", {"contrast_id": "c1"})
+    assert guest.runs == []
 
 
 def test_a_stale_image_is_refused(guest, monkeypatch):
