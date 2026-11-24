@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Minimize one accepted-vs-accepted contrast with real probes, then reproduce its final
-sides (issue #73). Needs Docker and a current image (scripts/build-env.sh).
+sides (issues #73, #106, #107). Needs Docker and a current image (scripts/build-env.sh).
 
     # 1. Reduce: probes run in fresh guests through the cache, into <out>/probes/
     .venv/bin/python scripts/minimize_contrast.py minimize --a 1794812749 --b 1794557032 \\
@@ -52,9 +52,9 @@ def cmd_minimize(args):
     out = Path(args.out)
     reduction = minimize.minimize(a.candidate, b.candidate, target, cache=Cache(),
                                   log_dir=out / "probes",
-                                  context={"purpose": "issue #73 minimization"})
+                                  context={"purpose": f"minimization of {out}"})
     data = {
-        "description": ("Minimized contrast (issue #73), written by "
+        "description": (f"Minimized contrast {out.name}, written by "
                         "scripts/minimize_contrast.py. Probe runs are in probes/; the "
                         "final sides' reproduction runs are in contrasts/runs/."),
         "label": "PENDING_VERIFICATION",
@@ -79,7 +79,7 @@ def cmd_verify(args):
     data = json.loads((out / "reduction.json").read_text())
     reduction = minimize.Reduction.model_validate(data["reduction"])
     verification = minimize.verify(reduction, args.runs, log_dir=VERIFY_DIR,
-                                   context={"purpose": "issue #73 reproduction"})
+                                   context={"purpose": f"reproduction of {out}"})
     data["verification"] = verification.model_dump(mode="json")
     data["label"] = verification.label
     _write(out, data)

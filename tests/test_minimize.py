@@ -622,9 +622,10 @@ def test_verify_refuses_an_unminimized_reduction_and_cache_hits():
 
 # --- the committed minimized contrast (#73) --------------------------------------------
 
-def test_committed_c1_is_minimized_and_reread_from_its_runs():
+@pytest.mark.parametrize("name", ["c1", "c2", "c3"])
+def test_committed_contrast_is_minimized_and_reread_from_its_runs(name):
     from explorer.signatures import extract_record
-    folder = contrasts.CONTRASTS_DIR / "c1"
+    folder = contrasts.CONTRASTS_DIR / name
     data = json.loads((folder / "reduction.json").read_text())
     reduction = M.Reduction.model_validate(data["reduction"])
     verification = M.Verification.model_validate(data["verification"])
@@ -633,7 +634,10 @@ def test_committed_c1_is_minimized_and_reread_from_its_runs():
         reduction.candidate_a, reduction.candidate_b).apply(reduction.minimal)
     for probe in reduction.trace:                 # every probe run is committed
         for run_id in probe.run_ids:
-            assert (folder / "probes" / run_id / "manifest.json").exists(), run_id
+            if probe.cache_hit:                   # an earlier run, committed where it ran
+                assert any(contrasts.CONTRASTS_DIR.rglob(f"{run_id}/manifest.json")), run_id
+            else:
+                assert (folder / "probes" / run_id / "manifest.json").exists(), run_id
     runs = verification.baseline + verification.minimal
     assert len(verification.baseline) == len(verification.minimal) == contrasts.REPRODUCE_RUNS
     for run in runs:                              # the recorded facts match the logs
@@ -644,3 +648,23 @@ def test_committed_c1_is_minimized_and_reread_from_its_runs():
     # Both final sides are now P2 SUPPORTED by their committed reproduction runs.
     assert contrasts.p2_supported(reduction.candidate_a)
     assert contrasts.p2_supported(reduction.minimal_candidate)
+
+
+def test_only_the_listed_contrasts_are_current_and_nested_reductions_are_superseded():
+    # contrasts/<id>/reduction.json is a minimized contrast; a reduction in a nested folder
+    # (e.g. c3/first-attempt/) is a superseded attempt, kept as a record, and must say which
+    # contrast replaced it so that tools listing contrasts don't count it (PR #121).
+    current, nested = [], []
+    for path in sorted(contrasts.CONTRASTS_DIR.rglob("reduction.json")):
+        depth = len(path.relative_to(contrasts.CONTRASTS_DIR).parts)
+        data = json.loads(path.read_text())
+        if depth == 2:
+            assert "superseded_by" not in data, path
+            current.append(path.parent.name)
+        else:
+            nested.append(path)
+            target = contrasts.CONTRASTS_DIR / data.get("superseded_by", "")
+            assert data.get("superseded_by") and (target / "reduction.json").exists(), path
+            assert data.get("superseded_reason"), path
+    assert current == ["c1", "c2", "c3"]
+    assert nested == [contrasts.CONTRASTS_DIR / "c3" / "first-attempt" / "reduction.json"]

@@ -1,0 +1,1975 @@
+{
+  "contrast": {
+    "a_runs": [
+      "1795473160",
+      "1795473183",
+      "1795473195"
+    ],
+    "b_runs": [
+      "1795474122",
+      "1795474139",
+      "1795474153"
+    ],
+    "claimed_facts": [
+      "disconnects",
+      "four_way_handshakes_completed",
+      "link_reconfig_valid_links",
+      "station_status",
+      "valid_links"
+    ],
+    "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+    "input_diff": {
+      "actions": [
+        [
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        [
+          {
+            "action": "disable_enable_mld",
+            "command": "DISABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "DISCONNECT"
+          },
+          {
+            "action": "disable_enable_mld",
+            "command": "ENABLE_MLD"
+          },
+          {
+            "action": "sta_disconnect_reconnect",
+            "command": "RECONNECT"
+          }
+        ]
+      ],
+      "config.ap.links[0].pairwise_cipher": [
+        "CCMP",
+        "GCMP-256"
+      ],
+      "config.ap.links[1].pairwise_cipher": [
+        "CCMP",
+        "GCMP-256"
+      ],
+      "config.ap.sae_pwe": [
+        "hash_to_element",
+        "both"
+      ],
+      "config.sta.sae_pwe": [
+        "both",
+        "hash_to_element"
+      ]
+    },
+    "unstable": []
+  },
+  "description": "First reduction of contrast c3, written by scripts/minimize_contrast.py and superseded by contrasts/c3/ (see superseded_by). Probe runs are in probes/; the final sides' reproduction runs are in contrasts/runs/.",
+  "label": "MINIMIZED",
+  "reduction": {
+    "cache_hits": 2,
+    "candidate_a": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": 5,
+          "links": [
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": "hash_to_element"
+        },
+        "sta": {
+          "akms": [
+            "SAE-EXT-KEY"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": "both"
+        }
+      }
+    },
+    "candidate_b": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "disable_enable_mld",
+          "command": "DISABLE_MLD"
+        },
+        {
+          "action": "sta_disconnect_reconnect",
+          "command": "DISCONNECT"
+        },
+        {
+          "action": "disable_enable_mld",
+          "command": "ENABLE_MLD"
+        },
+        {
+          "action": "sta_disconnect_reconnect",
+          "command": "RECONNECT"
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": 5,
+          "links": [
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "GCMP-256"
+            },
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "GCMP-256"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": "both"
+        },
+        "sta": {
+          "akms": [
+            "SAE-EXT-KEY"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": "hash_to_element"
+        }
+      }
+    },
+    "counts": {
+      "INTERESTING": 2,
+      "INVALID": 7,
+      "NOT_INTERESTING": 7,
+      "UNSUPPORTED": 2
+    },
+    "deltas": [
+      {
+        "a": "CCMP",
+        "b": "GCMP-256",
+        "id": 0,
+        "kind": "config",
+        "label": "config.ap.links[0].pairwise_cipher: \"CCMP\" -> \"GCMP-256\"",
+        "path": "config.ap.links[0].pairwise_cipher"
+      },
+      {
+        "a": "CCMP",
+        "b": "GCMP-256",
+        "id": 1,
+        "kind": "config",
+        "label": "config.ap.links[1].pairwise_cipher: \"CCMP\" -> \"GCMP-256\"",
+        "path": "config.ap.links[1].pairwise_cipher"
+      },
+      {
+        "a": "hash_to_element",
+        "b": "both",
+        "id": 2,
+        "kind": "config",
+        "label": "config.ap.sae_pwe: \"hash_to_element\" -> \"both\"",
+        "path": "config.ap.sae_pwe"
+      },
+      {
+        "a": "both",
+        "b": "hash_to_element",
+        "id": 3,
+        "kind": "config",
+        "label": "config.sta.sae_pwe: \"both\" -> \"hash_to_element\"",
+        "path": "config.sta.sae_pwe"
+      },
+      {
+        "a": {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        },
+        "b": null,
+        "id": 4,
+        "kind": "action",
+        "label": "- actions[1] link_remove {\"count\": 4, \"link_id\": 1} (A)",
+        "path": null
+      },
+      {
+        "a": null,
+        "b": {
+          "action": "disable_enable_mld",
+          "command": "DISABLE_MLD"
+        },
+        "id": 5,
+        "kind": "action",
+        "label": "+ actions[1] disable_enable_mld {\"command\": \"DISABLE_MLD\"} (B)",
+        "path": null
+      },
+      {
+        "a": null,
+        "b": {
+          "action": "sta_disconnect_reconnect",
+          "command": "DISCONNECT"
+        },
+        "id": 6,
+        "kind": "action",
+        "label": "+ actions[2] sta_disconnect_reconnect {\"command\": \"DISCONNECT\"} (B)",
+        "path": null
+      },
+      {
+        "a": null,
+        "b": {
+          "action": "disable_enable_mld",
+          "command": "ENABLE_MLD"
+        },
+        "id": 7,
+        "kind": "action",
+        "label": "+ actions[3] disable_enable_mld {\"command\": \"ENABLE_MLD\"} (B)",
+        "path": null
+      },
+      {
+        "a": null,
+        "b": {
+          "action": "sta_disconnect_reconnect",
+          "command": "RECONNECT"
+        },
+        "id": 8,
+        "kind": "action",
+        "label": "+ actions[4] sta_disconnect_reconnect {\"command\": \"RECONNECT\"} (B)",
+        "path": null
+      }
+    ],
+    "guest_runs": 7,
+    "minimal": [
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "minimal_candidate": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "disable_enable_mld",
+          "command": "DISABLE_MLD"
+        },
+        {
+          "action": "sta_disconnect_reconnect",
+          "command": "DISCONNECT"
+        },
+        {
+          "action": "disable_enable_mld",
+          "command": "ENABLE_MLD"
+        },
+        {
+          "action": "sta_disconnect_reconnect",
+          "command": "RECONNECT"
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": 5,
+          "links": [
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "channel": 6,
+              "indicate_disabled": true,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": null,
+          "sae_pwe": "hash_to_element"
+        },
+        "sta": {
+          "akms": [
+            "SAE-EXT-KEY"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": "both"
+        }
+      }
+    },
+    "minimal_p2": "UNRESOLVED",
+    "needed_for_validity": [
+      5,
+      6,
+      7
+    ],
+    "status": "MINIMIZED",
+    "target": {
+      "four_way_handshakes_completed": 2
+    },
+    "trace": [
+      {
+        "attempts": [
+          {
+            "cache_hit": true,
+            "reason": null,
+            "run_id": "1795474122",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": true,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "GCMP-256"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "GCMP-256"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "both"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "hash_to_element"
+            }
+          }
+        },
+        "config_id": "target",
+        "deltas": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "differing": [],
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "independent": false,
+        "index": 0,
+        "matched": [
+          "four_way_handshakes_completed"
+        ],
+        "p2": "SUPPORTED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474122"
+        ],
+        "stage": "facts",
+        "status": "INTERESTING",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": true,
+            "reason": null,
+            "run_id": "1795473068",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": true,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "baseline",
+        "deltas": [],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": false,
+        "index": 1,
+        "matched": [],
+        "p2": "SUPPORTED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795473068"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795474187",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "GCMP-256"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "GCMP-256"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "both"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "hash_to_element"
+            }
+          }
+        },
+        "config_id": "r0 / s0",
+        "deltas": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": true,
+        "index": 2,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474187"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795474199",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r0 / s1",
+        "deltas": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "differing": [],
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "independent": true,
+        "index": 3,
+        "matched": [
+          "four_way_handshakes_completed"
+        ],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474199"
+        ],
+        "stage": "facts",
+        "status": "INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795474213",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / s0",
+        "deltas": [
+          4,
+          5
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": true,
+        "index": 4,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474213"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r1 / s1",
+        "deltas": [
+          6,
+          7,
+          8
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 5,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.ENABLE_AFTER_DISABLE: actions[3] (disable_enable_mld ENABLE_MLD): ENABLE_MLD only follows DISABLE_MLD",
+        "rule_ids": [
+          "AO.ENABLE_AFTER_DISABLE"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795474228",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / s0",
+        "deltas": [
+          4
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": true,
+        "index": 6,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474228"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / s1",
+        "deltas": [
+          5
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 7,
+        "matched": [],
+        "p2": "UNSUPPORTED_IMPLEMENTATION",
+        "reason": "P2.DISABLE_MLD_AFTER_LINK_REMOVE: hostapd's DISABLE_MLD disables every partner link of the AP MLD and fails on a link LINK_REMOVE already disabled ('Interface ... already disabled', 'Disabling AP MLD failed'), so the command answers FAIL. hostapd behavior at the pinned commit, not a Wi-Fi rule. Recorded refusals: 1794557044, 1794557059, 1794557071, 1794557082 (sources: hostapd/ctrl_iface.c:3670-3708, src/ap/hostapd.c:3744-3757).",
+        "rule_ids": [
+          "P2.DISABLE_MLD_AFTER_LINK_REMOVE"
+        ],
+        "run_ids": [],
+        "stage": "P2",
+        "status": "UNSUPPORTED",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795474245",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / s2",
+        "deltas": [
+          6
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": true,
+        "index": 8,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474245"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / s3",
+        "deltas": [
+          7,
+          8
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 9,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.ENABLE_AFTER_DISABLE: actions[2] (disable_enable_mld ENABLE_MLD): ENABLE_MLD only follows DISABLE_MLD",
+        "rule_ids": [
+          "AO.ENABLE_AFTER_DISABLE"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / c0",
+        "deltas": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 10,
+        "matched": [],
+        "p2": "UNSUPPORTED_IMPLEMENTATION",
+        "reason": "P2.DISABLE_MLD_AFTER_LINK_REMOVE: hostapd's DISABLE_MLD disables every partner link of the AP MLD and fails on a link LINK_REMOVE already disabled ('Interface ... already disabled', 'Disabling AP MLD failed'), so the command answers FAIL. hostapd behavior at the pinned commit, not a Wi-Fi rule. Recorded refusals: 1794557044, 1794557059, 1794557071, 1794557082 (sources: hostapd/ctrl_iface.c:3670-3708, src/ap/hostapd.c:3744-3757).",
+        "rule_ids": [
+          "P2.DISABLE_MLD_AFTER_LINK_REMOVE"
+        ],
+        "run_ids": [],
+        "stage": "P2",
+        "status": "UNSUPPORTED",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / c1",
+        "deltas": [
+          4,
+          6,
+          7,
+          8
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 11,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.ENABLE_AFTER_DISABLE: actions[2] (disable_enable_mld ENABLE_MLD): ENABLE_MLD only follows DISABLE_MLD",
+        "rule_ids": [
+          "AO.ENABLE_AFTER_DISABLE"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / c2",
+        "deltas": [
+          4,
+          5,
+          7,
+          8
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 12,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.ENABLE_AFTER_DISABLE: actions[2] (disable_enable_mld ENABLE_MLD): the STA must be disconnected with DISCONNECT before ENABLE_MLD",
+        "rule_ids": [
+          "AO.ENABLE_AFTER_DISABLE"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795474260",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r2 / c3",
+        "deltas": [
+          4,
+          5,
+          6
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": true,
+        "index": 13,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474260"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r3 / s3",
+        "deltas": [
+          7
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 14,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.ENABLE_AFTER_DISABLE: actions[2] (disable_enable_mld ENABLE_MLD): ENABLE_MLD only follows DISABLE_MLD",
+        "rule_ids": [
+          "AO.ENABLE_AFTER_DISABLE"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "link_remove",
+              "count": 4,
+              "link_id": 1
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r3 / s4",
+        "deltas": [
+          8
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 15,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.RECONNECT_AFTER_DISCONNECT: actions[2] (sta_disconnect_reconnect RECONNECT): RECONNECT only has an effect after DISCONNECT",
+        "rule_ids": [
+          "AO.RECONNECT_AFTER_DISCONNECT"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "RECONNECT"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r3 / c3",
+        "deltas": [
+          4,
+          5,
+          6,
+          8
+        ],
+        "differing": [],
+        "facts": {},
+        "independent": false,
+        "index": 16,
+        "matched": [],
+        "p2": null,
+        "reason": "AO.ENABLE_AFTER_DISABLE: actions[3] (sta_disconnect_reconnect RECONNECT): RECONNECT comes after ENABLE_MLD",
+        "rule_ids": [
+          "AO.ENABLE_AFTER_DISABLE"
+        ],
+        "run_ids": [],
+        "stage": "action_order",
+        "status": "INVALID",
+        "support_probe": false,
+        "unknown": []
+      },
+      {
+        "attempts": [
+          {
+            "cache_hit": false,
+            "reason": null,
+            "run_id": "1795474277",
+            "status": "ACCEPTED"
+          }
+        ],
+        "cache_hit": false,
+        "candidate": {
+          "actions": [
+            {
+              "action": "associate"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "DISABLE_MLD"
+            },
+            {
+              "action": "sta_disconnect_reconnect",
+              "command": "DISCONNECT"
+            },
+            {
+              "action": "disable_enable_mld",
+              "command": "ENABLE_MLD"
+            }
+          ],
+          "config": {
+            "ap": {
+              "beacon_protection": true,
+              "bss_transition": false,
+              "gtk_rekey_interval_s": 5,
+              "links": [
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 1,
+                  "indicate_disabled": false,
+                  "link_id": 0,
+                  "pairwise_cipher": "CCMP"
+                },
+                {
+                  "akms": [
+                    "SAE-EXT-KEY"
+                  ],
+                  "channel": 6,
+                  "indicate_disabled": true,
+                  "link_id": 1,
+                  "pairwise_cipher": "CCMP"
+                }
+              ],
+              "pmf": "required",
+              "ptk_rekey_interval_s": null,
+              "sae_pwe": "hash_to_element"
+            },
+            "sta": {
+              "akms": [
+                "SAE-EXT-KEY"
+              ],
+              "beacon_protection": true,
+              "sae_groups": null,
+              "sae_pwe": "both"
+            }
+          }
+        },
+        "config_id": "r3 / c4",
+        "deltas": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "differing": [
+          "four_way_handshakes_completed"
+        ],
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "independent": true,
+        "index": 17,
+        "matched": [],
+        "p2": "UNRESOLVED",
+        "reason": null,
+        "rule_ids": [],
+        "run_ids": [
+          "1795474277"
+        ],
+        "stage": "facts",
+        "status": "NOT_INTERESTING",
+        "support_probe": true,
+        "unknown": []
+      }
+    ]
+  },
+  "superseded_by": "c3",
+  "superseded_reason": "Its minimal set kept the AP MLD restart, which isn't needed: a client reconnect alone gives the second handshake, with link_remove absent (contrasts/c3/README.md). The reduction and its 3/3 verification are kept as a record; don't count it as a separate minimized contrast.",
+  "target_facts": [
+    "four_way_handshakes_completed"
+  ],
+  "verification": {
+    "baseline": [
+      {
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795474332",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795474355",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "four_way_handshakes_completed": 1
+        },
+        "matches_target": false,
+        "reason": null,
+        "run_id": "1795474380",
+        "status": "ACCEPTED"
+      }
+    ],
+    "label": "MINIMIZED",
+    "minimal": [
+      {
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795474393",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795474434",
+        "status": "ACCEPTED"
+      },
+      {
+        "facts": {
+          "four_way_handshakes_completed": 2
+        },
+        "matches_target": true,
+        "reason": null,
+        "run_id": "1795474453",
+        "status": "ACCEPTED"
+      }
+    ],
+    "note": "Both sides reproduced 3/3: the baseline differs from the target in every run, the minimal candidate matches it in every run.",
+    "runs": 3
+  }
+}

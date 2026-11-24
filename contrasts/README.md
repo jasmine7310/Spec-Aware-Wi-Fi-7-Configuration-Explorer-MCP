@@ -30,12 +30,17 @@ minimized contrast's ID is its folder name (`c1`). Over MCP, `list_contrasts`,
   Each claimed fact comes with the log lines it was read from.
 - **Reproduced** means at least 3 independent runs per side, each in a fresh guest. Cache hits don't count, and none of these runs was served from the cache.
 
-Today that's 49 accepted runs in 35 groups of repeats.
+Today that's 82 accepted runs in 42 groups of repeats.
 
-`contrasts/runs/` holds the 16 runs made for this issue so that each side has 3, all
-`ACCEPTED`, on Docker Desktop on macOS:
+`contrasts/runs/` holds 49 runs, all `ACCEPTED`, on Docker Desktop on macOS. 16 were made
+for this issue so that each side has 3:
 - 9 on today's harness (2026-11-17), which are the evidence below;
 - 7 on the earlier harness (2026-11-16).
+
+The other 33 are for the minimized contrasts, on today's harness (see "Minimized contrasts"
+below):
+- their 3/3 reproductions: 6 each from `c1/` (#73) and `c2/` (#106), and 12 from `c3/` (#107), 6 per reduction;
+- 9 runs of `c3/`'s candidates (#107): 3 of the first reduction's B side, which had only run under the earlier harness, 3 of the reconnect-only side and 3 of `link_remove` followed by a reconnect.
 
 They're in `support.EVIDENCE_DIRS`, so they count as P2 evidence: each side's candidate is
 `SUPPORTED` by exact-match committed runs.
@@ -122,14 +127,29 @@ runs are C1's PTK-rekey side.
 
 **Reproduced:** yes, 3 vs 3.
 
-## Minimized: `c1/` (#73)
+## Minimized contrasts
 
-`c1/` minimizes a wider contrast: a failing campaign run 8 inputs away from the clean OWE
-side (`1794812749` vs `1794557032` and its repeats). The minimizer reduces the 8 inputs
-to one, `ptk_rekey_interval_s` 5 → unset, and both final sides reproduce 3/3
-(`1794952238`, `1794952257`, `1794952274` vs `1794952292`, `1794952308`, `1794952325`).
-The write-up and the full trace are in `c1/README.md`. Those 6 runs are in `runs/`, so
-`contrasts.json` also lists the pair as a reproduced contrast (ID `x829bf3a8d9`).
+The folders `c1/`, `c2/` and `c3/` are reductions by `scripts/minimize_contrast.py`, each
+verified 3/3 per side. They aren't the C1 / C2 above, though `c1/` also points at the PTK rekey.
+Their category is the category of their target facts, as in `anchor_coverage.csv`'s
+`category` column (#105).
+
+| Folder | Category | Target fact | Inputs → minimal | Minimal cause | Label |
+|---|---|---|---|---|---|
+| `c1/` (#73) | `key` | `disconnect_reasons` | 8 → 1 | `ptk_rekey_interval_s` 5 → unset (a key setting) | `MINIMIZED` |
+| `c2/` (#106) | `link` | `data_test_rx_ap_links` | 7 → 1 | link 1 `indicate_disabled` false → true (a link setting) | `MINIMIZED` |
+| `c3/` (#107) | `security` | `four_way_handshakes_completed` | 3 → 3 | the client's `DISCONNECT` + `RECONNECT`, with `link_remove` absent (an action sequence) | `MINIMIZED` |
+
+- **`c1/`** minimizes a failing campaign run 8 inputs away from the clean OWE side (`1794812749` vs `1794557032` and its repeats). Both final sides reproduce 3/3: `1794952238`, `1794952257`, `1794952274` vs `1794952292`, `1794952308`, `1794952325`.
+- **`c2/`** starts from `c1/`'s clean side (SAE-EXT-KEY, both links active) and targets the OWE side whose link 1 is advertised as disabled (`1794933586` and its repeats). Neither side rekeys the PTK, so its cause is a different one. Both final sides reproduce 3/3: `1795473107`, `1795473128`, `1795473143` vs `1795473160`, `1795473183`, `1795473195`. With link 1 advertised as disabled, the client sets up both links but activates only link 0, as hostap's own test expects.
+- **`c3/`** starts from `c2/`'s minimal side (one association, `link_remove`) and targets the same config with a client reconnect instead (`associate`, `DISCONNECT`, `RECONNECT`; `1795480398` and its repeats). Neither side rekeys the PTK. All 3 action deltas are needed: without `RECONNECT` there's no second association, and with `link_remove` kept the reconnect's handshake times out with reason 15 (`1795480438`, `1795480449`, `1795480460`). Both final sides reproduce 3/3: `1795480526`, `1795480537`, `1795480546` (1 handshake) vs `1795480556`, `1795480567`, `1795480580` (2). A first reduction (`c3/first-attempt/`) went to a B that also restarts the AP MLD and wrongly kept the restart as part of the cause. Jasmine's trials on PR #121 showed the reconnect alone is enough.
+
+Together they cover three categories (`key`, `link`, `security`) and three kinds of minimal
+cause: a key setting, a link setting and an action sequence.
+
+Each folder's `README.md` has the write-up and the full trace. Their reproduction runs are in
+`runs/`. `c1/`'s and `c2/`'s final pairs are one input apart, so `contrasts.json` also lists
+them as reproduced contrasts. `c3/`'s are 3 apart, so it doesn't; its reconnect-only side and the `link_remove` + reconnect candidate are one apart, so that pair is listed.
 
 ## Over MCP (#111)
 
@@ -148,13 +168,20 @@ The write-up and the full trace are in `c1/README.md`. Those 6 runs are in `runs
 - `minimize_contrast(contrast=...)` now takes a contrast ID instead of a list index.
 
 Walk-through, 2026-11-24 (WSL2, current image, through an in-process MCP client on this
-repo's server; trial runs, not committed): `list_contrasts` gave the 5 contrasts and `c1`
-(`MINIMIZED`); `get_contrast("c1")` gave the minimal change `ptk_rekey_interval_s: 5 ->
-null`, the 8 probes and the 6 committed verification runs with their log lines;
-`replay_contrast("c1")` came back `REPRODUCED` in 42 s, 6 guest runs, 0 cache hits, the
-same facts as committed: baseline `1795545830`, `1795545836`, `1795545844` (reason 15,
-from the AP) and minimal `1795545850`, `1795545857`, `1795545863` (only the local reason
-3). A direct call before it (`1795545767`–`1795545802`) gave the same.
+repo's server; trial runs, not committed). `list_contrasts` gave the 7 contrasts and `c1`,
+`c2`, `c3` (all `MINIMIZED`). `get_contrast` gave each one's minimal change, its 8 probes
+and its 6 committed verification runs with their log lines. `replay_contrast` reran each in
+fresh guests: all three `REPRODUCED`, 6 guest runs each (about 40 s), 0 cache hits, the same
+facts as committed:
+
+| ID | Target | Baseline runs | Minimal runs |
+|---|---|---|---|
+| `c1` | `disconnect_reasons` | `1795546635`, `1795546642`, `1795546649`: {(15, from the AP)} | `1795546656`, `1795546663`, `1795546669`: {(3, local)} |
+| `c2` | `data_test_rx_ap_links` | `1795546677`, `1795546683`, `1795546689`: [0, 1] | `1795546695`, `1795546702`, `1795546708`: [0] |
+| `c3` | `four_way_handshakes_completed` | `1795546716`, `1795546722`, `1795546728`: 1 | `1795546735`, `1795546741`, `1795546748`: 2 |
+
+The IDs held across the merge that brought in `c2` / `c3`: the earlier contrasts kept their
+IDs although the list grew from 5 to 7 and `x829bf3a8d9`'s B side went from 3 runs to 6.
 
 ## Two harnesses
 
@@ -171,18 +198,24 @@ Both harnesses give the same claimed facts, with one difference: on the earlier 
 
 ## Across every accepted run
 
-The pattern holds beyond the two contrasts. Across all 49 accepted runs, under both
+The pattern holds beyond the two contrasts. Across all 82 accepted runs, under both
 harnesses:
 
 | `ptk_rekey_interval_s` | `link_remove` | Runs with a reason-15 disconnect from the AP |
 |---|---|---|
-| 5 | yes | **17 / 17** |
+| 5 | yes | **20 / 20** |
 | 5 | no | 0 / 11 |
-| unset | yes | 0 / 14 |
-| unset | no | 0 / 7 |
+| unset | yes | 3 / 32 |
+| unset | no | 0 / 19 |
 
 The other campaign runs in the first row also differ in AKM, cipher, `sae_pwe` and other
 actions. So the combination fails across those settings, not just in the base above.
+
+The 3 in the third row are `c3/`'s `link_remove` + reconnect runs (`1795480438`, `1795480449`,
+`1795480460`, #107): no PTK rekey, but the client reconnects after `link_remove`, and that
+association's initial handshake fails with reason 15. So what fails is a 4-way handshake
+after `link_remove`, whether a PTK rekey or a reconnect starts it. Every other run with
+`link_remove` and no PTK rekey runs no handshake after the removal.
 
 ## What the logs show, and what they don't
 
@@ -198,6 +231,10 @@ harness. It was checked in their `explorer_candidate.hostapd` and `explorer_cand
 
 The runs on the earlier harness show the same pattern, ending after two reason-15
 disconnects (the client sends 2/4 12 times).
+
+`c3/`'s `link_remove` + reconnect runs show the same pattern without a rekey: hostapd
+receives no EAPOL after `LINK_REMOVE`, and the reconnect's handshake times out
+(`c3/README.md`, "With `link_remove`, the reconnect fails").
 
 So after `link_remove`, the client's EAPOL-Key frames stop reaching hostapd. The logs
 don't show where they're lost (radio, kernel or hostapd), and this write-up makes no claim
