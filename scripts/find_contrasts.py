@@ -24,7 +24,7 @@ def main() -> int:
     print(f"{data['accepted_runs']} accepted runs, {data['candidates']} candidates, "
           f"{len(data['contrasts'])} contrasts within {args.max_inputs} input(s)")
     for c in data["contrasts"]:
-        print(f"  {'+'.join(c['a_runs'])} vs {'+'.join(c['b_runs'])}: "
+        print(f"  {c['id']}: {'+'.join(c['a_runs'])} vs {'+'.join(c['b_runs'])}: "
               f"{sorted(c['input_diff'])} -> {[f['fact'] for f in c['facts']]}"
               f"{' (reproduced)' if c['reproduced'] else ''}")
     print(f"wrote {contrasts.CONTRASTS_JSON.relative_to(contrasts.REPO_ROOT)}")

@@ -30,10 +30,16 @@ or order of identical disconnects varies between repeats. Each claimed fact come
 log lines it was read from (``evidence``), so no claim goes beyond what the logs show.
 ``reproduced`` is true only when both sides have at least ``REPRODUCE_RUNS`` runs.
 ``current_harness`` says whether the runs used today's harness (``cache.harness_digest``).
+
+Each contrast has a stable ``id`` (``contrast_id``): a hash of its two candidates and
+harness, so it doesn't shift when contrasts are added or a side gets more repeats (#111).
+Each pair has a fixed orientation (A's candidate sorts first as canonical JSON), so the
+read order of the run folders never swaps the sides or changes the ID.
 """
 
 from __future__ import annotations
 
+import hashlib
 import itertools
 import json
 import re
@@ -97,6 +103,8 @@ class FactDiff(BaseModel):
 
 
 class Contrast(BaseModel):
+    id: str
+    """Stable ID (``contrast_id``): the same for the same two candidates and harness."""
     a_runs: list[str]
     b_runs: list[str]
     input_diff: dict[str, list[Any]]
@@ -287,6 +295,20 @@ def compare(a: Group, b: Group) -> tuple[list[FactDiff], list[str]]:
     return diffs, unstable
 
 
+def _canonical(candidate: dict) -> str:
+    return json.dumps(candidate, sort_keys=True)
+
+
+def contrast_id(candidate_a: dict, candidate_b: dict, harness: str | None) -> str:
+    """A contrast's stable ID: ``x`` and 10 hex digits of the hash of its two candidates
+    (in canonical order, so the ID doesn't depend on which side is A) and harness. Unlike a
+    list index it doesn't change when contrasts are added, and unlike run IDs it doesn't
+    change when a side gets more repeats."""
+    first, second = sorted([_canonical(candidate_a), _canonical(candidate_b)])
+    blob = json.dumps([json.loads(first), json.loads(second), harness], sort_keys=True)
+    return "x" + hashlib.sha256(blob.encode()).hexdigest()[:10]
+
+
 def find(groups: list[Group], max_inputs: int = 1,
          supported: Callable[[dict], bool] = p2_supported) -> list[Contrast]:
     """Every pair of groups under the same harness, both ``supported``, at most
@@ -298,6 +320,10 @@ def find(groups: list[Group], max_inputs: int = 1,
     for a, b in itertools.combinations(groups, 2):
         if a.harness != b.harness:
             continue
+        # A fixed orientation: A is the side whose candidate's canonical JSON sorts first,
+        # so neither the ID nor which side is A depends on the order runs were read in.
+        if _canonical(a.candidate) > _canonical(b.candidate):
+            a, b = b, a
         diff = input_diff(a.candidate, b.candidate)
         if not 0 < distance(diff) <= max_inputs:
             continue
@@ -305,6 +331,7 @@ def find(groups: list[Group], max_inputs: int = 1,
         if not facts_ or not (supported(a.candidate) and supported(b.candidate)):
             continue
         out.append(Contrast(
+            id=contrast_id(a.candidate, b.candidate, a.harness),
             a_runs=[r.run_id for r in a.runs], b_runs=[r.run_id for r in b.runs],
             input_diff=diff, facts=facts_, unstable=unstable,
             reproduced=min(len(a.runs), len(b.runs)) >= REPRODUCE_RUNS,
