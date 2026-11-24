@@ -332,10 +332,13 @@ def plan(seed: int = 0, budget: int = DEFAULT_BUDGET, space: Space | None = None
     }
 
 
-def write(seed: int = 0, budget: int = DEFAULT_BUDGET) -> tuple[dict, dict]:
-    """Write campaign_plan.json and pairwise_coverage.json at the repo root."""
+def write(seed: int = 0, budget: int = DEFAULT_BUDGET,
+          build_on_runs: bool = True) -> tuple[dict, dict]:
+    """Write campaign_plan.json and pairwise_coverage.json at the repo root. With
+    ``build_on_runs=False`` the plan covers every executable pair itself, ignoring what
+    has run (a held-out campaign, #114)."""
     space = Space()
-    campaign = plan(seed, budget, space)
+    campaign = plan(seed, budget, space, build_on_runs=build_on_runs)
     plan_rows = [tuple(c["choices"][n] for n in space.names) for c in campaign["candidates"]]
     ran = space.rows(lambda a: a.legal and a.p2_status == "SUPPORTED")
     cover = coverage(space, plan_rows, ran)

@@ -38,8 +38,12 @@ docker/run-test.sh eht_mld_sae_ext_two_links_client_bp       # our wrapper: clie
 .venv/bin/python -m explorer.mcp_server                      # MCP server over stdio
 .venv/bin/python scripts/build_model_json.py                 # regenerate model.json
 .venv/bin/python scripts/plan_campaign.py --seed 0           # campaign_plan.json + pairwise_coverage.json
+.venv/bin/python scripts/plan_campaign.py --seed N --fresh   # held-out plan: ignore earlier runs (#114)
 .venv/bin/python scripts/smoke_dimensions.py --check         # validate the dimension smoke candidates
 .venv/bin/python scripts/run_campaign.py                     # run campaign_plan.json (Docker; slow)
+.venv/bin/python scripts/run_campaign.py --id ID --fresh     # held-out run: new guest each, no cache reads
+.venv/bin/python scripts/freeze_versions.py --tag TAG        # write freeze.json before a held-out campaign
+.venv/bin/python scripts/freeze_versions.py --check          # has anything changed since the freeze?
 .venv/bin/python scripts/find_contrasts.py                   # regenerate contrasts/contrasts.json
 .venv/bin/python scripts/minimize_contrast.py minimize --a RUN --b RUN --facts F --out contrasts/cN  # Docker
 .venv/bin/python scripts/minimize_contrast.py verify --out contrasts/cN   # 3/3 per final side (Docker)
@@ -124,7 +128,17 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `REJECTED`); `pruning_counts` / `rejected_cases` build the funnel and table.
   `scripts/run_campaign.py --id <id>` writes `campaigns/<id>/` (with the plan it ran) and
   `pruning_counts.json`; then regenerate the plan files: plans build on committed runs,
-  so the next plan covers only what's left.
+  so the next plan covers only what's left. For a held-out campaign (#114): plan with
+  `--fresh` (`build_on_runs=false`) and run with `--fresh` (`run(..., fresh=True)` passes
+  `force` to `run_cached`: a new guest every time, the cache written but never read).
+  `outcome_stages(campaign_dir)` takes the funnel past P3, to the distinct signatures of the
+  `ACCEPTED` runs and the contrasts among them (within 1 input, at any distance, 3 runs per
+  side); `run_campaign.py` adds them to `pruning_counts.json`.
+- `explorer.freeze` (#114): `current()` gives what a held-out campaign freezes (rules.yaml
+  digest, `model_digest`, schema version, harness hash, hostap / kernel / base image pins);
+  `scripts/freeze_versions.py --tag TAG` writes `freeze.json`, to commit and tag before any
+  held-out result is seen. `tests/test_freeze.py` fails once a committed `freeze.json` no
+  longer matches: a change after the freeze means rerunning the held-out campaign.
 - `explorer.contrasts`: accepted-vs-accepted contrasts (#71). `find(group(accepted_runs()))`
   pairs candidates at most `max_inputs` inputs apart (`input_diff` / `distance`) whose runs
   are `ACCEPTED`, not negative experiments, pass today's rules and ran on the pinned
