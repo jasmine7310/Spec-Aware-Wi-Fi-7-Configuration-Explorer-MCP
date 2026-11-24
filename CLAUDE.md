@@ -84,7 +84,8 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `explorer.rules.load_rules()`: the P1 rule registry from
   `rules.yaml` (rules plus `UND.*` open questions); `rules/fixtures/<ID>.json` holds each
   entry's executable positive / negative / exception cases (`explorer.fixtures`, run by
-  `tests/test_rule_fixtures.py`): add one with every new rule. `explorer.validate`: `parse_candidate`
+  `tests/test_rule_fixtures.py`): add one with every new rule, and a row in
+  `docs/rule-audit.md`'s summary (#109; `tests/test_rule_audit.py` fails without it). `explorer.validate`: `parse_candidate`
   (readable `P0.*` errors), `P1_CHECKS` / `run_p1_checks(config)` (coded rule checks by
   rule ID), `find_undetermined(config)`, `check_action_order(candidate)` (AO.* rules), all
   returning `Finding`s with an outcome; `p1_status` sums them up; `validate_candidate(data)`

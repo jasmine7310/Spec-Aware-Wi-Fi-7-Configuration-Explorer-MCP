@@ -166,6 +166,62 @@
           "SEC.SAE_PWE_NEEDS_SAE"
         ]
       }
+    },
+    {
+      "name": "AP and client sae_pwe with SAE-EXT-KEY next to OWE",
+      "kind": "exception",
+      "source": "docs/rule-audit.md (#109): the predicate needs an SAE-family AKM in some list, not only SAE-family AKMs",
+      "candidate": {
+        "config": {
+          "ap": {
+            "links": [
+              {
+                "link_id": 0,
+                "channel": 1,
+                "akms": [
+                  "SAE-EXT-KEY",
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              },
+              {
+                "link_id": 1,
+                "channel": 6,
+                "akms": [
+                  "SAE-EXT-KEY",
+                  "OWE"
+                ],
+                "pairwise_cipher": "CCMP",
+                "indicate_disabled": false
+              }
+            ],
+            "pmf": "required",
+            "beacon_protection": true,
+            "sae_pwe": "both",
+            "ptk_rekey_interval_s": null,
+            "gtk_rekey_interval_s": null,
+            "bss_transition": false
+          },
+          "sta": {
+            "akms": [
+              "SAE-EXT-KEY"
+            ],
+            "sae_groups": null,
+            "sae_pwe": "both",
+            "beacon_protection": true
+          }
+        },
+        "actions": [
+          {
+            "action": "associate"
+          }
+        ]
+      },
+      "expect": {
+        "status": "PASSES_MODELED_RULES",
+        "findings": []
+      }
     }
   ]
 }
