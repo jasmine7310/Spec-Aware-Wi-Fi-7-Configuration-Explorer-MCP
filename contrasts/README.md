@@ -32,7 +32,8 @@ minimized contrast's ID is its folder name (`c1`). Over MCP, `list_contrasts`,
   Each claimed fact comes with the log lines it was read from.
 - **Reproduced** means at least 3 independent runs per side, each in a fresh guest. Cache hits don't count, and none of these runs was served from the cache.
 
-Today that's 88 accepted runs in 44 groups of repeats.
+Today that's 101 accepted runs in 57 groups of repeats. The 13 runs of the held-out
+campaign (`campaigns/heldout-seed2-2026-11-26/`, #114) are 13 candidates no earlier run had.
 
 `contrasts/runs/` holds 55 runs, all `ACCEPTED`. The first 49 ran on Docker Desktop on
 macOS; 16 of those were made for this issue so that each side has 3:
@@ -236,15 +237,24 @@ Both harnesses give the same claimed facts, with one difference: on the earlier 
 
 ## Across every accepted run
 
-The pattern holds beyond the two contrasts. Across all 88 accepted runs, under both
+The pattern holds beyond the two contrasts. Across all 101 accepted runs, under both
 harnesses:
 
-| `ptk_rekey_interval_s` | `link_remove` | Runs with a reason-15 disconnect from the AP |
-|---|---|---|
-| 5 | yes | **23 / 23** |
-| 5 | no | 0 / 11 |
-| unset | yes | 3 / 35 |
-| unset | no | 0 / 19 |
+| `ptk_rekey_interval_s` | `link_remove` | Runs with a reason-15 disconnect from the AP | Of them, held-out |
+|---|---|---|---|
+| 5 | yes | **27 / 27** | **4 / 4** |
+| 5 | no | 0 / 15 | 0 / 4 |
+| unset | yes | 3 / 38 | 0 / 3 |
+| unset | no | 0 / 21 | 0 / 2 |
+
+The held-out campaign (#114) was planned and run after the freeze (`checkpoint3-freeze`),
+on candidates no earlier run had, so its 13 runs test the pattern rather than add to the
+runs it was found in. Its 4 runs with both settings (`1795691793`, `1795691849`,
+`1795691933`, `1795691947`) all end with reason 15 from the AP, and none of the other 9
+does. One of the four, `1795691849`, runs no `rekey_gtk_now`. It also adds a contrast to
+`contrasts.json`: `x0734551bea`, the same input and fact as `x2acacbf31e`
+(`indicate_disabled` on link 1 → `data_test_rx_ap_links`), not reproduced, since the
+held-out side has 1 run.
 
 The other runs in the first row also differ in AKM, cipher (the 3 GCMP-256 reruns of c1
 among them), `sae_pwe` and other actions. So the combination fails across those settings, not just in the base above.

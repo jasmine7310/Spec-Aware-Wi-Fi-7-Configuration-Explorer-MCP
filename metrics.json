@@ -467,19 +467,19 @@
       "p1": 4608,
       "p2": 1152
     },
-    "checks_per_guest_boot": 1513,
+    "checks_per_guest_boot": 1004,
     "machine": {
       "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
       "python": "3.12.3"
     },
     "mean_ms_per_assignment": {
-      "configspace": 0.02,
-      "p0": 0.167,
-      "p1": 0.035,
-      "p2": 5.265
+      "configspace": 0.03,
+      "p0": 0.215,
+      "p1": 0.044,
+      "p2": 7.975
     },
-    "ms_per_assignment_over_space": 1.538,
-    "ms_per_assignment_reaching_p2": 5.487,
+    "ms_per_assignment_over_space": 2.282,
+    "ms_per_assignment_reaching_p2": 8.264,
     "note": "Measured when metrics.json was written, on the machine named in 'machine'; not part of the staleness check. P2 is timed only for assignments P1 passes, so mean_ms_per_assignment's P2 is over fewer assignments than the other stages. ms_per_assignment_reaching_p2 sums the stage means (one assignment through every stage); ms_per_assignment_over_space is the total time over every enumerated assignment. checks_per_guest_boot divides the campaigns' mean seconds per boot (runtime, measured on the machines the campaigns ran on) by ms_per_assignment_reaching_p2, so it mixes two machines when they differ."
   },
   "undetermined": {
