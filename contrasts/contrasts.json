@@ -1,6 +1,6 @@
 {
-  "accepted_runs": 88,
-  "candidates": 44,
+  "accepted_runs": 101,
+  "candidates": 57,
   "contrasts": [
     {
       "a_runs": [
@@ -1443,6 +1443,151 @@
         ]
       },
       "reproduced": true,
+      "unstable": []
+    },
+    {
+      "a_runs": [
+        "1795691849"
+      ],
+      "b_runs": [
+        "1794933558",
+        "1794933622",
+        "1794933677"
+      ],
+      "candidate_a": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": null,
+            "links": [
+              {
+                "akms": [
+                  "OWE"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "OWE"
+                ],
+                "channel": 6,
+                "indicate_disabled": false,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": 5,
+            "sae_pwe": null
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": null
+          }
+        }
+      },
+      "candidate_b": {
+        "actions": [
+          {
+            "action": "associate"
+          },
+          {
+            "action": "link_remove",
+            "count": 4,
+            "link_id": 1
+          }
+        ],
+        "config": {
+          "ap": {
+            "beacon_protection": true,
+            "bss_transition": false,
+            "gtk_rekey_interval_s": null,
+            "links": [
+              {
+                "akms": [
+                  "OWE"
+                ],
+                "channel": 1,
+                "indicate_disabled": false,
+                "link_id": 0,
+                "pairwise_cipher": "CCMP"
+              },
+              {
+                "akms": [
+                  "OWE"
+                ],
+                "channel": 6,
+                "indicate_disabled": true,
+                "link_id": 1,
+                "pairwise_cipher": "CCMP"
+              }
+            ],
+            "pmf": "required",
+            "ptk_rekey_interval_s": 5,
+            "sae_pwe": null
+          },
+          "sta": {
+            "akms": [
+              "OWE"
+            ],
+            "beacon_protection": true,
+            "sae_groups": null,
+            "sae_pwe": null
+          }
+        }
+      },
+      "current_harness": true,
+      "facts": [
+        {
+          "a": [
+            0,
+            1
+          ],
+          "b": [
+            0
+          ],
+          "evidence_a": [
+            "campaigns/heldout-seed2-2026-11-26/1795691849/explorer_candidate.log:91: 2026-11-26 11:17:30,546 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "campaigns/heldout-seed2-2026-11-26/1795691849/explorer_candidate.log:95: 2026-11-26 11:17:30,546 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00",
+            "campaigns/heldout-seed2-2026-11-26/1795691849/explorer_candidate.log:113: 2026-11-26 11:17:30,546 DEBUG wlan7_link1: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "campaigns/heldout-seed2-2026-11-26/1795691849/explorer_candidate.log:117: 2026-11-26 11:17:30,546 DEBUG wlan7_link1: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00"
+          ],
+          "evidence_b": [
+            "contrasts/runs/1794933558/explorer_candidate.log:91: 2026-11-17 16:39:20,016 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1794933558/explorer_candidate.log:95: 2026-11-17 16:39:20,016 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00",
+            "contrasts/runs/1794933558/explorer_candidate.log:124: 2026-11-17 16:39:20,461 DEBUG wlan7_link0: <3>DATA-TEST-RX 02:00:00:00:07:00 02:00:00:00:08:00",
+            "contrasts/runs/1794933558/explorer_candidate.log:128: 2026-11-17 16:39:20,461 DEBUG wlan7_link0: <3>DATA-TEST-RX ff:ff:ff:ff:ff:ff 02:00:00:00:08:00"
+          ],
+          "fact": "data_test_rx_ap_links"
+        }
+      ],
+      "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+      "id": "x0734551bea",
+      "input_diff": {
+        "config.ap.links[1].indicate_disabled": [
+          false,
+          true
+        ]
+      },
+      "reproduced": false,
       "unstable": []
     },
     {
