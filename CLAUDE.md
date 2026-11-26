@@ -141,10 +141,15 @@ WSL from Windows PowerShell 5.1, put the commands in a script and run
   `ACCEPTED` runs and the contrasts among them (within 1 input, at any distance, 3 runs per
   side); `run_campaign.py` adds them to `pruning_counts.json`.
 - `explorer.freeze` (#114): `current()` gives what a held-out campaign freezes (rules.yaml
-  digest, `model_digest`, schema version, harness hash, hostap / kernel / base image pins);
+  digest, `model_digest`, schema version, harness hash, hostap / kernel / base image pins,
+  and `code_sha256` over the pipeline code: `freeze.CODE_FILES`, i.e. `planner`, `campaign`
+  and every `explorer` module they import, plus the two campaign scripts);
   `scripts/freeze_versions.py --tag TAG` writes `freeze.json`, to commit and tag before any
   held-out result is seen. `tests/test_freeze.py` fails once a committed `freeze.json` no
-  longer matches: a change after the freeze means rerunning the held-out campaign.
+  longer matches: a change after the freeze means rerunning the held-out campaign. So after
+  the freeze, don't edit `freeze.PIPELINE_MODULES`' files; the MCP server, minimization,
+  metrics and the other modules can still change. A new import from the pipeline into
+  another module fails `test_pipeline_modules_are_closed_under_imports`.
 - `explorer.contrasts`: accepted-vs-accepted contrasts (#71). `find(group(accepted_runs()))`
   pairs candidates at most `max_inputs` inputs apart (`input_diff` / `distance`) whose runs
   are `ACCEPTED`, not negative experiments, pass today's rules and ran on the pinned
