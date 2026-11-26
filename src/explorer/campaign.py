@@ -92,11 +92,15 @@ def outcome_stages(campaign_dir: Path, max_inputs: int = 1) -> dict:
 
     - ``accepted_runs`` / ``distinct_signatures``: the campaign's ``ACCEPTED``, rule-passing
       runs on the pinned commits (``contrasts.accepted_runs``) and how many different
-      behavior signatures (``contrasts.facts``) they show;
+      signatures (``contrasts.facts``) they show. These include ``station_status``, which
+      echoes the configured AKM and ciphers, so two runs with the same behavior and a
+      different cipher count twice (``metrics`` reports the counts without it);
     - ``contrasts``: pairs among those runs with a claimable fact difference
-      (``contrasts.find``): ``within_max_inputs`` at most ``max_inputs`` inputs apart (1,
-      as in ``contrasts.json``), ``any_distance`` with no bound (the pairs a minimization
-      could start from, as c1 did from 8 inputs). A pairwise design spreads its candidates
+      (``contrasts.find``, ``station_status`` included): ``within_max_inputs`` at most
+      ``max_inputs`` inputs apart (1, as in ``contrasts.json``), ``any_distance`` with no
+      bound. A pair with a behavior-fact difference is one a minimization could start from,
+      as c1 did from 8 inputs; a pair that differs only in ``station_status`` isn't, since
+      minimization targets behavior facts. A pairwise design spreads its candidates
       apart, so few pairs are 1 input apart. ``reproduced_3_per_side`` counts those with 3
       runs per side: a campaign runs each candidate once, so it takes extra runs
       (``contrasts/runs/``). Every side is an ACCEPTED run of exactly its candidate on the
