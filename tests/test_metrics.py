@@ -29,6 +29,13 @@ def test_timing_block_is_present_and_plausible(committed):
     assert all(ms > 0 for ms in timing["mean_ms_per_assignment"].values())
     # A check is far cheaper than a guest boot: that's the point of pruning first.
     assert timing["checks_per_guest_boot"] > 100
+    # Machine-dependent, so it says which machine it was measured on.
+    assert timing["machine"]["platform"] and timing["machine"]["python"]
+    stages = timing["mean_ms_per_assignment"]
+    assert timing["ms_per_assignment_reaching_p2"] == pytest.approx(sum(stages.values()),
+                                                                    abs=0.005)
+    # P2 runs only for the assignments P1 passes, so the mean over the space is lower.
+    assert timing["ms_per_assignment_over_space"] < timing["ms_per_assignment_reaching_p2"]
 
 
 def test_space_funnel_adds_up(built):
@@ -68,15 +75,50 @@ def test_campaign_numbers_match_their_files(built):
         assert c["p3"] == counts["P3"]
         assert c["guest_boots"] == counts["executed"]["guest_boots"]
         assert c["distinct_signatures"] <= c["accepted_runs"] <= c["p3"]["ACCEPTED"]
+        echo = c["station_status_echo"]
+        assert echo["distinct_signatures_without_it"] <= c["distinct_signatures"]
+        assert echo["pairs_differing_only_in_it"] <= c["contrasts"]["any_distance"]
+    assert "station_status" in built["campaigns_note"]
 
 
 def test_held_out_waits_for_a_fresh_campaign_on_the_frozen_model(built):
     fresh = [c for c in built["campaigns"] if c["mode"]["fresh"]]
+    freeze = built["held_out"]["freeze"]
     if built["held_out"]["campaign"] is None:
-        assert not fresh or built["held_out"]["freeze"] is None or all(
-            c["model_digest"] != built["held_out"]["freeze"]["model_digest"] for c in fresh)
+        assert not fresh or freeze is None or freeze["differences_now"] or all(
+            c["model_digest"] != freeze["model_digest"] or c["started_at"] < freeze["frozen_at"]
+            for c in fresh)
     else:
         assert built["held_out"]["campaign"] in {c["id"] for c in fresh}
+
+
+def _campaign(name, started_at, fresh=True, digest="m1"):
+    return {"id": name, "started_at": started_at, "model_digest": digest,
+            "mode": {"build_on_runs": False, "fresh": fresh}}
+
+
+@pytest.mark.parametrize("campaigns, differences, expected", [
+    # A fresh campaign on the frozen model, started after the freeze.
+    ([_campaign("after", "2026-12-02T10:00:00Z")], [], "after"),
+    # A trial started before the freeze doesn't count.
+    ([_campaign("trial", "2026-11-30T10:00:00Z")], [], None),
+    ([_campaign("trial", "2026-11-30T10:00:00Z"), _campaign("after", "2026-12-02T10:00:00Z")],
+     [], "after"),
+    # Not fresh, or on another model.
+    ([_campaign("cached", "2026-12-02T10:00:00Z", fresh=False)], [], None),
+    ([_campaign("other", "2026-12-02T10:00:00Z", digest="m2")], [], None),
+    # Something frozen changed since the freeze.
+    ([_campaign("after", "2026-12-02T10:00:00Z")], ["rules_sha256"], None),
+])
+def test_held_out_needs_a_fresh_campaign_after_an_unchanged_freeze(
+        tmp_path, monkeypatch, campaigns, differences, expected):
+    from explorer import freeze
+    path = tmp_path / "freeze.json"
+    path.write_text(json.dumps({"tag": "t", "model_digest": "m1",
+                                "frozen_at": "2026-12-01T00:00:00Z"}))
+    monkeypatch.setattr(freeze, "FREEZE_JSON", path)
+    monkeypatch.setattr(freeze, "differences", lambda frozen: differences)
+    assert metrics._held_out(campaigns)["campaign"] == expected
 
 
 def test_counterexamples_catch_every_invalid_case_and_prune_no_permitted_one(built):
@@ -97,10 +139,13 @@ def test_audit_counts_match_the_registry_and_validation(built):
     assert audit["validation"] == {expected[k]: v for k, v in validation["counts"].items() if v}
     assert audit["findings"] >= 13
     assert set(audit["findings_by_disposition"]) <= set(metrics.DISPOSITIONS)
-    cases = audit["false_prune_cases"]
-    assert len(cases) == sum(v for k, v in audit["prune_risk"].items()
-                             if k not in ("none", "n/a"))
+    possible, by_design = audit["possible_false_prunes"], audit["pruned_by_design"]
+    assert len(by_design) == audit["prune_risk"].get("by design", 0)
+    assert len(possible) == sum(v for k, v in audit["prune_risk"].items()
+                                if k not in ("none", "n/a", "by design"))
+    cases = possible + by_design
     assert {c["rule"] for c in cases} <= {r.id for r in registry.rules}
+    assert all(c["prune_risk"].startswith("by design") for c in by_design)
     assert all(text for c in cases for text in c["findings"].values())
 
 

@@ -14,24 +14,27 @@ here boots a guest or invents a number: each block names where it comes from.
   experiment). The exact expectation from the space's shares, and a seeded sample of
   P0-well-formed assignments classified by P1 and P2.
 - ``campaigns``: each committed campaign's guest boots, cache hits, P3 statuses, distinct
-  behavior signatures of its ``ACCEPTED`` runs (``campaign.outcome_stages``) and
-  wall-clock time. ``held_out`` names the fresh campaign run on the frozen versions
-  (#114) once one is committed.
+  signatures of its ``ACCEPTED`` runs (``campaign.outcome_stages``) and wall-clock time.
+  The signatures include the ``station_status`` config echo; ``station_status_echo``
+  gives the counts without it. ``held_out`` names the fresh campaign run on the frozen
+  versions (#114), started after the freeze, once one is committed.
 - ``pairwise``: ``pairwise_coverage.json``'s feasible pairs covered by committed runs.
 - ``counterexamples``: the #108 suite: invalid cases caught at the expected stage, and
-  permitted cases wrongly pruned by a rule.
+  permitted cases wrongly pruned by a rule (out of ``permitted_cases``).
 - ``audit``: ``docs/rule-audit.md``'s (#109) per-rule prune / admit risk and its findings
-  by disposition (fixture, issue, stated limit).
+  by disposition (fixture, issue, stated limit). Rules with a prune risk are split into
+  ``possible_false_prunes`` (low or reading-dependent) and ``pruned_by_design``.
 - ``undetermined``: ``SPEC_UNDETERMINED`` in the space, the suite and the registry.
 - ``cache``: cache hits in the campaigns and in each minimization's probes.
 - ``timing``: mean checker time per assignment and stage over the whole space, next to
-  a guest boot's. Measured when the file is written, so it varies by machine; the
-  staleness test ignores it.
+  a guest boot's. Measured when the file is written, on the machine it records, so it
+  varies by machine; the staleness test ignores it.
 """
 
 from __future__ import annotations
 
 import json
+import platform
 import random
 import re
 import time
@@ -116,6 +119,23 @@ def _seconds(start: str, end: str) -> float:
     return (datetime.strptime(end, fmt) - datetime.strptime(start, fmt)).total_seconds()
 
 
+ECHO = "station_status"
+"""The fact that echoes the configured AKM and ciphers; counted in the signatures."""
+
+
+def _echo_block(campaign_dir: Path) -> dict:
+    """How much of ``outcome_stages``' counts comes from the ``station_status`` echo:
+    the distinct signatures without it, and the pairs that differ only in it."""
+    from explorer import contrasts
+    runs = contrasts.accepted_runs([campaign_dir])
+    signatures = {json.dumps({k: v for k, v in run.facts.items() if k != ECHO},
+                             sort_keys=True) for _, run in runs}
+    pairs = contrasts.find(contrasts.group(runs), 10**6, supported=lambda _: True)
+    return {"distinct_signatures_without_it": len(signatures),
+            "pairs_differing_only_in_it": sum(all(f.fact == ECHO for f in c.facts)
+                                              for c in pairs)}
+
+
 def campaign_block(campaign_dir: Path) -> dict:
     from explorer import campaign
     results = json.loads((campaign_dir / "results.json").read_text())
@@ -127,6 +147,7 @@ def campaign_block(campaign_dir: Path) -> dict:
     return {
         "id": campaign_dir.name,
         "seed": results["seed"],
+        "started_at": results["started_at"],
         # The campaign's own plan says how it was planned; None when it didn't record it.
         # ``fresh`` (no cache reads) exists since #114; earlier campaigns read the cache.
         "mode": {"build_on_runs": results.get("build_on_runs", plan.get("build_on_runs")),
@@ -142,6 +163,7 @@ def campaign_block(campaign_dir: Path) -> dict:
         "distinct_signatures": stages["distinct_signatures"],
         "signature_yield_per_boot": _share(stages["distinct_signatures"], boots),
         "contrasts": stages["contrasts"],
+        "station_status_echo": _echo_block(campaign_dir),
         "wall_clock_s": seconds,
         "seconds_per_boot": round(seconds / boots, 1) if boots else None,
     }
@@ -151,13 +173,19 @@ def _held_out(campaigns: list[dict]) -> dict:
     from explorer import freeze
     frozen = (json.loads(freeze.FREEZE_JSON.read_text()) if freeze.FREEZE_JSON.is_file()
               else None)
-    fresh = [c for c in campaigns if c["mode"]["fresh"]]
-    on_frozen = [c for c in fresh if frozen and c["model_digest"] == frozen["model_digest"]]
+    differences = freeze.differences(frozen) if frozen else None
+    # Held out: a fresh campaign, on the frozen model, started after the freeze, while
+    # nothing frozen has changed since (a trial run before the freeze doesn't count).
+    on_frozen = [c for c in campaigns if frozen and not differences
+                 and c["mode"]["fresh"] and c["model_digest"] == frozen["model_digest"]
+                 and c["started_at"] >= frozen["frozen_at"]]
     return {
-        "freeze": ({"tag": frozen.get("tag"), "model_digest": frozen["model_digest"],
-                    "differences_now": freeze.differences(frozen)} if frozen else None),
+        "freeze": ({"tag": frozen.get("tag"), "frozen_at": frozen["frozen_at"],
+                    "model_digest": frozen["model_digest"],
+                    "differences_now": differences} if frozen else None),
         "campaign": on_frozen[-1]["id"] if on_frozen else None,
-        "note": ("The fresh campaign (#114: no cache reads) on the frozen model." if on_frozen
+        "note": ("The fresh campaign (#114: no cache reads) on the frozen model, started "
+                 "after the freeze." if on_frozen
                  else "No held-out campaign is committed yet (#114): the per-campaign "
                       "numbers below are the earlier campaigns'. Regenerate after it runs."),
     }
@@ -225,9 +253,9 @@ def audit_block() -> dict:
     disposition = Counter(kind for f in findings for kind, pattern in DISPOSITIONS.items()
                           if re.search(pattern, f[-1]))
     finding_text = {f[0]: f[1] for f in findings}
-    # False-prune cases: rules that could prune a permitted candidate, with the audit's
-    # reason (its prune-risk cell and the findings it cites).
-    false_prune = [
+    # Rules with a prune risk, with the audit's reason (its prune-risk cell and the
+    # findings it cites), split by whether the audit prunes them knowingly.
+    pruning = [
         {"rule": r[0].strip("`"), "kind": r[1], "prunes_in_campaigns": r[2],
          "prune_risk": r[4].strip("*"),
          "findings": {f: finding_text.get(f) for f in re.findall(r"F\d+", r[6])}}
@@ -240,12 +268,13 @@ def audit_block() -> dict:
         "validation": dict(sorted(Counter(r[3].strip("*") for r in rules).items())),
         "findings": len(findings),
         "findings_by_disposition": dict(sorted(disposition.items())),
-        "false_prune_cases": false_prune,
+        "possible_false_prunes": [p for p in pruning if risk(p["prune_risk"]) != "by design"],
+        "pruned_by_design": [p for p in pruning if risk(p["prune_risk"]) == "by design"],
         "note": ("A finding can have several dispositions (e.g. a stated limit and a "
-                 "proposed issue). Risks are the audit's reading of each predicate. "
-                 "false_prune_cases lists every rule whose prune risk isn't none: 'by "
-                 "design' rules knowingly prune candidates the implementation would run "
-                 "(a stated limit, not a bug)."),
+                 "proposed issue). Risks are the audit's reading of each predicate, not "
+                 "observed false prunes. possible_false_prunes: rules whose prune risk is "
+                 "low or reading-dependent. pruned_by_design: rules that knowingly prune "
+                 "candidates the implementation would run (a stated limit, not a bug)."),
     }
 
 
@@ -338,10 +367,21 @@ def timing_block(space, seconds_per_boot: float | None) -> dict:
     mean_ms = {stage: round(1000 * totals[stage] / count[stage], 3) for stage in totals}
     per_candidate_ms = round(sum(mean_ms.values()), 3)
     return {
-        "note": ("Measured when metrics.json was written (machine-dependent); not part of "
-                 "the staleness check. P2 is timed only for assignments P1 passes."),
+        "note": ("Measured when metrics.json was written, on the machine named in "
+                 "'machine'; not part of the staleness check. P2 is timed only for "
+                 "assignments P1 passes, so mean_ms_per_assignment's P2 is over fewer "
+                 "assignments than the other stages. ms_per_assignment_reaching_p2 sums the "
+                 "stage means (one assignment through every stage); ms_per_assignment_over_"
+                 "space is the total time over every enumerated assignment. "
+                 "checks_per_guest_boot divides the campaigns' mean seconds per boot "
+                 "(runtime, measured on the machines the campaigns ran on) by "
+                 "ms_per_assignment_reaching_p2, so it mixes two machines when they differ."),
+        "machine": {"platform": platform.platform(), "python": platform.python_version()},
         "mean_ms_per_assignment": mean_ms,
         "assignments_timed": dict(count),
+        "ms_per_assignment_reaching_p2": per_candidate_ms,
+        "ms_per_assignment_over_space": round(
+            1000 * sum(totals.values()) / len(space.assessments), 3),
         "checks_per_guest_boot": (round(1000 * seconds_per_boot / per_candidate_ms)
                                   if seconds_per_boot and per_candidate_ms else None),
     }
@@ -371,6 +411,12 @@ def build(timing: bool = True) -> dict:
         "space": space_data,
         "no_p1_estimate": no_p1_estimate(space, budget),
         "campaigns": campaigns,
+        "campaigns_note": (
+            "distinct_signatures and contrasts (campaign.outcome_stages) include the "
+            "station_status fact, which echoes the configured AKM and ciphers rather than "
+            "behavior. station_status_echo gives each campaign's distinct signatures "
+            "without it and its pairs that differ only in it; those pairs can't start a "
+            "minimization, which targets behavior facts."),
         "pairwise": pairwise_block(),
         "counterexamples": suite,
         "audit": audit_block(),

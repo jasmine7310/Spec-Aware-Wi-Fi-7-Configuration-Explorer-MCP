@@ -8,7 +8,14 @@
       "none": 11,
       "unmodeled triggers": 1
     },
-    "false_prune_cases": [
+    "findings": 13,
+    "findings_by_disposition": {
+      "fixture": 1,
+      "issue": 5,
+      "stated_limit": 10
+    },
+    "note": "A finding can have several dispositions (e.g. a stated limit and a proposed issue). Risks are the audit's reading of each predicate, not observed false prunes. possible_false_prunes: rules whose prune risk is low or reading-dependent. pruned_by_design: rules that knowingly prune candidates the implementation would run (a stated limit, not a bug).",
+    "possible_false_prunes": [
       {
         "findings": {
           "F8": "Per-link MFPC / MFPR differences can't be expressed (one PMF setting)"
@@ -55,16 +62,6 @@
       },
       {
         "findings": {
-          "F1": "`SEC.SAE_PWE_NEEDS_SAE`, the largest pruner (2560), has no experimental validation; \"no effect\" is read from code",
-          "F11": "Three rules had no fixture for the permitted case they could wrongly prune"
-        },
-        "kind": "dependency",
-        "prune_risk": "by design",
-        "prunes_in_campaigns": "2560",
-        "rule": "SEC.SAE_PWE_NEEDS_SAE"
-      },
-      {
-        "findings": {
           "F11": "Three rules had no fixture for the permitted case they could wrongly prune"
         },
         "kind": "dependency",
@@ -81,6 +78,41 @@
         "prune_risk": "reading-dependent",
         "prunes_in_campaigns": "no",
         "rule": "SEC.MLO_PASSWORD_NEEDS_WPA3"
+      },
+      {
+        "findings": {},
+        "kind": "harness",
+        "prune_risk": "low",
+        "prunes_in_campaigns": "no",
+        "rule": "AO.NO_LINKS_LEFT"
+      },
+      {
+        "findings": {
+          "F6": "8 `AO.*` rules have no validation; 3 are feasible now, 1 needs an adapter change, 4 need new adapter actions"
+        },
+        "kind": "harness",
+        "prune_risk": "low",
+        "prunes_in_campaigns": "no",
+        "rule": "AO.RECONFIG_DELETE_ACTIVE"
+      }
+    ],
+    "prune_risk": {
+      "by design": 7,
+      "low": 7,
+      "n/a": 3,
+      "none": 3,
+      "reading-dependent": 2
+    },
+    "pruned_by_design": [
+      {
+        "findings": {
+          "F1": "`SEC.SAE_PWE_NEEDS_SAE`, the largest pruner (2560), has no experimental validation; \"no effect\" is read from code",
+          "F11": "Three rules had no fixture for the permitted case they could wrongly prune"
+        },
+        "kind": "dependency",
+        "prune_risk": "by design",
+        "prunes_in_campaigns": "2560",
+        "rule": "SEC.SAE_PWE_NEEDS_SAE"
       },
       {
         "findings": {
@@ -111,22 +143,6 @@
         "rule": "AO.LINK_MUST_EXIST"
       },
       {
-        "findings": {},
-        "kind": "harness",
-        "prune_risk": "low",
-        "prunes_in_campaigns": "no",
-        "rule": "AO.NO_LINKS_LEFT"
-      },
-      {
-        "findings": {
-          "F6": "8 `AO.*` rules have no validation; 3 are feasible now, 1 needs an adapter change, 4 need new adapter actions"
-        },
-        "kind": "harness",
-        "prune_risk": "low",
-        "prunes_in_campaigns": "no",
-        "rule": "AO.RECONFIG_DELETE_ACTIVE"
-      },
-      {
         "findings": {
           "F6": "8 `AO.*` rules have no validation; 3 are feasible now, 1 needs an adapter change, 4 need new adapter actions"
         },
@@ -155,20 +171,6 @@
         "rule": "AO.BSS_TM_NEEDS_BSS_TRANSITION"
       }
     ],
-    "findings": 13,
-    "findings_by_disposition": {
-      "fixture": 1,
-      "issue": 5,
-      "stated_limit": 10
-    },
-    "note": "A finding can have several dispositions (e.g. a stated limit and a proposed issue). Risks are the audit's reading of each predicate. false_prune_cases lists every rule whose prune risk isn't none: 'by design' rules knowingly prune candidates the implementation would run (a stated limit, not a bug).",
-    "prune_risk": {
-      "by design": 7,
-      "low": 7,
-      "n/a": 3,
-      "none": 3,
-      "reading-dependent": 2
-    },
     "rules_and_open_questions": 22,
     "source": "docs/rule-audit.md (#109)",
     "validation": {
@@ -237,6 +239,11 @@
       "seconds_per_boot": 6.2,
       "seed": 0,
       "signature_yield_per_boot": 0.4375,
+      "started_at": "2026-11-13T08:03:51Z",
+      "station_status_echo": {
+        "distinct_signatures_without_it": 6,
+        "pairs_differing_only_in_it": 6
+      },
       "wall_clock_s": 100.0
     },
     {
@@ -271,6 +278,11 @@
       "seconds_per_boot": 7.2,
       "seed": 0,
       "signature_yield_per_boot": 1.0,
+      "started_at": "2026-11-13T23:19:29Z",
+      "station_status_echo": {
+        "distinct_signatures_without_it": 4,
+        "pairs_differing_only_in_it": 0
+      },
       "wall_clock_s": 29.0
     },
     {
@@ -305,9 +317,15 @@
       "seconds_per_boot": 6.8,
       "seed": 1,
       "signature_yield_per_boot": 0.5882,
+      "started_at": "2026-11-16T07:05:48Z",
+      "station_status_echo": {
+        "distinct_signatures_without_it": 10,
+        "pairs_differing_only_in_it": 0
+      },
       "wall_clock_s": 116.0
     }
   ],
+  "campaigns_note": "distinct_signatures and contrasts (campaign.outcome_stages) include the station_status fact, which echoes the configured AKM and ciphers rather than behavior. station_status_echo gives each campaign's distinct signatures without it and its pairs that differ only in it; those pairs can't start a minimization, which targets behavior facts.",
   "counterexamples": {
     "cases": 12,
     "invalid_by_stage": {
@@ -405,14 +423,20 @@
       "p1": 4608,
       "p2": 1152
     },
-    "checks_per_guest_boot": 2617,
+    "checks_per_guest_boot": 2424,
+    "machine": {
+      "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+      "python": "3.12.3"
+    },
     "mean_ms_per_assignment": {
       "configspace": 0.01,
-      "p0": 0.075,
-      "p1": 0.021,
-      "p2": 2.416
+      "p0": 0.084,
+      "p1": 0.018,
+      "p2": 2.611
     },
-    "note": "Measured when metrics.json was written (machine-dependent); not part of the staleness check. P2 is timed only for assignments P1 passes."
+    "ms_per_assignment_over_space": 0.763,
+    "ms_per_assignment_reaching_p2": 2.723,
+    "note": "Measured when metrics.json was written, on the machine named in 'machine'; not part of the staleness check. P2 is timed only for assignments P1 passes, so mean_ms_per_assignment's P2 is over fewer assignments than the other stages. ms_per_assignment_reaching_p2 sums the stage means (one assignment through every stage); ms_per_assignment_over_space is the total time over every enumerated assignment. checks_per_guest_boot divides the campaigns' mean seconds per boot (runtime, measured on the machines the campaigns ran on) by ms_per_assignment_reaching_p2, so it mixes two machines when they differ."
   },
   "undetermined": {
     "in_campaign_space": 0,

@@ -27,13 +27,20 @@ def main() -> int:
     print(f"no-P1 estimate: budget {est['budget']}, {est['expected_wasted_boots']} expected "
           f"wasted boots (sample: {est['sample']['p1_rejected']} P1-rejected)")
     for c in data["campaigns"]:
+        echo = c["station_status_echo"]
         print(f"campaign {c['id']}: {c['guest_boots']} boots, {c['cache_hits']} cache hits, "
               f"{c['distinct_signatures']} distinct signatures of {c['accepted_runs']} "
-              f"accepted, {c['wall_clock_s']:.0f} s")
+              f"accepted ({echo['distinct_signatures_without_it']} without the "
+              f"station_status echo), {c['wall_clock_s']:.0f} s")
     suite = data["counterexamples"]
     print(f"counterexamples: {suite['invalid_caught_at_expected_stage']}/"
           f"{suite['invalid_cases']} invalid caught, "
-          f"{len(suite['permitted_wrongly_pruned'])} permitted wrongly pruned")
+          f"{len(suite['permitted_wrongly_pruned'])}/{suite['permitted_cases']} permitted "
+          f"wrongly pruned")
+    timing = data["timing"]
+    print(f"checker: {timing['ms_per_assignment_reaching_p2']} ms for an assignment through "
+          f"every stage, {timing['ms_per_assignment_over_space']} ms averaged over the space "
+          f"({timing['machine']['platform']})")
     print(f"held-out: {data['held_out']['campaign'] or 'none yet'}")
     print(f"wrote {metrics.METRICS_JSON.name}")
     return 0
