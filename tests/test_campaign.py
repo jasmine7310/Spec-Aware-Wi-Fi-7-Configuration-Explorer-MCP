@@ -114,3 +114,68 @@ def test_write_creates_the_files(plan, space, db, tmp_path, monkeypatch):
     assert (tmp_path / "t" / "rejected_cases.csv").read_text().startswith("stage,outcome,rule_ids")
     assert json.loads((tmp_path / "pruning_counts.json").read_text())["P3"]["ACCEPTED"] == len(
         plan["candidates"])
+
+
+# --- held-out campaigns (#114) -------------------------------------------------------------
+
+
+def test_fresh_forces_every_run_and_records_the_mode(plan, db, tmp_path):
+    seen = []
+
+    def runner(candidate, cache, *, context, **kwargs):
+        seen.append(kwargs.get("force"))
+        return _runner([])[0](candidate, cache, context=context)
+    one = {**plan, "candidates": plan["candidates"][:2]}
+    results = campaign.run(one, "t", cache=db, campaigns_dir=tmp_path, runner=runner,
+                           fresh=True)
+    assert seen == [True, True]
+    assert results["fresh"] is True and results["build_on_runs"] is False
+    counts = campaign.pruning_counts(one, results)
+    assert counts["mode"] == {"build_on_runs": False, "fresh": True}
+    assert counts["executed"]["cache_hits"] == 0
+
+
+def test_without_fresh_the_runner_may_read_the_cache(plan, db, tmp_path):
+    seen = []
+
+    def runner(candidate, cache, *, context, **kwargs):
+        seen.append("force" in kwargs)
+        return _runner([])[0](candidate, cache, context=context)
+    one = {**plan, "candidates": plan["candidates"][:1]}
+    assert campaign.run(one, "t", cache=db, campaigns_dir=tmp_path, runner=runner)["fresh"] is False
+    assert seen == [False]
+
+
+def test_outcome_stages_on_a_committed_campaign():
+    # seed1-fresh-2026-11-15: 17 ACCEPTED runs, 10 distinct signatures. Its pairwise design
+    # spreads candidates apart: no pair is 1 input apart, and each candidate ran once.
+    stages = campaign.outcome_stages(campaign.CAMPAIGNS / "seed1-fresh-2026-11-15")
+    results = json.loads((campaign.CAMPAIGNS / "seed1-fresh-2026-11-15" / "results.json").read_text())
+    accepted = sum(r["status"] == "ACCEPTED" for r in results["results"])
+    assert stages["accepted_runs"] == accepted == 17
+    assert 0 < stages["distinct_signatures"] <= stages["accepted_runs"]
+    c = stages["contrasts"]
+    assert c["max_inputs"] == 1 and c["within_max_inputs"] == 0
+    assert c["any_distance"] > 0 and c["reproduced_3_per_side"] == 0
+
+
+def test_pruning_counts_carry_the_outcome_stages(plan, db, tmp_path):
+    runner, _ = _runner([])
+    results = campaign.run(plan, "t", cache=db, campaigns_dir=tmp_path, runner=runner)
+    stages = {"accepted_runs": 5, "distinct_signatures": 3,
+              "contrasts": {"max_inputs": 1, "within_max_inputs": 0, "any_distance": 2,
+                            "reproduced_3_per_side": 0}}
+    counts = campaign.pruning_counts(plan, results, stages)
+    assert counts["signatures"] == {"accepted_runs": 5, "distinct": 3}
+    assert counts["contrasts"] == stages["contrasts"]
+    assert "signatures" not in campaign.pruning_counts(plan, results)
+
+
+def test_planner_write_can_skip_earlier_runs(tmp_path, monkeypatch):
+    monkeypatch.setattr(planner, "CAMPAIGN_PLAN", tmp_path / "campaign_plan.json")
+    monkeypatch.setattr(planner, "PAIRWISE_COVERAGE", tmp_path / "pairwise_coverage.json")
+    plan_, _ = planner.write(seed=3, budget=20, build_on_runs=False)
+    written = json.loads((tmp_path / "campaign_plan.json").read_text())
+    assert written["build_on_runs"] is False and written["seed"] == 3
+    assert plan_["candidates"], "a fresh plan covers the pairs itself, so it isn't empty"
+    assert written["funnel"]["already_run"] == 0

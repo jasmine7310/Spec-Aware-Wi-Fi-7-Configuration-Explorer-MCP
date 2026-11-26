@@ -32,10 +32,10 @@ minimized contrast's ID is its folder name (`c1`). Over MCP, `list_contrasts`,
   Each claimed fact comes with the log lines it was read from.
 - **Reproduced** means at least 3 independent runs per side, each in a fresh guest. Cache hits don't count, and none of these runs was served from the cache.
 
-Today that's 82 accepted runs in 42 groups of repeats.
+Today that's 88 accepted runs in 44 groups of repeats.
 
-`contrasts/runs/` holds 49 runs, all `ACCEPTED`, on Docker Desktop on macOS. 16 were made
-for this issue so that each side has 3:
+`contrasts/runs/` holds 55 runs, all `ACCEPTED`. The first 49 ran on Docker Desktop on
+macOS; 16 of those were made for this issue so that each side has 3:
 - 9 on today's harness (2026-11-17), which are the evidence below;
 - 7 on the earlier harness (2026-11-16).
 
@@ -43,6 +43,9 @@ The other 33 are for the minimized contrasts, on today's harness (see "Minimized
 below):
 - their 3/3 reproductions: 6 each from `c1/` (#73) and `c2/` (#106), and 12 from `c3/` (#107), 6 per reduction;
 - 9 runs of `c3/`'s candidates (#107): 3 of the first reduction's B side, which had only run under the earlier harness, 3 of the reconnect-only side and 3 of `link_remove` followed by a reconnect.
+
+The last 6 are `c1/`'s two final sides with GCMP-256 instead of CCMP, on WSL2 (see "c1 with
+GCMP-256" below).
 
 They're in `support.EVIDENCE_DIRS`, so they count as P2 evidence: each side's candidate is
 `SUPPORTED` by exact-match committed runs.
@@ -156,6 +159,36 @@ Each folder's `README.md` has the write-up and the full trace. Their reproductio
 `runs/`. `c1/`'s and `c2/`'s final pairs are one input apart, so `contrasts.json` also lists
 them as reproduced contrasts. `c3/`'s are 3 apart, so it doesn't; its reconnect-only side and the `link_remove` + reconnect candidate are one apart, so that pair is listed.
 
+### c1 with GCMP-256 (the audit's F13)
+
+c1–c3 and almost every committed run use a CCMP-only AP. The WFA WPA3 guide makes
+GCMP-256 MAND for an AP with EHT (Tables 5, 8 and 15), so our default doesn't meet it. The
+team kept that a stated limit (F13 in [`docs/rule-audit.md`](../docs/rule-audit.md), decided
+on PR #123) rather than a rule. To check that c1 doesn't depend on the cipher, its two final
+sides were rerun with `pairwise_cipher: GCMP-256` on both AP links and nothing else changed
+(2026-11-24, WSL2, today's harness, `minimize.verify`: 3 fresh guests per side, no cache
+hits):
+
+| Side | Runs | `disconnect_reasons` |
+|---|---|---|
+| A: 5 s PTK rekey, `link_remove` | `1795549458`, `1795549473`, `1795549488` | (15, from the AP) in each |
+| A without the PTK rekey | `1795549503`, `1795549517`, `1795549529` | (3, local) in each |
+
+So c1 reproduces 3/3 per side with GCMP-256. Each run negotiated GCMP-256: the AP's
+`rsn_pairwise` is `GCMP-256` on both links, and the client logs `Selected cipher suites:
+group 256 pairwise 256` for every association (5 in each PTK-rekey run, counting the
+reassociations; 1 in each run without the rekey). `WPA_CIPHER_GCMP_256` is `BIT(8)` in
+hostap's `src/common/defs.h` at the pinned commit. The side without the rekey also ends
+with `station_status` `pairwise_cipher` `GCMP-256`. The client itself is configured to
+accept CCMP or GCMP-256.
+
+Compared with the CCMP runs of the same two sides, using the same rules as `contrasts.find`
+(measured on both, stable in every repeat): the PTK-rekey side differs in no fact, and the
+side without the rekey differs only in `station_status`'s cipher fields, an echo of the
+setting. The two GCMP-256 sides are one input apart, so `contrasts.json` lists them as
+`xc28dc62b59`, with the same 7 claimed facts as their CCMP twin `x829bf3a8d9`. This checks
+c1 only; c2 and c3 still ran only on CCMP-only APs.
+
 ## Over MCP (#111)
 
 - `list_contrasts`: every contrast in `contrasts.json` (kind `contrast`) and every
@@ -203,18 +236,18 @@ Both harnesses give the same claimed facts, with one difference: on the earlier 
 
 ## Across every accepted run
 
-The pattern holds beyond the two contrasts. Across all 82 accepted runs, under both
+The pattern holds beyond the two contrasts. Across all 88 accepted runs, under both
 harnesses:
 
 | `ptk_rekey_interval_s` | `link_remove` | Runs with a reason-15 disconnect from the AP |
 |---|---|---|
-| 5 | yes | **20 / 20** |
+| 5 | yes | **23 / 23** |
 | 5 | no | 0 / 11 |
-| unset | yes | 3 / 32 |
+| unset | yes | 3 / 35 |
 | unset | no | 0 / 19 |
 
-The other campaign runs in the first row also differ in AKM, cipher, `sae_pwe` and other
-actions. So the combination fails across those settings, not just in the base above.
+The other runs in the first row also differ in AKM, cipher (the 3 GCMP-256 reruns of c1
+among them), `sae_pwe` and other actions. So the combination fails across those settings, not just in the base above.
 
 The 3 in the third row are `c3/`'s `link_remove` + reconnect runs (`1795480438`, `1795480449`,
 `1795480460`, #107): no PTK rekey, but the client reconnects after `link_remove`, and that

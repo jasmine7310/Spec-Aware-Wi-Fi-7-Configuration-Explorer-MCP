@@ -4,8 +4,11 @@ pairwise_coverage.json at the repo root. Nothing is run; #68 runs the plan.
 
     .venv/bin/python scripts/plan_campaign.py                 # seed 0, budget 20
     .venv/bin/python scripts/plan_campaign.py --seed 7 --budget 16
+    .venv/bin/python scripts/plan_campaign.py --seed 3 --fresh   # held-out (#114)
 
-The same seed always gives the same plan for the same model.json and evidence.
+The same seed always gives the same plan for the same model.json and evidence. By default
+the plan builds on earlier runs (pairs a committed run covers aren't planned again);
+--fresh plans every executable pair itself, for a held-out campaign.
 """
 
 import argparse
@@ -22,8 +25,11 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--budget", type=int, default=planner.DEFAULT_BUDGET,
                         help="most candidates to plan (default %(default)s)")
+    parser.add_argument("--fresh", action="store_true",
+                        help="don't build on earlier runs (build_on_runs=false): plan every "
+                             "executable pair, as a held-out campaign needs")
     args = parser.parse_args()
-    campaign, cover = planner.write(args.seed, args.budget)
+    campaign, cover = planner.write(args.seed, args.budget, build_on_runs=not args.fresh)
     funnel = campaign["funnel"]
     print(f"enumerated {funnel['enumerated']} -> P0 {funnel['p0_well_formed']} -> "
           f"P1 {funnel['p1']} -> executable {funnel['executable']} "
@@ -39,7 +45,7 @@ def main() -> int:
     print(f"{len(cover['infeasible_pairs'])} infeasible pairs; "
           f"review queue {len(campaign['review_queue'])}")
     print(f"wrote {planner.CAMPAIGN_PLAN.name} and {planner.PAIRWISE_COVERAGE.name} "
-          f"(seed {args.seed})")
+          f"(seed {args.seed}{', fresh' if args.fresh else ''})")
     return 0
 
 
