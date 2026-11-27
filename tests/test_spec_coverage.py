@@ -49,6 +49,10 @@ def _row_id(row):
 
 @pytest.mark.parametrize("row", _rows(), ids=_row_id)
 def test_row_is_well_formed(row):
+    # More fields than the header: a comma outside quotes, or a quote inside a quoted
+    # field that isn't doubled ("" in CSV), split the notes.
+    assert None not in row, f"extra fields {row[None]!r}: quote the field, double inner quotes"
+    assert all(value is not None for value in row.values()), "fewer fields than the header"
     assert row["document"] in STANDARDS
     assert row["clause"] and row["requirement_summary"] and row["page"]
     assert len(row["requirement_summary"]) <= MAX_SUMMARY_CHARS
