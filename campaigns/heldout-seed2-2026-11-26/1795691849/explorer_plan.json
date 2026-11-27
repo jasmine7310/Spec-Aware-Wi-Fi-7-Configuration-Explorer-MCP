@@ -1,0 +1,151 @@
+{
+  "actions": [
+    {
+      "action": "associate"
+    },
+    {
+      "action": "link_remove",
+      "count": 4,
+      "link_id": 1
+    }
+  ],
+  "ap_links": [
+    {
+      "link_id": 0,
+      "params": {
+        "beacon_prot": "1",
+        "channel": "1",
+        "group_mgmt_cipher": "AES-128-CMAC",
+        "hw_mode": "g",
+        "ieee80211ax": "1",
+        "ieee80211be": "1",
+        "ieee80211n": "1",
+        "ieee80211w": "2",
+        "rsn_pairwise": "CCMP",
+        "ssid": "explorer_mld",
+        "wpa": "2",
+        "wpa_key_mgmt": "OWE",
+        "wpa_ptk_rekey": "5"
+      }
+    },
+    {
+      "link_id": 1,
+      "params": {
+        "beacon_prot": "1",
+        "channel": "6",
+        "group_mgmt_cipher": "AES-128-CMAC",
+        "hw_mode": "g",
+        "ieee80211ax": "1",
+        "ieee80211be": "1",
+        "ieee80211n": "1",
+        "ieee80211w": "2",
+        "rsn_pairwise": "CCMP",
+        "ssid": "explorer_mld",
+        "wpa": "2",
+        "wpa_key_mgmt": "OWE",
+        "wpa_ptk_rekey": "5"
+      }
+    }
+  ],
+  "ap_shared": {
+    "beacon_prot": "1",
+    "group_mgmt_cipher": "AES-128-CMAC",
+    "hw_mode": "g",
+    "ieee80211ax": "1",
+    "ieee80211be": "1",
+    "ieee80211n": "1",
+    "ieee80211w": "2",
+    "ssid": "explorer_mld",
+    "wpa": "2",
+    "wpa_ptk_rekey": "5"
+  },
+  "explorer": {
+    "cache_key": "sha256:40972bfa84e880bcd6e56f6b10317ec824642b2133cc5c9bb10a6cf521b2c25e",
+    "cache_key_parts": {
+      "environment": "50c5722e3260e56555f60e4aff2ed13ecaa7bc92e4523377dd1b15d4f49495f9",
+      "harness": "5c0fe724a68985d5e07e03e1649f202178bd825bb7b103844c96be0eae4173a4",
+      "hostap_commit": "43ee60e13c257d33d25bfb6892b9ee38fb6e88a4",
+      "kernel_commit": "21b4248bfa0f410fa22202fc2c82f4808d672cda",
+      "model_digest": "sha256:0e3f3145a04bcf05e25946f9497d21e50b443f533c7e818aacb354dd2b46af48",
+      "schema_version": 2
+    },
+    "candidate": {
+      "actions": [
+        {
+          "action": "associate"
+        },
+        {
+          "action": "link_remove",
+          "count": 4,
+          "link_id": 1
+        }
+      ],
+      "config": {
+        "ap": {
+          "beacon_protection": true,
+          "bss_transition": false,
+          "gtk_rekey_interval_s": null,
+          "links": [
+            {
+              "akms": [
+                "OWE"
+              ],
+              "channel": 1,
+              "indicate_disabled": false,
+              "link_id": 0,
+              "pairwise_cipher": "CCMP"
+            },
+            {
+              "akms": [
+                "OWE"
+              ],
+              "channel": 6,
+              "indicate_disabled": false,
+              "link_id": 1,
+              "pairwise_cipher": "CCMP"
+            }
+          ],
+          "pmf": "required",
+          "ptk_rekey_interval_s": 5,
+          "sae_pwe": null
+        },
+        "sta": {
+          "akms": [
+            "OWE"
+          ],
+          "beacon_protection": true,
+          "sae_groups": null,
+          "sae_pwe": null
+        }
+      }
+    },
+    "context": {
+      "attempt": 1,
+      "campaign": "heldout-seed2-2026-11-26",
+      "candidate_id": "c05",
+      "seed": 2
+    },
+    "model_digest": "sha256:0e3f3145a04bcf05e25946f9497d21e50b443f533c7e818aacb354dd2b46af48",
+    "negative_experiment": false,
+    "schema_version": 2,
+    "timeout_s": 600,
+    "validation": {
+      "p2": "UNRESOLVED",
+      "rule_ids": [],
+      "status": "PASSES_MODELED_RULES"
+    }
+  },
+  "needs_owe": true,
+  "needs_sae": false,
+  "ssid": "explorer_mld",
+  "sta": {
+    "connect": {
+      "beacon_prot": "1",
+      "ieee80211w": "2",
+      "key_mgmt": "OWE",
+      "scan_freq": "2412 2437"
+    },
+    "sae_groups": "",
+    "sae_pwe": ""
+  }
+}

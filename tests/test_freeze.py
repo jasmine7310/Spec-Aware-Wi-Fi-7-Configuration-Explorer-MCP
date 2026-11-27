@@ -1,5 +1,6 @@
 """The version freeze before the held-out campaign (issue #114)."""
 
+import ast
 import json
 
 import pytest
@@ -12,6 +13,49 @@ def test_current_has_every_frozen_key():
     assert set(now) == set(freeze.FROZEN_KEYS)
     assert now["model_digest"].startswith("sha256:") and len(now["harness"]) == 64
     assert len(now["hostap_commit"]) == 40 and len(now["rules_sha256"]) == 64
+    assert len(now["code_sha256"]) == 64
+
+
+def _explorer_imports(name):
+    """The explorer modules a module imports, anywhere in it (also inside functions)."""
+    tree = ast.parse((freeze.REPO_ROOT / "src" / "explorer" / f"{name}.py").read_text())
+    found = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module == "explorer":
+            found |= {alias.name for alias in node.names}
+        elif isinstance(node, ast.ImportFrom) and (node.module or "").startswith("explorer."):
+            found.add(node.module.split(".")[1])
+        elif isinstance(node, ast.Import):
+            found |= {a.name.split(".")[1] for a in node.names
+                      if a.name.startswith("explorer.")}
+    return found
+
+
+def test_pipeline_modules_are_closed_under_imports():
+    # Everything planner and campaign import, directly or not, is frozen: a module the
+    # pipeline starts importing must join PIPELINE_MODULES.
+    closure, todo = set(), ["planner", "campaign"]
+    while todo:
+        name = todo.pop()
+        if name not in closure:
+            closure.add(name)
+            todo.extend(_explorer_imports(name))
+    assert closure <= set(freeze.PIPELINE_MODULES), closure - set(freeze.PIPELINE_MODULES)
+    assert all((freeze.REPO_ROOT / f).is_file() for f in freeze.CODE_FILES)
+
+
+def test_code_digest_sees_a_change_but_not_line_endings(tmp_path):
+    files = ("src/explorer/validate.py", "scripts/run_campaign.py")
+    for f in files:
+        (tmp_path / f).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / f).write_bytes((freeze.REPO_ROOT / f).read_bytes().replace(b"\r\n", b"\n"))
+    before = freeze.code_digest(files, tmp_path)
+    assert before == freeze.code_digest(files, freeze.REPO_ROOT)
+    validate = tmp_path / files[0]
+    validate.write_bytes(validate.read_bytes().replace(b"\n", b"\r\n"))
+    assert freeze.code_digest(files, tmp_path) == before
+    validate.write_bytes(validate.read_bytes() + b"# a change\n")
+    assert freeze.code_digest(files, tmp_path) != before
 
 
 def test_nothing_differs_from_itself():

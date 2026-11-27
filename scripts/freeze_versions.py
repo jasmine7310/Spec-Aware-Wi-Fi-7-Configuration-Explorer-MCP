@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Freeze the rules, model, harness and pinned versions before the held-out campaign
-(issue #114), or check that nothing changed since.
+"""Freeze the rules, model, harness, pinned versions and pipeline code before the held-out
+campaign (issue #114), or check that nothing changed since.
 
     .venv/bin/python scripts/freeze_versions.py --tag checkpoint3-freeze   # write freeze.json
     .venv/bin/python scripts/freeze_versions.py --check                    # exit 1 if changed
